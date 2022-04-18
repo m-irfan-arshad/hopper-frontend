@@ -8,6 +8,7 @@ import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
 import StaticDatePicker from "../components/staticDatePicker";
 import ResponsiveDatePicker from "../components/responsiveDatePicker";
+import PatientTable from "../components/patientTable";
 
 //BOX VS CONTAINER VS GRID
 //GRID (MOST OBVIOUS USE, WHEN YOU WANT TO CREATE A GRID PATTERN WITH MULTIPLE ELEMENTS)
@@ -82,13 +83,12 @@ export default function Home() {
         <ThemeProvider theme={appBarTheme}>
           <AppBar></AppBar>
         </ThemeProvider>
-        <ThemeProvider theme={drawerTheme}>
-          <SideBar></SideBar>
-        </ThemeProvider>
+        <SideBar></SideBar>
       </header>
       <main className={styles.main}>
         <StaticDatePicker></StaticDatePicker>
         <ResponsiveDatePicker></ResponsiveDatePicker>
+        <PatientTable></PatientTable>
         <ThemeProvider theme={theme}>
           {/*You can change the underlying element for a one-off situation with the component prop like below*/}
           <Typography variant="h3" component="h1">

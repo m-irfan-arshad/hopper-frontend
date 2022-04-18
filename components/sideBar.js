@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
+import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -12,10 +11,10 @@ import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import DvrIcon from "@mui/icons-material/Dvr";
 import Tooltip from "@mui/material/Tooltip";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Head from "next/head";
 
+//uses 'system' styling using sx prop
 export default function SideBar() {
-  const theme = createTheme({
+  const toolTipTheme = createTheme({
     components: {
       MuiTooltip: {
         styleOverrides: {
@@ -28,9 +27,45 @@ export default function SideBar() {
       },
     },
   });
+
+  const styles = {
+    drawer: {
+      "& .MuiDrawer-paper": {
+        width: {
+          xs: 50,
+          sm: 70,
+        },
+        marginTop: {
+          xs: "56px", // theme.breakpoints.up('xs')
+          sm: "64px", // theme.breakpoints.up('sm')
+        },
+        background: {
+          xs: "green",
+          sm: "blue",
+        },
+      },
+    },
+    title: {
+      display: "flex",
+    },
+    listButton: {
+      minHeight: 80,
+      justifyContent: "center",
+      px: 2.5,
+      "&:hover": {
+        backgroundColor: "white",
+      },
+    },
+    listIcon: {
+      minWidth: 0,
+      mr: "auto",
+      justifyContent: "center",
+    },
+  };
+
   const iconToDisplay = (text) => {
     const component = (DrawerIcon) => (
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={toolTipTheme}>
         <Tooltip title={text} placement="right">
           <DrawerIcon fontSize="large" />
         </Tooltip>
@@ -66,44 +101,24 @@ export default function SideBar() {
 
   return (
     <div>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={styles.title}>
         <CssBaseline />
-        <MuiDrawer
-          variant="permanent"
-          open={false}
-          PaperProps={{ style: { width: 71 } }}
-        >
+        <Drawer variant="permanent" open={false} sx={styles.drawer}>
           <List>
             {arr.map((text) => (
               <ListItemButton
                 key={text}
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}
-                sx={{
-                  minHeight: 80,
-                  justifyContent: "center",
-                  px: 2.5,
-                  "&:hover": {
-                    backgroundColor: "white",
-                  },
-                }}
+                sx={styles.listButton} //works fine
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: "auto",
-                    justifyContent: "center",
-                  }}
-                >
+                <ListItemIcon sx={styles.listIcon}>
                   {iconToDisplay(text)}
                 </ListItemIcon>
               </ListItemButton>
             ))}
           </List>
-        </MuiDrawer>
+        </Drawer>
       </Box>
     </div>
   );

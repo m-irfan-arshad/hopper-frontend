@@ -10,10 +10,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SvgIcon from "@mui/material/SvgIcon";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
-import Head from "next/head";
 
 //breakpoints allow the screen to change when the breakpoint size is hit (sm=600px )
 //below is saying when the screen width is greater than 600px apply the following (.down would be when its below 600px)
+//uses styled theme (using emotion styles under the hood) from "@mui/material/styles";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -83,7 +83,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 //IF YOU HAVE A PATH FOR YOUR SVG, CAN MAKE IT LIKE BELOW
 function MedtelLogo(props) {
   return (
-    <SvgIcon {...props} viewBox="0 0 25 25">
+    <SvgIcon {...props} viewBox="0 0 24 24" htmlColor="green">
       <path d="M15,19.16V15.07a4.27,4.27,0,0,0,6,0h0a4.27,4.27,0,0,0,0-6h0a4.27,4.27,0,0,0-6,0l-3,3-3,3a4.27,4.27,0,0,1-6,0h0a4.27,4.27,0,0,1,0-6h0A4.27,4.27,0,0,1,9,9" />
     </SvgIcon>
   );
@@ -108,11 +108,8 @@ export default function SearchAppBar() {
 
   return (
     <div>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="fixed" color="transparent">
+        <AppBar position="fixed">
           <Toolbar>
             <MedtelLogo />
             <Typography
@@ -153,6 +150,7 @@ export default function SearchAppBar() {
                   horizontal: "center",
                 }}
                 transformOrigin={{
+                  vertical: "center",
                   horizontal: "center",
                 }}
                 onClose={handlePopoverClose}
