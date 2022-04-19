@@ -79,6 +79,7 @@ export default function Home() {
           </Typography>
           <Typography variant="h4">h4 variant mapped to h2</Typography>
         </ThemeProvider>
+        <h1 className={styles.title}>Hello Hopper! Deployed on Cloud Run!</h1>
       </main>
     </div>
   );
