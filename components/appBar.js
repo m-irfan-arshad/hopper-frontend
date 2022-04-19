@@ -10,23 +10,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SvgIcon from "@mui/material/SvgIcon";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
+import DropDownGrid from './dropDownGrid'
 
 //uses styled theme (using emotion styles under the hood) from "@mui/material/styles";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  width: "200px",
-  marginLeft: "50px",
-  color: "rgb(25, 118, 210)",
-  "&:hover": {
-    backgroundColor: "#a9a9a9",
-  },
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
 
 const CustomButton = styled(Button)(({ theme }) => ({
   position: "relative",
@@ -44,40 +30,6 @@ const CustomButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  color: "rgb(25, 118, 210)",
-  alignItems: "center",
-  justifyContent: "center",
-  [theme.breakpoints.down("sm")]: {
-    fontSize: 8,
-    width: "100px",
-  },
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    "&:hover": {
-      cursor: "crosshair",
-    },
-  },
-  [theme.breakpoints.down("sm")]: {
-    marginLeft: theme.spacing(5),
-    fontSize: 8,
-    width: "100%",
-  },
-}));
-
 function MedtelLogo(props) {
   return (
     <SvgIcon {...props} viewBox="0 0 24 24" htmlColor="green">
@@ -88,6 +40,7 @@ function MedtelLogo(props) {
 
 export default function SearchAppBar() {
   const [anchorEl, setAnchorEl] = useState(false);
+  const [isDropDownOpen, setDropDownState] = useState(false);
 
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -114,12 +67,10 @@ export default function SearchAppBar() {
             >
               Hopper
             </Typography>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase placeholder="Search…" />
-            </Search>
+            <Button onClick={() => setDropDownState(!isDropDownOpen)} sx={{paddingLeft: 0}}>
+                <SearchIcon sx={{marginRight: 0}} />
+                Search
+            </Button>
             <div>
               <CustomButton
                 endIcon={<AccountCircleIcon />}
@@ -155,6 +106,7 @@ export default function SearchAppBar() {
           </Toolbar>
         </AppBar>
       </Box>
+      <DropDownGrid open={isDropDownOpen}/>
     </div>
   );
 }
