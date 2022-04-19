@@ -87,18 +87,6 @@ export default function SideBar() {
 
   const arr = ["Dashboard", "Create a Case", "Notifications", "Work Queues"];
 
-  const [anchorEl, setAnchorEl] = useState(false);
-
-  const handlePopoverOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-
   return (
     <div>
       <Box sx={styles.title}>
@@ -108,8 +96,6 @@ export default function SideBar() {
             {arr.map((text) => (
               <ListItemButton
                 key={text}
-                onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
                 sx={styles.listButton} //works fine
               >
                 <ListItemIcon sx={styles.listIcon}>

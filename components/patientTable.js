@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,32 +13,8 @@ import AcUnitIcon from "@mui/icons-material/AcUnit";
 import moment from "moment";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-function createData(
-  time,
-  patientName,
-  dateOfBirth,
-  proceduralist,
-  procedureDate,
-  location,
-  caseID,
-  confirmationNum,
-  numOfAttachments
-) {
-  return {
-    time,
-    patientName,
-    dateOfBirth,
-    proceduralist,
-    procedureDate,
-    location,
-    caseID,
-    confirmationNum,
-    numOfAttachments,
-  };
-}
-
 function descendingComparator(a, b, orderBy) {
-  if (orderBy === "dateOfBirth" || orderBy === "time") {
+  if (orderBy === "dateOfBirth") {
     if (moment(a[orderBy]).unix() - moment(b[orderBy]).unix() > 0) {
       return 1;
     }
@@ -101,113 +77,6 @@ const headCells = [
   },
 ];
 
-const timeNow = moment().format("MM/DD/YYYY");
-const yesterday = moment().subtract(1, "days").format("MM/DD/YYYY");
-const tomorrow = moment().add(1, "days").format("MM/DD/YYYY");
-const oneMonthFromNow = moment().add(1, "months").format("MM/DD/YYYY");
-
-const rows = [
-  createData(
-    oneMonthFromNow,
-    "adam",
-    "02/01/1990",
-    "Whitebeard",
-    "02/10/2022",
-    "Great Plains Hospital",
-    2199,
-    987,
-    2
-  ),
-  createData(
-    tomorrow,
-    "bob",
-    "05/01/1996",
-    "Beerus",
-    "02/20/2022",
-    "Great Carolina Hospital",
-    2890,
-    123,
-    0
-  ),
-  createData(
-    yesterday,
-    "cow",
-    "02/25/1999",
-    "Luffy",
-    "02/22/2022",
-    "Great Reef Hospital",
-    2190,
-    4,
-    4
-  ),
-  createData(
-    timeNow,
-    "jon",
-    "05/01/2000",
-    "Don",
-    "02/21/2022",
-    "Cat Hospital",
-    1190,
-    56,
-    1
-  ),
-  createData(
-    yesterday,
-    "igor",
-    "06/07/1980",
-    "Moria",
-    "02/24/2022",
-    "Zebra Hospital",
-    2130,
-    78,
-    9
-  ),
-  createData(
-    tomorrow,
-    "ryan",
-    "10/12/1970",
-    "Bat",
-    "03/05/2022",
-    "Ireland Hospital",
-    2140,
-    12345678,
-    7
-  ),
-  createData(
-    yesterday,
-    "zora",
-    "12/12/1992",
-    "Cube",
-    "05/05/2022",
-    "Hospital",
-    2155,
-    50,
-    6
-  ),
-  createData(
-    tomorrow,
-    "sheik",
-    "01/01/1970",
-    "Mark",
-    "06/05/2022",
-    "Great Hospital",
-    2111,
-    456,
-    10
-  ),
-  createData(
-    timeNow,
-    "faith",
-    "02/12/1997",
-    "Jorge",
-    "07/05/2022",
-    "Great Computer Hospital",
-    1100,
-    609,
-    0
-  ),
-];
-
 function SortableTableHead(props) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
@@ -239,37 +108,27 @@ function SortableTableHead(props) {
   );
 }
 
-export default function PatientTable() {
+export default function PatientTable(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("time");
-  const [selected, setSelected] = useState([]);
+  const [orderBy, setOrderBy] = useState("patientName");
+  const [rows, setRows] = useState([]);
+
+  const fetchPatientData = async () => {
+    const response = await fetch("/api/patientData");
+    const rows = await response.json();
+    setRows(rows);
+  };
+
+  useEffect(() => {
+    fetchPatientData();
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -280,8 +139,6 @@ export default function PatientTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const styles = {
     container: {
@@ -309,9 +166,17 @@ export default function PatientTable() {
     },
   });
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const filteredRows = rows.length
+    ? rows.filter(
+        (row) => row.procedureDate === moment(props.date).format("MM/DD/YYYY")
+      )
+    : rows;
+
+  const sortedRows = rows.length
+    ? filteredRows
+        .sort(getComparator(order, orderBy))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    : rows;
 
   return (
     <Box sx={{ marginLeft: "100px" }}>
@@ -325,50 +190,34 @@ export default function PatientTable() {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {rows
-                  .slice()
-                  .sort(getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                {sortedRows.map((row) => {
+                  return (
+                    <TableRow tabIndex={-1} key={row.name}>
+                      <TableCell>
+                        <AcUnitIcon />
+                      </TableCell>
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.name)}
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.name}
-                        selected={isItemSelected}
-                      >
-                        <TableCell>
-                          <AcUnitIcon />
-                        </TableCell>
-
-                        <TableCell>{row.time}</TableCell>
-                        <TableCell>{row.patientName}</TableCell>
-                        <TableCell>{row.dateOfBirth}</TableCell>
-                        <TableCell>{row.proceduralist}</TableCell>
-                        <TableCell>{row.procedureDate}</TableCell>
-                        <TableCell>{row.location}</TableCell>
-                        <TableCell>{row.caseID}</TableCell>
-                        <TableCell>{row.confirmationNum}</TableCell>
-                        <TableCell>{row.numOfAttachments}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
+                      <TableCell>
+                        {moment(row.time).format("hh:MM A")}
+                      </TableCell>
+                      <TableCell>{row.patientName}</TableCell>
+                      <TableCell>{row.dateOfBirth}</TableCell>
+                      <TableCell>{row.proceduralist}</TableCell>
+                      <TableCell>{row.procedureDate}</TableCell>
+                      <TableCell>{row.location}</TableCell>
+                      <TableCell>{row.caseID}</TableCell>
+                      <TableCell>{row.confirmationNum}</TableCell>
+                      <TableCell>{row.numOfAttachments}</TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={filteredRows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

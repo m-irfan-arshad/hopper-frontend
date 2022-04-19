@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -8,22 +7,13 @@ import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
 import StaticDatePicker from "../components/staticDatePicker";
 import ResponsiveDatePicker from "../components/responsiveDatePicker";
-import PatientTable from "../components/patientTable";
-
-//BOX VS CONTAINER VS GRID
-//GRID (MOST OBVIOUS USE, WHEN YOU WANT TO CREATE A GRID PATTERN WITH MULTIPLE ELEMENTS)
-//BOX (SIMILAR TO CONTAINER BUT USE WHEN YOU WANT TO ADD SX STYLING TO IT)... basically just a div that is wrapped in the MUI properties (i.e. using sx mui stuff) and now has access to the MUI shorthands
-//box is slower performance wise (by a tiny bit)
-//CONTAINER (CENTERS CONTENT HORIZONTALLY, usually used in conjunction with a box if you want to center some divs/elements horizontally )
 
 export default function Home() {
-  // passed into a ThemeProvider... everything within themeprovider has these themes applied
   const theme = createTheme({
     typography: {
       poster: {
         color: "primary.main",
       },
-      // Disable h3 variant i.e. don't apply default h3 props
       h3: undefined,
     },
   });
@@ -34,19 +24,6 @@ export default function Home() {
         styleOverrides: {
           colorPrimary: {
             backgroundColor: "white",
-          },
-        },
-      },
-    },
-  });
-  //can add a marginTop to this to push it down, make it same height as appbar and works!
-  const drawerTheme = createTheme({
-    components: {
-      MuiDrawer: {
-        styleOverrides: {
-          paper: {
-            background: "blue",
-            marginTop: 64,
           },
         },
       },
@@ -88,9 +65,7 @@ export default function Home() {
       <main className={styles.main}>
         <StaticDatePicker></StaticDatePicker>
         <ResponsiveDatePicker></ResponsiveDatePicker>
-        <PatientTable></PatientTable>
         <ThemeProvider theme={theme}>
-          {/*You can change the underlying element for a one-off situation with the component prop like below*/}
           <Typography variant="h3" component="h1">
             h1 component with h3 variant
           </Typography>

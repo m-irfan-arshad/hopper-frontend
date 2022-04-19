@@ -11,8 +11,6 @@ import SvgIcon from "@mui/material/SvgIcon";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 
-//breakpoints allow the screen to change when the breakpoint size is hit (sm=600px )
-//below is saying when the screen width is greater than 600px apply the following (.down would be when its below 600px)
 //uses styled theme (using emotion styles under the hood) from "@mui/material/styles";
 
 const Search = styled("div")(({ theme }) => ({
@@ -80,7 +78,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-//IF YOU HAVE A PATH FOR YOUR SVG, CAN MAKE IT LIKE BELOW
 function MedtelLogo(props) {
   return (
     <SvgIcon {...props} viewBox="0 0 24 24" htmlColor="green">
@@ -101,10 +98,6 @@ export default function SearchAppBar() {
   };
 
   const open = Boolean(anchorEl);
-
-  //another way to put drawer beneath appbar (and shows svg still) is to add zindex like so
-  // sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-  // unfortunately the drawer is not actually hidden though the appbar is just sorta in front? its weird
 
   return (
     <div>
