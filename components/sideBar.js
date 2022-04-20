@@ -67,7 +67,7 @@ export default function SideBar() {
     const component = (DrawerIcon) => (
       <ThemeProvider theme={toolTipTheme}>
         <Tooltip title={text} placement="right">
-          <DrawerIcon fontSize="large" />
+          <DrawerIcon data-testid={text} fontSize="large" />
         </Tooltip>
       </ThemeProvider>
     );
