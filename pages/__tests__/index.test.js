@@ -8,7 +8,7 @@ global.fetch = jest.fn(() =>
       Promise.resolve([
         {
           time: "2022-04-20T19:14:35.749Z",
-          patientName: "adam",
+          patientName: "Adam",
           dateOfBirth: "02/01/1990",
           proceduralist: "Whitebeard",
           procedureDate: "04/28/2022",
@@ -19,11 +19,11 @@ global.fetch = jest.fn(() =>
         },
         {
           time: "2022-04-20T15:14:35.749Z",
-          patientName: "bob",
+          patientName: "Bob",
           dateOfBirth: "05/01/1996",
           proceduralist: "Beerus",
           procedureDate: "04/20/2022",
-          location: "Great Carolina Hospital",
+          location: "Great Medtel Hospital",
           caseID: 2890,
           confirmationNum: 123,
           numOfAttachments: 0,

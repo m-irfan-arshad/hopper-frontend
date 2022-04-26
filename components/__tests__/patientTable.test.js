@@ -9,7 +9,7 @@ global.fetch = jest.fn(() =>
       Promise.resolve([
         {
           time: "2022-04-20T19:14:35.749Z",
-          patientName: "adam",
+          patientName: "Adam",
           dateOfBirth: "02/01/1990",
           proceduralist: "Whitebeard",
           procedureDate: moment().format("MM/DD/YYYY"),
@@ -20,7 +20,7 @@ global.fetch = jest.fn(() =>
         },
         {
           time: "2022-04-20T15:14:35.749Z",
-          patientName: "bob",
+          patientName: "Bob",
           dateOfBirth: "05/01/1996",
           proceduralist: "Beerus",
           procedureDate: moment().format("MM/DD/YYYY"),
@@ -31,7 +31,7 @@ global.fetch = jest.fn(() =>
         },
         {
           time: "2022-04-20T15:14:35.749Z",
-          patientName: "cat",
+          patientName: "Cat",
           dateOfBirth: "05/01/1986",
           proceduralist: "Crazy",
           procedureDate: moment().format("MM/DD/YYYY"),
@@ -42,7 +42,7 @@ global.fetch = jest.fn(() =>
         },
         {
           time: "2022-04-20T15:14:35.749Z",
-          patientName: "dog",
+          patientName: "Dog",
           dateOfBirth: "05/01/1996",
           proceduralist: "Bat",
           procedureDate: moment().format("MM/DD/YYYY"),
@@ -53,7 +53,7 @@ global.fetch = jest.fn(() =>
         },
         {
           time: "2022-04-20T15:14:35.749Z",
-          patientName: "scarecrow",
+          patientName: "Scarecrow",
           dateOfBirth: "05/01/1996",
           proceduralist: "Mark",
           procedureDate: moment().format("MM/DD/YYYY"),
@@ -87,9 +87,9 @@ describe("PatientTable", () => {
     expect(getByText("Proceduralist")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText("adam")).toBeInTheDocument();
+      expect(getByText("Adam")).toBeInTheDocument();
       expect(getByText("Whitebeard")).toBeInTheDocument();
-      expect(getByText("bob")).toBeInTheDocument();
+      expect(getByText("Bob")).toBeInTheDocument();
       expect(getByText("Beerus")).toBeInTheDocument();
     });
   });
@@ -100,20 +100,20 @@ describe("PatientTable", () => {
     expect(queryByText("Proceduralist")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(queryByText("adam")).toBeInTheDocument();
+      expect(queryByText("Adam")).toBeInTheDocument();
       expect(queryByText("Whitebeard")).toBeInTheDocument();
-      expect(queryByText("bob")).toBeInTheDocument();
+      expect(queryByText("Bob")).toBeInTheDocument();
       expect(queryByText("Beerus")).toBeInTheDocument();
     });
 
     fireEvent.click(queryByText("Proceduralist"));
 
-    expect(queryByText("adam")).not.toBeInTheDocument();
-    expect(queryByText("cat")).toBeInTheDocument();
+    expect(queryByText("Adam")).not.toBeInTheDocument();
+    expect(queryByText("Cat")).toBeInTheDocument();
 
     fireEvent.click(queryByText("DOB"));
 
-    expect(queryByText("cat")).not.toBeInTheDocument();
-    expect(queryByText("adam")).toBeInTheDocument();
+    expect(queryByText("Cat")).not.toBeInTheDocument();
+    expect(queryByText("Adam")).toBeInTheDocument();
   });
 });
