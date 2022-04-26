@@ -1,4 +1,4 @@
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Home from "../index";
 
@@ -40,7 +40,7 @@ describe("Home", () => {
     expect(getByText("Hello World")).toBeInTheDocument();
   });
 
-  test("Show title in Popover/tooltip", async () => {
+  test("Show/hide title in Popover/tooltip", async () => {
     const { getByText, findByText, queryByText, getByTestId } = render(
       <Home />
     );
@@ -49,9 +49,15 @@ describe("Home", () => {
 
     expect(await findByText("I use Popover.")).toBeInTheDocument();
 
+    fireEvent.mouseOut(getByText("Hover for Popover"));
+
+    await waitFor(() => {
+      expect(queryByText("I use Popover.")).not.toBeInTheDocument();
+    });
+
     fireEvent.mouseOver(getByTestId("Notifications"));
 
-    expect(await findByText("Notifications")).toBeInTheDocument(); //findByText is useful for async actions (like when something is dynamically added to DOM like tooltip/popover)
-    expect(await queryByText("Dashboard")).not.toBeInTheDocument(); //queryByText is useful when you might not find the element (checking for not)
+    expect(await findByText("Notifications")).toBeInTheDocument();
+    expect(await queryByText("Dashboard")).not.toBeInTheDocument();
   });
 });

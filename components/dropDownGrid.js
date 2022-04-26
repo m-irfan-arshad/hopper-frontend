@@ -44,7 +44,7 @@ export default function DropDownGrid({ open }) {
               }}
             >
               {index % 2 === 0 ? (
-                <InputBase placeholder="Search…" sx={{ height: "50px" }} />
+                <InputBase placeholder="Search..." sx={{ height: "50px" }} />
               ) : (
                 <Autocomplete
                   options={arr}

@@ -4,13 +4,12 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SvgIcon from "@mui/material/SvgIcon";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
-import DropDownGrid from './dropDownGrid'
+import DropDownGrid from "./dropDownGrid";
 
 //uses styled theme (using emotion styles under the hood) from "@mui/material/styles";
 
@@ -67,9 +66,12 @@ export default function SearchAppBar() {
             >
               Hopper
             </Typography>
-            <Button onClick={() => setDropDownState(!isDropDownOpen)} sx={{paddingLeft: 0}}>
-                <SearchIcon sx={{marginRight: 0}} />
-                Search
+            <Button
+              onClick={() => setDropDownState(!isDropDownOpen)}
+              sx={{ paddingLeft: 0 }}
+            >
+              <SearchIcon sx={{ marginRight: 0 }} />
+              Search
             </Button>
             <div>
               <CustomButton
@@ -106,7 +108,7 @@ export default function SearchAppBar() {
           </Toolbar>
         </AppBar>
       </Box>
-      <DropDownGrid open={isDropDownOpen}/>
+      <DropDownGrid open={isDropDownOpen} />
     </div>
   );
 }

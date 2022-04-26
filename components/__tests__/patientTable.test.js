@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from "@testing-library/react";
+import { render, waitFor, fireEvent, getByTestId } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PatientTable from "../patientTable";
 import moment from "moment";
@@ -44,7 +44,7 @@ global.fetch = jest.fn(() =>
           time: "2022-04-20T15:14:35.749Z",
           patientName: "Dog",
           dateOfBirth: "05/01/1996",
-          proceduralist: "Bat",
+          proceduralist: "Crazy",
           procedureDate: moment().format("MM/DD/YYYY"),
           location: "Carolina Hospital",
           caseID: 2890,
@@ -108,12 +108,33 @@ describe("PatientTable", () => {
 
     fireEvent.click(queryByText("Proceduralist"));
 
-    expect(queryByText("Adam")).not.toBeInTheDocument();
-    expect(queryByText("Cat")).toBeInTheDocument();
+    expect(queryByText("Whitebeard")).not.toBeInTheDocument();
+    expect(queryByText("Beerus")).toBeInTheDocument();
+
+    fireEvent.click(queryByText("Proceduralist"));
+
+    expect(queryByText("Beerus")).not.toBeInTheDocument();
+    expect(queryByText("Whitebeard")).toBeInTheDocument();
 
     fireEvent.click(queryByText("DOB"));
 
     expect(queryByText("Cat")).not.toBeInTheDocument();
     expect(queryByText("Adam")).toBeInTheDocument();
+  });
+
+  test("handles which page u are on", async () => {
+    const { queryByText, getByLabelText, container, getByDisplayValue } = render(<PatientTable />);
+
+    expect(getByLabelText("Go to next page")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(queryByText("Adam")).toBeInTheDocument();
+    });
+
+    expect(queryByText("Zoolander")).not.toBeInTheDocument();
+
+    fireEvent.click(getByLabelText("Go to next page"));
+
+    expect(queryByText("Zoolander")).toBeInTheDocument();
   });
 });
