@@ -11,6 +11,7 @@ export default function ResponsiveDatePicker() {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <DatePicker
+        data-testid={"responsiveDatePicker"}
         desktopModeMediaQuery={"(min-width:600px)"} //i.e. at 600px it will swap over to 'mobile' calendar picker
         disableFuture
         label="Responsive"

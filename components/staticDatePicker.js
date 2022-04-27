@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import moment from "moment";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import TextField from "@mui/material/TextField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import PatientTable from "./patientTable";
@@ -18,7 +17,6 @@ export default function StatDatePicker() {
           onChange={(newValue) => {
             setValue(newValue);
           }}
-          renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
       <PatientTable date={value}></PatientTable>

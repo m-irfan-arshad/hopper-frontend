@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -67,7 +67,7 @@ export default function SideBar() {
     const component = (DrawerIcon) => (
       <ThemeProvider theme={toolTipTheme}>
         <Tooltip title={text} placement="right">
-          <DrawerIcon fontSize="large" />
+          <DrawerIcon data-testid={text} fontSize="large" />
         </Tooltip>
       </ThemeProvider>
     );
@@ -85,7 +85,13 @@ export default function SideBar() {
     }
   };
 
-  const arr = ["Dashboard", "Create a Case", "Notifications", "Work Queues"];
+  const arr = [
+    "Dashboard",
+    "Create a Case",
+    "Notifications",
+    "Work Queues",
+    "test no icon",
+  ];
 
   return (
     <div>
