@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent, getByTestId } from "@testing-library/react";
+import { render, waitFor, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PatientTable from "../patientTable";
 import moment from "moment";
@@ -8,133 +8,203 @@ global.fetch = jest.fn(() =>
     json: () =>
       Promise.resolve([
         {
-          time: "2022-04-20T19:14:35.749Z",
-          patientName: "Adam",
+          firstName: "Adam",
+          lastName: "Vampire",
           dateOfBirth: "02/01/1990",
           proceduralist: "Whitebeard",
-          procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Great Plains Hospital",
+          procedureDate: moment().format("MM-DD-YYYY"),
+          procedureLocation: "Great Plains Hospital",
           caseID: 2199,
-          confirmationNum: 987,
-          numOfAttachments: 2,
+          confirmationNumber: 987,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Bob",
+          firstName: "Bob",
+          lastName: "Builder",
           dateOfBirth: "05/01/1996",
           proceduralist: "Beerus",
-          procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Great Carolina Hospital",
+          procedureDate: moment().format("MM-DD-YYYY"),
+          procedureLocation: "Great Carolina Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Cat",
+          firstName: "Cat",
+          lastName: "Dog",
           dateOfBirth: "05/01/1986",
           proceduralist: "Crazy",
-          procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Great Hospital",
+          procedureDate: moment().format("MM-DD-YYYY"),
+          procedureLocation: "Great Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Dog",
+          firstName: "Zoolander",
+          lastName: "Vampire",
           dateOfBirth: "05/01/1996",
-          proceduralist: "Crazy",
-          procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Carolina Hospital",
+          proceduralist: "Beerus",
+          procedureDate: moment().format("MM-DD-YYYY"),
+          procedureLocation: "Carolina Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Scarecrow",
+          firstName: "Scarecrow",
+          lastName: "Fiddlesticks",
           dateOfBirth: "05/01/1996",
           proceduralist: "Mark",
-          procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Hospital",
+          procedureDate: moment().format("MM-DD-YYYY"),
+          procedureLocation: "Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Zoolander",
+          firstName: "Zeus",
+          lastName: "Vampire",
           dateOfBirth: "05/01/1996",
           proceduralist: "Cube",
-          procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Zoolander Hospital",
+          procedureDate: moment().format("MM-DD-YYYY"),
+          procedureLocation: "Zoolander Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
       ]),
   })
 );
 
+const props = {
+  procedureDate: moment().utc().format("MM-DD-YYYY"),
+  proceduralist: "",
+  procedureLocation: "",
+};
+
 describe("PatientTable", () => {
   test("renders the patient table", async () => {
-    const { getByText } = render(<PatientTable />);
+    const { getByText } = render(<PatientTable {...props} />);
 
-    expect(getByText("Time")).toBeInTheDocument();
     expect(getByText("Patient Name")).toBeInTheDocument();
     expect(getByText("DOB")).toBeInTheDocument();
     expect(getByText("Proceduralist")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(getByText("Adam")).toBeInTheDocument();
+      expect(getByText("Adam Vampire")).toBeInTheDocument();
       expect(getByText("Whitebeard")).toBeInTheDocument();
-      expect(getByText("Bob")).toBeInTheDocument();
+      expect(getByText("Bob Builder")).toBeInTheDocument();
       expect(getByText("Beerus")).toBeInTheDocument();
     });
   });
 
   test("handles the page sort for time and alphabetically", async () => {
-    const { queryByText } = render(<PatientTable />);
+    const { queryByText, queryAllByText } = render(<PatientTable {...props} />);
 
     expect(queryByText("Proceduralist")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(queryByText("Adam")).toBeInTheDocument();
+      expect(queryByText("Adam Vampire")).toBeInTheDocument();
       expect(queryByText("Whitebeard")).toBeInTheDocument();
-      expect(queryByText("Bob")).toBeInTheDocument();
+      expect(queryByText("Bob Builder")).toBeInTheDocument();
       expect(queryByText("Beerus")).toBeInTheDocument();
     });
 
     fireEvent.click(queryByText("Proceduralist"));
 
     expect(queryByText("Whitebeard")).not.toBeInTheDocument();
-    expect(queryByText("Beerus")).toBeInTheDocument();
+    expect(queryAllByText("Beerus")[1]).toBeInTheDocument();
 
     fireEvent.click(queryByText("Proceduralist"));
 
-    expect(queryByText("Beerus")).not.toBeInTheDocument();
+    expect(queryByText("Beerus")).toBeInTheDocument();
     expect(queryByText("Whitebeard")).toBeInTheDocument();
 
     fireEvent.click(queryByText("DOB"));
 
-    expect(queryByText("Cat")).not.toBeInTheDocument();
-    expect(queryByText("Adam")).toBeInTheDocument();
+    expect(queryByText("Cat Dog")).not.toBeInTheDocument();
+    expect(queryByText("Adam Vampire")).toBeInTheDocument();
+    expect(queryByText("Zoolander Vampire")).toBeInTheDocument();
+
+    fireEvent.click(queryByText("Patient Name"));
+
+    expect(queryByText("Zoolander Vampire")).not.toBeInTheDocument();
+    expect(queryByText("Adam Vampire")).toBeInTheDocument();
   });
 
   test("handles which page u are on", async () => {
-    const { queryByText, getByLabelText, container, getByDisplayValue } = render(<PatientTable />);
+    const { queryByText, getByLabelText, container } = render(
+      <PatientTable {...props} />
+    );
 
     expect(getByLabelText("Go to next page")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(queryByText("Adam")).toBeInTheDocument();
+      expect(queryByText("Adam Vampire")).toBeInTheDocument();
     });
 
-    expect(queryByText("Zoolander")).not.toBeInTheDocument();
+    expect(queryByText("Zoolander Vampire")).not.toBeInTheDocument();
 
     fireEvent.click(getByLabelText("Go to next page"));
 
-    expect(queryByText("Zoolander")).toBeInTheDocument();
+    expect(queryByText("Zoolander Vampire")).toBeInTheDocument();
+    expect(
+      container.querySelector(".MuiSelect-nativeInput")
+    ).toBeInTheDocument();
   });
 });

@@ -1,26 +1,15 @@
 import React, { useState } from "react";
-import moment from "moment";
-
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
 import StaticDatePicker from "../components/staticDatePicker";
-import ResponsiveDatePicker from "../components/responsiveDatePicker";
+import PatientTable from "../components/patientTable";
+import TextField from "@mui/material/TextField";
+import moment from "moment";
 
 export default function Home() {
-  const theme = createTheme({
-    typography: {
-      poster: {
-        color: "primary.main",
-      },
-      h3: undefined,
-    },
-  });
-
   const appBarTheme = createTheme({
     components: {
       MuiAppBar: {
@@ -33,23 +22,8 @@ export default function Home() {
     },
   });
 
-  const mappingTheme = createTheme({
-    typography: {
-      fontSize: 10,
-      fontFamily: "sans-serif",
-    },
-    components: {
-      MuiTypography: {
-        defaultProps: {
-          variantMapping: {
-            h3: "h2",
-            h4: "h2",
-          },
-        },
-      },
-    },
-  });
-
+  const [proceduralist, setProceduralist] = useState("");
+  const [procedureLocation, setProcedureLocation] = useState("");
   const [procedureDate, setProcedureDate] = useState(moment());
 
   return (
@@ -72,22 +46,21 @@ export default function Home() {
           setProcedureDate={setProcedureDate}
           procedureDate={procedureDate}
         ></StaticDatePicker>
-        <ResponsiveDatePicker></ResponsiveDatePicker>
-        <ThemeProvider theme={theme}>
-          <Typography variant="h3" component="h1">
-            h1 component with h3 variant
-          </Typography>
-          <Typography variant="poster">poster theme</Typography>
-          <Button>Button</Button>
-        </ThemeProvider>
-        <Button variant="contained">Hello World</Button>
-        <ThemeProvider theme={mappingTheme}>
-          <Typography variant="h3" color="blue">
-            h3 mapped to h2
-          </Typography>
-          <Typography variant="h4">h4 variant mapped to h2</Typography>
-        </ThemeProvider>
-        <h1 className={styles.title}>Hello Hopper! test</h1>
+        <TextField
+          label="Enter Proceduralist"
+          onChange={(event) => setProceduralist(event.target.value)}
+          sx={{ marginBottom: 5 }}
+        />
+        <TextField
+          label="Enter Procedure Location"
+          onChange={(event) => setProcedureLocation(event.target.value)}
+          sx={{ marginBottom: 5 }}
+        />
+        <PatientTable
+          procedureDate={procedureDate.utc().format("MM-DD-YYYY")}
+          proceduralist={proceduralist}
+          procedureLocation={procedureLocation}
+        ></PatientTable>
       </main>
     </div>
   );

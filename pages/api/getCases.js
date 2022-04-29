@@ -1,4 +1,5 @@
 import moment from "moment";
+import * as R from "ramda";
 
 function createData(
   caseID, //int
@@ -24,7 +25,7 @@ function createData(
     proceduralist,
     attachments,
     caseProgress,
-    caseStatus
+    caseStatus,
   };
 }
 
@@ -40,13 +41,13 @@ const fakeData = [
     "Doctor Whitebeard",
     [
       {
-        name: 'first Whitebeard attachment',
-        id: 'WhitebeardRandomID123'
-      }
+        name: "first Whitebeard attachment",
+        id: "WhitebeardRandomID123",
+      },
     ],
     {
       step1: true,
-      step2: false
+      step2: false,
     },
     "complete"
   ),
@@ -61,13 +62,13 @@ const fakeData = [
     "Doctor Blackbeard",
     [
       {
-        name: 'first Blackbeard attachment',
-        id: 'BlackbeardRandomID123'
-      }
+        name: "first Blackbeard attachment",
+        id: "BlackbeardRandomID123",
+      },
     ],
     {
       step1: false,
-      step2: false
+      step2: false,
     },
     "incomplete"
   ),
@@ -82,13 +83,13 @@ const fakeData = [
     "Doctor Chopper",
     [
       {
-        name: 'first Luffy attachment',
-        id: 'randomID-1934'
-      }
+        name: "first Luffy attachment",
+        id: "randomID-1934",
+      },
     ],
     {
       step1: true,
-      step2: true
+      step2: true,
     },
     "canceled"
   ),
@@ -100,16 +101,16 @@ const fakeData = [
     "2022-04-29T00:00:00Z",
     "Luffy's ship",
     190,
-    "Doctor Chopper",
+    "Doctor Nami",
     [
       {
-        name: 'first Zoro attachment',
-        id: 'randomID09381'
-      }
+        name: "first Zoro attachment",
+        id: "randomID09381",
+      },
     ],
     {
       step1: true,
-      step2: false
+      step2: false,
     },
     "closed"
   ),
@@ -124,13 +125,13 @@ const fakeData = [
     "Doctor Whitebeard",
     [
       {
-        name: 'first Ace attachment',
-        id: 'randomID0331'
-      }
+        name: "first Ace attachment",
+        id: "randomID0331",
+      },
     ],
     {
       step1: true,
-      step2: false
+      step2: false,
     },
     "alert"
   ),
@@ -140,26 +141,26 @@ const fakeData = [
     "Marine",
     "04/15/2002",
     "2022-04-29T00:00:00Z",
-    "Marine's ship",
+    "Marine's ship'",
     490,
     "Doctor Marine",
     [
       {
-        name: 'first Koby attachment',
-        id: 'randomID09389098'
+        name: "first Koby attachment",
+        id: "randomID09389098",
       },
       {
-        name: 'second Koby attachment',
-        id: 'randomIDSUPER123'
+        name: "second Koby attachment",
+        id: "randomIDSUPER123",
       },
       {
-        name: 'third Koby attachment',
-        id: 'randomIDKOBY'
-      }
+        name: "third Koby attachment",
+        id: "randomIDKOBY",
+      },
     ],
     {
       step1: true,
-      step2: false
+      step2: false,
     },
     "pending override"
   ),
@@ -174,17 +175,17 @@ const fakeData = [
     "Doctor Chopper",
     [
       {
-        name: 'first Franky attachment',
-        id: 'randomIDSUPER'
+        name: "first Franky attachment",
+        id: "randomIDSUPER",
       },
       {
-        name: 'second Franky attachment',
-        id: 'randomIDSUPER2'
-      }
+        name: "second Franky attachment",
+        id: "randomIDSUPER2",
+      },
     ],
     {
       step1: true,
-      step2: false
+      step2: false,
     },
     "complete"
   ),
@@ -199,19 +200,42 @@ const fakeData = [
     "Doctor Fish",
     [
       {
-        name: 'first test attachment',
-        id: 'randomIDTest'
+        name: "first test attachment",
+        id: "randomIDTest",
       },
     ],
     {
       step1: true,
-      step2: false
+      step2: false,
     },
     "complete"
   ),
 ];
 
 export default function handler(req, res) {
-  const responseJSON = fakeData.filter((data) => moment(data.procedureDate).utc().format('MM-DD-YYYY') === req.query.date)
-  res.status(200).json(responseJSON);
+  let filteredJSON = fakeData;
+
+  if (req.query.procedureDate) {
+    filteredJSON = filteredJSON.filter(
+      (data) =>
+        moment(data.procedureDate).utc().format("MM-DD-YYYY") ===
+        req.query.procedureDate
+    );
+  }
+
+  if (req.query.procedureLocation) {
+    filteredJSON = filteredJSON.filter((data) =>
+      R.toUpper(data.procedureLocation).includes(
+        R.toUpper(req.query.procedureLocation)
+      )
+    );
+  }
+
+  if (req.query.proceduralist) {
+    filteredJSON = filteredJSON = filteredJSON.filter((data) =>
+      R.toUpper(data.proceduralist).includes(R.toUpper(req.query.proceduralist))
+    );
+  }
+
+  res.status(200).json(filteredJSON);
 }

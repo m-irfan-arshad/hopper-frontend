@@ -29,11 +29,11 @@ function descendingComparator(a, b, orderBy) {
   if (b[orderBy] > a[orderBy]) {
     return 1;
   }
-  if (orderBy === 'lastName' && b[orderBy] === a[orderBy]) {
-    if (b['firstName'] < a['firstName']) {
+  if (orderBy === "lastName" && b[orderBy] === a[orderBy]) {
+    if (b["firstName"] < a["firstName"]) {
       return -1;
     }
-    if (b['firstName'] > a['firstName']) {
+    if (b["firstName"] > a["firstName"]) {
       return 1;
     }
   }
@@ -127,15 +127,24 @@ export default function PatientTable(props) {
   const [orderBy, setOrderBy] = useState("patientName");
   const [rows, setRows] = useState([]);
 
+  const params = new URLSearchParams({
+    procedureDate: props.procedureDate,
+    proceduralist: props.proceduralist,
+    procedureLocation: props.procedureLocation,
+  });
+
   const fetchPatientData = async () => {
-    const response = await fetch(`/api/getCases?date=${props.date.utc().format('MM-DD-YYYY')}`);
+    const response = await fetch(`/api/getCases?${params}`, {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    });
     const rows = await response.json();
     setRows(rows);
   };
 
   useEffect(() => {
     fetchPatientData();
-  }, [ props.date ]);
+  }, [props]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -178,15 +187,16 @@ export default function PatientTable(props) {
     },
   });
 
-  const filteredRows = rows.length
-    ? rows.filter(
-        (row) => moment(row.procedureDate).utc().format('MM/DD/YYYY') === moment(props.date).utc().format("MM/DD/YYYY")
-      )
-    : rows;
-
-  const sortedRows = rows.length
-    ? filteredRows
-        .sort(getComparator(order, orderBy === 'patientName' ? 'lastName' : orderBy))
+  const filteredAndSortedRows = rows.length
+    ? rows
+        .filter(
+          (row) =>
+            moment(row.procedureDate).utc().format("MM-DD-YYYY") ===
+            props.procedureDate
+        )
+        .sort(
+          getComparator(order, orderBy === "patientName" ? "lastName" : orderBy)
+        )
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     : rows;
 
@@ -202,7 +212,7 @@ export default function PatientTable(props) {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {sortedRows.map((row) => {
+                {filteredAndSortedRows.map((row) => {
                   return (
                     <TableRow tabIndex={-1} key={row.name}>
                       <TableCell>
@@ -230,7 +240,7 @@ export default function PatientTable(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={filteredRows.length}
+            count={rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

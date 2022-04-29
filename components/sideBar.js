@@ -100,8 +100,11 @@ export default function SideBar() {
         <CssBaseline />
         <Drawer variant="permanent" open={false} sx={styles.drawer}>
           <List>
-            {arr.map((text) => (
-              <Link key={text} href={"/dateRange"}>
+            {arr.map((text, index) => (
+              <Link
+                key={text}
+                href={index % 2 === 0 ? "/" : "/calendarDatePage"}
+              >
                 <a>
                   <ListItemButton
                     key={text}
