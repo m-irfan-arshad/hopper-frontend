@@ -29,6 +29,14 @@ function descendingComparator(a, b, orderBy) {
   if (b[orderBy] > a[orderBy]) {
     return 1;
   }
+  if (orderBy === "lastName" && b[orderBy] === a[orderBy]) {
+    if (b["firstName"] < a["firstName"]) {
+      return -1;
+    }
+    if (b["firstName"] > a["firstName"]) {
+      return 1;
+    }
+  }
   return 0;
 }
 
@@ -40,8 +48,8 @@ function getComparator(order, orderBy) {
 
 const headCells = [
   {
-    id: "time",
-    label: "Time",
+    id: "caseID",
+    label: "Medtel Case ID",
   },
   {
     id: "patientName",
@@ -52,28 +60,32 @@ const headCells = [
     label: "DOB",
   },
   {
-    id: "proceduralist",
-    label: "Proceduralist",
-  },
-  {
     id: "procedureDate",
     label: "Procedure Date",
   },
   {
-    id: "location",
+    id: "procedureLocation",
     label: "Location",
   },
   {
-    id: "caseID",
-    label: "Medtel Case ID",
-  },
-  {
-    id: "confirmationNum",
+    id: "confirmationNumber",
     label: "Confirmation #",
   },
   {
-    id: "numOfAttachments",
+    id: "proceduralist",
+    label: "Proceduralist",
+  },
+  {
+    id: "attachments",
     label: "# of Attachments",
+  },
+  {
+    id: "caseProgress",
+    label: "Case Progress",
+  },
+  {
+    id: "caseStatus",
+    label: "Case Status",
   },
 ];
 
@@ -115,15 +127,24 @@ export default function PatientTable(props) {
   const [orderBy, setOrderBy] = useState("patientName");
   const [rows, setRows] = useState([]);
 
+  const params = new URLSearchParams({
+    procedureDate: props.procedureDate,
+    proceduralist: props.proceduralist,
+    procedureLocation: props.procedureLocation,
+  });
+
   const fetchPatientData = async () => {
-    const response = await fetch("/api/patientData");
+    const response = await fetch(`/api/getCases?${params}`, {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    });
     const rows = await response.json();
     setRows(rows);
   };
 
   useEffect(() => {
     fetchPatientData();
-  }, []);
+  }, [props]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -166,15 +187,16 @@ export default function PatientTable(props) {
     },
   });
 
-  const filteredRows = rows.length
-    ? rows.filter(
-        (row) => row.procedureDate === moment(props.date).format("MM/DD/YYYY")
-      )
-    : rows;
-
-  const sortedRows = rows.length
-    ? filteredRows
-        .sort(getComparator(order, orderBy))
+  const filteredAndSortedRows = rows.length
+    ? rows
+        .filter(
+          (row) =>
+            moment(row.procedureDate).utc().format("MM-DD-YYYY") ===
+            props.procedureDate
+        )
+        .sort(
+          getComparator(order, orderBy === "patientName" ? "lastName" : orderBy)
+        )
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     : rows;
 
@@ -190,24 +212,25 @@ export default function PatientTable(props) {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {sortedRows.map((row) => {
+                {filteredAndSortedRows.map((row) => {
                   return (
                     <TableRow tabIndex={-1} key={row.name}>
                       <TableCell>
                         <AcUnitIcon />
                       </TableCell>
 
-                      <TableCell>
-                        {moment(row.time).format("hh:MM A")}
-                      </TableCell>
-                      <TableCell>{row.patientName}</TableCell>
-                      <TableCell>{row.dateOfBirth}</TableCell>
-                      <TableCell>{row.proceduralist}</TableCell>
-                      <TableCell>{row.procedureDate}</TableCell>
-                      <TableCell>{row.location}</TableCell>
                       <TableCell>{row.caseID}</TableCell>
-                      <TableCell>{row.confirmationNum}</TableCell>
-                      <TableCell>{row.numOfAttachments}</TableCell>
+                      <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+                      <TableCell>{row.dateOfBirth}</TableCell>
+                      <TableCell>{row.procedureDate}</TableCell>
+                      <TableCell>{row.procedureLocation}</TableCell>
+                      <TableCell>{row.confirmationNumber}</TableCell>
+                      <TableCell>{row.proceduralist}</TableCell>
+                      <TableCell>{row.attachments.length}</TableCell>
+                      <TableCell>
+                        {`(step1, step2) -> (${row.caseProgress.step1}, ${row.caseProgress.step2})`}
+                      </TableCell>
+                      <TableCell>{row.caseStatus}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -217,7 +240,7 @@ export default function PatientTable(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={filteredRows.length}
+            count={rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

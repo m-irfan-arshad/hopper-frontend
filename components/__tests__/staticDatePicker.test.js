@@ -8,74 +8,136 @@ global.fetch = jest.fn(() =>
     json: () =>
       Promise.resolve([
         {
-          time: "2022-04-20T19:14:35.749Z",
-          patientName: "Adam",
+          firstName: "Adam",
+          lastName: "Crazy",
           dateOfBirth: "02/01/1990",
           proceduralist: "Whitebeard",
           procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Great Plains Hospital",
+          procedureLocation: "Great Plains Hospital",
           caseID: 2199,
-          confirmationNum: 987,
-          numOfAttachments: 2,
+          confirmationNumber: 987,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Bob",
+          firstName: "Bob",
+          lastName: "Builder",
           dateOfBirth: "05/01/1996",
           proceduralist: "Beerus",
           procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Great Carolina Hospital",
+          procedureLocation: "Great Carolina Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Cat",
+          firstName: "Cat",
+          lastName: "Dog",
           dateOfBirth: "05/01/1986",
           proceduralist: "Crazy",
           procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Great Hospital",
+          procedureLocation: "Great Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Dog",
+          firstName: "Dog",
+          lastName: "Bird",
           dateOfBirth: "05/01/1996",
           proceduralist: "Bat",
           procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Carolina Hospital",
+          procedureLocation: "Carolina Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Scarecrow",
+          firstName: "Scarecrow",
+          lastName: "fiddlesticks",
           dateOfBirth: "05/01/1996",
           proceduralist: "Mark",
           procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Hospital",
+          procedureLocation: "Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
         {
-          time: "2022-04-20T15:14:35.749Z",
-          patientName: "Zoolander",
+          firstName: "Zoolander",
+          lastName: "Vampire",
           dateOfBirth: "05/01/1996",
           proceduralist: "Cube",
           procedureDate: moment().format("MM/DD/YYYY"),
-          location: "Zoolander Hospital",
+          procedureLocation: "Zoolander Hospital",
           caseID: 2890,
-          confirmationNum: 123,
-          numOfAttachments: 0,
+          confirmationNumber: 123,
+          attachments: [
+            {
+              name: "attach",
+              id: "id",
+            },
+          ],
+          caseProgress: {
+            step1: false,
+          },
+          caseStatus: "complete",
         },
       ]),
   })
 );
+
+const props = {
+  setProcedureDate: jest.fn(),
+};
+
+beforeEach(() => {
+  props.setProcedureDate.mockClear();
+});
 
 describe("StaticDatePicker", () => {
   test("renders the datepicker table", () => {
@@ -86,23 +148,15 @@ describe("StaticDatePicker", () => {
   });
 
   test("handles changing the date", async () => {
-    const { queryByText } = render(<StaticDatePicker />);
+    const { queryByText } = render(<StaticDatePicker {...props} />);
     const yesterdayString = `${moment().subtract(1, "days").date()}`;
 
-    await waitFor(() => {
-      expect(queryByText("Adam")).toBeInTheDocument();
-      expect(queryByText("Whitebeard")).toBeInTheDocument();
-      expect(queryByText("Bob")).toBeInTheDocument();
-      expect(queryByText("Beerus")).toBeInTheDocument();
-    });
+    expect(props.setProcedureDate).toHaveBeenCalledTimes(0);
 
     expect(queryByText(yesterdayString)).toBeInTheDocument();
 
     fireEvent.click(queryByText(yesterdayString));
 
-    expect(queryByText("Adam")).not.toBeInTheDocument();
-    expect(queryByText("Cat")).not.toBeInTheDocument();
-    expect(queryByText("Bob")).not.toBeInTheDocument();
-    expect(queryByText("Beerus")).not.toBeInTheDocument();
+    expect(props.setProcedureDate).toHaveBeenCalledTimes(1);
   });
 });

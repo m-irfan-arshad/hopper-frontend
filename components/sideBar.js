@@ -10,6 +10,7 @@ import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRou
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import DvrIcon from "@mui/icons-material/Dvr";
 import Tooltip from "@mui/material/Tooltip";
+import Link from "next/link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 //uses 'system' styling using sx prop
@@ -99,15 +100,22 @@ export default function SideBar() {
         <CssBaseline />
         <Drawer variant="permanent" open={false} sx={styles.drawer}>
           <List>
-            {arr.map((text) => (
-              <ListItemButton
+            {arr.map((text, index) => (
+              <Link
                 key={text}
-                sx={styles.listButton} //works fine
+                href={index % 2 === 0 ? "/" : "/calendarDatePage"}
               >
-                <ListItemIcon sx={styles.listIcon}>
-                  {iconToDisplay(text)}
-                </ListItemIcon>
-              </ListItemButton>
+                <a>
+                  <ListItemButton
+                    key={text}
+                    sx={styles.listButton} //works fine
+                  >
+                    <ListItemIcon sx={styles.listIcon}>
+                      {iconToDisplay(text)}
+                    </ListItemIcon>
+                  </ListItemButton>
+                </a>
+              </Link>
             ))}
           </List>
         </Drawer>
