@@ -15,12 +15,12 @@ export default function Home() {
       MuiAppBar: {
         styleOverrides: {
           colorPrimary: {
-            backgroundColor: "white",
+            backgroundColor: "#FAEBD7",
           },
         },
       },
     },
-  });
+  }); //theme applied here will override global theme
 
   const [proceduralist, setProceduralist] = useState("");
   const [procedureLocation, setProcedureLocation] = useState("");

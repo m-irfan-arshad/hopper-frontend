@@ -12,27 +12,6 @@ import StaticDatePicker from "../components/staticDatePicker";
 import ResponsiveDatePicker from "../components/responsiveDatePicker";
 
 export default function Home() {
-  const theme = createTheme({
-    typography: {
-      poster: {
-        color: "primary.main",
-      },
-      h3: undefined,
-    },
-  });
-
-  const appBarTheme = createTheme({
-    components: {
-      MuiAppBar: {
-        styleOverrides: {
-          colorPrimary: {
-            backgroundColor: "white",
-          },
-        },
-      },
-    },
-  });
-
   const mappingTheme = createTheme({
     typography: {
       fontSize: 10,
@@ -62,9 +41,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header>
-        <ThemeProvider theme={appBarTheme}>
-          <AppBar></AppBar>
-        </ThemeProvider>
+        <AppBar></AppBar>
         <SideBar></SideBar>
       </header>
       <main className={styles.main}>
@@ -73,13 +50,11 @@ export default function Home() {
           procedureDate={procedureDate}
         ></StaticDatePicker>
         <ResponsiveDatePicker></ResponsiveDatePicker>
-        <ThemeProvider theme={theme}>
-          <Typography variant="h3" component="h1">
-            h1 component with h3 variant
-          </Typography>
-          <Typography variant="poster">poster theme</Typography>
-          <Button>Button</Button>
-        </ThemeProvider>
+        <Typography variant="h3" component="h1">
+          h1 component with h3 variant
+        </Typography>
+        <Typography variant="poster">poster theme</Typography>
+        <Button>Button</Button>
         <Button variant="contained">Hello World</Button>
         <ThemeProvider theme={mappingTheme}>
           <Typography variant="h3" color="blue">
