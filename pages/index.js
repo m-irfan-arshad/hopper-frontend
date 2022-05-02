@@ -15,7 +15,7 @@ export default function Home() {
   const mappingTheme = createTheme({
     typography: {
       fontSize: 10,
-      fontFamily: "sans-serif",
+      fontFamily: "sans-serif", //overrides global fontFamily
     },
     components: {
       MuiTypography: {

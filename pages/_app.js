@@ -17,6 +17,11 @@ function MyApp({ Component, pageProps }) {
           },
         },
       },
+      MuiTypography: {
+        defaultProps: {
+          fontFamily: "fantasy",
+        },
+      },
     },
   });
 
