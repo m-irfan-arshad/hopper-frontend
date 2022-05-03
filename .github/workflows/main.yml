@@ -11,12 +11,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  # This workflow contains a single job called "build"
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v3
         
@@ -27,7 +25,7 @@ jobs:
           
       - name: Install dependencies
         run: |
-          npm run install
+          npm install
       - name: Lint
         run: |
           npm run lint
