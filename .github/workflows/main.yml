@@ -1,4 +1,8 @@
 name: Build + Lint + Test
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  SERVICE: hello
+  REGION: us-central1
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -32,3 +36,34 @@ jobs:
       - name: Unit tests
         run: |
           npm run test
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # Sets up the gcloud cli with the credentials we previously created, and will be storing within Github as secrets.
+      - name: Setup Cloud cli
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+        # Configure Docker with Credentials
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Build and Push Container
+        run: |-
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} .
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+
+      - name: Deploy to Cloud Run
+        id: hopper
+        uses: google-github-actions/deploy-cloudrun@v0.10.0
+        with:
+          service: ${{ env.SERVICE }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+          region: ${{ env.REGION }}
+
+      - name: Show Output
+        run: echo ${{ steps.hopper.outputs.url }}
