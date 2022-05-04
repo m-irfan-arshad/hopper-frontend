@@ -8,9 +8,10 @@ import StaticDatePicker from "../components/staticDatePicker";
 import PatientTable from "../components/patientTable";
 import TextField from "@mui/material/TextField";
 import moment from "moment";
+import { defaultTheme } from "../reference";
 
 export default function Home() {
-  const appBarTheme = createTheme({
+  const appBarTheme = createTheme(defaultTheme, {
     components: {
       MuiAppBar: {
         styleOverrides: {
@@ -20,7 +21,7 @@ export default function Home() {
         },
       },
     },
-  }); //theme applied here will override global theme
+  });
 
   const [proceduralist, setProceduralist] = useState("");
   const [procedureLocation, setProcedureLocation] = useState("");
