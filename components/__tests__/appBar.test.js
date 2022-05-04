@@ -1,5 +1,4 @@
 import { render, waitFor, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import AppBar from "../appBar";
 
 describe("AppBar", () => {
