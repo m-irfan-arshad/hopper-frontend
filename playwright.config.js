@@ -1,7 +1,7 @@
 // @ts-check
 const { devices } = require('@playwright/test');
 const config = {
-  testDir: './tests',
+  testDir: './playwrightTests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
