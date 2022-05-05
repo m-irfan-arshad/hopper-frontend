@@ -9,7 +9,7 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   // Add more setup options before each test is run
   setupFilesAfterEnv: ['./jest.setup.js'],
-  modulePathIgnorePatterns: ["<rootDir>/tests/"],
+  modulePathIgnorePatterns: ["<rootDir>/playwrightTests/"],
   testEnvironment: "jest-environment-jsdom"
 };
 
