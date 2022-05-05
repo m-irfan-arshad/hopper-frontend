@@ -4,18 +4,13 @@ import moment from "moment";
 
 describe("ResponsiveDatePicker", () => {
   test("changes the datepicker value", () => {
-    const finalDate = moment()
-      .subtract(1, "years")
-      .subtract("1", "months")
-      .format("MM/DD/YYYY");
+    const finalDate = moment().subtract(1, "years").subtract("1", "months").format("MM/DD/YYYY");
 
     const { getByDisplayValue, getByText, getByLabelText, getAllByText } =
       render(<ResponsiveDatePicker />);
 
     expect(getByLabelText("Responsive")).toBeInTheDocument();
-    expect(
-      getByDisplayValue(moment().format("MM/DD/YYYY"))
-    ).toBeInTheDocument();
+    expect(getByDisplayValue(moment().format("MM/DD/YYYY"))).toBeInTheDocument();
 
     fireEvent.click(getByLabelText("Responsive"));
 

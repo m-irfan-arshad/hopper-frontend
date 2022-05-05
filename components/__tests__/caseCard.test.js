@@ -1,7 +1,7 @@
 import { render, fireEvent } from "@testing-library/react";
 import CaseCard from "../caseCard";
 
-describe("AppBar", () => {
+describe("CaseCard", () => {
   const row = {
     caseID: 12345,
     firstName: "Captain",

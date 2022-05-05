@@ -80,20 +80,13 @@ export default function CaseCard({ row }) {
             <Grid
               container
               columns={6}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-              }}
+              sx={{ display: "flex", justifyContent: "space-between" }}
             >
               {caseCardSubFields.map((name, index) => (
                 <React.Fragment key={index}>
                   <Grid item key={index}>
                     <Typography
-                      sx={{
-                        fontSize: "12px",
-                        fontWeight: "600",
-                        width: "fit-content",
-                      }}
+                      sx={{ fontSize: "12px", fontWeight: "600"}}
                     >
                       {name.label}
                     </Typography>

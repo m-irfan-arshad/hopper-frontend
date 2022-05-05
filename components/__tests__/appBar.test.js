@@ -21,7 +21,7 @@ describe("AppBar", () => {
     expect(queryAllByPlaceholderText("Search...")[0]).toBeInTheDocument();
   });
 
-  test("hovers over the popover", async () => {
+  test("hovers over and away from the popover", async () => {
     const { getByText, queryByText } = render(<AppBar />);
 
     expect(getByText("Hover for Popover")).toBeInTheDocument();
