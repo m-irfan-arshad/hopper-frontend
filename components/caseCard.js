@@ -21,7 +21,15 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-//  marginRight: "0px !important",
+const cardStyle = {
+  paddingLeft: "10px",
+  "& .MuiCardHeader-avatar": {
+    margin: "0px",
+  },
+  "& .MuiButtonBase-root": {
+    padding: 0,
+  },
+};
 
 export default function CaseCard({ row }) {
   const [expanded, setExpanded] = useState(false);
@@ -32,7 +40,7 @@ export default function CaseCard({ row }) {
 
   return (
     <Box sx={{ width: "95%", marginLeft: "70px", marginTop: "20px" }}>
-      <Card sx={{ backgroundColor: "#A9A9A9" }}>
+      <Card sx={{ backgroundColor: "#D3D3D3" }}>
         <CardHeader
           avatar={
             <ExpandMore
@@ -41,37 +49,67 @@ export default function CaseCard({ row }) {
               aria-expanded={expanded}
               aria-label="show more"
             >
-              <ArrowDropDownOutlinedIcon />
+              <ArrowDropDownOutlinedIcon sx={{ color: "black" }} />
             </ExpandMore>
           }
-          title={`${row.firstName} ${row.lastName}`} //need to include DOB and patient name
+          title={
+            <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+              {`${row.firstName} ${row.lastName}`}
+              <Typography
+                sx={{
+                  marginLeft: "10px",
+                  fontStyle: "italic",
+                  fontSize: "14px",
+                }}
+              >
+                {row.dateOfBirth}
+              </Typography>
+            </Box>
+          }
           titleTypographyProps={{ fontSize: "16px" }}
+          sx={cardStyle}
         />
 
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Box sx={{ width: "100%", flexGrow: 1 }}>
-              <Grid container columns={6}>
-                {caseCardSubFields.map((name, index) => (
-                  <React.Fragment key={index}>
-                    <Grid item xs={1} key={index}>
-                      <Typography
-                        sx={{
-                          fontSize: "12px",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {name.label}
-                      </Typography>
-                      <Typography sx={{ fontSize: "12px" }}>
-                        {row[name.id] || "N/A"}
-                      </Typography>
-                    </Grid>
-                  </React.Fragment>
-                ))}
-              </Grid>
-            </Box>
-          </CardContent>
+          <Box
+            sx={{
+              width: "100%",
+              flexGrow: 1,
+              backgroundColor: "#A9A9A9",
+              paddingTop: "15px",
+              paddingBottom: "15px",
+              paddingLeft: "20px",
+              paddingRight: "20px",
+            }}
+          >
+            <Grid
+              container
+              columns={6}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              {caseCardSubFields.map((name, index) => (
+                <React.Fragment key={index}>
+                  <Grid item key={index}>
+                    <Typography
+                      sx={{
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        width: "fit-content",
+                      }}
+                    >
+                      {name.label}
+                    </Typography>
+                    <Typography sx={{ fontSize: "12px" }}>
+                      {row[name.id] || "N/A"}
+                    </Typography>
+                  </Grid>
+                </React.Fragment>
+              ))}
+            </Grid>
+          </Box>
         </Collapse>
       </Card>
     </Box>

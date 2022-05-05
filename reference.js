@@ -17,12 +17,7 @@ export const defaultTheme = createTheme({
     },
     MuiTypography: {
       defaultProps: {
-        fontFamily: "sans-serif",
-      },
-    },
-    "MuiCardHeader-avatar": {
-      styleOverrides: {
-        margin: 0,
+        fontFamily: "Inter",
       },
     },
   },
