@@ -37,7 +37,7 @@ const fakeData = [
     "Captain",
     "Whitebeard",
     "02/01/1990",
-    "2022-05-03T22:15:01Z",
+    "2022-05-05T00:00:00Z",
     "Whitebeard's ship",
     //123,
     "Doctor Whitebeard",
@@ -81,7 +81,7 @@ const fakeData = [
     "Luffy",
     "Monkey",
     "04/12/2000",
-    "2022-04-29T22:15:01Z",
+    "2022-05-29T22:15:01Z",
     "Luffy's ship",
     //567,
     "Doctor Chopper",
@@ -103,7 +103,7 @@ const fakeData = [
     "Zoro",
     "Roronoa",
     "02/01/1982",
-    "2022-04-29T00:00:00Z",
+    "2022-05-20T00:00:00Z",
     "Luffy's ship",
     //190,
     "Doctor Nami",
@@ -125,7 +125,7 @@ const fakeData = [
     "Ace",
     "Portgas",
     "02/01/1993",
-    "2022-04-29T00:00:00Z",
+    "2022-05-17T00:00:00Z",
     "Whitebeard's ship",
     //101,
     "Doctor Whitebeard",
@@ -224,6 +224,22 @@ const fakeData = [
 
 export default function handler(req, res) {
   let filteredJSON = fakeData;
+
+  if (req.query.dateRangeStart) {
+    filteredJSON = filteredJSON.filter((data) =>
+      moment(data.procedureDate)
+        .utc()
+        .isSameOrAfter(moment(req.query.dateRangeStart).utc(), "day")
+    );
+  }
+
+  if (req.query.dateRangeEnd) {
+    filteredJSON = filteredJSON.filter((data) =>
+      moment(data.procedureDate)
+        .utc()
+        .isSameOrBefore(moment(req.query.dateRangeEnd).utc(), "day")
+    );
+  }
 
   if (req.query.procedureDate) {
     filteredJSON = filteredJSON.filter(

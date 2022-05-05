@@ -2,20 +2,19 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
-import StaticDatePicker from "../components/staticDatePicker";
-import ResponsiveDatePicker from "../components/responsiveDatePicker";
 import CaseCard from "../components/caseCard";
 
 export default function Home() {
   const [rows, setRows] = useState([]);
 
+  const params = new URLSearchParams({
+    dateRangeStart: moment().utc(),
+  });
+
   const fetchPatientData = async () => {
-    const response = await fetch(`/api/getCases?`, {
+    const response = await fetch(`/api/getCases?${params}`, {
       "Content-Type": "application/json",
       Accept: "application/json",
     });
@@ -41,8 +40,8 @@ export default function Home() {
         <SideBar></SideBar>
       </header>
       <main className={styles.main}>
-        {rows.map((row) => {
-          return <CaseCard key={row} row={row}></CaseCard>;
+        {rows.map((row, index) => {
+          return <CaseCard key={index} row={row}></CaseCard>;
         })}
       </main>
     </div>

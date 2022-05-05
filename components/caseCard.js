@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
@@ -34,10 +33,6 @@ const cardStyle = {
 export default function CaseCard({ row }) {
   const [expanded, setExpanded] = useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   return (
     <Box sx={{ width: "95%", marginLeft: "70px", marginTop: "20px" }}>
       <Card sx={{ backgroundColor: "#D3D3D3" }}>
@@ -45,7 +40,7 @@ export default function CaseCard({ row }) {
           avatar={
             <ExpandMore
               expand={expanded}
-              onClick={handleExpandClick}
+              onClick={() => setExpanded(!expanded)}
               aria-expanded={expanded}
               aria-label="show more"
             >
