@@ -8,11 +8,12 @@ function createData(
   dateOfBirth, //string
   procedureDate, //datetime
   procedureLocation, //string
-  confirmationNumber, //int
+  //confirmationNumber, //int
   proceduralist, //string
-  attachments, //array of JSON
-  caseProgress, //JSON
-  caseStatus //string
+  //attachments, //array of JSON
+  //caseProgress, //JSON
+  //caseStatus, //string
+  mrn //integer
 ) {
   return {
     caseID,
@@ -21,11 +22,12 @@ function createData(
     dateOfBirth,
     procedureDate,
     procedureLocation,
-    confirmationNumber,
+    //confirmationNumber,
     proceduralist,
-    attachments,
-    caseProgress,
-    caseStatus,
+    //attachments,
+    //caseProgress,
+    //caseStatus,
+    mrn,
   };
 }
 
@@ -37,19 +39,20 @@ const fakeData = [
     "02/01/1990",
     "2022-05-03T22:15:01Z",
     "Whitebeard's ship",
-    123,
+    //123,
     "Doctor Whitebeard",
-    [
-      {
-        name: "first Whitebeard attachment",
-        id: "WhitebeardRandomID123",
-      },
-    ],
-    {
-      step1: true,
-      step2: false,
-    },
-    "complete"
+    // [
+    //   {
+    //     name: "first Whitebeard attachment",
+    //     id: "WhitebeardRandomID123",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    //"complete",
+    5678567890
   ),
   createData(
     23456,
@@ -58,19 +61,20 @@ const fakeData = [
     "02/01/1982",
     "2022-04-29T00:00:00Z",
     "Blackbeard's ship",
-    234,
+    //234,
     "Doctor Blackbeard",
-    [
-      {
-        name: "first Blackbeard attachment",
-        id: "BlackbeardRandomID123",
-      },
-    ],
-    {
-      step1: false,
-      step2: false,
-    },
-    "incomplete"
+    // [
+    //   {
+    //     name: "first Blackbeard attachment",
+    //     id: "BlackbeardRandomID123",
+    //   },
+    // ],
+    // {
+    //   step1: false,
+    //   step2: false,
+    // },
+    // "incomplete",
+    5678567890
   ),
   createData(
     67890,
@@ -79,19 +83,20 @@ const fakeData = [
     "04/12/2000",
     "2022-04-29T22:15:01Z",
     "Luffy's ship",
-    567,
+    //567,
     "Doctor Chopper",
-    [
-      {
-        name: "first Luffy attachment",
-        id: "randomID-1934",
-      },
-    ],
-    {
-      step1: true,
-      step2: true,
-    },
-    "canceled"
+    // [
+    //   {
+    //     name: "first Luffy attachment",
+    //     id: "randomID-1934",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: true,
+    // },
+    //"canceled",
+    5678567890
   ),
   createData(
     29322,
@@ -100,19 +105,20 @@ const fakeData = [
     "02/01/1982",
     "2022-04-29T00:00:00Z",
     "Luffy's ship",
-    190,
+    //190,
     "Doctor Nami",
-    [
-      {
-        name: "first Zoro attachment",
-        id: "randomID09381",
-      },
-    ],
-    {
-      step1: true,
-      step2: false,
-    },
-    "closed"
+    // [
+    //   {
+    //     name: "first Zoro attachment",
+    //     id: "randomID09381",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    //"closed",
+    5678567890
   ),
   createData(
     30876,
@@ -121,19 +127,20 @@ const fakeData = [
     "02/01/1993",
     "2022-04-29T00:00:00Z",
     "Whitebeard's ship",
-    101,
+    //101,
     "Doctor Whitebeard",
-    [
-      {
-        name: "first Ace attachment",
-        id: "randomID0331",
-      },
-    ],
-    {
-      step1: true,
-      step2: false,
-    },
-    "alert"
+    // [
+    //   {
+    //     name: "first Ace attachment",
+    //     id: "randomID0331",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    // "alert",
+    5678567890
   ),
   createData(
     10998,
@@ -142,27 +149,28 @@ const fakeData = [
     "04/15/2002",
     "2022-04-29T00:00:00Z",
     "Marine's ship'",
-    490,
+    // 490,
     "Doctor Marine",
-    [
-      {
-        name: "first Koby attachment",
-        id: "randomID09389098",
-      },
-      {
-        name: "second Koby attachment",
-        id: "randomIDSUPER123",
-      },
-      {
-        name: "third Koby attachment",
-        id: "randomIDKOBY",
-      },
-    ],
-    {
-      step1: true,
-      step2: false,
-    },
-    "pending override"
+    // [
+    //   {
+    //     name: "first Koby attachment",
+    //     id: "randomID09389098",
+    //   },
+    //   {
+    //     name: "second Koby attachment",
+    //     id: "randomIDSUPER123",
+    //   },
+    //   {
+    //     name: "third Koby attachment",
+    //     id: "randomIDKOBY",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    //"pending override",
+    5678567890
   ),
   createData(
     10998,
@@ -171,23 +179,24 @@ const fakeData = [
     "04/15/1972",
     "2022-04-29T00:00:00Z",
     "Luffy's ship",
-    744,
+    //744,
     "Doctor Chopper",
-    [
-      {
-        name: "first Franky attachment",
-        id: "randomIDSUPER",
-      },
-      {
-        name: "second Franky attachment",
-        id: "randomIDSUPER2",
-      },
-    ],
-    {
-      step1: true,
-      step2: false,
-    },
-    "complete"
+    // [
+    //   {
+    //     name: "first Franky attachment",
+    //     id: "randomIDSUPER",
+    //   },
+    //   {
+    //     name: "second Franky attachment",
+    //     id: "randomIDSUPER2",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    // "complete",
+    5678567890
   ),
   createData(
     10998,
@@ -196,19 +205,20 @@ const fakeData = [
     "04/15/1972",
     "2022-04-20T00:00:00Z",
     "Fishman Island",
-    744,
+    //744,
     "Doctor Fish",
-    [
-      {
-        name: "first test attachment",
-        id: "randomIDTest",
-      },
-    ],
-    {
-      step1: true,
-      step2: false,
-    },
-    "complete"
+    // [
+    //   {
+    //     name: "first test attachment",
+    //     id: "randomIDTest",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    // "complete",
+    5678567890
   ),
 ];
 

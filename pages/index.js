@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
-
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Button from "@mui/material/Button";
@@ -10,26 +9,23 @@ import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
 import StaticDatePicker from "../components/staticDatePicker";
 import ResponsiveDatePicker from "../components/responsiveDatePicker";
+import CaseCard from "../components/caseCard";
 
 export default function Home() {
-  const mappingTheme = createTheme({
-    typography: {
-      fontSize: 10,
-      fontFamily: "sans-serif", //overrides global fontFamily
-    },
-    components: {
-      MuiTypography: {
-        defaultProps: {
-          variantMapping: {
-            h3: "h2",
-            h4: "h2",
-          },
-        },
-      },
-    },
-  });
+  const [rows, setRows] = useState([]);
 
-  const [procedureDate, setProcedureDate] = useState(moment());
+  const fetchPatientData = async () => {
+    const response = await fetch(`/api/getCases?`, {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    });
+    const rows = await response.json();
+    setRows(rows);
+  };
+
+  useEffect(() => {
+    fetchPatientData();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -45,24 +41,9 @@ export default function Home() {
         <SideBar></SideBar>
       </header>
       <main className={styles.main}>
-        <StaticDatePicker
-          setProcedureDate={setProcedureDate}
-          procedureDate={procedureDate}
-        ></StaticDatePicker>
-        <ResponsiveDatePicker></ResponsiveDatePicker>
-        <Typography variant="h3" component="h1">
-          h1 component with h3 variant
-        </Typography>
-        <Typography variant="poster">poster theme</Typography>
-        <Button>Button</Button>
-        <Button variant="contained">Hello World</Button>
-        <ThemeProvider theme={mappingTheme}>
-          <Typography variant="h3" color="blue">
-            h3 mapped to h2
-          </Typography>
-          <Typography variant="h4">h4 variant mapped to h2</Typography>
-        </ThemeProvider>
-        <h1 className={styles.title}>Hello, Hopper! We have a CI/CD!</h1>
+        {rows.map((row) => {
+          return <CaseCard key={row} row={row}></CaseCard>;
+        })}
       </main>
     </div>
   );

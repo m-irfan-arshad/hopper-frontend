@@ -17,8 +17,40 @@ export const defaultTheme = createTheme({
     },
     MuiTypography: {
       defaultProps: {
-        fontFamily: "fantasy",
+        fontFamily: "sans-serif",
+      },
+    },
+    "MuiCardHeader-avatar": {
+      styleOverrides: {
+        margin: 0,
       },
     },
   },
 });
+
+export const caseCardSubFields = [
+  {
+    label: "Procedure Date",
+    id: "procedureDate",
+  },
+  {
+    label: "Procedure Location",
+    id: "procedureLocation",
+  },
+  {
+    label: "Case ID",
+    id: "caseID",
+  },
+  {
+    label: "MRN",
+    id: "mrn",
+  },
+  {
+    label: "Proceduralist",
+    id: "proceduralist",
+  },
+  {
+    label: "Quick Actions",
+    id: "quickActions",
+  },
+];
