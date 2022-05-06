@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import ResponsiveDatePicker from "../responsiveDatePicker";
 import moment from "moment";
 

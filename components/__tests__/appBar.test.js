@@ -20,4 +20,21 @@ describe("AppBar", () => {
     expect(queryAllByLabelText("Array Choice")[0]).toBeInTheDocument();
     expect(queryAllByPlaceholderText("Search...")[0]).toBeInTheDocument();
   });
+
+  test("hovers over and away from the popover", async () => {
+    const { getByText, queryByText } = render(<AppBar />);
+
+    expect(getByText("Hover for Popover")).toBeInTheDocument();
+    expect(queryByText("I use Popover.")).not.toBeInTheDocument();
+
+    fireEvent.mouseOver(getByText("Hover for Popover"));
+
+    expect(getByText("I use Popover.")).toBeInTheDocument();
+
+    fireEvent.mouseOut(getByText("Hover for Popover"));
+
+    await waitFor(() => {
+      expect(queryByText("I use Popover.")).not.toBeInTheDocument();
+    });
+  });
 });
