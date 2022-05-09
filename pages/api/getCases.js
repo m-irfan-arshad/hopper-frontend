@@ -59,10 +59,10 @@ const fakeData = [
     "Blackbeard",
     "Teach",
     "02/01/1982",
-    "2022-04-29T00:00:00Z",
+    "2022-05-29T00:00:00Z",
     "Blackbeard's ship",
     //234,
-    "Doctor Blackbeard",
+    "Doctor Moria",
     // [
     //   {
     //     name: "first Blackbeard attachment",
@@ -103,7 +103,7 @@ const fakeData = [
     "Zoro",
     "Roronoa",
     "02/01/1982",
-    "2022-05-20T00:00:00Z",
+    "2022-05-17T00:00:00Z",
     "Luffy's ship",
     //190,
     "Doctor Nami",
@@ -143,14 +143,14 @@ const fakeData = [
     5678567890
   ),
   createData(
-    10998,
+    10918,
     "Koby",
-    "Marine",
+    "Helmeppo",
     "04/15/2002",
-    "2022-04-29T00:00:00Z",
-    "Marine's ship'",
+    "2022-05-17T00:00:00Z",
+    "Marine's ship",
     // 490,
-    "Doctor Marine",
+    "Doctor Garp",
     // [
     //   {
     //     name: "first Koby attachment",
@@ -173,14 +173,14 @@ const fakeData = [
     5678567890
   ),
   createData(
-    10998,
+    10798,
     "Franky",
     "SUPER",
     "04/15/1972",
-    "2022-04-29T00:00:00Z",
+    "2022-05-17T00:00:00Z",
     "Luffy's ship",
     //744,
-    "Doctor Chopper",
+    "Doctor Vegapunk",
     // [
     //   {
     //     name: "first Franky attachment",
@@ -199,14 +199,58 @@ const fakeData = [
     5678567890
   ),
   createData(
-    10998,
-    "Test",
-    "Patient",
+    14998,
+    "Jimbei",
+    "Boss",
     "04/15/1972",
-    "2022-04-20T00:00:00Z",
+    "2022-06-01T00:00:00Z",
     "Fishman Island",
     //744,
-    "Doctor Fish",
+    "Doctor Hachi",
+    // [
+    //   {
+    //     name: "first test attachment",
+    //     id: "randomIDTest",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    // "complete",
+    5678567890
+  ),
+  createData(
+    10919,
+    "Boa",
+    "Hancock",
+    "04/15/1972",
+    "2022-06-17T00:00:00Z",
+    "Amazon Lily",
+    //744,
+    "Doctor Love",
+    // [
+    //   {
+    //     name: "first test attachment",
+    //     id: "randomIDTest",
+    //   },
+    // ],
+    // {
+    //   step1: true,
+    //   step2: false,
+    // },
+    // "complete",
+    5678567890
+  ),
+  createData(
+    10919,
+    "Bon (Honoray Straw Hat)",
+    "Clay",
+    "04/15/1972",
+    "2022-06-15T00:00:00Z",
+    "Impel Down",
+    //744,
+    "Doctor Iva",
     // [
     //   {
     //     name: "first test attachment",
@@ -221,6 +265,19 @@ const fakeData = [
     5678567890
   ),
 ];
+
+function transformCases(cases) {
+  let transformedObj = {};
+
+    cases.map(function(patientCase){
+      const procedureDateFormatted = moment(patientCase.procedureDate).utc().format('MMMM DD, YYYY');
+        return transformedObj[procedureDateFormatted] 
+        ? transformedObj[procedureDateFormatted].push(patientCase) 
+        : transformedObj[procedureDateFormatted] = [patientCase];
+    });
+
+    return transformedObj;
+}
 
 export default function handler(req, res) {
   let filteredJSON = fakeData;
@@ -263,5 +320,5 @@ export default function handler(req, res) {
     );
   }
 
-  res.status(200).json(filteredJSON);
+  res.status(200).json(transformCases(filteredJSON));
 }

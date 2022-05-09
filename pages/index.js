@@ -5,6 +5,8 @@ import styles from "../styles/Home.module.css";
 import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
 import CaseCard from "../components/caseCard";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 export default function Home() {
   const [rows, setRows] = useState([]);
@@ -26,6 +28,38 @@ export default function Home() {
     fetchPatientData();
   }, []);
 
+  const titleTheme = createTheme({
+    typography: {
+      body1: {
+        width: '95%',
+        fontSize: '14px',
+        marginLeft: '70px',
+        fontFamily: "Inter",
+        fontStyle: "italic",
+        marginTop: '30px'
+      }
+    },
+  });
+
+  function displayRows() {
+    const orderedKeys = Object.keys(rows).sort(function(a, b) {
+      return moment(a).diff(moment(b));
+    });
+
+    let cards = [];
+    orderedKeys.map((uniqueKey) => {
+    for (const [key, value] of Object.entries(rows)) {
+          if (uniqueKey === key) {
+            cards.push( <ThemeProvider theme={titleTheme}><Typography>{key}</Typography></ThemeProvider>);
+            value.map((row) => {
+              cards.push(<CaseCard key={value} row={row}></CaseCard>);
+            }); 
+          }
+    }
+  });
+    return cards;
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -40,9 +74,7 @@ export default function Home() {
         <SideBar></SideBar>
       </header>
       <main className={styles.main}>
-        {rows.map((row, index) => {
-          return <CaseCard key={index} row={row}></CaseCard>;
-        })}
+        {displayRows()}
       </main>
     </div>
   );
