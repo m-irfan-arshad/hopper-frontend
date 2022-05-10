@@ -34,7 +34,7 @@ export default function CaseCard({ row }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Box sx={{ width: "95%", marginLeft: "70px", marginTop: "20px" }}>
+    <Box sx={{ width: "95%", marginLeft: "70px", marginTop: "15px" }}>
       <Card sx={{ backgroundColor: "#D3D3D3" }}>
         <CardHeader
           avatar={
