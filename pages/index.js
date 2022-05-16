@@ -7,6 +7,7 @@ import SideBar from "../components/sideBar";
 import CaseCard from "../components/caseCard";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { SplitTreatments } from '@splitsoftware/splitio-react';
 
 export default function Home() {
   const [rows, setRows] = useState([]);
@@ -42,23 +43,35 @@ export default function Home() {
   });
 
   function displayRows() {
-    const orderedKeys = Object.keys(rows).sort(function(a, b) {
+    const orderedKeys = Object.keys(rows).sort(function (a, b) {
       return moment(a).diff(moment(b));
     });
 
     let cards = [];
     orderedKeys.map((uniqueKey) => {
-    for (const [key, value] of Object.entries(rows)) {
-          if (uniqueKey === key) {
-            cards.push( <ThemeProvider theme={titleTheme}><Typography>{key}</Typography></ThemeProvider>);
-            value.map((row) => {
-              cards.push(<CaseCard key={value} row={row}></CaseCard>);
-            }); 
-          }
-    }
-  });
+      for (const [key, value] of Object.entries(rows)) {
+        if (uniqueKey === key) {
+          cards.push(<ThemeProvider theme={titleTheme}><Typography>{key}</Typography></ThemeProvider>);
+          value.map((row) => {
+            cards.push(<CaseCard key={value} row={row}></CaseCard>);
+          });
+        }
+      }
+    });
     return cards;
   }
+
+  const featureName = 'display-side-bar';
+
+  function renderContent(treatmentWithConfig) {
+    console.log("renderContent");
+    const { treatment, config } = treatmentWithConfig;
+    console.log(treatment);
+    if (treatment === 'on') return (<SideBar />);
+  }
+
+
+
 
   return (
     <div className={styles.container}>
@@ -71,10 +84,16 @@ export default function Home() {
       </Head>
       <header>
         <AppBar></AppBar>
-        <SideBar></SideBar>
+        <SplitTreatments names={[featureName]} >
+          {({ treatments, isReady }) => { // Passes down a TreatmentsWithConfig object and SplitContext properties like the boolean `isReady` flag.
+            return isReady ? 
+              renderContent(treatments[featureName]): console.log("Not Ready");
+          }}
+        </SplitTreatments>
+
       </header>
       <main className={styles.main}>
-        {displayRows()}
+        {/* {displayRows()} */}
       </main>
     </div>
   );
