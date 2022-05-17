@@ -1,8 +1,8 @@
 name: Build + Lint + Test + Deploy
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  PROJECT_ID: hopper-frontend-350514
   SERVICE: hopper-frontend
-  REGION: us-central1
+  REGION: us-east4
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -64,8 +64,8 @@ jobs:
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v0'
       with:
-        workload_identity_provider: 'projects/842001996847/locations/global/workloadIdentityPools/github-actions-hopper/providers/github'
-        service_account: 'hopper-frontend@hopper-frontend.iam.gserviceaccount.com'
+        workload_identity_provider: 'https://iam.googleapis.com/projects/116267393806/locations/global/workloadIdentityPools/github-actions/providers/github'
+        service_account: 'hopper-github-actions@hopper-frontend-350514.iam.gserviceaccount.com'
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
