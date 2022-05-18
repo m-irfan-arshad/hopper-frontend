@@ -72,6 +72,9 @@ jobs:
 
     - name: Authorize Docker push
       run: gcloud auth configure-docker gcr.io
+      
+    - name: set gcloud account
+      run: gcloud config set account hopper-github-actions@hopper-frontend-350514.iam.gserviceaccount.com
 
     - name: Build and Push Container
       run: |-
