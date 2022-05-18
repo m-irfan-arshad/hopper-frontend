@@ -1,7 +1,7 @@
 name: Build + Lint + Test + Deploy
 env:
   PROJECT_ID: hopper-frontend-350514
-  SERVICE: hopper-frontend
+  SERVICE: hopper-frontend-350514
   REGION: us-east4
 
 on:
@@ -36,17 +36,17 @@ jobs:
       - name: Unit tests
         run: |
           npm run test
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-      - name: E2E tests
-        run: |
-          npm run test:e2e
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: playwright-report
-          path: playwright-report
+#       - name: Install Playwright
+#         run: npx playwright install --with-deps
+#       - name: E2E tests
+#         run: |
+#           npm run test:e2e
+#       - name: Upload test results
+#         if: always()
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: playwright-report
+#           path: playwright-report
           
   deploy:
     runs-on: ubuntu-latest
