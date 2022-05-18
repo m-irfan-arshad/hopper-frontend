@@ -72,6 +72,9 @@ jobs:
 
     - name: Authorize Docker push
       run: gcloud auth configure-docker gcr.io
+      
+    - name: gcloud login
+      run: gcloud auth login
 
     - name: Build and Push Container
       run: |-
