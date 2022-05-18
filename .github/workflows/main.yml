@@ -1,7 +1,7 @@
 name: Build + Lint + Test + Deploy
 env:
   PROJECT_ID: hopper-frontend-350514
-  SERVICE: hopper-frontend
+  SERVICE: hopper-frontend-350514
   REGION: us-east4
 
 on:
