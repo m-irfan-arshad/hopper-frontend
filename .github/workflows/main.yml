@@ -1,7 +1,7 @@
 name: Build + Lint + Test + Deploy
 env:
   PROJECT_ID: hopper-frontend-350514
-  SERVICE: hopper-frontend-350514
+  SERVICE: hopper-frontend
   REGION: us-east4
 
 on:
@@ -65,16 +65,13 @@ jobs:
       uses: 'google-github-actions/auth@v0'
       with:
         workload_identity_provider: 'projects/116267393806/locations/global/workloadIdentityPools/github-actions/providers/github'
-        service_account: 'hopper-github-actions@hopper-frontend-350514.iam.gserviceaccount.com'
+        service_account: 'gh-actions@hopper-frontend-350514.iam.gserviceaccount.com'
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
 
     - name: Authorize Docker push
-      run: gcloud auth configure-docker gcr.io
-      
-    - name: set gcloud account
-      run: gcloud config set account hopper-github-actions@hopper-frontend-350514.iam.gserviceaccount.com
+      run: gcloud auth configure-docker
 
     - name: Build and Push Container
       run: |-
