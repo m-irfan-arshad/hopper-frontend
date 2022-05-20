@@ -34,7 +34,7 @@ function createData(
 const fakeData = [
   createData(
     12345,
-    "Captain",
+    "Capitan",
     "Whitebeard",
     "02/01/1990",
     "2022-05-05T00:00:00Z",
