@@ -30,8 +30,6 @@ jobs:
 
     - name: Enable the necessary APIs and enable docker auth
       run: |-
-        gcloud services enable containerregistry.googleapis.com
-        gcloud services enable run.googleapis.com
         gcloud --quiet auth configure-docker
 
     - name: Build and tag image
