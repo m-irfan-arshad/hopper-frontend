@@ -51,16 +51,26 @@ jobs:
   deploy-image-to-cloud-run:
     needs: [build-lint-test]
     runs-on: ubuntu-latest
+
     steps:
 
     - name: Checkout
       uses: actions/checkout@v3
-
-    - uses: google-github-actions/setup-gcloud@v0
+      
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
       with:
-        project_id: ${{ secrets.CLOUD_RUN_PROJECT_ID }}
-        service_account_key: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}
-        service_account_email: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT_EMAIL }}
+        workload_identity_provider: 'projects/116267393806/locations/global/workloadIdentityPools/github-actions/providers/github'
+        service_account: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT_EMAIL }}
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+
+#     - uses: google-github-actions/setup-gcloud@v0
+#       with:
+#         project_id: ${{ secrets.CLOUD_RUN_PROJECT_ID }}
+#         service_account_key: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}
+#         service_account_email: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT_EMAIL }}
 
     - name: Enable docker auth
       run: |-
