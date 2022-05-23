@@ -64,7 +64,7 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
-        workload_identity_provider: 'projects/116267393806/locations/global/workloadIdentityPools/github-actions/providers/github'
+        workload_identity_provider: 'projects/116267393806/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
         service_account: ${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT_EMAIL }}
 
     - name: 'Set up Cloud SDK'
