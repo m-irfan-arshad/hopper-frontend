@@ -56,7 +56,7 @@ export default function SearchAppBar() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed">
           <Toolbar>
-            <MedtelLogo />
+            {/* <MedtelLogo /> */}
             <Typography
               variant="h6"
               noWrap
