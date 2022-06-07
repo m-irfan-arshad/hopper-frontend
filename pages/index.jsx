@@ -27,7 +27,7 @@ export function Home({ flags }) {
 
   useEffect(() => {
     fetchPatientData();
-  }, []);
+  });
 
   const titleTheme = createTheme({
     typography: {
