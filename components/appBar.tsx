@@ -29,19 +29,19 @@ const CustomButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-function MedtelLogo(props) {
+function MedtelLogo() {
   return (
-    <SvgIcon {...props} viewBox="0 0 24 24" htmlColor="green">
+    <SvgIcon viewBox="0 0 24 24" htmlColor="green">
       <path d="M15,19.16V15.07a4.27,4.27,0,0,0,6,0h0a4.27,4.27,0,0,0,0-6h0a4.27,4.27,0,0,0-6,0l-3,3-3,3a4.27,4.27,0,0,1-6,0h0a4.27,4.27,0,0,1,0-6h0A4.27,4.27,0,0,1,9,9" />
     </SvgIcon>
   );
 }
 
 export default function SearchAppBar() {
-  const [anchorEl, setAnchorEl] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isDropDownOpen, setDropDownState] = useState(false);
 
-  const handlePopoverOpen = (event) => {
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -64,7 +64,7 @@ export default function SearchAppBar() {
               color="rgb(25, 118, 210)"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
             >
-              Hopper
+              Surgiscript
             </Typography>
             <Button
               onClick={() => setDropDownState(!isDropDownOpen)}

@@ -12,6 +12,8 @@ import DvrIcon from "@mui/icons-material/Dvr";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { SvgIconTypeMap } from "@mui/material";
 
 //uses 'system' styling using sx prop
 export default function SideBar() {
@@ -21,7 +23,7 @@ export default function SideBar() {
         styleOverrides: {
           tooltip: {
             color: "white",
-            backgroundColor: "green",
+            backgroundColor: "darkgray",
             marginLeft: "40px !important", //need to override margin left from tooltip placement prop
           },
         },
@@ -41,8 +43,8 @@ export default function SideBar() {
           sm: "64px", // theme.breakpoints.up('sm')
         },
         background: {
-          xs: "green",
-          sm: "blue",
+          xs: "gray",
+          sm: "gray",
         },
       },
     },
@@ -64,8 +66,8 @@ export default function SideBar() {
     },
   };
 
-  const iconToDisplay = (text) => {
-    const component = (DrawerIcon) => (
+  const iconToDisplay = (text: string) => {
+    const component = (DrawerIcon: OverridableComponent<SvgIconTypeMap<{}, "svg">>) => (
       <ThemeProvider theme={toolTipTheme}>
         <Tooltip title={text} placement="right">
           <DrawerIcon data-testid={text} fontSize="large" />
@@ -73,12 +75,6 @@ export default function SideBar() {
       </ThemeProvider>
     );
     switch (text) {
-      case "Create a Case":
-        return component(AddCircleOutlineRoundedIcon);
-      case "Notifications":
-        return component(CircleNotificationsIcon);
-      case "Work Queues":
-        return component(AssignmentOutlinedIcon);
       case "Dashboard":
         return component(DvrIcon);
       default:
@@ -86,12 +82,8 @@ export default function SideBar() {
     }
   };
 
-  const arr = [
-    "Dashboard",
-    "Create a Case",
-    "Notifications",
-    "Work Queues",
-    "test no icon",
+  const sidebarOptions = [
+    "Dashboard"
   ];
 
   return (
@@ -100,10 +92,10 @@ export default function SideBar() {
         <CssBaseline />
         <Drawer variant="permanent" open={false} sx={styles.drawer}>
           <List>
-            {arr.map((text, index) => (
+            {sidebarOptions.map((text) => (
               <Link
                 key={text}
-                href={index % 2 === 0 ? "/" : "/calendarDatePage"}
+                href='/'
               >
                 <a>
                   <ListItemButton

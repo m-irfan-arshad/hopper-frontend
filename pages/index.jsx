@@ -27,7 +27,7 @@ export function Home({ flags }) {
 
   useEffect(() => {
     fetchPatientData();
-  }, []);
+  });
 
   const titleTheme = createTheme({
     typography: {
@@ -51,9 +51,9 @@ export function Home({ flags }) {
     orderedKeys.map((uniqueKey) => {
       for (const [key, value] of Object.entries(rows)) {
         if (uniqueKey === key) {
-          cards.push(<ThemeProvider theme={titleTheme}><Typography>{key}</Typography></ThemeProvider>);
+          cards.push(<ThemeProvider key={key} theme={titleTheme}><Typography>{key}</Typography></ThemeProvider>);
           value.map((row) => {
-            cards.push(<CaseCard key={value} row={row}></CaseCard>);
+            cards.push(<CaseCard key={row.caseID} row={row}></CaseCard>);
           });
         }
       }

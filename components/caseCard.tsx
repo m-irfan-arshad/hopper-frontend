@@ -3,16 +3,31 @@ import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { caseCardSubFields } from "../reference";
 
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean
+}
 
+interface CaseCardProps {
+  row: {
+    [key: string]: string
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+    procedureDate: string,
+    procedureLocation: string,
+    proceduralist: string,
+    mrn: string
+  }
+}
 
-const ExpandMore = styled((props) => {
+const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
@@ -32,7 +47,7 @@ const cardStyle = {
   },
 };
 
-export default function CaseCard({ row }) {
+export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (

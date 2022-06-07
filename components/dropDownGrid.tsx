@@ -7,6 +7,10 @@ import InputBase from "@mui/material/InputBase";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
+interface Props {
+  open: boolean
+}
+
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
   ...theme.typography.body2,
@@ -24,7 +28,7 @@ const arr = [
   "Case ID",
 ];
 
-export default function DropDownGrid({ open }) {
+export default function DropDownGrid({ open }: Props) {
   return open ? (
     <Box sx={{ width: "95%", flexGrow: 1, marginTop: "100px" }}>
       <Grid
