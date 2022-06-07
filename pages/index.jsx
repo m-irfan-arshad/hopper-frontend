@@ -53,7 +53,7 @@ export function Home({ flags }) {
         if (uniqueKey === key) {
           cards.push(<ThemeProvider theme={titleTheme}><Typography>{key}</Typography></ThemeProvider>);
           value.map((row) => {
-            cards.push(<CaseCard key={value} row={row}></CaseCard>);
+            cards.push(<CaseCard key={row.caseID} row={row}></CaseCard>);
           });
         }
       }

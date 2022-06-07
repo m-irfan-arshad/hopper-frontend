@@ -42,7 +42,6 @@ export default function SearchAppBar() {
   const [isDropDownOpen, setDropDownState] = useState(false);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
-    console.log('event', event)
     setAnchorEl(event.currentTarget);
   };
 
@@ -57,7 +56,7 @@ export default function SearchAppBar() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed">
           <Toolbar>
-            <MedtelLogo />
+            {/* <MedtelLogo /> */}
             <Typography
               variant="h6"
               noWrap
@@ -65,7 +64,7 @@ export default function SearchAppBar() {
               color="rgb(25, 118, 210)"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
             >
-              Hopper
+              Surgiscript
             </Typography>
             <Button
               onClick={() => setDropDownState(!isDropDownOpen)}
