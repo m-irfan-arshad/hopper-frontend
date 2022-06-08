@@ -1,5 +1,4 @@
 import moment from "moment";
-import * as R from "ramda";
 
 function createData(
   caseID, //int
@@ -266,19 +265,6 @@ const fakeData = [
   ),
 ];
 
-function groupCasesByDate(cases) {
-  let transformedObj = {};
-
-    cases.map(function(patientCase){
-      const procedureDateFormatted = moment(patientCase.procedureDate).utc().format('MMMM DD, YYYY');
-        return transformedObj[procedureDateFormatted] 
-        ? transformedObj[procedureDateFormatted].push(patientCase) 
-        : transformedObj[procedureDateFormatted] = [patientCase];
-    });
-
-    return transformedObj;
-}
-
 export default function handler(req, res) {
   let filteredJSON = fakeData;
 
@@ -295,35 +281,6 @@ export default function handler(req, res) {
     return new Date(case1.procedureDate) - new Date(case2.procedureDate)
   })
 
-  // if (req.query.dateRangeEnd) {
-  //   filteredJSON = filteredJSON.filter((data) =>
-  //     moment(data.procedureDate)
-  //       .utc()
-  //       .isSameOrBefore(moment(req.query.dateRangeEnd).utc(), "day")
-  //   );
-  // }
-
-  // if (req.query.procedureDate) {
-  //   filteredJSON = filteredJSON.filter(
-  //     (data) =>
-  //       moment(data.procedureDate).utc().format("MM-DD-YYYY") ===
-  //       req.query.procedureDate
-  //   );
-  // }
-
-  // if (req.query.procedureLocation) {
-  //   filteredJSON = filteredJSON.filter((data) =>
-  //     R.toUpper(data.procedureLocation).includes(
-  //       R.toUpper(req.query.procedureLocation)
-  //     )
-  //   );
-  // }
-
-  // if (req.query.proceduralist) {
-  //   filteredJSON = filteredJSON = filteredJSON.filter((data) =>
-  //     R.toUpper(data.proceduralist).includes(R.toUpper(req.query.proceduralist))
-  //   );
-  // }
 
   res.status(200).json(filteredJSON);
 }
