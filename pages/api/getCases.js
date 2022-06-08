@@ -266,7 +266,7 @@ const fakeData = [
   ),
 ];
 
-function transformCases(cases) {
+function groupCasesByDate(cases) {
   let transformedObj = {};
 
     cases.map(function(patientCase){
@@ -283,6 +283,7 @@ export default function handler(req, res) {
   let filteredJSON = fakeData;
 
   if (req.query.dateRangeStart) {
+    console.log('date range start query')
     filteredJSON = filteredJSON.filter((data) =>
       moment(data.procedureDate)
         .utc()
@@ -290,35 +291,39 @@ export default function handler(req, res) {
     );
   }
 
-  if (req.query.dateRangeEnd) {
-    filteredJSON = filteredJSON.filter((data) =>
-      moment(data.procedureDate)
-        .utc()
-        .isSameOrBefore(moment(req.query.dateRangeEnd).utc(), "day")
-    );
-  }
+  filteredJSON.sort(function(case1, case2) {
+    return new Date(case1.procedureDate) - new Date(case2.procedureDate)
+  })
 
-  if (req.query.procedureDate) {
-    filteredJSON = filteredJSON.filter(
-      (data) =>
-        moment(data.procedureDate).utc().format("MM-DD-YYYY") ===
-        req.query.procedureDate
-    );
-  }
+  // if (req.query.dateRangeEnd) {
+  //   filteredJSON = filteredJSON.filter((data) =>
+  //     moment(data.procedureDate)
+  //       .utc()
+  //       .isSameOrBefore(moment(req.query.dateRangeEnd).utc(), "day")
+  //   );
+  // }
 
-  if (req.query.procedureLocation) {
-    filteredJSON = filteredJSON.filter((data) =>
-      R.toUpper(data.procedureLocation).includes(
-        R.toUpper(req.query.procedureLocation)
-      )
-    );
-  }
+  // if (req.query.procedureDate) {
+  //   filteredJSON = filteredJSON.filter(
+  //     (data) =>
+  //       moment(data.procedureDate).utc().format("MM-DD-YYYY") ===
+  //       req.query.procedureDate
+  //   );
+  // }
 
-  if (req.query.proceduralist) {
-    filteredJSON = filteredJSON = filteredJSON.filter((data) =>
-      R.toUpper(data.proceduralist).includes(R.toUpper(req.query.proceduralist))
-    );
-  }
+  // if (req.query.procedureLocation) {
+  //   filteredJSON = filteredJSON.filter((data) =>
+  //     R.toUpper(data.procedureLocation).includes(
+  //       R.toUpper(req.query.procedureLocation)
+  //     )
+  //   );
+  // }
 
-  res.status(200).json(transformCases(filteredJSON));
+  // if (req.query.proceduralist) {
+  //   filteredJSON = filteredJSON = filteredJSON.filter((data) =>
+  //     R.toUpper(data.proceduralist).includes(R.toUpper(req.query.proceduralist))
+  //   );
+  // }
+
+  res.status(200).json(filteredJSON);
 }
