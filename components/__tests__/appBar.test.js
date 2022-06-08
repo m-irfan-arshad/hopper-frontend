@@ -29,12 +29,12 @@ describe("AppBar", () => {
 
     fireEvent.mouseOver(getByText("Hover for Popover"));
 
-    expect(getByText("I use Popover.")).toBeInTheDocument();
+    expect(getByText("it poppin")).toBeInTheDocument();
 
     fireEvent.mouseOut(getByText("Hover for Popover"));
 
     await waitFor(() => {
-      expect(queryByText("I use Popover.")).not.toBeInTheDocument();
+      expect(queryByText("it poppin")).not.toBeInTheDocument();
     });
   });
 });
