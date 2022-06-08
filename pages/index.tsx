@@ -3,7 +3,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import AppBar from "../components/appBar";
 import SideBar from "../components/sideBar";
-import Dashboard from "./dashboard";
+import Dashboard from "../components/dashboard";
 import * as LaunchDarkly from 'launchdarkly-react-client-sdk';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
