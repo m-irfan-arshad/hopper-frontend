@@ -25,7 +25,7 @@ describe("AppBar", () => {
     const { getByText, queryByText } = render(<AppBar />);
 
     expect(getByText("Hover for Popover")).toBeInTheDocument();
-    expect(queryByText("I use Popover.")).not.toBeInTheDocument();
+    expect(queryByText("it poppin")).not.toBeInTheDocument();
 
     fireEvent.mouseOver(getByText("Hover for Popover"));
 
