@@ -102,7 +102,7 @@ export default function SearchAppBar() {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
               >
-                <Typography>I use Popover.</Typography>
+                <Typography>it poppin</Typography>
               </Popover>
             </div>
           </Toolbar>
