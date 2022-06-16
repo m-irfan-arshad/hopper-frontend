@@ -1,4 +1,5 @@
 // @ts-check
+require('dotenv').config();
 const { devices } = require('@playwright/test');
 const config = {
   testDir: './playwrightTests',
@@ -6,7 +7,12 @@ const config = {
   timeout: 30 * 1000,
   expect: {
     timeout: 5000
+
   },
+  use: {
+    baseURL: process.env.PLAYWRIGHT_HOPPER_HOME
+  },
+
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   projects: [
@@ -18,7 +24,7 @@ const config = {
         //screenshots every step
         screenshot: 'on',
         //traces and logs every step
-        trace: 'retain-on-failure'
+        trace: 'retain-on-failure',
       }
     },
     {
@@ -29,7 +35,7 @@ const config = {
         //screenshots every step
         screenshot: 'on',
         //traces and logs every step
-        trace: 'retain-on-failure'
+        trace: 'retain-on-failure',
       }
     }
   ],
