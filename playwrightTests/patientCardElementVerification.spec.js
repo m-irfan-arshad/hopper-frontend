@@ -22,7 +22,6 @@ test('Validating Patient Card Fields', async ({ browser, baseURL }) => {
 
 });
 test('Validating Procedure Date Sorting', async ({ browser, baseURL }) => {
-    console.log(baseURL);
     const context = await browser.newContext();
     const page = await context.newPage();
     const dropDownArrow = page.locator(".MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.css-14h0jh8");
