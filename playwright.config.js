@@ -24,7 +24,7 @@ const config = {
         //screenshots every step
         screenshot: 'on',
         //traces and logs every step
-        trace: 'retain-on-failure',
+        trace: 'retain-on-failure'
       }
     },
     {
@@ -35,7 +35,7 @@ const config = {
         //screenshots every step
         screenshot: 'on',
         //traces and logs every step
-        trace: 'retain-on-failure',
+        trace: 'retain-on-failure'
       }
     }
   ],
