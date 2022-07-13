@@ -32,236 +32,104 @@ function createData(
 
 const fakeData = [
   createData(
-    12345,
-    "Capitan",
-    "Whitebeard",
+    "12345",
+    "Luke",
+    "Skywalker",
     "02/01/1990",
-    "2022-06-20T00:00:00Z",
-    "Whitebeard's ship",
-    //123,
-    "Doctor Whitebeard",
-    // [
-    //   {
-    //     name: "first Whitebeard attachment",
-    //     id: "WhitebeardRandomID123",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    //"complete",
-    5678567890
+    "2022-07-28T00:00:00Z",
+    "Anch-To",
+    "Medical Droid",
+    "5678567890"
   ),
   createData(
-    23456,
-    "Blackbeard",
-    "Teach",
+    "23456",
+    "Darth",
+    "Vader",
     "02/01/1982",
-    "2022-06-29T00:00:00Z",
-    "Blackbeard's ship",
-    //234,
-    "Doctor Moria",
-    // [
-    //   {
-    //     name: "first Blackbeard attachment",
-    //     id: "BlackbeardRandomID123",
-    //   },
-    // ],
-    // {
-    //   step1: false,
-    //   step2: false,
-    // },
-    // "incomplete",
-    5678567890
+    "2022-07-28T00:00:00Z",
+    "Death Star Medical Center",
+    "Emperor Palpatine, MD",
+    "5678567890"
   ),
   createData(
-    67890,
-    "Luffy",
-    "Monkey",
+    "67890",
+    "Han",
+    "Solo",
     "04/12/2000",
-    "2022-06-29T22:15:01Z",
-    "Luffy's ship",
-    //567,
-    "Doctor Chopper",
-    // [
-    //   {
-    //     name: "first Luffy attachment",
-    //     id: "randomID-1934",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: true,
-    // },
-    //"canceled",
-    5678567890
+    "2022-07-28T22:15:01Z",
+    "Millenium Falcon",
+    "Lando",
+    "5678567890"
   ),
   createData(
-    29322,
+    "29322",
     "Zoro",
     "Roronoa",
     "02/01/1982",
-    "2022-06-21T00:00:00Z",
+    "2022-08-21T00:00:00Z",
     "Luffy's ship",
-    //190,
     "Doctor Nami",
-    // [
-    //   {
-    //     name: "first Zoro attachment",
-    //     id: "randomID09381",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    //"closed",
-    5678567890
+    "5678567890"
   ),
   createData(
-    30876,
+    "30876",
     "Ace",
     "Portgas",
     "02/01/1993",
-    "2022-06-21T00:00:00Z",
+    "2022-08-21T00:00:00Z",
     "Whitebeard's ship",
-    //101,
     "Doctor Whitebeard",
-    // [
-    //   {
-    //     name: "first Ace attachment",
-    //     id: "randomID0331",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    // "alert",
-    5678567890
+    "5678567890"
   ),
   createData(
-    10918,
+    "10918",
     "Koby",
     "Helmeppo",
     "04/15/2002",
-    "2022-06-21T00:00:00Z",
+    "2022-08-21T00:00:00Z",
     "Marine's ship",
-    // 490,
     "Doctor Garp",
-    // [
-    //   {
-    //     name: "first Koby attachment",
-    //     id: "randomID09389098",
-    //   },
-    //   {
-    //     name: "second Koby attachment",
-    //     id: "randomIDSUPER123",
-    //   },
-    //   {
-    //     name: "third Koby attachment",
-    //     id: "randomIDKOBY",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    //"pending override",
-    5678567890
+    "5678567890"
   ),
   createData(
-    10798,
-    "Franky",
-    "SUPER",
+    "10798",
+    "Dwight",
+    "Schrute",
     "04/15/1972",
-    "2022-06-21T00:00:00Z",
-    "Luffy's ship",
-    //744,
-    "Doctor Vegapunk",
-    // [
-    //   {
-    //     name: "first Franky attachment",
-    //     id: "randomIDSUPER",
-    //   },
-    //   {
-    //     name: "second Franky attachment",
-    //     id: "randomIDSUPER2",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    // "complete",
-    5678567890
+    "2022-08-01T00:00:00Z",
+    "IHOP off exit 42",
+    "Dentist Crentist",
+    "5678567890"
   ),
   createData(
-    14998,
+    "14998",
     "Jimbei",
     "Boss",
     "04/15/1972",
-    "2022-07-01T00:00:00Z",
+    "2022-08-01T00:00:00Z",
     "Fishman Island",
-    //744,
     "Doctor Hachi",
-    // [
-    //   {
-    //     name: "first test attachment",
-    //     id: "randomIDTest",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    // "complete",
-    5678567890
+    "5678567890"
   ),
   createData(
-    10919,
+    "10919",
     "Boa",
     "Hancock",
     "04/15/1972",
-    "2022-07-17T00:00:00Z",
+    "2022-08-01T00:00:00Z",
     "Amazon Lily",
-    //744,
     "Doctor Love",
-    // [
-    //   {
-    //     name: "first test attachment",
-    //     id: "randomIDTest",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    // "complete",
-    5678567890
+    "5678567890"
   ),
   createData(
-    10920,
+    "10920",
     "Bon (Honoray Straw Hat)",
     "Clay",
     "04/15/1972",
-    "2022-07-15T00:00:00Z",
+    "2022-08-21T00:00:00Z",
     "Impel Down",
-    //744,
     "Doctor Iva",
-    // [
-    //   {
-    //     name: "first test attachment",
-    //     id: "randomIDTest",
-    //   },
-    // ],
-    // {
-    //   step1: true,
-    //   step2: false,
-    // },
-    // "complete",
-    5678567890
+    "5678567890"
   ),
 ];
 
