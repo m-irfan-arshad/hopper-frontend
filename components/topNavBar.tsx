@@ -12,7 +12,7 @@ export default function TopNavBar() {
     })
 
     return (
-          <AppBar position="sticky" sx={{
+          <AppBar position="static" sx={{
               backgroundColor: 'blue.dark',
               display: "flex",
               alignItems: "center",

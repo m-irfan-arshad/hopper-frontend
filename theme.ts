@@ -38,6 +38,13 @@ export const defaultTheme = createTheme({
                     boxShadow: "none"
                 }
             }
-        }
+        },
+        // MuiOutlinedInput: {
+        //     styleOverrides: {
+        //         root: {
+        //             border: "none"
+        //         }
+        //     }
+        // }
     }
 })
