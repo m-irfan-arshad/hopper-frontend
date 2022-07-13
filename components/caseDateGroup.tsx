@@ -1,7 +1,8 @@
 import React from "react";
 import CaseCard from "../components/caseCard";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import moment from "moment";
 
 interface Props {
     date: string,
@@ -17,25 +18,19 @@ interface Props {
     }[]
 }
 
-const titleTheme = createTheme({
-    typography: {
-      body1: {
-        width: '95%',
-        fontSize: '14px',
-        marginLeft: '70px',
-        fontFamily: "Inter",
-        fontStyle: "italic",
-        marginTop: '30px'
-      }
-    },
-  });
-
-
 export default function caseDateGroup(props: Props) {
     const { date, list } = props;
   return (
-      <>
-    <ThemeProvider key={date} theme={titleTheme}><Typography>{date}</Typography></ThemeProvider>
+    <Box sx={{ marginBottom: "20px" }}>
+    <Typography sx={{
+      fontSize: "12px",
+      color: "black.main",
+      fontStyle: "italic",
+      fontFamily: "Roboto",
+      marginTop: "20px"
+    }}>
+      {`${moment(date).format('MMMM D, YYYY')} (${list.length} cases)`}
+    </Typography>
     {
         list.map(function(singleCase) {
             return (
@@ -43,6 +38,6 @@ export default function caseDateGroup(props: Props) {
             )
         })
     }
-    </>
+    </Box>
   );
 }

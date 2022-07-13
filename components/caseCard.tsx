@@ -51,8 +51,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Box sx={{ width: "95%", marginLeft: "70px", marginTop: "15px" }}>
-      <Card sx={{ backgroundColor: "#D3D3D3" }}>
+    <Box sx={{ marginTop: "15px" }}>
+      <Card sx={{ backgroundColor: "white", border: "1px solid #D8E4F4", boxShadow: "none"}}>
         <CardHeader
           avatar={
             <ExpandMore
@@ -65,13 +65,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </ExpandMore>
           }
           title={
-            <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+            <Box sx={{ display: "flex", alignItems: "flex-end", color: "black.main" }}>
               {`${row.firstName} ${row.lastName}`}
               <Typography
                 sx={{
                   marginLeft: "10px",
                   fontStyle: "italic",
-                  fontSize: "14px",
+                  fontSize: "12px",
                 }}
               >
                 {row.dateOfBirth}
@@ -87,7 +87,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             sx={{
               width: "100%",
               flexGrow: 1,
-              backgroundColor: "#A9A9A9",
+              backgroundColor: "white",
               paddingTop: "15px",
               paddingBottom: "15px",
               paddingLeft: "20px",

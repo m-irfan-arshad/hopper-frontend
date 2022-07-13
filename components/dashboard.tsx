@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import moment from "moment";
-import styles from "../styles/Home.module.css";
 import CaseDateGroup from '../components/caseDateGroup';
 import { useQuery } from 'react-query';
+import { styled, Box, Stack, Select, Button, Typography, FormControl, InputLabel, MenuItem } from "@mui/material";
+import { IosShare } from "@mui/icons-material";
 
 interface SingleCase {
     caseID: string,
@@ -18,6 +19,10 @@ interface SingleCase {
 interface CaseGroup {
     [key: string]: SingleCase[]
 }
+
+const StyledMenuItem = styled(MenuItem)({
+    fontSize: "11px"
+})
 
 export default function Dashboard() {  
     const fetchCases = async () => {
@@ -46,8 +51,65 @@ export default function Dashboard() {
         })
   
     return (
-        <div className={styles.container}>
-          <main className={styles.main}>
+        <Box sx={{
+            display: "flex",
+            justifyContent: "center"
+        }}>
+          <Stack sx={{
+              width: "960px"
+          }}>
+            <Box sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                height: "60px",
+                borderBottom: "1px solid #D8E4F4"
+            }}>
+                <Box sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}>
+                    <Typography sx={{
+                        fontSize: "16px",
+                        color: "black.main",
+                        fontWeight: "700"
+                    }}>
+                        {`${data.length} Cases`}
+                    </Typography>
+                    <Box sx={{ minWidth: 120 }}>
+                        <FormControl fullWidth>
+                            <Select
+                            labelId="case-sort-select-label"
+                            id="case-sort-select"
+                            defaultValue={1}
+                            sx={{
+                                fontSize: "10px",
+                                height: "32px",
+                                marginLeft: "10px",
+                                // border: "1px solid #D8E4F4",
+                                borderRadius: "none"
+                            }}
+                            >
+                            <StyledMenuItem value={1}>Sort: Oldest - Newest</StyledMenuItem>
+                            <StyledMenuItem value={2}>Sort: Newest - Oldest</StyledMenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </Box>
+                <Button variant="contained" startIcon={<IosShare />} sx={{
+                    backgroundColor: "#D8E4F4",
+                    border: "none",
+                    fontSize: "10px",
+                    fontWeight: "700",
+                    marginRight: "12px",
+                    width: "80px",
+                    height: "30px",
+                    color: "#42A5F5"
+                }}>
+                    Export
+                </Button>
+            </Box>
             {
                 Object.keys(caseGroups).map((key, index) => {
                     return (
@@ -55,7 +117,7 @@ export default function Dashboard() {
                     )
                 })
             }
-          </main>
-        </div>
+          </Stack>
+        </Box>
     );
   }

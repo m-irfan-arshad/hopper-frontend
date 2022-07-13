@@ -1,27 +1,27 @@
-import { createTheme } from "@mui/material/styles";
+// import { createTheme } from "@mui/material/styles";
 
-export const defaultTheme = createTheme({
-  typography: {
-    poster: {
-      color: "green",
-    },
-    h3: undefined,
-  },
-  components: {
-    MuiAppBar: {
-      styleOverrides: {
-        colorPrimary: {
-          backgroundColor: "white",
-        },
-      },
-    },
-    MuiTypography: {
-      defaultProps: {
-        fontFamily: "Inter",
-      },
-    },
-  },
-});
+// export const defaultTheme = createTheme({
+//   typography: {
+//     poster: {
+//       color: "green",
+//     },
+//     h3: undefined,
+//   },
+//   components: {
+//     MuiAppBar: {
+//       styleOverrides: {
+//         colorPrimary: {
+//           backgroundColor: "blue",
+//         },
+//       },
+//     },
+//     MuiTypography: {
+//       defaultProps: {
+//         fontFamily: "Roboto",
+//       },
+//     },
+//   },
+// });
 
 export const caseCardSubFields = [
   {
