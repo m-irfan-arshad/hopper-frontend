@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import moment from "moment";
-import styles from "../styles/Home.module.css";
 import CaseDateGroup from '../components/caseDateGroup';
 import { useQuery } from 'react-query';
+import { Box, Stack } from "@mui/material";
 
 interface SingleCase {
     caseID: string,
@@ -46,8 +46,13 @@ export default function Dashboard() {
         })
   
     return (
-        <div className={styles.container}>
-          <main className={styles.main}>
+        <Box sx={{
+            display: "flex",
+            justifyContent: "center"
+        }}>
+          <Stack sx={{
+              width: "960px"
+          }}>
             {
                 Object.keys(caseGroups).map((key, index) => {
                     return (
@@ -55,7 +60,7 @@ export default function Dashboard() {
                     )
                 })
             }
-          </main>
-        </div>
+          </Stack>
+        </Box>
     );
   }

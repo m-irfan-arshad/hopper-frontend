@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { AppProps } from 'next/app'
 import { ThemeProvider } from "@mui/material/styles";
-import { defaultTheme } from "../reference";
+import { defaultTheme } from "../theme"
 import { withLDProvider } from 'launchdarkly-react-client-sdk';
 
 function MyApp({ Component, pageProps }: AppProps) {
