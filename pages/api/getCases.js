@@ -12,7 +12,8 @@ function createData(
   //attachments, //array of JSON
   //caseProgress, //JSON
   //caseStatus, //string
-  mrn //integer
+  mrn, //integer
+  steps //object
 ) {
   return {
     caseID,
@@ -27,8 +28,9 @@ function createData(
     //caseProgress,
     //caseStatus,
     mrn,
+    steps,
   };
-}
+} //define steps
 
 const fakeData = [
   createData(
@@ -39,7 +41,14 @@ const fakeData = [
     "2022-07-28T00:00:00Z",
     "Anch-To",
     "Medical Droid",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: true },
+      { text: "Insurance Verification", status: true },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "23456",
@@ -49,7 +58,14 @@ const fakeData = [
     "2022-07-28T00:00:00Z",
     "Death Star Medical Center",
     "Emperor Palpatine, MD",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: false },
+      { text: "Insurance Verification", status: true },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "67890",
@@ -59,7 +75,14 @@ const fakeData = [
     "2022-07-28T22:15:01Z",
     "Millenium Falcon",
     "Lando",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: true },
+      { text: "Insurance Verification", status: true },
+      { text: "PAT Chart", status: true },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "29322",
@@ -69,7 +92,14 @@ const fakeData = [
     "2022-08-21T00:00:00Z",
     "Luffy's ship",
     "Doctor Nami",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: false },
+      { text: "Insurance Verification", status: false },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: false },
+      { text: "Tray(s) Delivery", status: false }
+    ]
   ),
   createData(
     "30876",
@@ -79,7 +109,14 @@ const fakeData = [
     "2022-08-21T00:00:00Z",
     "Whitebeard's ship",
     "Doctor Whitebeard",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: false },
+      { text: "Insurance Verification", status: false },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "10918",
@@ -89,7 +126,14 @@ const fakeData = [
     "2022-08-21T00:00:00Z",
     "Marine's ship",
     "Doctor Garp",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: true },
+      { text: "Insurance Verification", status: false },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "10798",
@@ -99,7 +143,14 @@ const fakeData = [
     "2022-08-01T00:00:00Z",
     "IHOP off exit 42",
     "Dentist Crentist",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: false },
+      { text: "Insurance Verification", status: false },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: false },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "14998",
@@ -109,7 +160,14 @@ const fakeData = [
     "2022-08-01T00:00:00Z",
     "Fishman Island",
     "Doctor Hachi",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: true },
+      { text: "Insurance Verification", status: true },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "10919",
@@ -119,17 +177,31 @@ const fakeData = [
     "2022-08-01T00:00:00Z",
     "Amazon Lily",
     "Doctor Love",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: true },
+      { text: "Insurance Verification", status: true },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
   createData(
     "10920",
-    "Bon (Honoray Straw Hat)",
+    "Bon (Honorary Straw Hat)",
     "Clay",
     "04/15/1972",
     "2022-08-21T00:00:00Z",
     "Impel Down",
     "Doctor Iva",
-    "5678567890"
+    "5678567890",
+    [
+      { text: "Booking Sheet", status: true },
+      { text: "Insurance Verification", status: true },
+      { text: "PAT Chart", status: false },
+      { text: "Vendor Confirmation", status: true },
+      { text: "Tray(s) Delivery", status: true }
+    ]
   ),
 ];
 
@@ -149,6 +221,11 @@ export default function handler(req, res) {
     return new Date(case1.procedureDate) - new Date(case2.procedureDate)
   })
 
+  const dateFormattedFilteredJSON = filteredJSON.map(function(item) {
+    item.procedureDate = moment(item.procedureDate).utc().format('M/DD/YYYY')
+    return item;
+  });
 
-  res.status(200).json(filteredJSON);
+
+  res.status(200).json(dateFormattedFilteredJSON);
 }
