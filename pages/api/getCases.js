@@ -30,7 +30,7 @@ function createData(
     mrn,
     steps,
   };
-} //define steps
+}
 
 const fakeData = [
   createData(

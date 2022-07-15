@@ -39,7 +39,7 @@ export const caseCardProcedureInformation = [
   {
     label: "Provider",
     id: "provider",
-  },
+  }
 ];
 
 export const caseCardCaseIdentifiers = [
@@ -56,3 +56,8 @@ export const caseCardCaseIdentifiers = [
     id: "quickActions",
   }
 ];
+
+export interface Step {
+  text: string,
+  status: boolean
+}

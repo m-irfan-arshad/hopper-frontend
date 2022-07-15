@@ -4,6 +4,8 @@ import CaseDateGroup from '../components/caseDateGroup';
 import { useQuery } from 'react-query';
 import { styled, Box, Stack, Select, Button, Typography, FormControl, InputLabel, MenuItem } from "@mui/material";
 import { IosShare } from "@mui/icons-material";
+import { Step } from "../reference";
+
 
 interface SingleCase {
     caseID: string,
@@ -14,7 +16,7 @@ interface SingleCase {
     procedureLocation: string,
     proceduralist: string,
     mrn: string,
-    steps: Array<object>
+    steps: Step[]
 }
 
 interface CaseGroup {

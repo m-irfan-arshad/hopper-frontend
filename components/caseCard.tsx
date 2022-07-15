@@ -8,7 +8,7 @@ import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { caseCardProcedureInformation, caseCardCaseIdentifiers } from "../reference";
+import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step } from "../reference";
 import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -22,11 +22,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
-}
-
-interface Step {
-  text: string,
-  status: boolean
 }
 
 interface CaseCardProps {
@@ -67,7 +62,7 @@ function calculateProgressBarColor(numberOfCompletedSteps: number) {
 export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
 
-  const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status === true && acc + 1, 0);
+  const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
 
   const cardStyle = {
     paddingLeft: "10px",
