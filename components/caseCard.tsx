@@ -26,12 +26,12 @@ interface ExpandMoreProps extends IconButtonProps {
 
 interface Step {
   text: string,
-  status: string
+  status: boolean
 }
 
 interface CaseCardProps {
   row: {
-    [key: string]: string
+    [key: string]: any,
     firstName: string,
     lastName: string,
     dateOfBirth: string,
@@ -39,7 +39,7 @@ interface CaseCardProps {
     procedureLocation: string,
     proceduralist: string,
     mrn: string,
-    steps: Array<Step>
+    steps: Step[]
   }
 }
 
@@ -53,9 +53,21 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
+function calculateProgressBarColor(numberOfCompletedSteps: number) {
+  if (numberOfCompletedSteps < 2) {
+    return "#EF5350";
+  }
+  if (numberOfCompletedSteps < 5) {
+    return "#FFA726";
+  }
+  return "#66BB6A";
+}
+
 
 export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
+
+  const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status === true && acc + 1, 0);
 
   const cardStyle = {
     paddingLeft: "10px",
@@ -68,32 +80,21 @@ export default function CaseCard ({ row }: CaseCardProps) {
     borderBottom: expanded ? "1px solid #D8E4F4" : "none"
   };
 
-  const numberOfCompletedSteps = row.steps.reduce((acc, item) => acc + item.status, 0);
-  function calculateProgressBarColor() {
-    if (numberOfCompletedSteps < 2) {
-      return "#EF5350";
-    }
-    if (numberOfCompletedSteps < 5) {
-      return "#FFA726";
-    }
-    return "#66BB6A";
+  const linearProgressStyle = {
+    height: "11px", 
+    width: "130px", 
+    marginLeft: "auto", 
+    alignSelf: "center",
+    borderRadius: "10px",
+    "& .MuiLinearProgress-bar": {
+      backgroundColor: calculateProgressBarColor(numberOfCompletedSteps)
+    },
+    backgroundColor: "#D8E4F4"
   }
-  const progressBarColor = calculateProgressBarColor();
 
-const linearProgressStyle = {
-  height: 11, 
-  width: 130, 
-  marginLeft: "auto", 
-  alignSelf: "center",
-  borderRadius: "10px",
-  "& .MuiLinearProgress-bar": {
-    backgroundColor: progressBarColor
-  },
-  backgroundColor: "#D8E4F4"
-}
   return (
     <Box sx={{ marginTop: "15px" }}>
-      <Card sx={{ backgroundColor: "white", border: "1px solid #D8E4F4", boxShadow: "none"}}>
+      <Card sx={{ border: "1px solid #D8E4F4", boxShadow: "none"}}>
         <CardHeader
           avatar={
             <ExpandMore
@@ -130,26 +131,39 @@ const linearProgressStyle = {
               </Typography>
               { expanded ? 
                 <Button 
-                variant="outlined"
-                sx={{
-                  marginLeft: "auto", 
-                  alignSelf: "center",
-                  borderRadius: "10px",
-                  backgroundColor: "#F1F5F9",
-                  borderColor: "#D8E4F4"
-                }}
+                  variant="outlined"
+                  sx={{
+                    marginLeft: "auto", 
+                    alignSelf: "center",
+                    borderRadius: "10px",
+                    backgroundColor: "#F1F5F9",
+                    borderColor: "#D8E4F4"
+                  }}
                 >
-                  <BallotIcon sx={{marginLeft: "10px", height: "16px", width: "16px", color: "#42A5F5"}}/>
-                  <Typography sx={{padding: "5px", fontSize: "10px", color: "#42A5F5"}}>
-                  View Case Summary
-                    </Typography>
+                  <BallotIcon 
+                    sx={{
+                      marginLeft: "10px", 
+                      height: "16px", 
+                      width: "16px", 
+                      color: "#42A5F5"
+                      }}
+                  />
+                  <Typography 
+                    sx={{
+                      padding: "5px", 
+                      fontSize: "10px", 
+                      color: "#42A5F5"
+                    }}
+                  >
+                    View Case Summary
+                  </Typography>
                 </Button>
 
               : <LinearProgress 
-                variant="determinate" 
-                value={20 * numberOfCompletedSteps} 
-                sx={linearProgressStyle} 
-              />
+                  variant="determinate" 
+                  value={20 * numberOfCompletedSteps} 
+                  sx={linearProgressStyle} 
+                />
                 }
             </Box>
           }
@@ -161,27 +175,34 @@ const linearProgressStyle = {
           <Box
             sx={{
               width: "100%",
-              flexGrow: 1,
               display: "flex",
-              backgroundColor: "white",
             }}
           >
              <Box
-              sx={{
-                width: "100%",
-                flexGrow: 1,
-                padding: "0px !important",
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: "white",
-              }}
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
             <Grid
               container
               columns={5}
-              sx={{ borderBottom: "1px dotted #D8E4F4", borderRight: "1px dotted #D8E4F4", height: "50%", width: "100%" }}
+              sx={{ 
+                borderBottom: "1px dotted #D8E4F4", 
+                borderRight: "1px dotted #D8E4F4", 
+                height: "50%", 
+                width: "100%" 
+              }}
             >
-             <Box sx={{ display: "flex", marginTop: "25px",  width: "100%",  marginLeft: "10px"}}> 
+            <Box 
+              sx={{ 
+                display: "flex", 
+                marginTop: "25px",  
+                width: "100%",  
+                marginLeft: "10px"
+              }}
+            > 
               <Typography 
                 sx={{ 
                     fontSize: "10px", 
@@ -189,7 +210,7 @@ const linearProgressStyle = {
                     fontWeight: "600",  
                     marginRight: "40px",
                 }}
-                >
+              >
               <BiotechIcon sx={{color: "#42A5F5", marginRight: "5px"}}/>
                 {"Procedure Information"}
               </Typography>
@@ -212,7 +233,14 @@ const linearProgressStyle = {
               columns={5}
               sx={{ borderRight: "1px dotted #D8E4F4", height: "50%"}}
             >
-              <Box sx={{ display: "flex", width: "100%", marginTop: "25px", marginLeft: "10px"}}>
+              <Box 
+                sx={{ 
+                  display: "flex", 
+                  width: "100%", 
+                  marginTop: "25px", 
+                  marginLeft: "10px"
+                }}
+              >
                <Typography 
                   sx={{ 
                       fontSize: "10px", 
@@ -256,17 +284,17 @@ const linearProgressStyle = {
                       />
 
                       : <CircleOutlinedIcon
-                        sx={{
-                          height: "14px",
-                          width: "14px",
-                          marginRight: "5px",
-                          color: "#D8E4F4"
-                        }}
+                          sx={{
+                            height: "14px",
+                            width: "14px",
+                            marginRight: "5px",
+                            color: "#D8E4F4"
+                          }}
                       />
                     }
                     <ListItemText
                       primary={step.text}
-                      primaryTypographyProps={{fontSize: "10px", color: step.status && "#66BB6A"}}
+                      primaryTypographyProps={{fontSize: "10px", color: step.status ? "#66BB6A" : "inherit"}}
                     />
                   </ListItem>
                 ))}
