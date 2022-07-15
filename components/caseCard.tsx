@@ -49,10 +49,10 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 function calculateProgressBarColor(numberOfCompletedSteps: number) {
-  if (numberOfCompletedSteps < 2) {
+  if (numberOfCompletedSteps <= 1) {
     return "#EF5350";
   }
-  if (numberOfCompletedSteps < 5) {
+  if (numberOfCompletedSteps <= 4) {
     return "#FFA726";
   }
   return "#66BB6A";
@@ -156,7 +156,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
               : <LinearProgress 
                   variant="determinate" 
-                  value={20 * numberOfCompletedSteps} 
+                  value={20 * numberOfCompletedSteps}
+                  data-testid={'linearprogress'}
                   sx={linearProgressStyle} 
                 />
                 }
