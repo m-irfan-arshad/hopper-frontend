@@ -3,6 +3,7 @@ import CaseCard from "../components/caseCard";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import moment from "moment";
+import { Step } from "../reference";
 
 interface Props {
     date: string,
@@ -14,7 +15,8 @@ interface Props {
         procedureDate: string,
         procedureLocation: string,
         proceduralist: string,
-        mrn: string
+        mrn: string,
+        steps: Step[]
     }[]
 }
 
