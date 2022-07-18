@@ -209,7 +209,6 @@ export default function handler(req, res) {
   let filteredJSON = fakeData;
 
   if (req.query.dateRangeStart) {
-    console.log('date range start query')
     filteredJSON = filteredJSON.filter((data) =>
       moment(data.procedureDate)
         .utc()
