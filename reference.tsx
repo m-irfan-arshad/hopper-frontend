@@ -63,6 +63,7 @@ export interface Step {
 }
 
 export interface SingleCase {
+  [key: string]: any,
   caseID: string,
   firstName: string,
   lastName: string,
