@@ -23,15 +23,26 @@
 //   },
 // });
 
-export const caseCardSubFields = [
+export const caseCardProcedureInformation = [
   {
-    label: "Procedure Date",
+    label: "Date",
     id: "procedureDate",
   },
   {
     label: "Procedure Location",
     id: "procedureLocation",
   },
+  {
+    label: "Proceduralist",
+    id: "proceduralist",
+  },
+  {
+    label: "Provider",
+    id: "provider",
+  }
+];
+
+export const caseCardCaseIdentifiers = [
   {
     label: "Case ID",
     id: "caseID",
@@ -41,11 +52,25 @@ export const caseCardSubFields = [
     id: "mrn",
   },
   {
-    label: "Proceduralist",
-    id: "proceduralist",
-  },
-  {
     label: "Quick Actions",
     id: "quickActions",
-  },
+  }
 ];
+
+export interface Step {
+  text: string,
+  status: boolean
+}
+
+export interface SingleCase {
+  [key: string]: any,
+  caseID: string,
+  firstName: string,
+  lastName: string,
+  dateOfBirth: string,
+  procedureDate: string,
+  procedureLocation: string,
+  proceduralist: string,
+  mrn: string,
+  steps: Step[]
+}

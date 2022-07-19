@@ -2,19 +2,9 @@ import React from "react";
 import moment from "moment";
 import CaseDateGroup from '../components/caseDateGroup';
 import { useQuery } from 'react-query';
-import { styled, Box, Stack, Select, Button, Typography, FormControl, InputLabel, MenuItem } from "@mui/material";
+import { styled, Box, Stack, Select, Button, Typography, FormControl, MenuItem } from "@mui/material";
 import { IosShare } from "@mui/icons-material";
-
-interface SingleCase {
-    caseID: string,
-    firstName: string,
-    lastName: string,
-    dateOfBirth: string,
-    procedureDate: string,
-    procedureLocation: string,
-    proceduralist: string,
-    mrn: string
-}
+import { SingleCase } from "../reference";
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -40,9 +30,9 @@ export default function Dashboard() {
     }
 
     const caseGroups:CaseGroup = {};
-
+    
     data.forEach(function(singleCase: SingleCase) {
-        const date = singleCase.procedureDate.split('T')[0];
+        const date = singleCase.procedureDate;
             if (date in caseGroups) {
                 caseGroups[date].push(singleCase);
             } else {
