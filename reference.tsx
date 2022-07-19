@@ -61,3 +61,15 @@ export interface Step {
   text: string,
   status: boolean
 }
+
+export interface SingleCase {
+  caseID: string,
+  firstName: string,
+  lastName: string,
+  dateOfBirth: string,
+  procedureDate: string,
+  procedureLocation: string,
+  proceduralist: string,
+  mrn: string,
+  steps: Step[]
+}

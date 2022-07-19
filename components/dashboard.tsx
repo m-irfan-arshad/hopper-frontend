@@ -2,22 +2,9 @@ import React from "react";
 import moment from "moment";
 import CaseDateGroup from '../components/caseDateGroup';
 import { useQuery } from 'react-query';
-import { styled, Box, Stack, Select, Button, Typography, FormControl, InputLabel, MenuItem } from "@mui/material";
+import { styled, Box, Stack, Select, Button, Typography, FormControl, MenuItem } from "@mui/material";
 import { IosShare } from "@mui/icons-material";
-import { Step } from "../reference";
-
-
-interface SingleCase {
-    caseID: string,
-    firstName: string,
-    lastName: string,
-    dateOfBirth: string,
-    procedureDate: string,
-    procedureLocation: string,
-    proceduralist: string,
-    mrn: string,
-    steps: Step[]
-}
+import { SingleCase } from "../reference";
 
 interface CaseGroup {
     [key: string]: SingleCase[]

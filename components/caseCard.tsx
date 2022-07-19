@@ -1,41 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import Collapse from "@mui/material/Collapse";
+import { 
+  Card, 
+  CardHeader,
+  Collapse, 
+  Grid, 
+  Box, 
+  Typography, 
+  LinearProgress, 
+  List, ListItem, 
+  ListItemText, 
+  Button 
+} from "@mui/material";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step } from "../reference";
-import LinearProgress from '@mui/material/LinearProgress';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
-import BiotechIcon from '@mui/icons-material/Biotech';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import Button from '@mui/material/Button';
-import BallotIcon from '@mui/icons-material/Ballot';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { 
+  ArrowDropDownOutlined as ArrowDropDownOutlinedIcon,
+  CircleOutlined as CircleOutlinedIcon,
+  Biotech as BiotechIcon,
+  ContentPaste as ContentPasteIcon,
+  Ballot as BallotIcon,
+  CheckCircle as CheckCircleIcon
+} from "@mui/icons-material";
+import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase } from "../reference";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 
 interface CaseCardProps {
-  row: {
-    [key: string]: any,
-    firstName: string,
-    lastName: string,
-    dateOfBirth: string,
-    procedureDate: string,
-    procedureLocation: string,
-    proceduralist: string,
-    mrn: string,
-    steps: Step[]
-  }
+  row: SingleCase
 }
 
 const ExpandMore = styled((props: ExpandMoreProps) => {

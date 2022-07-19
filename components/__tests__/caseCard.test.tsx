@@ -4,14 +4,14 @@ import * as R from 'ramda';
 
 describe("CaseCard", () => {
   const row = {
-    caseID: 12345,
+    caseID: "12345",
     firstName: "Captain",
     lastName: "Whitebeard",
     dateOfBirth: "02/01/1990",
     procedureDate: "2022-05-05T00:00:00Z",
     procedureLocation: "Whitebeard's ship",
     proceduralist: "Doctor Whitebeard",
-    mrn: 5678567890,
+    mrn: "5678567890",
     steps: [
       { text: "Booking Sheet", status: true },
       { text: "Insurance Verification", status: true },
