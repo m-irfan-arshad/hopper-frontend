@@ -24,7 +24,6 @@ test('Validating Patient Card Fields', async ({ browser, baseURL }) => {
     expect(procedureCaseID == "Case ID").toBeTruthy();
     expect(procedureMRN == "MRN").toBeTruthy(); 
     expect(procedureQuickActions == "Quick Actions").toBeTruthy();
-
 });
 test('Validating Procedure Date Sorting', async ({ browser, baseURL }) => {
     const context = await browser.newContext();
