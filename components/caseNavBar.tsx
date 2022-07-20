@@ -67,8 +67,9 @@ export default function CaseNavBar() {
                     </FormGroup> */}
                 </StyledBox>
                 <Button variant="contained" startIcon={<Add />} sx={{
-                    backgroundColor: "#66BB6A",
-                    border: "1px solid #4DA551",
+                    backgroundColor: "green.main",
+                    border: 1,
+                    borderColor: "green.dark",
                     fontSize: "10px",
                     fontWeight: "700",
                     marginRight: "12px"

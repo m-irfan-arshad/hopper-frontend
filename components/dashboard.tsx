@@ -88,14 +88,14 @@ export default function Dashboard() {
                     </Box>
                 </Box>
                 <Button variant="contained" startIcon={<IosShare />} sx={{
-                    backgroundColor: "#D8E4F4",
+                    backgroundColor: "blue.light",
                     border: "none",
                     fontSize: "10px",
                     fontWeight: "700",
                     marginRight: "12px",
                     width: "80px",
                     height: "30px",
-                    color: "#42A5F5"
+                    color: "blue.main"
                 }}>
                     Export
                 </Button>

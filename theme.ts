@@ -1,14 +1,5 @@
 import { createTheme } from "@mui/material/styles";
 
-// const colors = {
-//     red: "#EF5350",
-//     yellow: "#FFA726",
-//     green: "#66BB6A",
-//     blue: "#42A5F5",
-//     lightBlue: "#D8E4F4",
-//     lightGrey: "#F1F5F9"
-// };
-
 declare module '@mui/material/styles' {
     interface PaletteOptions {
         blue?: {
@@ -30,6 +21,7 @@ declare module '@mui/material/styles' {
         },
         green?: {
             main?: string;
+            dark?: string;
         },
         gray?: {
             light?: string;
@@ -57,7 +49,8 @@ export const defaultTheme = createTheme({
             main: "#FFA726"
         },
         green: {
-            main: "#66BB6A"
+            main: "#66BB6A",
+            dark: "#4DA551"
         },
         gray: {
             light: "#F1F5F9"
@@ -75,7 +68,7 @@ export const defaultTheme = createTheme({
         MuiTypography: {
             styleOverrides: {
                 root: {
-                    fontSize: "12px",
+                    fontSize: "10px",
                     fontFamily: "Roboto"
                 }
             },

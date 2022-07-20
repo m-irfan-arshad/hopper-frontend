@@ -43,12 +43,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 function calculateProgressBarColor(numberOfCompletedSteps: number) {
   if (numberOfCompletedSteps <= 1) {
-    return "#EF5350";
+    return "red.main";
   }
   if (numberOfCompletedSteps <= 4) {
-    return "#FFA726";
+    return "yellow.main";
   }
-  return "#66BB6A";
+  return "green.main";
 }
 
 
@@ -65,7 +65,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
     "& .MuiButtonBase-root": {
       padding: 0,
     },
-    borderBottom: expanded ? "1px solid #D8E4F4" : "none"
+    borderBottom: expanded ? 1 : "none",
+    borderColor: "blue.light", 
   };
 
   const linearProgressStyle = {
@@ -77,12 +78,12 @@ export default function CaseCard ({ row }: CaseCardProps) {
     "& .MuiLinearProgress-bar": {
       backgroundColor: calculateProgressBarColor(numberOfCompletedSteps)
     },
-    backgroundColor: "#D8E4F4"
+    backgroundColor: "blue.light"
   }
 
   return (
     <Box sx={{ marginTop: "15px" }}>
-      <Card sx={{ border: "1px solid #D8E4F4", boxShadow: "none"}}>
+      <Card sx={{ border: 1, borderColor: "blue.light", boxShadow: "none"}}>
         <CardHeader
           avatar={
             <ExpandMore
@@ -124,8 +125,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
                     marginLeft: "auto", 
                     alignSelf: "center",
                     borderRadius: "10px",
-                    backgroundColor: "#F1F5F9",
-                    borderColor: "#D8E4F4"
+                    backgroundColor: "gray.light",
+                    borderColor: "blue.light"
                   }}
                 >
                   <BallotIcon 
@@ -133,14 +134,14 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       marginLeft: "10px", 
                       height: "16px", 
                       width: "16px", 
-                      color: "#42A5F5"
+                      color: "blue.main"
                       }}
                   />
                   <Typography 
                     sx={{
                       padding: "5px", 
-                      fontSize: "10px", 
-                      color: "#42A5F5"
+                      //fontSize: "10px", 
+                      color: "blue.main"
                     }}
                   >
                     View Case Summary
@@ -177,8 +178,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
               container
               columns={5}
               sx={{ 
-                borderBottom: "1px dotted #D8E4F4", 
-                borderRight: "1px dotted #D8E4F4", 
+                borderBottom: "1px dotted", 
+                borderRight: "1px dotted", 
+                borderColor: "blue.light",
                 height: "50%", 
                 width: "100%" 
               }}
@@ -193,23 +195,22 @@ export default function CaseCard ({ row }: CaseCardProps) {
             > 
               <Typography 
                 sx={{ 
-                    fontSize: "10px", 
+                    //fontSize: "10px", 
                     display: "flex", 
                     fontWeight: "600",  
                     marginRight: "40px",
+                    width: "140px"
                 }}
               >
-              <BiotechIcon sx={{color: "#42A5F5", marginRight: "5px"}}/>
+              <BiotechIcon sx={{color: "blue.main", marginRight: "5px"}}/>
                 {"Procedure Information"}
               </Typography>
               {caseCardProcedureInformation.map((name, index) => (
                   <Grid item key={index} sx={{width: "145px",  padding: "0 20px 0 20px"}}>
-                    <Typography
-                      sx={{ fontSize: "10px"}}
-                    >
+                    <Typography>
                       {name.label}
                     </Typography>
-                    <Typography sx={{ fontSize: "10px"}}>
+                    <Typography>
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
@@ -219,7 +220,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Grid
               container
               columns={5}
-              sx={{ borderRight: "1px dotted #D8E4F4", height: "50%"}}
+              sx={{ borderRight: "1px dotted", borderColor: "blue.light", height: "50%"}}
             >
               <Box 
                 sx={{ 
@@ -238,17 +239,15 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       marginRight: "40px"
                   }}
                 >
-                 <ContentPasteIcon sx={{color: "#42A5F5", marginRight: "5px"}} />
+                 <ContentPasteIcon sx={{color: "blue.main", marginRight: "5px"}} />
                 {"Case Identifiers"}
               </Typography>
             {caseCardCaseIdentifiers.map((name, index) => (
                   <Grid item key={index} sx={{width: "145px", padding: "0 20px 0 20px"}}>
-                    <Typography
-                      sx={{ fontSize: "10px",}}
-                    >
+                    <Typography>
                       {name.label}
                     </Typography>
-                    <Typography sx={{ fontSize: "10px"}}>
+                    <Typography >
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
@@ -267,7 +266,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           height: "14px",
                           width: "14px",
                           marginRight: "5px",
-                          color: "#66BB6A"
+                          color: "green.main"
                         }}
                       />
 
@@ -276,13 +275,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
                             height: "14px",
                             width: "14px",
                             marginRight: "5px",
-                            color: "#D8E4F4"
+                            color: "blue.light"
                           }}
                       />
                     }
                     <ListItemText
                       primary={step.text}
-                      primaryTypographyProps={{fontSize: "10px", color: step.status ? "#66BB6A" : "inherit"}}
+                      primaryTypographyProps={{fontSize: "10px", color: step.status ? "green.main" : "inherit"}}
                     />
                   </ListItem>
                 ))}
