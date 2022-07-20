@@ -150,7 +150,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
               : <LinearProgress 
                   variant="determinate" 
                   value={20 * numberOfCompletedSteps}
-                  data-testid={'linearprogress'}
                   sx={linearProgressStyle} 
                 />
                 }
