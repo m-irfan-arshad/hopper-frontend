@@ -1,5 +1,7 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import CaseCard from "../caseCard";
+import { ThemeProvider } from "@mui/material/styles";
+import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
 
 describe("CaseCard", () => {
@@ -41,6 +43,14 @@ describe("CaseCard", () => {
   });
 
   test("renders progress bar with varied lengths/colors", () => {
+    const {container} = render(
+      <ThemeProvider theme={defaultTheme}>
+        <CaseCard row={row} />
+      </ThemeProvider>
+    );
+
+   expect(container.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #FFA726');
+
     const rowClone = R.clone(row);
     rowClone.steps =  [
       { text: "Booking Sheet", status: false },
@@ -50,11 +60,13 @@ describe("CaseCard", () => {
       { text: "Tray(s) Delivery", status: false }
     ];
 
-    const {container, rerender} = render(
-      <CaseCard row={rowClone} />
+    const {container: containerClone} = render(
+      <ThemeProvider theme={defaultTheme}>
+        <CaseCard row={rowClone} />
+      </ThemeProvider>
     );
 
-    expect(container.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #EF5350');
+    expect(containerClone.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #EF5350');
 
     const rowClone2 = R.clone(row);
     rowClone2.steps =  [
@@ -65,10 +77,12 @@ describe("CaseCard", () => {
       { text: "Tray(s) Delivery", status: true }
     ];
        
-    rerender(
-      <CaseCard row={rowClone2} />
-    ); 
+    const {container: containerClone2} = render(
+      <ThemeProvider theme={defaultTheme}>
+        <CaseCard row={rowClone2} />
+      </ThemeProvider>
+    );
 
-    expect(container.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #66BB6A');
+    expect(containerClone2.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #66BB6A');
   });
 });
