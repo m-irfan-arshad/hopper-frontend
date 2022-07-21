@@ -62,7 +62,7 @@ export const defaultTheme = createTheme({
                 root: {
                     textTransform: "capitalize",
                     boxShadow: "none",
-                    fontSize: "10px",
+                    fontSize: "0.625rem",
                     fontWeight: "700"
                 }
             }
@@ -72,26 +72,32 @@ export const defaultTheme = createTheme({
                 {
                     props: { variant: 'h1' },
                     style: {
+                        fontSize: "0.625rem",
                         fontWeight: "700",
                     }
                 },
                 {
                     props: { variant: 'h2' },
                     style: {
-                        fontSize: "16px",
+                        fontSize: "1rem",
+                    }
+                },
+                {
+                    props: { variant: 'body1' },
+                    style: {
+                        fontSize: "0.625rem",
                     }
                 },
                 {
                     props: { variant: 'body2' },
                     style: {
                         fontStyle: "italic",
-                        fontSize: "12px",
+                        fontSize: "0.75rem",
                     }
                 },
             ],
             styleOverrides: {
                 root: {
-                    fontSize: "10px",
                     fontFamily: "Roboto"
                 }
             },

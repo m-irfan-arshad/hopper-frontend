@@ -96,8 +96,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </ExpandMore>
           }
           title={
-            <Box sx={{ display: "flex", color: "black.main" }}>
-              {`${row.firstName} ${row.lastName}`}
+            <Box sx={{ display: "flex", alignItems: "center", color: "black.main" }}>
+              <Typography variant="h2">{`${row.firstName} ${row.lastName}`}</Typography>
               <Typography
                 variant="body2"
                 sx={{ marginLeft: "10px", marginTop: "5px" }}
@@ -142,7 +142,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 }
             </Box>
           }
-          titleTypographyProps={{ fontSize: "16px", fontStyle: "normal" }}
+          disableTypography
           sx={cardStyle}
         />
 
@@ -263,10 +263,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <ListItemText
-                      primary={step.text}
-                      primaryTypographyProps={{fontSize: "10px", color: step.status ? "green.main" : "inherit"}}
-                    />
+                    <Typography sx={{color: step.status ? "green.main" : "inherit"}}>
+                      {step.text}
+                    </Typography>
                   </ListItem>
                 ))}
             </List>
