@@ -11,7 +11,7 @@ interface CaseGroup {
 }
 
 const StyledMenuItem = styled(MenuItem)({
-    fontSize: "11px"
+    fontSize: "0.688rem"
 })
 
 export default function Dashboard() {  
@@ -46,14 +46,14 @@ export default function Dashboard() {
             justifyContent: "center"
         }}>
           <Stack sx={{
-              width: "960px"
+              width: "60rem"
           }}>
             <Box sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                height: "60px",
-                borderBottom: "1px solid #D8E4F4"
+                height: "3.75rem",
+                borderBottom: "0.063rem solid #D8E4F4"
             }}>
                 <Box sx={{
                     display: "flex",
@@ -61,7 +61,7 @@ export default function Dashboard() {
                     justifyContent: "center"
                 }}>
                     <Typography sx={{
-                        fontSize: "16px",
+                        fontSize: "1rem",
                         color: "black.main",
                         fontWeight: "700"
                     }}>
@@ -74,9 +74,9 @@ export default function Dashboard() {
                             id="case-sort-select"
                             defaultValue={1}
                             sx={{
-                                fontSize: "10px",
-                                height: "32px",
-                                marginLeft: "10px",
+                                fontSize: "0.625rem",
+                                height: "2rem",
+                                marginLeft: "0.625rem",
                                 borderRadius: "none"
                             }}
                             >
@@ -89,9 +89,9 @@ export default function Dashboard() {
                 <Button variant="contained" startIcon={<IosShare />} sx={{
                     backgroundColor: "blue.light",
                     border: "none",
-                    marginRight: "12px",
-                    width: "80px",
-                    height: "30px",
+                    marginRight: "0.75rem",
+                    width: "5rem",
+                    height: "1.875rem",
                     color: "blue.main"
                 }}>
                     Export

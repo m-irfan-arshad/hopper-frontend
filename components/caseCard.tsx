@@ -58,9 +58,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
 
   const cardStyle = {
-    paddingLeft: "10px",
+    paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
-      margin: "0px"
+      margin: "0rem"
     },
     "& .MuiButtonBase-root": {
       padding: 0,
@@ -70,11 +70,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
   };
 
   const linearProgressStyle = {
-    height: "11px", 
-    width: "130px", 
+    height: "0.688rem", 
+    width: "8.125rem", 
     marginLeft: "auto", 
     alignSelf: "center",
-    borderRadius: "10px",
+    borderRadius: "0.625rem",
     "& .MuiLinearProgress-bar": {
       backgroundColor: calculateProgressBarColor(numberOfCompletedSteps)
     },
@@ -82,7 +82,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
   }
 
   return (
-    <Box sx={{ marginTop: "15px" }}>
+    <Box sx={{ marginTop: "0.938rem" }}>
       <Card sx={{ border: 1, borderColor: "blue.light", boxShadow: "none"}}>
         <CardHeader
           avatar={
@@ -100,13 +100,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
               <Typography variant="h2">{`${row.firstName} ${row.lastName}`}</Typography>
               <Typography
                 variant="body2"
-                sx={{ marginLeft: "10px", marginTop: "5px" }}
+                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ marginTop: "5px", marginLeft: "5px" }}
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -116,20 +116,20 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   sx={{
                     marginLeft: "auto", 
                     alignSelf: "center",
-                    borderRadius: "10px",
+                    borderRadius: "0.625rem",
                     backgroundColor: "gray.light",
                     borderColor: "blue.light"
                   }}
                 >
                   <BallotIcon 
                     sx={{
-                      marginLeft: "10px", 
-                      height: "16px", 
-                      width: "16px", 
+                      marginLeft: "0.625rem", 
+                      height: "1rem", 
+                      width: "1rem", 
                       color: "blue.main"
                       }}
                   />
-                  <Typography variant="h1" sx={{ padding: "5px", color: "blue.main"}}>
+                  <Typography variant="h1" sx={{ padding: "0.313rem", color: "blue.main"}}>
                     View Case Summary
                   </Typography>
                 </Button>
@@ -164,8 +164,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
               container
               columns={5}
               sx={{ 
-                borderBottom: "1px dotted", 
-                borderRight: "1px dotted", 
+                borderBottom: "0.063rem dotted", 
+                borderRight: "0.063rem dotted", 
                 borderColor: "blue.light",
                 height: "50%", 
                 width: "100%" 
@@ -174,24 +174,24 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Box 
               sx={{ 
                 display: "flex", 
-                marginTop: "25px",  
+                marginTop: "1.563rem",  
                 width: "100%",  
-                marginLeft: "10px"
+                marginLeft: "0.625rem"
               }}
             > 
               <Typography 
                 variant="h1"
                 sx={{ 
                     display: "flex", 
-                    marginRight: "40px",
-                    width: "140px"
+                    marginRight: "2.5rem",
+                    width: "8.75rem"
                 }}
               >
-              <BiotechIcon sx={{color: "blue.main", marginRight: "5px"}}/>
+              <BiotechIcon sx={{color: "blue.main", marginRight: "0.313rem"}}/>
                 {"Procedure Information"}
               </Typography>
               {caseCardProcedureInformation.map((name, index) => (
-                  <Grid item key={index} sx={{width: "145px",  padding: "0 20px 0 20px"}}>
+                  <Grid item key={index} sx={{width: "9.063rem",  padding: "0 1.25rem 0 1.25rem"}}>
                     <Typography>
                       {name.label}
                     </Typography>
@@ -205,29 +205,29 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Grid
               container
               columns={5}
-              sx={{ borderRight: "1px dotted", borderColor: "blue.light", height: "50%"}}
+              sx={{ borderRight: "0.063rem dotted", borderColor: "blue.light", height: "50%"}}
             >
               <Box 
                 sx={{ 
                   display: "flex", 
                   width: "100%", 
-                  marginTop: "25px", 
-                  marginLeft: "10px"
+                  marginTop: "1.563rem", 
+                  marginLeft: "0.625rem"
                 }}
               >
                <Typography 
                   variant="h1"
                   sx={{ 
                       display: "flex", 
-                      width: "140px" ,
-                      marginRight: "40px"
+                      width: "8.75rem" ,
+                      marginRight: "2.5rem"
                   }}
                 >
-                 <ContentPasteIcon sx={{color: "blue.main", marginRight: "5px"}} />
+                 <ContentPasteIcon sx={{color: "blue.main", marginRight: "0.313rem"}} />
                 {"Case Identifiers"}
               </Typography>
             {caseCardCaseIdentifiers.map((name, index) => (
-                  <Grid item key={index} sx={{width: "145px", padding: "0 20px 0 20px"}}>
+                  <Grid item key={index} sx={{width: "9.063rem", padding: "0 1.25rem 0 1.25rem"}}>
                     <Typography>
                       {name.label}
                     </Typography>
@@ -247,18 +247,18 @@ export default function CaseCard ({ row }: CaseCardProps) {
                     { step.status ?
                       <CheckCircleIcon
                         sx={{
-                          height: "14px",
-                          width: "14px",
-                          marginRight: "5px",
+                          height: "0.875rem",
+                          width: "0.875rem",
+                          marginRight: "0.313rem",
                           color: "green.main"
                         }}
                       />
 
                       : <CircleOutlinedIcon
                           sx={{
-                            height: "14px",
-                            width: "14px",
-                            marginRight: "5px",
+                            height: "0.875rem",
+                            width: "0.875rem",
+                            marginRight: "0.313rem",
                             color: "blue.light"
                           }}
                       />

@@ -10,7 +10,7 @@ export default function CaseNavBar() {
     })
 
     const StyledMenuItem = styled(MenuItem)({
-        fontSize: "11px"
+        fontSize: "0.688rem"
     })
 
     return (
@@ -19,10 +19,10 @@ export default function CaseNavBar() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            height: "60px",
-            boxShadow: "0px 1px 0px #D8E4F4"
+            height: "3.75rem",
+            boxShadow: "0rem 0.063rem 0rem #D8E4F4"
         }}>
-            <StyledBox sx={{ width: "960px" }}>
+            <StyledBox sx={{ width: "60rem" }}>
                 <StyledBox>
                     <FormControl>
                         <Select
@@ -30,10 +30,9 @@ export default function CaseNavBar() {
                             id="case-date-select"
                             defaultValue={1}
                             sx={{
-                                fontSize: "10px",
-                                height: "32px",
-                                marginLeft: "10px",
-                                // border: "1px solid #D8E4F4",
+                                fontSize: "0.625rem",
+                                height: "2rem",
+                                marginLeft: "0.625rem",
                                 borderRadius: "none"
                             }}
                         >
@@ -48,10 +47,9 @@ export default function CaseNavBar() {
                             id="case-step-select"
                             defaultValue={1}
                             sx={{
-                                fontSize: "10px",
-                                height: "32px",
-                                marginLeft: "10px",
-                                // border: "1px solid #D8E4F4",
+                                fontSize: "0.625rem",
+                                height: "2rem",
+                                marginLeft: "0.625rem",
                                 borderRadius: "none"
                             }}
                         >
@@ -62,15 +60,12 @@ export default function CaseNavBar() {
                             <StyledMenuItem value={5}>Step: Vendor Confirmation</StyledMenuItem>
                         </Select>
                     </FormControl>
-                    {/* <FormGroup sx={{ color: "black.main", fontSize: "11px" }}>
-                        <FormControlLabel control={<Checkbox />} label="Show Completed Cases" />
-                    </FormGroup> */}
                 </StyledBox>
                 <Button variant="contained" startIcon={<Add />} sx={{
                     backgroundColor: "green.main",
                     border: 1,
                     borderColor: "green.dark",
-                    marginRight: "12px"
+                    marginRight: "0.75rem"
                 }}>
                     Create Case
                 </Button>

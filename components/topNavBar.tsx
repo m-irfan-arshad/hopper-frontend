@@ -17,20 +17,20 @@ export default function TopNavBar() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              height: "60px"
+              height: "3.75rem"
           }}>
-            <StyledBox sx={{ width: "960px" }}>
+            <StyledBox sx={{ width: "60rem" }}>
               <StyledBox>
                 <Image
                   src={logo}
                   alt="logo"
-                  width="120px"
-                  height="50px"
+                  width="7.5rem"
+                  height="3.125rem"
                 />
               </StyledBox>
               <StyledBox>
                 <NotificationImportant sx={{
-                    marginRight: "25px"
+                    marginRight: "1.563rem"
                 }}/>
                 <Typography variant="h1">
                 Welcome, Ben
