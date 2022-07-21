@@ -24,8 +24,8 @@ export default function TopNavBar() {
                 <Image
                   src={logo}
                   alt="logo"
-                  width="7.5rem"
-                  height="3.125rem"
+                  width="120px"
+                  height="50px"
                 />
               </StyledBox>
               <StyledBox>
