@@ -61,7 +61,9 @@ export const defaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     textTransform: "capitalize",
-                    boxShadow: "none"
+                    boxShadow: "none",
+                    fontSize: "10px",
+                    fontWeight: "700"
                 }
             }
         },

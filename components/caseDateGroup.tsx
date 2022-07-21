@@ -17,7 +17,6 @@ export default function caseDateGroup(props: Props) {
       fontSize: "12px",
       color: "black.main",
       fontStyle: "italic",
-      //fontFamily: "Roboto",
       marginTop: "20px"
     }}>
       {`${moment(date).format('MMMM D, YYYY')} (${list.length} cases)`}

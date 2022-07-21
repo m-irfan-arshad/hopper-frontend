@@ -140,8 +140,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   <Typography 
                     sx={{
                       padding: "5px", 
-                      //fontSize: "10px", 
-                      color: "blue.main"
+                      color: "blue.main",
+                      fontWeight: "700"
                     }}
                   >
                     View Case Summary
@@ -195,7 +195,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
             > 
               <Typography 
                 sx={{ 
-                    //fontSize: "10px", 
                     display: "flex", 
                     fontWeight: "600",  
                     marginRight: "40px",

@@ -70,8 +70,6 @@ export default function CaseNavBar() {
                     backgroundColor: "green.main",
                     border: 1,
                     borderColor: "green.dark",
-                    fontSize: "10px",
-                    fontWeight: "700",
                     marginRight: "12px"
                 }}>
                     Create Case

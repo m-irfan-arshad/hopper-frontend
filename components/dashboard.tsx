@@ -77,7 +77,6 @@ export default function Dashboard() {
                                 fontSize: "10px",
                                 height: "32px",
                                 marginLeft: "10px",
-                                // border: "1px solid #D8E4F4",
                                 borderRadius: "none"
                             }}
                             >
@@ -90,8 +89,6 @@ export default function Dashboard() {
                 <Button variant="contained" startIcon={<IosShare />} sx={{
                     backgroundColor: "blue.light",
                     border: "none",
-                    fontSize: "10px",
-                    fontWeight: "700",
                     marginRight: "12px",
                     width: "80px",
                     height: "30px",
