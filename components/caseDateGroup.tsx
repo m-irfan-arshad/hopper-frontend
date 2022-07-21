@@ -13,12 +13,7 @@ export default function caseDateGroup(props: Props) {
     const { date, list } = props;
   return (
     <Box sx={{ marginBottom: "20px" }}>
-    <Typography sx={{
-      fontSize: "12px",
-      color: "black.main",
-      fontStyle: "italic",
-      marginTop: "20px"
-    }}>
+    <Typography variant="body2" sx={{ color: "black.main", marginTop: "20px" }}>
       {`${moment(date).format('MMMM D, YYYY')} (${list.length} cases)`}
     </Typography>
     {

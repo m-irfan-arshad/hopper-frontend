@@ -68,6 +68,27 @@ export const defaultTheme = createTheme({
             }
         },
         MuiTypography: {
+            variants: [
+                {
+                    props: { variant: 'h1' },
+                    style: {
+                        fontWeight: "700",
+                    }
+                },
+                {
+                    props: { variant: 'h2' },
+                    style: {
+                        fontSize: "16px",
+                    }
+                },
+                {
+                    props: { variant: 'body2' },
+                    style: {
+                        fontStyle: "italic",
+                        fontSize: "12px",
+                    }
+                },
+            ],
             styleOverrides: {
                 root: {
                     fontSize: "10px",

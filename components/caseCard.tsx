@@ -99,22 +99,14 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Box sx={{ display: "flex", color: "black.main" }}>
               {`${row.firstName} ${row.lastName}`}
               <Typography
-                sx={{
-                  marginLeft: "10px",
-                  fontStyle: "italic",
-                  fontSize: "12px",
-                  marginTop: "5px"
-                }}
+                variant="body2"
+                sx={{ marginLeft: "10px", marginTop: "5px" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
-                sx={{
-                  fontStyle: "italic",
-                  fontSize: "12px",
-                  marginTop: "5px",
-                  marginLeft: "5px"
-                }}
+                variant="body2"
+                sx={{ marginTop: "5px", marginLeft: "5px" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -137,13 +129,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       color: "blue.main"
                       }}
                   />
-                  <Typography 
-                    sx={{
-                      padding: "5px", 
-                      color: "blue.main",
-                      fontWeight: "700"
-                    }}
-                  >
+                  <Typography variant="h1" sx={{ padding: "5px", color: "blue.main"}}>
                     View Case Summary
                   </Typography>
                 </Button>
@@ -156,7 +142,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 }
             </Box>
           }
-          titleTypographyProps={{ fontSize: "16px" }}
+          titleTypographyProps={{ fontSize: "16px", fontStyle: "normal" }}
           sx={cardStyle}
         />
 
@@ -194,9 +180,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
               }}
             > 
               <Typography 
+                variant="h1"
                 sx={{ 
                     display: "flex", 
-                    fontWeight: "600",  
                     marginRight: "40px",
                     width: "140px"
                 }}
@@ -230,10 +216,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 }}
               >
                <Typography 
+                  variant="h1"
                   sx={{ 
-                      fontSize: "10px", 
                       display: "flex", 
-                      fontWeight: "600",  
                       width: "140px" ,
                       marginRight: "40px"
                   }}
@@ -246,7 +231,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                     <Typography>
                       {name.label}
                     </Typography>
-                    <Typography >
+                    <Typography>
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
