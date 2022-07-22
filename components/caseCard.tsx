@@ -90,7 +90,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
               expand={expanded}
               onClick={() => setExpanded(!expanded)}
               aria-expanded={expanded}
-              aria-label="show more"
             >
               <ArrowDropDownOutlinedIcon sx={{ color: "black" }} />
             </ExpandMore>

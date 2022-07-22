@@ -23,7 +23,7 @@ describe("CaseCard", () => {
     ]
   };
   test("renders the caseCard and can expand it", async () => {
-    const { getByText, queryByText, getByLabelText } = render(
+    const { getByText, queryByText, getByTestId } = render(
       <CaseCard row={row} />
     );
 
@@ -34,8 +34,8 @@ describe("CaseCard", () => {
     expect(queryByText("Doctor Whitebeard")).not.toBeInTheDocument();
     expect(queryByText("View Case Summary")).not.toBeInTheDocument();
 
-    expect(getByLabelText("show more")).toBeInTheDocument();
-    fireEvent.click(getByLabelText("show more"));
+    expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
+    fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
 
     expect(queryByText("Whitebeard's ship")).toBeInTheDocument();
     expect(queryByText("Doctor Whitebeard")).toBeInTheDocument();
