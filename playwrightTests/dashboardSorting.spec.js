@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { test, expect } = require('@playwright/test');
+const { DashboardVariables } = require('./dashboard-variables');
 
 
 test.describe('Landing Page Features', () => {
@@ -8,10 +9,10 @@ test.describe('Landing Page Features', () => {
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {
-        const dropDownArrow = await page.locator('[data-testid=ArrowDropDownOutlinedIcon]');
-        const procedureDateGroup = await page.locator(".MuiTypography-root.MuiTypography-body2").nth(0).textContent();
-        await dropDownArrow.nth(0).click();
-        const procedureDate = await page.locator(".MuiTypography-root.MuiTypography-body1").nth(2).textContent();
+        const dashboard = new DashboardVariables(page);
+        await dashboard.openFirstPatientDropDown();
+        const procedureDateGroup = await dashboard.procedureDateGroupContent();
+        const procedureDate = await dashboard.procedureDateContent();
         const procedureDateFormatted = moment.utc(procedureDate).format("MM-DD-YYYY");
         const procedureDateGroupFormatted = moment.utc(procedureDateGroup).format("MM-DD-YYYY");
         expect(procedureDateFormatted == procedureDateGroupFormatted).toBeTruthy();
