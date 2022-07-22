@@ -21,7 +21,7 @@ export function Home({ flags }: Props) {
   return (
     <QueryClientProvider client={queryClient}>
       <Box sx={{
-        backgroundColor: "blue.light",
+        backgroundColor: "gray.light",
         minHeight: "100vh"
       }}>
         <Head>

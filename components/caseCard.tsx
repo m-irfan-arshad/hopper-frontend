@@ -43,12 +43,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 function calculateProgressBarColor(numberOfCompletedSteps: number) {
   if (numberOfCompletedSteps <= 1) {
-    return "#EF5350";
+    return "red.main";
   }
   if (numberOfCompletedSteps <= 4) {
-    return "#FFA726";
+    return "yellow.main";
   }
-  return "#66BB6A";
+  return "green.main";
 }
 
 
@@ -58,62 +58,54 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
 
   const cardStyle = {
-    paddingLeft: "10px",
+    paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
-      margin: "0px"
+      margin: "0rem"
     },
     "& .MuiButtonBase-root": {
       padding: 0,
     },
-    borderBottom: expanded ? "1px solid #D8E4F4" : "none"
+    borderBottom: expanded ? 1 : "none",
+    borderColor: "blue.light", 
   };
 
   const linearProgressStyle = {
-    height: "11px", 
-    width: "130px", 
+    height: "0.688rem", 
+    width: "8.125rem", 
     marginLeft: "auto", 
     alignSelf: "center",
-    borderRadius: "10px",
+    borderRadius: "0.625rem",
     "& .MuiLinearProgress-bar": {
       backgroundColor: calculateProgressBarColor(numberOfCompletedSteps)
     },
-    backgroundColor: "#D8E4F4"
+    backgroundColor: "blue.light"
   }
 
   return (
-    <Box sx={{ marginTop: "15px" }}>
-      <Card sx={{ border: "1px solid #D8E4F4", boxShadow: "none"}}>
+    <Box sx={{ marginTop: "0.938rem" }}>
+      <Card sx={{ border: 1, borderColor: "blue.light", boxShadow: "none"}}>
         <CardHeader
           avatar={
             <ExpandMore
               expand={expanded}
               onClick={() => setExpanded(!expanded)}
               aria-expanded={expanded}
-              aria-label="show more"
             >
               <ArrowDropDownOutlinedIcon sx={{ color: "black" }} />
             </ExpandMore>
           }
           title={
-            <Box sx={{ display: "flex", color: "black.main" }}>
-              {`${row.firstName} ${row.lastName}`}
+            <Box sx={{ display: "flex", alignItems: "center", color: "black.main" }}>
+              <Typography variant="h2">{`${row.firstName} ${row.lastName}`}</Typography>
               <Typography
-                sx={{
-                  marginLeft: "10px",
-                  fontStyle: "italic",
-                  fontSize: "12px",
-                  marginTop: "5px"
-                }}
+                variant="body2"
+                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
-                sx={{
-                  fontStyle: "italic",
-                  fontSize: "12px",
-                  marginTop: "5px",
-                  marginLeft: "5px"
-                }}
+                variant="body2"
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -123,26 +115,20 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   sx={{
                     marginLeft: "auto", 
                     alignSelf: "center",
-                    borderRadius: "10px",
-                    backgroundColor: "#F1F5F9",
-                    borderColor: "#D8E4F4"
+                    borderRadius: "0.625rem",
+                    backgroundColor: "gray.light",
+                    borderColor: "blue.light"
                   }}
                 >
                   <BallotIcon 
                     sx={{
-                      marginLeft: "10px", 
-                      height: "16px", 
-                      width: "16px", 
-                      color: "#42A5F5"
+                      marginLeft: "0.625rem", 
+                      height: "1rem", 
+                      width: "1rem", 
+                      color: "blue.main"
                       }}
                   />
-                  <Typography 
-                    sx={{
-                      padding: "5px", 
-                      fontSize: "10px", 
-                      color: "#42A5F5"
-                    }}
-                  >
+                  <Typography variant="h1" sx={{ padding: "0.313rem", color: "blue.main"}}>
                     View Case Summary
                   </Typography>
                 </Button>
@@ -150,13 +136,12 @@ export default function CaseCard ({ row }: CaseCardProps) {
               : <LinearProgress 
                   variant="determinate" 
                   value={20 * numberOfCompletedSteps}
-                  data-testid={'linearprogress'}
                   sx={linearProgressStyle} 
                 />
                 }
             </Box>
           }
-          titleTypographyProps={{ fontSize: "16px" }}
+          disableTypography
           sx={cardStyle}
         />
 
@@ -178,8 +163,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
               container
               columns={5}
               sx={{ 
-                borderBottom: "1px dotted #D8E4F4", 
-                borderRight: "1px dotted #D8E4F4", 
+                borderBottom: "0.063rem dotted", 
+                borderRight: "0.063rem dotted", 
+                borderColor: "blue.light",
                 height: "50%", 
                 width: "100%" 
               }}
@@ -187,30 +173,28 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Box 
               sx={{ 
                 display: "flex", 
-                marginTop: "25px",  
+                alignItems: "center",  
                 width: "100%",  
-                marginLeft: "10px"
+                marginLeft: "0.625rem"
               }}
             > 
               <Typography 
+                variant="h1"
                 sx={{ 
-                    fontSize: "10px", 
                     display: "flex", 
-                    fontWeight: "600",  
-                    marginRight: "40px",
+                    marginRight: "2.5rem",
+                    width: "8.75rem"
                 }}
               >
-              <BiotechIcon sx={{color: "#42A5F5", marginRight: "5px"}}/>
+              <BiotechIcon sx={{color: "blue.main", marginRight: "0.313rem"}}/>
                 {"Procedure Information"}
               </Typography>
               {caseCardProcedureInformation.map((name, index) => (
-                  <Grid item key={index} sx={{width: "145px",  padding: "0 20px 0 20px"}}>
-                    <Typography
-                      sx={{ fontSize: "10px"}}
-                    >
+                  <Grid item key={index} sx={{width: "9.063rem",  padding: "0 1.25rem 0 1.25rem"}}>
+                    <Typography>
                       {name.label}
                     </Typography>
-                    <Typography sx={{ fontSize: "10px"}}>
+                    <Typography>
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
@@ -220,36 +204,33 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Grid
               container
               columns={5}
-              sx={{ borderRight: "1px dotted #D8E4F4", height: "50%"}}
+              sx={{ borderRight: "0.063rem dotted", borderColor: "blue.light", height: "50%"}}
             >
               <Box 
                 sx={{ 
                   display: "flex", 
                   width: "100%", 
-                  marginTop: "25px", 
-                  marginLeft: "10px"
+                  alignItems: "center",  
+                  marginLeft: "0.625rem"
                 }}
               >
                <Typography 
+                  variant="h1"
                   sx={{ 
-                      fontSize: "10px", 
                       display: "flex", 
-                      fontWeight: "600",  
-                      width: "140px" ,
-                      marginRight: "40px"
+                      width: "8.75rem" ,
+                      marginRight: "2.5rem"
                   }}
                 >
-                 <ContentPasteIcon sx={{color: "#42A5F5", marginRight: "5px"}} />
+                 <ContentPasteIcon sx={{color: "blue.main", marginRight: "0.313rem"}} />
                 {"Case Identifiers"}
               </Typography>
             {caseCardCaseIdentifiers.map((name, index) => (
-                  <Grid item key={index} sx={{width: "145px", padding: "0 20px 0 20px"}}>
-                    <Typography
-                      sx={{ fontSize: "10px",}}
-                    >
+                  <Grid item key={index} sx={{width: "9.063rem", padding: "0 1.25rem 0 1.25rem"}}>
+                    <Typography>
                       {name.label}
                     </Typography>
-                    <Typography sx={{ fontSize: "10px"}}>
+                    <Typography>
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
@@ -265,26 +246,25 @@ export default function CaseCard ({ row }: CaseCardProps) {
                     { step.status ?
                       <CheckCircleIcon
                         sx={{
-                          height: "14px",
-                          width: "14px",
-                          marginRight: "5px",
-                          color: "#66BB6A"
+                          height: "0.875rem",
+                          width: "0.875rem",
+                          marginRight: "0.313rem",
+                          color: "green.main"
                         }}
                       />
 
                       : <CircleOutlinedIcon
                           sx={{
-                            height: "14px",
-                            width: "14px",
-                            marginRight: "5px",
-                            color: "#D8E4F4"
+                            height: "0.875rem",
+                            width: "0.875rem",
+                            marginRight: "0.313rem",
+                            color: "blue.light"
                           }}
                       />
                     }
-                    <ListItemText
-                      primary={step.text}
-                      primaryTypographyProps={{fontSize: "10px", color: step.status ? "#66BB6A" : "inherit"}}
-                    />
+                    <Typography sx={{color: step.status ? "green.main" : "inherit"}}>
+                      {step.text}
+                    </Typography>
                   </ListItem>
                 ))}
             </List>

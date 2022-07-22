@@ -12,6 +12,19 @@ declare module '@mui/material/styles' {
         },
         black?: {
             main?: string;
+        },
+        red?: {
+            main?: string;
+        },
+        yellow?: {
+            main?: string;
+        },
+        green?: {
+            main?: string;
+            dark?: string;
+        },
+        gray?: {
+            light?: string;
         }
     }
   }
@@ -20,7 +33,7 @@ export const defaultTheme = createTheme({
     palette: {
         blue: {
             dark: "#0277BD",
-            light: "#F1F5F9",
+            light: "#D8E4F4",
             main: "#42A5F5"
         },
         white: {
@@ -28,6 +41,19 @@ export const defaultTheme = createTheme({
         },
         black: {
             main: "#37474F"
+        },
+        red: {
+            main: "#EF5350"
+        },
+        yellow: {
+            main: "#FFA726"
+        },
+        green: {
+            main: "#66BB6A",
+            dark: "#4DA551"
+        },
+        gray: {
+            light: "#F1F5F9"
         }
     },
     components: {
@@ -35,16 +61,43 @@ export const defaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     textTransform: "capitalize",
-                    boxShadow: "none"
+                    boxShadow: "none",
+                    fontSize: "0.625rem",
+                    fontWeight: "700"
                 }
             }
         },
-        // MuiOutlinedInput: {
-        //     styleOverrides: {
-        //         root: {
-        //             border: "none"
-        //         }
-        //     }
-        // }
+        MuiTypography: {
+            variants: [
+                {
+                    props: { variant: 'h1' },
+                    style: {
+                        fontSize: "0.625rem",
+                        fontWeight: "700",
+                    }
+                },
+                {
+                    props: { variant: 'h2' },
+                    style: {
+                        fontSize: "1rem",
+                    }
+                },
+                {
+                    props: { variant: 'body1' },
+                    style: {
+                        fontSize: "0.625rem",
+                        fontWeight: "400"
+                    }
+                },
+                {
+                    props: { variant: 'body2' },
+                    style: {
+                        fontStyle: "italic",
+                        fontSize: "0.75rem",
+                        fontWeight: "400"
+                    }
+                },
+            ]
+        }
     }
 })

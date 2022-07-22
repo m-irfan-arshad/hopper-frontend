@@ -17,9 +17,9 @@ export default function TopNavBar() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              height: "60px"
+              height: "3.75rem"
           }}>
-            <StyledBox sx={{ width: "960px" }}>
+            <StyledBox sx={{ width: "60rem" }}>
               <StyledBox>
                 <Image
                   src={logo}
@@ -30,12 +30,9 @@ export default function TopNavBar() {
               </StyledBox>
               <StyledBox>
                 <NotificationImportant sx={{
-                    marginRight: "25px"
+                    marginRight: "1.563rem"
                 }}/>
-                <Typography sx={{
-                    fontWeight: "700",
-                    fontSize: "11px"
-                }}>
+                <Typography variant="h1">
                 Welcome, Ben
               </Typography>
               <IconButton

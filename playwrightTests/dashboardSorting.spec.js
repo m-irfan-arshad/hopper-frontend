@@ -8,10 +8,10 @@ test.describe('Landing Page Features', () => {
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {
-        const dropDownArrow = page.locator(".MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.css-11ecxny");
-        const procedureDateGroup = await page.locator(".MuiTypography-root.MuiTypography-body1.css-1b85sqj").nth(0).textContent();
+        const dropDownArrow = await page.locator('[data-testid=ArrowDropDownOutlinedIcon]');
+        const procedureDateGroup = await page.locator(".MuiTypography-root.MuiTypography-body2").nth(0).textContent();
         await dropDownArrow.nth(0).click();
-        const procedureDate = await page.locator(".MuiTypography-root.MuiTypography-body1.css-u9tiro").nth(1).textContent();
+        const procedureDate = await page.locator(".MuiTypography-root.MuiTypography-body1").nth(2).textContent();
         const procedureDateFormatted = moment.utc(procedureDate).format("MM-DD-YYYY");
         const procedureDateGroupFormatted = moment.utc(procedureDateGroup).format("MM-DD-YYYY");
         expect(procedureDateFormatted == procedureDateGroupFormatted).toBeTruthy();
