@@ -174,7 +174,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             <Box 
               sx={{ 
                 display: "flex", 
-                marginTop: "1.563rem",  
+                alignItems: "center",  
                 width: "100%",  
                 marginLeft: "0.625rem"
               }}
@@ -211,7 +211,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 sx={{ 
                   display: "flex", 
                   width: "100%", 
-                  marginTop: "1.563rem", 
+                  alignItems: "center",  
                   marginLeft: "0.625rem"
                 }}
               >

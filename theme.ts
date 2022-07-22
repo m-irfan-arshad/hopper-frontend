@@ -86,6 +86,7 @@ export const defaultTheme = createTheme({
                     props: { variant: 'body1' },
                     style: {
                         fontSize: "0.625rem",
+                        fontWeight: "400"
                     }
                 },
                 {
@@ -93,21 +94,10 @@ export const defaultTheme = createTheme({
                     style: {
                         fontStyle: "italic",
                         fontSize: "0.75rem",
+                        fontWeight: "400"
                     }
                 },
-            ],
-            styleOverrides: {
-                root: {
-                    fontFamily: "Roboto"
-                }
-            },
+            ]
         }
-        // MuiOutlinedInput: {
-        //     styleOverrides: {
-        //         root: {
-        //             border: "none"
-        //         }
-        //     }
-        // }
     }
 })
