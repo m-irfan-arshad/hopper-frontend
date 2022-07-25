@@ -11,6 +11,7 @@ const config = {
   },
   use: {
     baseURL: process.env.PLAYWRIGHT_HOPPER_HOME
+    // baseURL: "localhost:3000"
   },
 
   reporter: 'html',

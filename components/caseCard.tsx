@@ -194,7 +194,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                     <Typography>
                       {name.label}
                     </Typography>
-                    <Typography>
+                    <Typography data-testid={name.id}>
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>

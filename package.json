@@ -10,7 +10,8 @@
     "test:watch": "jest --watch --coverage",
     "test": "jest --coverage",
     "test:ci": "jest --ci",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@date-io/moment": "2.13.1",
