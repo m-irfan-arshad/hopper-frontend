@@ -2,7 +2,6 @@ const moment = require('moment');
 const { test, expect } = require('@playwright/test');
 const { DashboardPage } = require('./dashboardPage');
 
-
 test.describe('Landing Page Features', () => {
     test.beforeEach(async ({ page, baseURL }) => {
         await page.goto(baseURL);
@@ -71,5 +70,4 @@ test.describe('Landing Page Features', () => {
         await expect(stepDropDownArrow).toContainText('Step: Pre Surgical Testing');
 
     });
-
 });
