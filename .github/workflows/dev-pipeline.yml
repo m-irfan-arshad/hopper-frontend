@@ -6,6 +6,8 @@ env:
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
+  # This is temporary, dev pipeline should only run on pull request events,
+  # But we currently only have one environment
   push:
     branches: [ main ]
   pull_request:
@@ -15,7 +17,7 @@ on:
 
 jobs:
 
-  build-lint-test:
+  build-lint-unit-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,24 +38,12 @@ jobs:
       - name: Unit tests
         run: |
           npm run test
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-      - name: E2E tests
-        run: |
-          npm run test:e2e
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: playwright-report
-          path: playwright-report
           
   deploy-image-to-cloud-run:
-    needs: [build-lint-test]
+    needs: [build-lint-unit-test]
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v3
       
@@ -87,3 +77,19 @@ jobs:
           --region $CLOUD_RUN_REGION \
           --allow-unauthenticated \
           --quiet
+  e2e-test:
+    needs: [deploy-image-to-cloud-run]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+    - name: E2E tests
+      run: |
+        npm run test:e2e
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: playwright-report
+        path: playwright-report
