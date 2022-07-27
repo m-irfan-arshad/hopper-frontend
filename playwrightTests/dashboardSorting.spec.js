@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { test, expect } = require('@playwright/test');
-
+const { DashboardPage } = require('./dashboardPage');
 
 test.describe('Landing Page Features', () => {
     test.beforeEach(async ({ page, baseURL }) => {
@@ -8,13 +8,13 @@ test.describe('Landing Page Features', () => {
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {
-        const dropDownArrow = await page.locator('[data-testid=ArrowDropDownOutlinedIcon]');
-        const procedureDateGroup = await page.locator(".MuiTypography-root.MuiTypography-body2").nth(0).textContent();
-        await dropDownArrow.nth(0).click();
-        const procedureDate = await page.locator(".MuiTypography-root.MuiTypography-body1").nth(2).textContent();
+        const dashboard = new DashboardPage(page);
+        await dashboard.openFirstPatientDropDown();
+        const caseDateGroup = await dashboard.caseDateGroupContent();
+        const procedureDate = await dashboard.procedureDateContent();
         const procedureDateFormatted = moment.utc(procedureDate).format("MM-DD-YYYY");
-        const procedureDateGroupFormatted = moment.utc(procedureDateGroup).format("MM-DD-YYYY");
-        expect(procedureDateFormatted == procedureDateGroupFormatted).toBeTruthy();
+        const caseDateGroupFormatted = moment.utc(caseDateGroup).format("MM-DD-YYYY");
+        expect(procedureDateFormatted).toEqual(caseDateGroupFormatted);
     });
 
     test('Validating Sort Drop Down Elements', async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe('Landing Page Features', () => {
         const stepThree = page.locator("#menu->>text='Step: Pre Surgical Testing'");
         const stepDropDownArrow = page.locator("#case-step-select");
 
-        await delay(500)
+        await delay(800)
         await stepDropDownArrow.click();
         await expect(stepOne).toContainText('Step: All Steps');
         await expect(stepTwo).toContainText('Step: Insurance Authorization');
@@ -70,5 +70,4 @@ test.describe('Landing Page Features', () => {
         await expect(stepDropDownArrow).toContainText('Step: Pre Surgical Testing');
 
     });
-
 });
