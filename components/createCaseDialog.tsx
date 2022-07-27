@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Add } from "@mui/icons-material";
-import { Typography, Grid, Box, FormLabel} from '@mui/material';
+import { Add, DateRange as DateRangeIcon } from "@mui/icons-material";
+import { 
+    Typography, 
+    Grid, 
+    Button, 
+    TextField, 
+    Dialog, 
+    DialogActions, 
+    DialogContent, 
+    DialogTitle 
+} from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import DateRangeIcon from '@mui/icons-material/DateRange';
 import moment from "moment";
 
 
@@ -40,8 +41,7 @@ export default function CreateCaseDialog(props: Props) {
   };
 
   return (
-    <div>
-      <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={dialogStyle}>
+      <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <DialogTitle 
             sx={{
                 backgroundColor: "blue.dark", 
@@ -54,10 +54,7 @@ export default function CreateCaseDialog(props: Props) {
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
-                <Grid
-                    container
-                    spacing={"2.5rem"}
-                >
+                <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <Typography variant="body2" color="gray.main">First Name</Typography>
                         <TextField variant="outlined" placeholder="First Name" />
@@ -81,8 +78,8 @@ export default function CreateCaseDialog(props: Props) {
                                     sx={{
                                         svg: { 
                                             color: "blue.main",
-                                            height: "12px",
-                                            width: "12px"
+                                            height: "0.75rem",
+                                            width: "0.75rem"
                                         }
                                     }} 
                                     {...restParams} 
@@ -92,10 +89,7 @@ export default function CreateCaseDialog(props: Props) {
                     </Grid>
                 </Grid>
                 <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
-                <Grid
-                    container
-                    spacing={"2.5rem"}
-                >
+                <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <Typography variant="body2" color="gray.main">Primary Surgeon</Typography>
                         <TextField variant="outlined" placeholder="Primary Surgeon" />
@@ -127,8 +121,8 @@ export default function CreateCaseDialog(props: Props) {
                                     sx={{
                                         svg: { 
                                             color: "blue.main", 
-                                            height: "12px",
-                                            width: "12px" 
+                                            height: "0.75rem",
+                                            width: "0.75rem" 
                                         }
                                     }} 
                                     {...restParams} 
@@ -142,10 +136,8 @@ export default function CreateCaseDialog(props: Props) {
         <DialogActions sx={{display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "0.063rem solid", padding: "0.625rem", borderColor: "blue.light"}}>
           <Button 
             onClick={handleClose}
-            sx={{
-                color: "blue.main",
-                padding: "0.625rem"
-            }}>
+            sx={{ color: "blue.main", padding: "0.625rem"}}
+          >
                 Cancel
           </Button>
           <Button 
@@ -156,12 +148,10 @@ export default function CreateCaseDialog(props: Props) {
                 border: 1,
                 borderColor: "green.dark",
                 marginRight: "1.75rem",
-                //marginTop: "0.625rem"
             }}>
                 Create Case
             </Button>
         </DialogActions>
       </Dialog>
-    </div>
   );
 }

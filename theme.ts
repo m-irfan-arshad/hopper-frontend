@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
-    export interface PaletteOptions {
+    interface PaletteOptions {
         blue?: {
             dark?: string;
             light?: string;
