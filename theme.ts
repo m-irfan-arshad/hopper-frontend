@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
-    interface PaletteOptions {
+    export interface PaletteOptions {
         blue?: {
             dark?: string;
             light?: string;
@@ -25,9 +25,10 @@ declare module '@mui/material/styles' {
         },
         gray?: {
             light?: string;
+            main? : string;
         }
     }
-  }
+}
 
 export const defaultTheme = createTheme({
     palette: {
@@ -53,7 +54,8 @@ export const defaultTheme = createTheme({
             dark: "#4DA551"
         },
         gray: {
-            light: "#F1F5F9"
+            light: "#F1F5F9",
+            main: "#37474F"
         }
     },
     components: {
@@ -80,6 +82,14 @@ export const defaultTheme = createTheme({
                     props: { variant: 'h2' },
                     style: {
                         fontSize: "1rem",
+                        fontWeight: "400"
+                    }
+                },
+                {
+                    props: { variant: 'h3' },
+                    style: {
+                        fontSize: "0.875rem",
+                        fontWeight: "700"
                     }
                 },
                 {
@@ -98,6 +108,34 @@ export const defaultTheme = createTheme({
                     }
                 },
             ]
-        }
+        },
+        MuiTextField: {
+            variants: [
+                {
+                    props: { variant: 'outlined' },
+                    style: {
+                        "& .MuiOutlinedInput-input": {
+                            fontSize: "0.688rem",
+                            "&::placeholder": {
+                                fontStyle: "italic"
+                            }
+                        },
+                        marginTop: "0.313rem"
+                    }
+                },
+            ],
+            styleOverrides: {
+                root: {
+                    "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#D8E4F4"
+                     },
+                     width: "220px",
+                     "& .MuiOutlinedInput-input": {
+                        paddingTop: "12px",
+                        paddingBottom: "12px",
+                     },
+                }
+            }
+        },
     }
 })
