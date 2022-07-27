@@ -34,12 +34,6 @@ export default function CreateCaseDialog(props: Props) {
     setProcedureDate(newValue);
   };
 
-  const dialogStyle = {
-    "& .MuiPaper-root": {
-        borderRadius: "0.625rem"
-      }
-  };
-
   return (
       <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <DialogTitle 
