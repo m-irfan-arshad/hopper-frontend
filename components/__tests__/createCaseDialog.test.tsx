@@ -31,14 +31,14 @@ describe("CaseCard", () => {
   });
 
   test("handles closing of createCaseDialog", () => {
-    const { getByText } = render(
+    const { getByRole } = render(
       <CreateCaseDialog {...props} />
     );
 
-    expect(getByText("Cancel")).toBeInTheDocument();
+    expect(getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
     expect(props.closeDialog).toHaveBeenCalledTimes(0);
 
-    fireEvent.click(getByText("Cancel"));
+    fireEvent.click(getByRole('button', {name: 'Cancel'}));
     expect(props.closeDialog).toHaveBeenCalledTimes(1);
   });
 
