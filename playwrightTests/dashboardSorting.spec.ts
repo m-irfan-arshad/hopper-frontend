@@ -21,7 +21,6 @@ test.describe('Landing Page Features', () => {
         const sortDropDownArrow = page.locator("#case-sort-select");
         const sortOne = page.locator("#menu->>text='Sort: Oldest - Newest'");
         const sortTwo = page.locator("#menu->>text='Sort: Newest - Oldest'");
-
         await sortDropDownArrow.click();
         await expect(sortOne).toContainText('Sort: Oldest - Newest');
         await sortOne.click();
@@ -35,15 +34,11 @@ test.describe('Landing Page Features', () => {
     });
 
     test('Validating Date Range Drop Down Elements', async ({ page }) => {
-
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
         const dateOne = page.locator("#menu->>text='Date Range: This month'");
         const dateTwo = page.locator("#menu->>text='Date Range: Next month'");
         const dateThree = page.locator("#menu->>text='Date Range: Next quarter'");
         const dateDropDownArrow = page.locator("#case-date-select");
-
-        await page.waitForSelector("#case-date-select");
-        await delay(500);
+        await page.waitForTimeout(800);
         await dateDropDownArrow.click();
         await expect(dateOne).toContainText('Date Range: This month');
         await expect(dateTwo).toContainText('Date Range: Next month');
@@ -54,14 +49,11 @@ test.describe('Landing Page Features', () => {
     });
 
     test('Validating Step Drop Down Elements', async ({ page }) => {
-
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
         const stepOne = page.locator("#menu->>text='Step: All Steps'");
         const stepTwo = page.locator("#menu->>text='Step: Insurance Authorization'");
         const stepThree = page.locator("#menu->>text='Step: Pre Surgical Testing'");
         const stepDropDownArrow = page.locator("#case-step-select");
-
-        await delay(800)
+        await page.waitForTimeout(800);
         await stepDropDownArrow.click();
         await expect(stepOne).toContainText('Step: All Steps');
         await expect(stepTwo).toContainText('Step: Insurance Authorization');
