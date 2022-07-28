@@ -1,10 +1,10 @@
-const moment = require('moment');
-const { test, expect } = require('@playwright/test');
-const { DashboardPage } = require('./dashboardPage');
+import moment from "moment";
+import { test, expect } from '@playwright/test';
+import { DashboardPage } from './dashboardPage';
 
 test.describe('Landing Page Features', () => {
     test.beforeEach(async ({ page, baseURL }) => {
-        await page.goto(baseURL);
+        await page.goto(baseURL!);
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {
