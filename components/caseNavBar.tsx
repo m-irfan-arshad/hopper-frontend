@@ -18,7 +18,7 @@ export default function CaseNavBar() {
 
     return (
         <React.Fragment>
-            <CreateCaseDialog open={isDialogOpen} handleClose={() => setDialogState(false)} />
+            <CreateCaseDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} />
             <AppBar position="static" sx={{
                 backgroundColor: 'white.main',
                 display: "flex",

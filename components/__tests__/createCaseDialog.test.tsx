@@ -8,22 +8,38 @@ import moment from "moment";
 describe("CaseCard", () => {
   const props = {
     open: true,
-    handleClose: jest.fn()
+    closeDialog: jest.fn()
   };
 
+  beforeEach(() => {
+    props.closeDialog.mockReset();
+  });
+
   test("renders the createCaseDialog", () => {
+    const { getByLabelText } = render(
+      <CreateCaseDialog {...props} />
+    );
+
+    expect(getByLabelText("First Name")).toBeInTheDocument();
+    expect(getByLabelText("Last Name")).toBeInTheDocument();
+    expect(getByLabelText("Patient Date of Birth")).toBeInTheDocument();
+    expect(getByLabelText("Primary Surgeon")).toBeInTheDocument();
+    expect(getByLabelText("Surgical Location")).toBeInTheDocument();
+    expect(getByLabelText("Procedure Unit")).toBeInTheDocument();
+    expect(getByLabelText("Service Line")).toBeInTheDocument();
+    expect(getByLabelText("Procedure Date")).toBeInTheDocument();
+  });
+
+  test("handles closing of createCaseDialog", () => {
     const { getByText } = render(
       <CreateCaseDialog {...props} />
     );
 
-    expect(getByText("First Name")).toBeInTheDocument();
-    expect(getByText("Last Name")).toBeInTheDocument();
-    expect(getByText("Patient Date of Birth")).toBeInTheDocument();
-    expect(getByText("Primary Surgeon")).toBeInTheDocument();
-    expect(getByText("Surgical Location")).toBeInTheDocument();
-    expect(getByText("Procedure Unit")).toBeInTheDocument();
-    expect(getByText("Service Line")).toBeInTheDocument();
-    expect(getByText("Procedure Date")).toBeInTheDocument();
+    expect(getByText("Cancel")).toBeInTheDocument();
+    expect(props.closeDialog).toHaveBeenCalledTimes(0);
+
+    fireEvent.click(getByText("Cancel"));
+    expect(props.closeDialog).toHaveBeenCalledTimes(1);
   });
 
   test("changes calendar date", () => {

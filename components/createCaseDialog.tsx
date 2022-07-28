@@ -8,7 +8,8 @@ import {
     Dialog, 
     DialogActions, 
     DialogContent, 
-    DialogTitle 
+    DialogTitle,
+    InputLabel
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -18,11 +19,11 @@ import moment from "moment";
 
 interface Props {
     open: boolean
-    handleClose: () => void
+    closeDialog: () => void
 }
 
 export default function CreateCaseDialog(props: Props) {
-  const {open, handleClose} = props;
+  const {open, closeDialog} = props;
   const [dateOfBirth, setDateOfBirth] = useState<moment.Moment | null>(null);
   const [procedureDate, setProcedureDate] = useState<moment.Moment | null>(null);
 
@@ -33,6 +34,12 @@ export default function CreateCaseDialog(props: Props) {
   const handleProcedureDateChange = (newValue: moment.Moment | null) => {
     setProcedureDate(newValue);
   };
+
+  function handleClose() {
+      closeDialog();
+      setDateOfBirth(null);
+      setProcedureDate(null);
+  }
 
   return (
       <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
@@ -50,21 +57,22 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">First Name</Typography>
-                        <TextField variant="outlined" placeholder="First Name" />
+                        <InputLabel htmlFor="firstName" variant="standard">First Name</InputLabel>
+                        <TextField id="firstName" variant="outlined" placeholder="First Name" />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">Last Name</Typography>
-                        <TextField variant="outlined" placeholder="Last Name" />
+                        <InputLabel htmlFor="lastName" variant="standard">Last Name</InputLabel>
+                        <TextField id="lastName" variant="outlined" placeholder="Last Name" />
                     </Grid>
                     <Grid item xs={6}>
-                    <Typography variant="body2" color="gray.main">Patient Date of Birth</Typography>
+                    <InputLabel htmlFor="dateOfBirth" variant="standard">Patient Date of Birth</InputLabel>
                         <DesktopDatePicker
                             components={{ OpenPickerIcon: DateRangeIcon }}
                             value={dateOfBirth}
                             onChange={handleDateOfBirthChange}
                             renderInput={({inputProps, ...restParams}) => (
                                 <TextField 
+                                    id="dateOfBirth"
                                     inputProps={{
                                         ...inputProps, 
                                         placeholder: "Patient Date of Birth",
@@ -85,29 +93,30 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">Primary Surgeon</Typography>
-                        <TextField variant="outlined" placeholder="Primary Surgeon" />
+                        <InputLabel htmlFor="primarySurgeon" variant="standard">Primary Surgeon</InputLabel>
+                        <TextField id="primarySurgeon" variant="outlined" placeholder="Primary Surgeon" />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">Surgical Location</Typography>
-                        <TextField variant="outlined" placeholder="Surgical Location" />
+                        <InputLabel htmlFor="surgicalLocation" variant="standard">Surgical Location</InputLabel>
+                        <TextField id="surgicalLocation" variant="outlined" placeholder="Surgical Location" />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">Procedure Unit</Typography>
-                        <TextField variant="outlined" placeholder="Procedure Unit" />
+                        <InputLabel htmlFor="procedureUnit" variant="standard">Procedure Unit</InputLabel>
+                        <TextField id="procedureUnit" variant="outlined" placeholder="Procedure Unit" />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">Service Line</Typography>
-                        <TextField variant="outlined" placeholder="Service Line" />
+                        <InputLabel htmlFor="serviceLine" variant="standard">Service Line</InputLabel>
+                        <TextField id="serviceLine" variant="outlined" placeholder="Service Line" />
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="body2" color="gray.main">Procedure Date</Typography>
+                        <InputLabel htmlFor="procedureDate" variant="standard">Procedure Date</InputLabel>
                         <DesktopDatePicker
                             components={{ OpenPickerIcon: DateRangeIcon }}
                             value={procedureDate}
                             onChange={handleProcedureDateChange}
                             renderInput={({inputProps, ...restParams}) => (
                                 <TextField 
+                                    id="procedureDate"
                                     inputProps={{
                                         ...inputProps, 
                                         placeholder: "Procedure Date"

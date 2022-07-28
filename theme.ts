@@ -69,6 +69,19 @@ export const defaultTheme = createTheme({
                 }
             }
         },
+        MuiInputLabel: {
+            variants: [
+                {
+                    props: { variant: 'standard' },
+                    style: {
+                        fontStyle: "italic",
+                        fontSize: "0.75rem",
+                        fontWeight: "400",
+                        color: "#37474F"
+                    }
+                }
+            ]
+        },
         MuiTypography: {
             variants: [
                 {
