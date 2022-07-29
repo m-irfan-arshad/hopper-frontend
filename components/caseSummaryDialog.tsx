@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { 
     DateRange as DateRangeIcon,
     AccountBox as AccountBoxIcon,
@@ -9,12 +9,10 @@ import {
     Typography, 
     Grid, 
     Button, 
-    TextField, 
     Dialog, 
     DialogActions, 
     DialogContent, 
     DialogTitle,
-    InputLabel,
     Box
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -52,10 +50,10 @@ export default function CaseSummaryDialog(props: Props) {
             </Box>
             <Button 
                 variant="contained" 
-                endIcon={<ReplyIcon sx={{transform: "scaleX(-1)", height: "16px", width: "16px"}} />}
+                endIcon={<ReplyIcon sx={{transform: "scaleX(-1)", height: "1rem", width: "1rem"}} />}
                 sx={{
-                    paddingLeft: "10px",
-                    paddingRight: "10px",
+                    paddingLeft: "0.625rem",
+                    paddingRight: "0.625rem",
                     backgroundColor: "green.main",
                     border: 1,
                     borderColor: "green.dark",
@@ -66,7 +64,15 @@ export default function CaseSummaryDialog(props: Props) {
         </DialogTitle>
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="title1" color="blue.dark" sx={{display: "flex", alignItems: "center", marginTop: "2rem", marginBottom: "0.75rem"}}>                
+                <Typography 
+                    variant="title1" 
+                    color="blue.dark" 
+                    sx={{
+                        display: "flex", 
+                        alignItems: "center", 
+                        marginTop: "2rem", 
+                        marginBottom: "0.75rem"
+                    }}>                
                     <AccountBoxIcon sx={{marginRight: "0.313rem"}}/>
                     PATIENT INFORMATION
                 </Typography>
@@ -97,7 +103,15 @@ export default function CaseSummaryDialog(props: Props) {
                         <Typography variant="subtitle2">{row.allergies || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
-                <Typography variant="title1" color="blue.dark" sx={{display: "flex", alignItems: "center", marginTop: "2rem", marginBottom: "0.75rem"}}>                
+                <Typography 
+                    variant="title1" 
+                    color="blue.dark" 
+                    sx={{
+                        display: "flex", 
+                        alignItems: "center", 
+                        marginTop: "2rem", 
+                        marginBottom: "0.75rem"
+                    }}>                
                     <DateRangeIcon sx={{marginRight: "0.313rem"}}/>
                     SCHEDULING 
                 </Typography>                
@@ -115,7 +129,15 @@ export default function CaseSummaryDialog(props: Props) {
                         <Typography variant="subtitle2">{row.comments || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
-                <Typography variant="title1" color="blue.dark" sx={{display: "flex", alignItems: "center", marginTop: "2rem", marginBottom: "0.75rem"}}>                
+                <Typography 
+                    variant="title1" 
+                    color="blue.dark" 
+                    sx={{
+                        display: "flex", 
+                        alignItems: "center", 
+                        marginTop: "2rem",
+                        marginBottom: "0.75rem"
+                    }}>                
                     <AssignmentIcon sx={{marginRight: "0.313rem"}}/>
                     PROCEDURE DETAILS 
                 </Typography>
@@ -147,13 +169,21 @@ export default function CaseSummaryDialog(props: Props) {
                 </Grid> 
             </LocalizationProvider>
         </DialogContent>
-        <DialogActions sx={{display: "flex", justifyContent: "flex-start", alignItems: "center", borderTop: "0.063rem solid", padding: "0.625rem", borderColor: "blue.light"}}>
-          <Button 
-            onClick={() => closeDialog()}
-            sx={{ color: "blue.main", padding: "0.625rem"}}
-          >
+        <DialogActions 
+            sx={{
+                display: "flex", 
+                justifyContent: "flex-start", 
+                alignItems: "center", 
+                borderTop: "0.063rem solid", 
+                padding: "0.625rem", 
+                borderColor: "blue.light"
+            }}>
+            <Button 
+                onClick={() => closeDialog()}
+                sx={{ color: "blue.main", padding: "0.625rem"}}
+            >
                 Cancel
-          </Button>
+            </Button>
         </DialogActions>
       </Dialog>
   );
