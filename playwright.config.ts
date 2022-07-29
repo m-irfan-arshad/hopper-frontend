@@ -1,7 +1,6 @@
-// @ts-check
-require('dotenv').config();
-const { devices } = require('@playwright/test');
-const config = {
+import 'dotenv/config';
+import type { PlaywrightTestConfig } from '@playwright/test';
+const config: PlaywrightTestConfig = {
   testDir: './playwrightTests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -10,6 +9,7 @@ const config = {
 
   },
   use: {
+   
     baseURL: process.env.PLAYWRIGHT_HOPPER_HOME
     // baseURL: "localhost:3000"
   },
@@ -41,4 +41,5 @@ const config = {
     }
   ],
 };
-module.exports = config;
+export default config;
+
