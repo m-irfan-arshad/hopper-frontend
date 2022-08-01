@@ -28,6 +28,26 @@ declare module '@mui/material/styles' {
             main? : string;
         }
     }
+    interface TypographyVariantsOptions {
+        title1?: {
+            fontSize?: string;
+            fontWeight?: string;
+            fontFamily?: string;
+        },
+        title2?: {
+            fontSize?: string;
+            fontWeight?: string;
+            fontStyle?: string;
+            fontFamily?: string;
+        }
+      }
+}
+
+declare module '@mui/material/Typography' {
+    interface TypographyPropsVariantOverrides {
+      title1: true;
+      title2: true;
+    }
 }
 
 export const defaultTheme = createTheme({
@@ -56,6 +76,19 @@ export const defaultTheme = createTheme({
         gray: {
             light: "#F1F5F9",
             main: "#37474F"
+        }
+    },
+    typography: {
+        title1: {
+            fontSize: "0.875rem",
+            fontWeight: "400",
+            fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`        
+        },
+        title2: {
+            fontSize: "0.625rem",
+            fontWeight: "400",
+            fontStyle: "italic",
+            fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`   
         }
     },
     components: {
@@ -116,6 +149,20 @@ export const defaultTheme = createTheme({
                     props: { variant: 'body2' },
                     style: {
                         fontStyle: "italic",
+                        fontSize: "0.75rem",
+                        fontWeight: "400"
+                    }
+                },
+                {
+                    props: { variant: 'subtitle1' },
+                    style: {
+                        fontSize: "0.75rem",
+                        fontWeight: "700"
+                    }
+                },
+                {
+                    props: { variant: 'subtitle2' },
+                    style: {
                         fontSize: "0.75rem",
                         fontWeight: "400"
                     }

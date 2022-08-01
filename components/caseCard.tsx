@@ -22,6 +22,7 @@ import {
   CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
 import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase } from "../reference";
+import CaseSummaryDialog from "./caseSummaryDialog";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
@@ -54,6 +55,7 @@ function calculateProgressBarColor(numberOfCompletedSteps: number) {
 
 export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [isDialogOpen, setDialogState] = useState(false);
 
   const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
 
@@ -82,6 +84,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
   }
 
   return (
+    <React.Fragment>
+    <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
     <Box sx={{ marginTop: "0.938rem" }}>
       <Card sx={{ border: 1, borderColor: "blue.light", boxShadow: "none"}}>
         <CardHeader
@@ -112,6 +116,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
               { expanded ? 
                 <Button 
                   variant="outlined"
+                  onClick={() => setDialogState(true)}
                   sx={{
                     marginLeft: "auto", 
                     alignSelf: "center",
@@ -272,5 +277,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
         </Collapse>
       </Card>
     </Box>
+    </React.Fragment>
   );
 }

@@ -1,11 +1,9 @@
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import CreateCaseDialog from "../createCaseDialog";
-import { ThemeProvider } from "@mui/material/styles";
-import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
 import moment from "moment";
 
-describe("CaseCard", () => {
+describe("CreateCaseDialog", () => {
   const props = {
     open: true,
     closeDialog: jest.fn()

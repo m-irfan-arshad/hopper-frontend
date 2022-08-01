@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import CaseCard from "../caseCard";
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "../../theme";
@@ -84,5 +84,28 @@ describe("CaseCard", () => {
     );
 
     expect(containerClone2.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #66BB6A');
+  });
+  
+  test("opens the case summary modal and closes it", async() => {
+    const { getByRole, getByTestId, queryByRole } = render(
+      <CaseCard row={row} />
+    );
+
+    expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
+    fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
+
+    expect(getByRole("button", {name: "View Case Summary"})).toBeInTheDocument();
+    
+    fireEvent.click(getByRole("button", {name: "View Case Summary"}));
+
+    expect(getByRole("button", {name: "Cancel"})).toBeInTheDocument();
+    expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();
+
+    fireEvent.click(getByRole("button", {name: "Cancel"}));
+
+    await waitFor(() => {
+      expect(queryByRole("button", {name: "Cancel"})).not.toBeInTheDocument();
+      expect(queryByRole("button", {name: "View Full Case"})).not.toBeInTheDocument();
+    });
   });
 });
