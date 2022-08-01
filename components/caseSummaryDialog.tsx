@@ -18,6 +18,7 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { SingleCase } from "../reference";
+import DottedDivider from "./dottedDivider";
 
 interface Props {
     open: boolean
@@ -76,7 +77,7 @@ export default function CaseSummaryDialog(props: Props) {
                     <AccountBoxIcon sx={{marginRight: "0.313rem"}}/>
                     PATIENT INFORMATION
                 </Typography>
-                <Grid container spacing={"2.5rem"}>
+                <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="subtitle1">Patient Name</Typography>
                         <Typography variant="subtitle2">{`${row.firstName} ${row.lastName}`}</Typography>
@@ -103,19 +104,20 @@ export default function CaseSummaryDialog(props: Props) {
                         <Typography variant="subtitle2">{row.allergies || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
+                <DottedDivider />
                 <Typography 
                     variant="title1" 
                     color="blue.dark" 
                     sx={{
                         display: "flex", 
                         alignItems: "center", 
-                        marginTop: "2rem", 
-                        marginBottom: "0.75rem"
+                        marginTop: "1.5rem",
+                        marginBottom: "0.75rem",
                     }}>                
                     <DateRangeIcon sx={{marginRight: "0.313rem"}}/>
                     SCHEDULING 
                 </Typography>                
-                <Grid container spacing={"2.5rem"}>
+                <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="subtitle1">Procedure Date and Time</Typography>
                         <Typography variant="subtitle2">{row.procedureDate || 'N/A'}</Typography>
@@ -129,19 +131,20 @@ export default function CaseSummaryDialog(props: Props) {
                         <Typography variant="subtitle2">{row.comments || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
+                <DottedDivider />
                 <Typography 
                     variant="title1" 
                     color="blue.dark" 
                     sx={{
                         display: "flex", 
                         alignItems: "center", 
-                        marginTop: "2rem",
-                        marginBottom: "0.75rem"
+                        marginBottom: "0.75rem",
+                        marginTop: "1.5rem",
                     }}>                
                     <AssignmentIcon sx={{marginRight: "0.313rem"}}/>
                     PROCEDURE DETAILS 
                 </Typography>
-                <Grid container spacing={"2.5rem"}>
+                <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="subtitle1">Site</Typography>
                         <Typography variant="subtitle2">{row.procedureLocation || 'N/A'}</Typography>

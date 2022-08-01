@@ -66,7 +66,7 @@ describe("CaseSummaryDialog", () => {
     expect(getByRole('heading', {name: 'Procedure Date and Time'})).toBeInTheDocument();
     expect(getByRole('heading', {name: '01/30/1990'})).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Length of Surgery'})).toBeInTheDocument();//
+    expect(getByRole('heading', {name: 'Length of Surgery'})).toBeInTheDocument();
     expect(getByRole('heading', {name: '1 hour'})).toBeInTheDocument();
 
     expect(getByRole('heading', {name: 'Comments'})).toBeInTheDocument();
