@@ -92,6 +92,36 @@ export const defaultTheme = createTheme({
         }
     },
     components: {
+        MuiCheckbox: {
+            styleOverrides: {
+                root: {
+                    color: "#D8E4F4",
+                    "&.Mui-checked": {
+                        color: "#81C784"
+                    }
+                }
+            }
+        },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    span: {
+                        display: "none",
+                        fontWeight: "400"
+                    },
+                }
+            }
+        },
+        MuiSelect: {
+            styleOverrides: {
+                select: {
+                    fontWeight: "700",
+                    span: {
+                        fontWeight: "400"
+                    }
+                }
+            }
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
