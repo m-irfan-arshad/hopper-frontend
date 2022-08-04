@@ -12,12 +12,6 @@ interface Props {
     additionalMenuItemText: string
 }
 
-/* 
-    formcontrol is used to manage context such as filled/focused/error/required for forms... 
-    specifically used for the following components -> FormLabel, FormHelperText Input InputLabel
-    since we don't really use those here formcontrol is not providing us with anything 
-*/
-
 const StyledMenuItem = styled(MenuItem)({
     fontSize: "0.688rem"
 })
@@ -26,10 +20,10 @@ export default function DropDownComponent(props: Props) {
    
     return (
         <Select
+            defaultValue={props.menuItems[0].value}
             renderValue={(value) => (
                 <React.Fragment><span style={{fontWeight: "700"}}>{props.additionalMenuItemText}</span> {value}</React.Fragment>
             )}
-            defaultValue={props.menuItems[0].value}
             sx={{
                 fontSize: "0.625rem",
                 height: "2rem",
