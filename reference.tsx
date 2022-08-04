@@ -1,28 +1,3 @@
-// import { createTheme } from "@mui/material/styles";
-
-// export const defaultTheme = createTheme({
-//   typography: {
-//     poster: {
-//       color: "green",
-//     },
-//     h3: undefined,
-//   },
-//   components: {
-//     MuiAppBar: {
-//       styleOverrides: {
-//         colorPrimary: {
-//           backgroundColor: "blue",
-//         },
-//       },
-//     },
-//     MuiTypography: {
-//       defaultProps: {
-//         fontFamily: "Roboto",
-//       },
-//     },
-//   },
-// });
-
 export const caseCardProcedureInformation = [
   {
     label: "Date",
@@ -55,6 +30,55 @@ export const caseCardCaseIdentifiers = [
     label: "Quick Actions",
     id: "quickActions",
   }
+];
+
+export const dashboardDateRangeDropDownValues = [
+    {
+        value: "This month",
+        id: "1"
+    },
+    {
+        value: "Next Month",
+        id: "2"
+    }, 
+    {
+        value: "Next Quarter",
+        id: "3"
+    }
+];
+
+export const dashboardStepDropDownValues = [
+    {
+        value: "All Steps",
+        id: "4"
+    },
+    {
+        value: "Insurance Authorization",
+        id: "5"
+    },
+    {
+        value: "Pre Surgical Testing",
+        id: "6"
+    },
+    {
+        value: "Pre Admission Testing",
+        id: "7"
+    },
+    {
+        value: "Vendor Confirmation",
+        id: "8"
+    },
+];
+
+export const dashboardSortDropDownValues = [
+    {
+        value: "Oldest - Newest",
+        id: "9"
+    },
+    {
+        value: "Newest - Oldest",
+        id: "10"
+    }
 ];
 
 export interface Step {

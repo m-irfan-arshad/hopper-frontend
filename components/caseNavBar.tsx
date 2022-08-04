@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography } from '@mui/material';
+import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography, FormControl } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./dropDownComponent";
+import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
 
 export default function CaseNavBar() {
     const [isDialogOpen, setDialogState] = useState(false);
@@ -13,8 +14,15 @@ export default function CaseNavBar() {
         alignItems: "center"
     })
 
-    const StyledMenuItem = styled(MenuItem)({
-        fontSize: "0.688rem"
+    const StyledCheckbox = styled(Checkbox)({
+        marginRight: "5px", 
+        marginLeft: "20px", 
+        height: "24px", 
+        width: "24px",
+        color: "#D8E4F4",
+        "&.Mui-checked": {
+            color: "#81C784"
+        },
     })
 
     return (
@@ -30,43 +38,15 @@ export default function CaseNavBar() {
             }}>
                 <StyledBox sx={{ width: "60rem" }}>
                     <StyledBox>
-                        <DropDownComponent>
-                            <Select
-                                labelId="case-date-select-label"
-                                id="case-date-select"
-                                defaultValue={1}
-                                sx={{
-                                    fontSize: "0.625rem",
-                                    height: "2rem",
-                                    marginLeft: "0.625rem",
-                                    borderRadius: "none"
-                                }}
-                            >
-                                <StyledMenuItem value={1}><span>Date Range:</span> This month</StyledMenuItem>
-                                <StyledMenuItem value={2}><span>Date Range:</span> Next month</StyledMenuItem>
-                                <StyledMenuItem value={3}><span>Date Range:</span> Next quarter</StyledMenuItem>
-                            </Select>
-                        </DropDownComponent>
-                        <DropDownComponent>
-                            <Select
-                                labelId="case-step-select-label"
-                                id="case-step-select"
-                                defaultValue={1}
-                                sx={{
-                                    fontSize: "0.625rem",
-                                    height: "2rem",
-                                    marginLeft: "0.625rem",
-                                    borderRadius: "none"
-                                }}
-                            >
-                                <StyledMenuItem value={1}><span>Step:</span> All Steps</StyledMenuItem>
-                                <StyledMenuItem value={2}><span>Step:</span> Insurance Authorization</StyledMenuItem>
-                                <StyledMenuItem value={3}><span>Step:</span> Pre Surgical Testing</StyledMenuItem>
-                                <StyledMenuItem value={4}><span>Step:</span> Pre Admission Testing</StyledMenuItem>
-                                <StyledMenuItem value={5}><span>Step:</span> Vendor Confirmation</StyledMenuItem>
-                            </Select>
-                        </DropDownComponent>
-                        <Checkbox checkedIcon={<CheckBoxOutlinedIcon/>} sx={{ marginRight: "5px", marginLeft: "20px", height: "24px", width: "24px"}} />
+                        <DropDownComponent
+                            menuItems={dashboardDateRangeDropDownValues}
+                            additionalMenuItemText="Date Range:"
+                        />
+                        <DropDownComponent
+                            menuItems={dashboardStepDropDownValues}
+                            additionalMenuItemText="Step:"
+                        />
+                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
                         <Typography variant="body1" color="black.main">Show Completed Cases</Typography>
                     </StyledBox>
                     <Button 
