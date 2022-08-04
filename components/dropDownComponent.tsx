@@ -7,7 +7,6 @@ interface MenuItems {
 }
 
 interface Props {
-    fullWidth?: boolean
     menuItems: MenuItems[]
     additionalMenuItemText: string
 }
