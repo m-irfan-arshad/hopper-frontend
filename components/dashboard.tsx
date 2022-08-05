@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { styled, Box, Stack, Select, Button, Typography, FormControl, MenuItem } from "@mui/material";
 import { IosShare } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues } from "../reference";
-import DropDownComponent from "./dropDownComponent";
+import DropDownComponent from "./shared/dropdown";
 
 interface CaseGroup {
     [key: string]: SingleCase[]

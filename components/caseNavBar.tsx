@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography, FormControl } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
-import DropDownComponent from "./dropDownComponent";
+import DropDownComponent from "./shared/dropdown";
 import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
 
 export default function CaseNavBar() {
