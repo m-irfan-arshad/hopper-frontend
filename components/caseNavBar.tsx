@@ -41,10 +41,12 @@ export default function CaseNavBar() {
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
                             additionalMenuItemText="Date Range:"
+                            selectId="case-date-select"
                         />
                         <DropDownComponent
                             menuItems={dashboardStepDropDownValues}
                             additionalMenuItemText="Step:"
+                            selectId="case-step-select"
                         />
                         <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
                         <Typography variant="body1" color="black.main">Show Completed Cases</Typography>

@@ -1,27 +1,26 @@
 import React from "react";
-import {MenuItem, styled, Select} from "@mui/material";
+import {MenuItem, Select, FormControl} from "@mui/material";
 
-interface MenuItems {
+interface MenuItem {
     value: string
     id: string
 }
 
 interface Props {
-    menuItems: MenuItems[]
+    menuItems: MenuItem[]
     additionalMenuItemText: string
+    selectId: string
 }
 
-const StyledMenuItem = styled(MenuItem)({
-    fontSize: "0.688rem"
-})
-
 export default function DropDownComponent(props: Props) {
-   
+   const {menuItems, additionalMenuItemText, selectId} = props;
+
     return (
         <Select
-            defaultValue={props.menuItems[0].value}
+            id={selectId}
+            defaultValue={menuItems[0].value}
             renderValue={(value) => (
-                <React.Fragment><span style={{fontWeight: "700"}}>{props.additionalMenuItemText}</span> {value}</React.Fragment>
+                <React.Fragment><span style={{fontWeight: "700"}}>{additionalMenuItemText}</span> {value}</React.Fragment>
             )}
             sx={{
                 fontSize: "0.625rem",
@@ -37,8 +36,8 @@ export default function DropDownComponent(props: Props) {
             }}
         >
             {
-                props.menuItems.map((item, index) => (
-                    <StyledMenuItem key={index} value={item.value}>{item.value}</StyledMenuItem>
+                menuItems.map((item, index) => (
+                    <MenuItem key={index} value={item.value} sx={{fontSize: "0.688rem"}}>{item.value}</MenuItem>
                 ))
             }
         </Select>

@@ -68,6 +68,7 @@ export default function Dashboard() {
                         <DropDownComponent
                             menuItems={dashboardSortDropDownValues}
                             additionalMenuItemText="Sort:"
+                            selectId="case-sort-select"
                         />
                     </Box>
                 </Box>
