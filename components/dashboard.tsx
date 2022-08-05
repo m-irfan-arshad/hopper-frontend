@@ -4,15 +4,12 @@ import CaseDateGroup from '../components/caseDateGroup';
 import { useQuery } from 'react-query';
 import { styled, Box, Stack, Select, Button, Typography, FormControl, MenuItem } from "@mui/material";
 import { IosShare } from "@mui/icons-material";
-import { SingleCase } from "../reference";
+import { SingleCase, dashboardSortDropDownValues } from "../reference";
+import DropDownComponent from "./shared/dropdown";
 
 interface CaseGroup {
     [key: string]: SingleCase[]
 }
-
-const StyledMenuItem = styled(MenuItem)({
-    fontSize: "0.688rem"
-})
 
 export default function Dashboard() {  
     const fetchCases = async () => {
@@ -68,22 +65,11 @@ export default function Dashboard() {
                         {`${data.length} Cases`}
                     </Typography>
                     <Box sx={{ minWidth: 120 }}>
-                        <FormControl fullWidth>
-                            <Select
-                            labelId="case-sort-select-label"
-                            id="case-sort-select"
-                            defaultValue={1}
-                            sx={{
-                                fontSize: "0.625rem",
-                                height: "2rem",
-                                marginLeft: "0.625rem",
-                                borderRadius: "none"
-                            }}
-                            >
-                            <StyledMenuItem value={1}>Sort: Oldest - Newest</StyledMenuItem>
-                            <StyledMenuItem value={2}>Sort: Newest - Oldest</StyledMenuItem>
-                            </Select>
-                        </FormControl>
+                        <DropDownComponent
+                            menuItems={dashboardSortDropDownValues}
+                            additionalMenuItemText="Sort:"
+                            selectId="case-sort-select"
+                        />
                     </Box>
                 </Box>
                 <Button variant="contained" startIcon={<IosShare />} sx={{

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { AppBar, styled, Checkbox, Box, Button, Select, FormGroup, FormControl, FormControlLabel, MenuItem } from '@mui/material';
-import { Add } from "@mui/icons-material";
+import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography, FormControl } from '@mui/material';
+import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
+import DropDownComponent from "./shared/dropdown";
+import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
 
 export default function CaseNavBar() {
     const [isDialogOpen, setDialogState] = useState(false);
@@ -12,8 +14,15 @@ export default function CaseNavBar() {
         alignItems: "center"
     })
 
-    const StyledMenuItem = styled(MenuItem)({
-        fontSize: "0.688rem"
+    const StyledCheckbox = styled(Checkbox)({
+        marginRight: "5px", 
+        marginLeft: "20px", 
+        height: "24px", 
+        width: "24px",
+        color: "#D8E4F4",
+        "&.Mui-checked": {
+            color: "#81C784"
+        },
     })
 
     return (
@@ -29,54 +38,30 @@ export default function CaseNavBar() {
             }}>
                 <StyledBox sx={{ width: "60rem" }}>
                     <StyledBox>
-                        <FormControl>
-                            <Select
-                                labelId="case-date-select-label"
-                                id="case-date-select"
-                                defaultValue={1}
-                                sx={{
-                                    fontSize: "0.625rem",
-                                    height: "2rem",
-                                    marginLeft: "0.625rem",
-                                    borderRadius: "none"
-                                }}
-                            >
-                                <StyledMenuItem value={1}>Date Range: This month</StyledMenuItem>
-                                <StyledMenuItem value={2}>Date Range: Next month</StyledMenuItem>
-                                <StyledMenuItem value={3}>Date Range: Next quarter</StyledMenuItem>
-                            </Select>
-                        </FormControl>
-                        <FormControl>
-                            <Select
-                                labelId="case-step-select-label"
-                                id="case-step-select"
-                                defaultValue={1}
-                                sx={{
-                                    fontSize: "0.625rem",
-                                    height: "2rem",
-                                    marginLeft: "0.625rem",
-                                    borderRadius: "none"
-                                }}
-                            >
-                                <StyledMenuItem value={1}>Step: All Steps</StyledMenuItem>
-                                <StyledMenuItem value={2}>Step: Insurance Authorization</StyledMenuItem>
-                                <StyledMenuItem value={3}>Step: Pre Surgical Testing</StyledMenuItem>
-                                <StyledMenuItem value={4}>Step: Pre Admission Testing</StyledMenuItem>
-                                <StyledMenuItem value={5}>Step: Vendor Confirmation</StyledMenuItem>
-                            </Select>
-                        </FormControl>
+                        <DropDownComponent
+                            menuItems={dashboardDateRangeDropDownValues}
+                            additionalMenuItemText="Date Range:"
+                            selectId="case-date-select"
+                        />
+                        <DropDownComponent
+                            menuItems={dashboardStepDropDownValues}
+                            additionalMenuItemText="Step:"
+                            selectId="case-step-select"
+                        />
+                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                        <Typography variant="body1" color="black.main">Show Completed Cases</Typography>
                     </StyledBox>
                     <Button 
-                    variant="contained" 
-                    startIcon={<Add />}
-                    onClick={() => setDialogState(true)}
-                    sx={{
-                        backgroundColor: "green.main",
-                        border: 1,
-                        borderColor: "green.dark",
-                        marginRight: "0.75rem"
-                    }}>
-                        Create Case
+                        variant="contained" 
+                        startIcon={<Add />}
+                        onClick={() => setDialogState(true)}
+                        sx={{
+                            backgroundColor: "green.main",
+                            border: 1,
+                            borderColor: "green.dark",
+                            marginRight: "0.75rem"
+                        }}>
+                            Create Case
                     </Button>
                 </StyledBox>
             </AppBar>
