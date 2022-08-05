@@ -38,11 +38,11 @@ export const dashboardDateRangeDropDownValues = [
         id: "1"
     },
     {
-        value: "Next Month",
+        value: "Next month",
         id: "2"
     }, 
     {
-        value: "Next Quarter",
+        value: "Next quarter",
         id: "3"
     }
 ];
