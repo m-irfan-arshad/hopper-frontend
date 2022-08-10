@@ -1,29 +1,42 @@
 import React, { useState } from "react";
-import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography, FormControl } from '@mui/material';
+import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography, FormControl, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./shared/dropdown";
 import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
+import { defaultTheme } from "../theme";
+
+interface CheckBoxProps {
+    checkedIcon?: React.ReactNode
+} 
 
 export default function CaseNavBar() {
     const [isDialogOpen, setDialogState] = useState(false);
+    const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
 
     const StyledBox = styled(Box)({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center"
-    })
+    });
 
-    const StyledCheckbox = styled(Checkbox)({
+    const StyledCheckbox = styled((props: CheckBoxProps) => {
+        const { ...other } = props;
+        return <Checkbox {...other} />;
+      })(({ theme }) => ({
+        marginLeft: "10px",
         marginRight: "5px", 
-        marginLeft: "20px", 
         height: "24px", 
         width: "24px",
         color: "#D8E4F4",
         "&.Mui-checked": {
             color: "#81C784"
         },
-    })
+        [theme.breakpoints.down("sm")]: {
+            marginLeft: "1.25rem",
+            marginTop: "1rem"
+        }
+    }));
 
     return (
         <React.Fragment>
@@ -33,14 +46,14 @@ export default function CaseNavBar() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "3.75rem",
+                height: {xs: "6.75rem", sm:"3.75rem"},
                 boxShadow: "0rem 0.063rem 0rem #D8E4F4"
             }}>
-                <StyledBox sx={{ width: "60rem" }}>
+                <StyledBox sx={{ width: "92%" }}>
                     <StyledBox>
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
-                            additionalMenuItemText="Date Range:"
+                            additionalMenuItemText="Time:"
                             selectId="case-date-select"
                         />
                         <DropDownComponent
@@ -48,22 +61,34 @@ export default function CaseNavBar() {
                             additionalMenuItemText="Step:"
                             selectId="case-step-select"
                         />
-                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" color="black.main">Show Completed Cases</Typography>
+                        { !isMobile &&
+                            <React.Fragment>
+                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                                <Typography variant="body1" color="black.main">Show Completed Cases</Typography>
+                            </React.Fragment>
+                        }
                     </StyledBox>
-                    <Button 
-                        variant="contained" 
-                        startIcon={<Add />}
-                        onClick={() => setDialogState(true)}
-                        sx={{
-                            backgroundColor: "green.main",
-                            border: 1,
-                            borderColor: "green.dark",
-                            marginRight: "0.75rem"
-                        }}>
-                            Create Case
-                    </Button>
+                    {!isMobile 
+                        && <Button 
+                            variant="contained" 
+                            startIcon={<Add />}
+                            onClick={() => setDialogState(true)}
+                            sx={{
+                                backgroundColor: "green.main",
+                                border: 1,
+                                borderColor: "green.dark",
+                                marginRight: "0.75rem"
+                            }}>
+                                Create Case
+                        </Button>
+                    }
                 </StyledBox>
+                {isMobile 
+                    && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
+                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                        <Typography variant="body1" color="black.main" sx={{marginTop: {xs: "1rem", sm: 0}}}>Show Completed Cases</Typography>
+                    </Box>
+                }
             </AppBar>
         </React.Fragment>
     );

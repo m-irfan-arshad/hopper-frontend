@@ -44,7 +44,7 @@ test.describe('Landing Page Features', () => {
         await expect(dateTwo).toContainText('Next month');
         await expect(dateThree).toContainText('Next quarter');
         await dateThree.click();
-        await expect(dateDropDownArrow).toContainText('Date Range: Next quarter');
+        await expect(dateDropDownArrow).toContainText('Time: Next quarter');
     });
 
     test('Validating Step Drop Down Elements', async ({ page }) => {

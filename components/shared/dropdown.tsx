@@ -13,7 +13,9 @@ interface Props {
 }
 
 export default function DropDownComponent(props: Props) {
-   const {menuItems, additionalMenuItemText, selectId} = props;
+    const {menuItems, additionalMenuItemText, selectId} = props;
+    
+    const shouldApplyMargin = selectId !== 'case-date-select';
 
     return (
         <Select
@@ -25,7 +27,7 @@ export default function DropDownComponent(props: Props) {
             sx={{
                 fontSize: "0.625rem",
                 height: "2rem",
-                marginLeft: "0.625rem",
+                marginLeft: shouldApplyMargin ? "0.625rem" : 0,
                 borderRadius: "none",
                 "& .MuiOutlinedInput-notchedOutline": {
                     borderColor: "blue.light"
