@@ -24,10 +24,10 @@ export default function CaseNavBar() {
         const { ...other } = props;
         return <Checkbox {...other} />;
       })(({ theme }) => ({
-        marginLeft: "10px",
-        marginRight: "5px", 
-        height: "24px", 
-        width: "24px",
+        marginLeft: "0.625rem",
+        marginRight: "0.313rem", 
+        height: "1.5rem", 
+        width: "1.5rem",
         color: "#D8E4F4",
         "&.Mui-checked": {
             color: "#81C784"
@@ -86,7 +86,7 @@ export default function CaseNavBar() {
                 {isMobile 
                     && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
                         <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" color="black.main" sx={{marginTop: {xs: "1rem", sm: 0}}}>Show Completed Cases</Typography>
+                        <Typography variant="body1" color="black.main" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
                     </Box>
                 }
             </AppBar>
