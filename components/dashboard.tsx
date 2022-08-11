@@ -48,7 +48,8 @@ export default function Dashboard() {
             justifyContent: "center"
         }}>
           <Stack sx={{
-              width: "92%"
+              width: "92%",
+              maxWidth: "60rem"
           }}>
             <Box sx={{
                 display: "flex",

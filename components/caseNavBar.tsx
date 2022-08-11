@@ -42,7 +42,7 @@ export default function CaseNavBar() {
                 height: {xs: "6.75rem", sm:"3.75rem"},
                 boxShadow: "0rem 0.063rem 0rem #D8E4F4"
             }}>
-                <StyledBox sx={{ width: "92%" }}>
+                <StyledBox sx={{ width: "92%", maxWidth: "60rem" }}>
                     <StyledBox>
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
