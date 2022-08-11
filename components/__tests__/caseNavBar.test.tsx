@@ -7,7 +7,7 @@ describe("CaseNavBar", () => {
         const { getByRole, getByText } = render(
             <CaseNavBar  />
         );  
-        expect(getByRole("button", {name: "Date Range: This month"})).toBeInTheDocument();
+        expect(getByRole("button", {name: "Time: This month"})).toBeInTheDocument();
         expect(getByRole("button", {name: "Step: All Steps"})).toBeInTheDocument();
         expect(getByText("Show Completed Cases")).toBeInTheDocument();
     });
