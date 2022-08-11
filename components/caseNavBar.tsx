@@ -6,10 +6,6 @@ import DropDownComponent from "./shared/dropdown";
 import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 
-interface CheckBoxProps {
-    checkedIcon?: React.ReactNode
-} 
-
 export default function CaseNavBar() {
     const [isDialogOpen, setDialogState] = useState(false);
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
@@ -20,23 +16,20 @@ export default function CaseNavBar() {
         alignItems: "center"
     });
 
-    const StyledCheckbox = styled((props: CheckBoxProps) => {
-        const { ...other } = props;
-        return <Checkbox {...other} />;
-      })(({ theme }) => ({
+    const StyledCheckbox = styled(Checkbox)({
         marginLeft: "0.625rem",
         marginRight: "0.313rem", 
         height: "1.5rem", 
         width: "1.5rem",
-        color: "#D8E4F4",
+        color: defaultTheme.palette.blue.light,
         "&.Mui-checked": {
-            color: "#81C784"
+            color: defaultTheme.palette.green.light
         },
-        [theme.breakpoints.down("sm")]: {
+        [defaultTheme.breakpoints.down("sm")]: {
             marginLeft: "1.25rem",
             marginTop: "1rem"
         }
-    }));
+    });
 
     return (
         <React.Fragment>
@@ -60,6 +53,7 @@ export default function CaseNavBar() {
                             menuItems={dashboardStepDropDownValues}
                             additionalMenuItemText="Step:"
                             selectId="case-step-select"
+                            additionalStyles={{ marginLeft: "0.625rem" }}
                         />
                         { !isMobile &&
                             <React.Fragment>

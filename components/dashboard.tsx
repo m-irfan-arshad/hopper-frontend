@@ -75,6 +75,7 @@ export default function Dashboard() {
                                 menuItems={dashboardSortDropDownValues}
                                 additionalMenuItemText="Sort:"
                                 selectId="case-sort-select"
+                                additionalStyles={{ marginLeft: "0.625rem" }}
                             />
                         </Box>
                     }

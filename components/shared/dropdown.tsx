@@ -10,13 +10,24 @@ interface Props {
     menuItems: MenuItem[]
     additionalMenuItemText: string
     selectId: string
+    additionalStyles?: React.CSSProperties
 }
 
 export default function DropDownComponent(props: Props) {
-    const {menuItems, additionalMenuItemText, selectId} = props;
-    
-    const shouldApplyMargin = selectId !== 'case-date-select';
+    const {menuItems, additionalMenuItemText, selectId, additionalStyles} = props;
 
+    const defaultStyles = {
+        fontSize: "0.625rem",
+        height: "2rem",
+        borderRadius: "none",
+        "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "blue.light"
+        },
+        svg: {
+            color: "blue.main"
+        }
+    };
+    
     return (
         <Select
             id={selectId}
@@ -25,16 +36,8 @@ export default function DropDownComponent(props: Props) {
                 <React.Fragment><span style={{fontWeight: "700"}}>{additionalMenuItemText}</span> {value}</React.Fragment>
             )}
             sx={{
-                fontSize: "0.625rem",
-                height: "2rem",
-                marginLeft: shouldApplyMargin ? "0.625rem" : 0,
-                borderRadius: "none",
-                "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "blue.light"
-                },
-                svg: {
-                    color: "blue.main"
-                }
+                ...defaultStyles,
+                ...additionalStyles
             }}
         >
             {

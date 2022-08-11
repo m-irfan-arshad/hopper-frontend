@@ -1,6 +1,34 @@
 import { createTheme } from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
+    interface Palette {
+        blue: {
+            dark: string;
+            light: string;
+            main: string;
+        },
+        white: {
+            main: string;
+        },
+        black: {
+            main: string;
+        },
+        red: {
+            main: string;
+        },
+        yellow: {
+            main: string;
+        },
+        green: {
+            light: string;
+            main: string;
+            dark: string;
+        },
+        gray: {
+            light: string;
+            main: string;
+        }
+    }
     interface PaletteOptions {
         blue?: {
             dark?: string;
@@ -20,6 +48,7 @@ declare module '@mui/material/styles' {
             main?: string;
         },
         green?: {
+            light?: string;
             main?: string;
             dark?: string;
         },
@@ -70,6 +99,7 @@ export const defaultTheme = createTheme({
             main: "#FFA726"
         },
         green: {
+            light: "#81C784",
             main: "#66BB6A",
             dark: "#4DA551"
         },
