@@ -32,14 +32,14 @@ describe("CaseCard", () => {
 
     expect(queryByText("Whitebeard's ship")).not.toBeInTheDocument();
     expect(queryByText("Doctor Whitebeard")).not.toBeInTheDocument();
-    expect(queryByText("View Case Summary")).not.toBeInTheDocument();
+    expect(queryByText("Case Summary")).not.toBeInTheDocument();
 
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
     fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
 
     expect(queryByText("Whitebeard's ship")).toBeInTheDocument();
     expect(queryByText("Doctor Whitebeard")).toBeInTheDocument();
-    expect(queryByText("View Case Summary")).toBeInTheDocument();
+    expect(queryByText("Case Summary")).toBeInTheDocument();
   });
 
   test("renders progress bar with varied lengths/colors", () => {
@@ -94,9 +94,9 @@ describe("CaseCard", () => {
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
     fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
 
-    expect(getByRole("button", {name: "View Case Summary"})).toBeInTheDocument();
+    expect(getByRole("button", {name: "Case Summary"})).toBeInTheDocument();
     
-    fireEvent.click(getByRole("button", {name: "View Case Summary"}));
+    fireEvent.click(getByRole("button", {name: "Case Summary"}));
 
     expect(getByRole("button", {name: "Cancel"})).toBeInTheDocument();
     expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();

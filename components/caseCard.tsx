@@ -9,20 +9,21 @@ import {
   Typography, 
   LinearProgress, 
   List, ListItem, 
-  ListItemText, 
-  Button 
+  Button,
+  useMediaQuery
 } from "@mui/material";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { 
   ArrowDropDownOutlined as ArrowDropDownOutlinedIcon,
   CircleOutlined as CircleOutlinedIcon,
   Biotech as BiotechIcon,
-  ContentPaste as ContentPasteIcon,
+  Assignment as AssignmentIcon,
   Ballot as BallotIcon,
   CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
 import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
+import { defaultTheme } from "../theme";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
@@ -57,6 +58,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [isDialogOpen, setDialogState] = useState(false);
 
+  const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm')); //use to move case summary button 
   const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
 
   const cardStyle = {
@@ -113,37 +115,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
               >
                 {`- ${row.mrn}`}
               </Typography>
-              { expanded ? 
-                <Button 
-                  variant="outlined"
-                  onClick={() => setDialogState(true)}
-                  sx={{
-                    marginLeft: "auto", 
-                    alignSelf: "center",
-                    borderRadius: "0.625rem",
-                    backgroundColor: "gray.light",
-                    borderColor: "blue.light"
-                  }}
-                >
-                  <BallotIcon 
-                    sx={{
-                      marginLeft: "0.625rem", 
-                      height: "1rem", 
-                      width: "1rem", 
-                      color: "blue.main"
-                      }}
-                  />
-                  <Typography variant="h1" sx={{ padding: "0.313rem", color: "blue.main"}}>
-                    View Case Summary
-                  </Typography>
-                </Button>
-
-              : <LinearProgress 
+               <LinearProgress 
                   variant="determinate" 
                   value={20 * numberOfCompletedSteps}
                   sx={linearProgressStyle} 
-                />
-                }
+                />  
             </Box>
           }
           disableTypography
@@ -154,7 +130,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
           <Box
             sx={{
               width: "100%",
-              display: "flex",
+              display: "flex"
             }}
           >
              <Box
@@ -165,85 +141,99 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 }}
               >
             <Grid
-              container
-              columns={5}
+              container        
               sx={{ 
                 borderBottom: "0.063rem dotted", 
-                borderRight: "0.063rem dotted", 
-                borderColor: "blue.light",
+                borderRight: {xs: 0, sm:"0.063rem dotted"}, 
+                borderColor:  {xs: "blue.light", sm: "blue.light"},
                 height: "50%", 
-                width: "100%" 
               }}
             >
-            <Box 
-              sx={{ 
-                display: "flex", 
-                alignItems: "center",  
-                width: "100%",  
-                marginLeft: "0.625rem"
-              }}
-            > 
-              <Typography 
-                variant="h1"
-                sx={{ 
-                    display: "flex", 
-                    marginRight: "2.5rem",
-                    width: "8.75rem"
-                }}
-              >
-              <BiotechIcon sx={{color: "blue.main", marginRight: "0.313rem"}}/>
-                {"Procedure Information"}
-              </Typography>
+              <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+                <Typography 
+                  variant="h5"
+                  sx={{ 
+                      display: "flex", 
+                      alignItems: "center",
+                      marginLeft: "1.5rem",
+                  }}
+                >
+                <BiotechIcon sx={{height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}}/>
+                  {"Procedure Information"}
+                </Typography>
+              </Grid>
               {caseCardProcedureInformation.map((name, index) => (
-                  <Grid item key={index} sx={{width: "9.063rem",  padding: "0 1.25rem 0 1.25rem"}}>
-                    <Typography>
+                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem" ,sm: 0}}}> 
+                    <Typography sx={{color: "gray.dark"}}> 
                       {name.label}
                     </Typography>
-                    <Typography data-testid={name.id}>
+                    <Typography variant="h4" data-testid={name.id} sx={{}}> 
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
               ))}
-               </Box>
             </Grid>
             <Grid
               container
-              columns={5}
-              sx={{ borderRight: "0.063rem dotted", borderColor: "blue.light", height: "50%"}}
+              sx={{ borderRight: {xs: 0, sm:"0.063rem dotted"}, borderColor: {xs: 'none', sm: "blue.light"}, height: "50%"}}
             >
-              <Box 
-                sx={{ 
-                  display: "flex", 
-                  width: "100%", 
-                  alignItems: "center",  
-                  marginLeft: "0.625rem"
-                }}
-              >
-               <Typography 
-                  variant="h1"
+              <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75em", sm: 0}}}> 
+                <Typography 
+                  variant="h5"
                   sx={{ 
                       display: "flex", 
-                      width: "8.75rem" ,
-                      marginRight: "2.5rem"
+                      alignItems: "center",
+                      marginLeft: "1.5rem",
                   }}
                 >
-                 <ContentPasteIcon sx={{color: "blue.main", marginRight: "0.313rem"}} />
-                {"Case Identifiers"}
-              </Typography>
+                <AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />
+                  {"Case Identifiers"}
+                </Typography>
+              </Grid>   
             {caseCardCaseIdentifiers.map((name, index) => (
-                  <Grid item key={index} sx={{width: "9.063rem", padding: "0 1.25rem 0 1.25rem"}}>
-                    <Typography>
+                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem",  marginBottom: {xs: "1.75rem" ,sm: 0}}}> 
+                  <Typography sx={{color: "gray.dark"}}>
                       {name.label}
                     </Typography>
-                    <Typography>
+                    <Typography variant="h4">
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
               ))}
-              </Box>
             </Grid>
+            {isMobile 
+              && <Button 
+                  variant="outlined"
+                  onClick={() => setDialogState(true)}
+                  sx={{
+                    backgroundColor: "blue.dark",
+                    borderRadius: 0,
+                    padding: 0,
+                    width: "100%",
+                    "&:hover": {
+                      backgroundColor: "blue.dark"
+                    }
+                  }}
+                >
+                  <BallotIcon 
+                    sx={{
+                      height: "1rem", 
+                      width: "1rem", 
+                      color: "white.main"
+                      }}
+                  />
+                  <Typography variant="body1" sx={{ padding: "0.313rem", color: "white.main"}}>
+                    Case Summary
+                  </Typography>
+                </Button>
+              }
             </Box>
-            <List dense sx={{width: "20%"}}>
+            {
+            !isMobile 
+            && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+              <Typography variant="h5" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
+                 Progress
+              </Typography>
                 {row.steps.map((step, index) => (
                   <ListItem
                     key={index}
@@ -267,12 +257,39 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography sx={{color: step.status ? "green.main" : "inherit"}}>
+                    <Typography variant={step.status? "h5" : "h4"} sx={{color: step.status ? "green.main" : "inherit"}}>
                       {step.text}
                     </Typography>
                   </ListItem>
                 ))}
+                <Button 
+                  variant="outlined"
+                  onClick={() => setDialogState(true)}
+                  sx={{
+                    backgroundColor: "blue.dark",
+                    padding: 0,
+                    width: "70%",
+                    marginTop: "1rem",
+                    maxWidth: "8.75rem",
+                    marginBottom: "0.75rem",
+                    "&:hover": {
+                      backgroundColor: "blue.dark"
+                    }
+                  }}
+                >
+                  <BallotIcon 
+                    sx={{
+                      height: "1rem", 
+                      width: "1rem", 
+                      color: "white.main"
+                      }}
+                  />
+                  <Typography variant="body1" sx={{ padding: "0.313rem", color: "white.main"}}>
+                    Case Summary
+                  </Typography>
+                </Button>
             </List>
+            }
           </Box>
         </Collapse>
       </Card>
