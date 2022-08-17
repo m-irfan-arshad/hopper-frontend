@@ -58,8 +58,10 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [isDialogOpen, setDialogState] = useState(false);
 
-  const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm')); //use to move case summary button 
+  const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
+
+  console.log('isMobile', isMobile);
 
   const cardStyle = {
     paddingLeft: "0.625rem",
@@ -163,11 +165,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 </Typography>
               </Grid>
               {caseCardProcedureInformation.map((name, index) => (
-                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem" ,sm: 0}}}> 
+                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
                     <Typography sx={{color: "gray.dark"}}> 
                       {name.label}
                     </Typography>
-                    <Typography variant="h4" data-testid={name.id} sx={{}}> 
+                    <Typography variant="h4" data-testid={name.id}> 
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
@@ -191,7 +193,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 </Typography>
               </Grid>   
             {caseCardCaseIdentifiers.map((name, index) => (
-                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem",  marginBottom: {xs: "1.75rem" ,sm: 0}}}> 
+                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem",  marginBottom: {xs: "1.75rem", sm: 0}}}> 
                   <Typography sx={{color: "gray.dark"}}>
                       {name.label}
                     </Typography>
@@ -228,8 +230,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 </Button>
               }
             </Box>
-            {
-            !isMobile 
+            {!isMobile 
             && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
               <Typography variant="h5" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress

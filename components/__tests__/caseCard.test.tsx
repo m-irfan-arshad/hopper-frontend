@@ -108,4 +108,36 @@ describe("CaseCard", () => {
       expect(queryByRole("button", {name: "View Full Case"})).not.toBeInTheDocument();
     });
   });
+
+  test("renders and interacts with mobile view of caseCard", () => { 
+    //sets viewport to mobile version   
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation(query => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
+
+    const { getByRole, queryByRole, getByTestId } = render(
+      <CaseCard row={row} />
+    );
+
+    expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
+    fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
+
+    expect(queryByRole("heading", {name: "Booking Sheet"})).not.toBeInTheDocument();
+    expect(queryByRole("button", {name: "View Full Case"})).not.toBeInTheDocument();
+    expect(getByRole("button", {name: "Case Summary"})).toBeInTheDocument();
+
+    fireEvent.click(getByRole("button", {name: "Case Summary"}));
+
+    expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();
+  });
 });
