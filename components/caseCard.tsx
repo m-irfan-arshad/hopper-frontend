@@ -61,8 +61,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
 
-  console.log('isMobile', isMobile);
-
   const cardStyle = {
     paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
