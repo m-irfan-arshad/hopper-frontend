@@ -27,7 +27,7 @@ describe("CaseCard", () => {
       <CaseCard row={row} />
     );
 
-    expect(getByText("Captain Whitebeard")).toBeInTheDocument();
+    expect(getByText("Whitebeard, Captain")).toBeInTheDocument();
     expect(getByText("02/01/1990")).toBeInTheDocument();
 
     expect(queryByText("Whitebeard's ship")).not.toBeInTheDocument();
