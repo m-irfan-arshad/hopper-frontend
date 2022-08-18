@@ -80,7 +80,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
     alignSelf: "center",
     borderRadius: "0.625rem",
     "& .MuiLinearProgress-bar": {
-      backgroundColor: calculateProgressBarColor(numberOfCompletedSteps)
+      backgroundColor: calculateProgressBarColor(numberOfCompletedSteps),
+      borderRadius: "0.625rem"
     },
     backgroundColor: "blue.light"
   }
@@ -102,16 +103,16 @@ export default function CaseCard ({ row }: CaseCardProps) {
           }
           title={
             <Box sx={{ display: "flex", alignItems: "center", color: "black.main" }}>
-              <Typography variant="h2">{`${row.firstName} ${row.lastName}`}</Typography>
+              <Typography variant="h2">{`${row.lastName}, ${row.firstName}`}</Typography>
               <Typography
-                variant="body2"
-                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
+                variant="body1"
+                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem", color: "gray.dark" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
-                variant="body2"
-                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
+                variant="body1"
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -156,18 +157,19 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       display: "flex", 
                       alignItems: "center",
                       marginLeft: "1.5rem",
+                      color: "black.main"
                   }}
                 >
                 <BiotechIcon sx={{height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}}/>
-                  {"Procedure Information"}
+                  Procedure Information
                 </Typography>
               </Grid>
               {caseCardProcedureInformation.map((name, index) => (
                   <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                    <Typography sx={{color: "gray.dark"}}> 
+                    <Typography variant="subtitle2" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
                       {name.label}
                     </Typography>
-                    <Typography variant="h4" data-testid={name.id}> 
+                    <Typography variant="h4" data-testid={name.id} sx={{color: "black.main"}}> 
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
@@ -184,18 +186,19 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       display: "flex", 
                       alignItems: "center",
                       marginLeft: "1.5rem",
+                      color: "black.main"
                   }}
                 >
                 <AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />
-                  {"Case Identifiers"}
+                  Case Identifiers
                 </Typography>
               </Grid>   
             {caseCardCaseIdentifiers.map((name, index) => (
                   <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem",  marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                  <Typography sx={{color: "gray.dark"}}>
+                  <Typography variant="subtitle2" sx={{color: "gray.dark", marginBottom: "0.125rem"}}>
                       {name.label}
                     </Typography>
-                    <Typography variant="h4">
+                    <Typography variant="h4" sx={{color: "black.main"}}>
                       {row[name.id] || "N/A"}
                     </Typography>
                   </Grid>
