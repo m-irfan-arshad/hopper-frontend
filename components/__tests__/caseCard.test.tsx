@@ -27,19 +27,19 @@ describe("CaseCard", () => {
       <CaseCard row={row} />
     );
 
-    expect(getByText("Captain Whitebeard")).toBeInTheDocument();
+    expect(getByText("Whitebeard, Captain")).toBeInTheDocument();
     expect(getByText("02/01/1990")).toBeInTheDocument();
 
     expect(queryByText("Whitebeard's ship")).not.toBeInTheDocument();
     expect(queryByText("Doctor Whitebeard")).not.toBeInTheDocument();
-    expect(queryByText("View Case Summary")).not.toBeInTheDocument();
+    expect(queryByText("Case Summary")).not.toBeInTheDocument();
 
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
     fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
 
     expect(queryByText("Whitebeard's ship")).toBeInTheDocument();
     expect(queryByText("Doctor Whitebeard")).toBeInTheDocument();
-    expect(queryByText("View Case Summary")).toBeInTheDocument();
+    expect(queryByText("Case Summary")).toBeInTheDocument();
   });
 
   test("renders progress bar with varied lengths/colors", () => {
@@ -94,9 +94,9 @@ describe("CaseCard", () => {
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
     fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
 
-    expect(getByRole("button", {name: "View Case Summary"})).toBeInTheDocument();
+    expect(getByRole("button", {name: "Case Summary"})).toBeInTheDocument();
     
-    fireEvent.click(getByRole("button", {name: "View Case Summary"}));
+    fireEvent.click(getByRole("button", {name: "Case Summary"}));
 
     expect(getByRole("button", {name: "Cancel"})).toBeInTheDocument();
     expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();
@@ -107,5 +107,37 @@ describe("CaseCard", () => {
       expect(queryByRole("button", {name: "Cancel"})).not.toBeInTheDocument();
       expect(queryByRole("button", {name: "View Full Case"})).not.toBeInTheDocument();
     });
+  });
+
+  test("renders and interacts with mobile view of caseCard", () => { 
+    //sets viewport to mobile version   
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation(query => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
+
+    const { getByRole, queryByRole, getByTestId } = render(
+      <CaseCard row={row} />
+    );
+
+    expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
+    fireEvent.click(getByTestId("ArrowDropDownOutlinedIcon"));
+
+    expect(queryByRole("heading", {name: "Booking Sheet"})).not.toBeInTheDocument();
+    expect(queryByRole("button", {name: "View Full Case"})).not.toBeInTheDocument();
+    expect(getByRole("button", {name: "Case Summary"})).toBeInTheDocument();
+
+    fireEvent.click(getByRole("button", {name: "Case Summary"}));
+
+    expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();
   });
 });

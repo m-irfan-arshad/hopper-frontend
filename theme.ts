@@ -55,6 +55,7 @@ declare module '@mui/material/styles' {
         gray?: {
             light?: string;
             main? : string;
+            dark?: string;
         }
     }
     interface TypographyVariantsOptions {
@@ -105,7 +106,8 @@ export const defaultTheme = createTheme({
         },
         gray: {
             light: "#F1F5F9",
-            main: "#37474F"
+            main: "#37474F",
+            dark: "#607D8B"
         }
     },
     typography: {
@@ -166,6 +168,20 @@ export const defaultTheme = createTheme({
                     style: {
                         fontSize: "0.875rem",
                         fontWeight: "700"
+                    }
+                },
+                {
+                    props: { variant: 'h4' },
+                    style: {
+                        fontSize: "0.875rem",
+                        fontWeight: "400"
+                    }
+                },
+                {
+                    props: { variant: 'h5' },
+                    style: {
+                        fontSize: "0.875rem",
+                        fontWeight: "500"
                     }
                 },
                 {
