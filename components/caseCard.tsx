@@ -196,7 +196,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             >
               <HeaderCell title={"Procedure Information"} />
               {caseCardProcedureInformation.map((name, index) => (
-                  <InfoCell index={index} name={name} />
+                  <InfoCell index={index} name={name} key={index}/>
               ))}
             </Grid>
             <Grid
@@ -205,7 +205,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             >
               <HeaderCell title={"Case Identifiers"} />
               {caseCardCaseIdentifiers.map((name, index) => (
-                    <InfoCell index={index} name={name} />
+                    <InfoCell index={index} name={name} key={index}/>
                 ))}
             </Grid>
             {isMobile 
