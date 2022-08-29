@@ -58,7 +58,7 @@ export default function CaseNavBar() {
                         { !isMobile &&
                             <React.Fragment>
                                 <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="body1" color="black.main">Show Completed Cases</Typography>
+                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
                             </React.Fragment>
                         }
                     </StyledBox>

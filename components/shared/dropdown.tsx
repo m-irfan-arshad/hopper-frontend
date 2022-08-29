@@ -36,7 +36,7 @@ export default function DropDownComponent(props: Props) {
             id={selectId}
             defaultValue={menuItems[0].value}
             renderValue={(value) => (
-                <React.Fragment>{additionalMenuItemText} {value}</React.Fragment>
+                <Typography variant="body2">{additionalMenuItemText} {value}</Typography>
             )}
             sx={{
                 ...defaultStyles,

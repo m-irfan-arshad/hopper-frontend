@@ -103,7 +103,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
     return (
     <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
       <Typography 
-        variant="h5"
+        variant="subtitle2"
         sx={{ 
             display: "flex", 
             alignItems: "center",
@@ -121,10 +121,10 @@ export default function CaseCard ({ row }: CaseCardProps) {
     const { index, name } = props;
     return (
     <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-      <Typography variant="subtitle2" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
+      <Typography variant="caption" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
         {name.label}
       </Typography>
-      <Typography variant="h4" data-testid={name.id} sx={{color: "black.main"}}> 
+      <Typography variant="body2" data-testid={name.id} sx={{color: "black.main"}}> 
         {row[name.id] || "N/A"}
       </Typography>
     </Grid>)
@@ -146,17 +146,17 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </ExpandMore>
           }
           title={
-            <Box sx={{ display: "flex", alignItems: "center", color: "black.main" }}>
-              <Typography variant="h2">{`${row.lastName}, ${row.firstName}`}</Typography>
+            <Box sx={{ display: "flex", alignItems: "baseline", color: "black.main" }}>
+              <Typography sx={{marginLeft: "7px"}} variant="subtitle1">{`${row.lastName}, ${row.firstName}`}</Typography>
               <Typography
-                variant="body1"
+                variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem", color: "gray.dark" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
-                variant="body1"
-                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark", fontStyle: "italic" }}
+                variant="caption"
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -195,9 +195,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
               }}
             >
               <HeaderCell title={"Procedure Information"} />
-              {caseCardProcedureInformation.map((name, index) => (
-                  <InfoCell index={index} name={name} key={index}/>
-              ))}
+                {
+                  caseCardProcedureInformation.map((name, index) => (
+                      <InfoCell index={index} name={name} key={index}/>
+                  ))
+                }
             </Grid>
             <Grid
               container
@@ -237,7 +239,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </Box>
             {!isMobile 
             && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
-              <Typography variant="h5" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
+              <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
                 {row.steps.map((step, index) => (
@@ -263,13 +265,14 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography variant={step.status? "h5" : "h4"} sx={{color: step.status ? "green.main" : "inherit"}}>
+                    <Typography variant={step.status ? "subtitle2" : "body2"} sx={{color: step.status ? "green.main" : "inherit"}}>
                       {step.text}
                     </Typography>
                   </ListItem>
                 ))}
                 <Button 
                   variant="outlined"
+                  size="small"
                   onClick={() => setDialogState(true)}
                   sx={{
                     backgroundColor: "blue.dark",
@@ -290,9 +293,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       color: "white.main"
                       }}
                   />
-                  <Typography variant="body1" sx={{ padding: "0.313rem", color: "white.main"}}>
+                  {/* <Typography variant="body1" sx={{ padding: "0.313rem", color: "white.main"}}> */}
                     Case Summary
-                  </Typography>
+                  {/* </Typography> */}
                 </Button>
             </List>
             }

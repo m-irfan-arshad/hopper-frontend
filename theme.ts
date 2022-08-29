@@ -110,20 +110,6 @@ export const defaultTheme = createTheme({
             dark: "#607D8B"
         }
     },
-    typography: {
-        fontSize: 12,
-        title1: {
-            fontSize: "0.875rem",
-            fontWeight: "400",
-            fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`        
-        },
-        title2: {
-            fontSize: "0.625rem",
-            fontWeight: "400",
-            fontStyle: "italic",
-            fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`   
-        },
-    },
     components: {
         MuiButton: {
             styleOverrides: {
@@ -146,74 +132,6 @@ export const defaultTheme = createTheme({
                         color: "#37474F"
                     }
                 }
-            ]
-        },
-        MuiTypography: {
-            variants: [
-                {
-                    props: { variant: 'h1' },
-                    style: {
-                        fontSize: "0.625rem",
-                        fontWeight: "700",
-                    }
-                },
-                {
-                    props: { variant: 'h2' },
-                    style: {
-                        fontSize: "1rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'h3' },
-                    style: {
-                        fontSize: "0.875rem",
-                        fontWeight: "700"
-                    }
-                },
-                {
-                    props: { variant: 'h4' },
-                    style: {
-                        fontSize: "0.875rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'h5' },
-                    style: {
-                        fontSize: "0.875rem",
-                        fontWeight: "500"
-                    }
-                },
-                {
-                    props: { variant: 'body1' },
-                    style: {
-                        fontSize: "0.625rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'body2' },
-                    style: {
-                        fontStyle: "italic",
-                        fontSize: "0.75rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'subtitle1' },
-                    style: {
-                        fontSize: "0.75rem",
-                        fontWeight: "700"
-                    }
-                },
-                {
-                    props: { variant: 'subtitle2' },
-                    style: {
-                        fontSize: "0.75rem",
-                        fontWeight: "400"
-                    }
-                },
             ]
         },
         MuiTextField: {
