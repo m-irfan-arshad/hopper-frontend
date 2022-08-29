@@ -46,12 +46,12 @@ export default function CaseNavBar() {
                     <StyledBox>
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
-                            additionalMenuItemText="Date Range: "
+                            additionalMenuItemText="Date Range:"
                             selectId="case-date-select"
                         />
                         <DropDownComponent
                             menuItems={dashboardStepDropDownValues}
-                            additionalMenuItemText="Step: "
+                            additionalMenuItemText="Step:"
                             selectId="case-step-select"
                             additionalStyles={{ marginLeft: "0.625rem"}}
                         />
