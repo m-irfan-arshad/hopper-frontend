@@ -19,6 +19,9 @@ jobs:
 
   build-lint-unit-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - name: Checkout
@@ -47,12 +50,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       
-      # TODO: update to workflow identity provider auth instead
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v0'
       with:
-        credentials_json: '${{ secrets.CLOUD_RUN_SERVICE_ACCOUNT }}'
+        token_format: 'access_token'
+        workload_identity_provider: "projects/843125233393/locations/global/workloadIdentityPools/mt-gh-wif-pool-01/providers/mt-gh-provider-01"
+        service_account: ${{ secrets.TF_SA}}
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
