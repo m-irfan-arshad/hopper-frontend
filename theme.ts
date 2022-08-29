@@ -111,6 +111,7 @@ export const defaultTheme = createTheme({
         }
     },
     typography: {
+        fontSize: 12,
         title1: {
             fontSize: "0.875rem",
             fontWeight: "400",
@@ -121,7 +122,7 @@ export const defaultTheme = createTheme({
             fontWeight: "400",
             fontStyle: "italic",
             fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`   
-        }
+        },
     },
     components: {
         MuiButton: {
@@ -139,7 +140,7 @@ export const defaultTheme = createTheme({
                 {
                     props: { variant: 'standard' },
                     style: {
-                        fontStyle: "italic",
+                        fontStyle: "normal",
                         fontSize: "0.75rem",
                         fontWeight: "400",
                         color: "#37474F"

@@ -54,7 +54,7 @@ export default function CreateCaseDialog(props: Props) {
         </DialogTitle>
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
+                <Typography variant="h4" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="firstName" variant="standard">First Name</InputLabel>
@@ -90,7 +90,7 @@ export default function CreateCaseDialog(props: Props) {
                         />
                     </Grid>
                 </Grid>
-                <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
+                <Typography variant="h4" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="primarySurgeon" variant="standard">Primary Surgeon</InputLabel>

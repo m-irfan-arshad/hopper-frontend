@@ -54,8 +54,9 @@ export default function Dashboard() {
             <Box sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "center",
-                height: "3.75rem",
+                alignItems: "flex-end",
+                paddingBottom: "0.75rem",
+                height: "4.438rem",
                 borderBottom: "0.063rem solid #D8E4F4"
             }}>
                 <Box sx={{
@@ -64,7 +65,7 @@ export default function Dashboard() {
                     justifyContent: "center"
                 }}>
                     <Typography sx={{
-                        fontSize: "1rem",
+                        fontSize: "1.25rem",
                         color: "black.main",
                         fontWeight: "700"
                     }}>

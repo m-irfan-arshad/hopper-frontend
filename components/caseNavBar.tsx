@@ -46,14 +46,14 @@ export default function CaseNavBar() {
                     <StyledBox>
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
-                            additionalMenuItemText="Time:"
+                            additionalMenuItemText="Date Range: "
                             selectId="case-date-select"
                         />
                         <DropDownComponent
                             menuItems={dashboardStepDropDownValues}
-                            additionalMenuItemText="Step:"
+                            additionalMenuItemText="Step: "
                             selectId="case-step-select"
-                            additionalStyles={{ marginLeft: "0.625rem" }}
+                            additionalStyles={{ marginLeft: "0.625rem"}}
                         />
                         { !isMobile &&
                             <React.Fragment>

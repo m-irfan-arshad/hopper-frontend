@@ -33,6 +33,18 @@ interface CaseCardProps {
   row: SingleCase
 }
 
+interface HeaderCellProps {
+  title: string;
+}
+
+interface InfoCellProps {
+  index: number;
+  name: {
+    label: string;
+    id: string;
+  }
+}
+
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -86,6 +98,38 @@ export default function CaseCard ({ row }: CaseCardProps) {
     backgroundColor: "blue.light"
   }
 
+  const HeaderCell = (props: HeaderCellProps) => {
+    const { title } = props;
+    return (
+    <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+      <Typography 
+        variant="h5"
+        sx={{ 
+            display: "flex", 
+            alignItems: "center",
+            marginLeft: "1.5rem",
+            color: "black.main"
+        }}
+      >
+      <BiotechIcon sx={{height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}}/>
+        {title}
+      </Typography>
+    </Grid>)
+  }
+
+  const InfoCell = (props: InfoCellProps) => {
+    const { index, name } = props;
+    return (
+    <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+      <Typography variant="subtitle2" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
+        {name.label}
+      </Typography>
+      <Typography variant="h4" data-testid={name.id} sx={{color: "black.main"}}> 
+        {row[name.id] || "N/A"}
+      </Typography>
+    </Grid>)
+  }
+
   return (
     <React.Fragment>
     <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
@@ -112,7 +156,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
               </Typography>
               <Typography
                 variant="body1"
-                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark" }}
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark", fontStyle: "italic" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -150,59 +194,19 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 height: "50%", 
               }}
             >
-              <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                <Typography 
-                  variant="h5"
-                  sx={{ 
-                      display: "flex", 
-                      alignItems: "center",
-                      marginLeft: "1.5rem",
-                      color: "black.main"
-                  }}
-                >
-                <BiotechIcon sx={{height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}}/>
-                  Procedure Information
-                </Typography>
-              </Grid>
+              <HeaderCell title={"Procedure Information"} />
               {caseCardProcedureInformation.map((name, index) => (
-                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                    <Typography variant="subtitle2" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
-                      {name.label}
-                    </Typography>
-                    <Typography variant="h4" data-testid={name.id} sx={{color: "black.main"}}> 
-                      {row[name.id] || "N/A"}
-                    </Typography>
-                  </Grid>
+                  <InfoCell index={index} name={name} />
               ))}
             </Grid>
             <Grid
               container
               sx={{ borderRight: {xs: 0, sm:"0.063rem dotted"}, borderColor: {xs: 'none', sm: "blue.light"}, height: "50%"}}
             >
-              <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75em", sm: 0}}}> 
-                <Typography 
-                  variant="h5"
-                  sx={{ 
-                      display: "flex", 
-                      alignItems: "center",
-                      marginLeft: "1.5rem",
-                      color: "black.main"
-                  }}
-                >
-                <AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />
-                  Case Identifiers
-                </Typography>
-              </Grid>   
-            {caseCardCaseIdentifiers.map((name, index) => (
-                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem",  marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                  <Typography variant="subtitle2" sx={{color: "gray.dark", marginBottom: "0.125rem"}}>
-                      {name.label}
-                    </Typography>
-                    <Typography variant="h4" sx={{color: "black.main"}}>
-                      {row[name.id] || "N/A"}
-                    </Typography>
-                  </Grid>
-              ))}
+              <HeaderCell title={"Case Identifiers"} />
+              {caseCardCaseIdentifiers.map((name, index) => (
+                    <InfoCell index={index} name={name} />
+                ))}
             </Grid>
             {isMobile 
               && <Button 
