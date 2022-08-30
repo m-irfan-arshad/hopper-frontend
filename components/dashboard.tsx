@@ -65,11 +65,6 @@ export default function Dashboard() {
                     alignItems: "center",
                     justifyContent: "center"
                 }}>
-                    {/* <Typography sx={{
-                        fontSize: "1.25rem",
-                        color: "black.main",
-                        fontWeight: "700"
-                    }}> */}
                     <Typography variant="h6">
                         {`${data.length} Cases`}
                     </Typography>
