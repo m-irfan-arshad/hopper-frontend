@@ -89,7 +89,7 @@ export default function Dashboard() {
                             />
                         </Box>
                     }
-                    <Button variant="contained" size="small" color="primary">
+                    <Button variant="contained" size="small">
                         <Logout sx={{
                             transform: "rotate(270deg)", 
                             marginRight: {xs: 0, sm:"0.375rem"}, 

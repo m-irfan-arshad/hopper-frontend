@@ -111,9 +111,6 @@ export const defaultTheme = createTheme({
         },
         success: {
             main: "#4CAF50",
-        },
-        primary: {
-            main: "#0288D1"
         }
     },
     typography: {

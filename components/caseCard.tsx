@@ -132,7 +132,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
     return (<Button 
       variant="contained"
       size="small"
-      color="primary"
       onClick={() => setDialogState(true)}
       sx={{marginTop: "0.75rem"}}
     >
