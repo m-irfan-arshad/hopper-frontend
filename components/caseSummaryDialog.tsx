@@ -39,7 +39,6 @@ export default function CaseSummaryDialog(props: Props) {
     return (
         <Typography 
             variant="subtitle2" 
-            color="black.main" 
             sx={{
                 display: "flex", 
                 alignItems: "center", 
@@ -57,15 +56,15 @@ export default function CaseSummaryDialog(props: Props) {
         <DialogTitle 
             sx={{
                 backgroundColor: "blue.dark", 
-                color: "white.main",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center"
             }}>
             <Box sx={{display: "flex", flexDirection: "column"}}>
-                <Typography variant="body1">{`${row.lastName}, ${row.firstName}`}</Typography>
+                <Typography variant="body1" color="white.main">{`${row.lastName}, ${row.firstName}`}</Typography>
                 <Typography
                     variant="caption"
+                    color="white.main"
                 >
                     {`${row.dateOfBirth} - ${row.mrn}`}
                 </Typography>
@@ -83,73 +82,73 @@ export default function CaseSummaryDialog(props: Props) {
                 <SectionHeader title={"Procedure Information"} icon={<AccountBoxIcon sx={{marginRight: "0.313rem"}}/>}/>
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Patient Name</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{`${row.firstName} ${row.lastName}`}</Typography>
+                        <Typography variant="caption">Patient Name</Typography>
+                        <Typography variant="body2">{`${row.firstName} ${row.lastName}`}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>DOB</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.dateOfBirth || 'N/A'}</Typography>
+                        <Typography variant="caption">DOB</Typography>
+                        <Typography variant="body2">{row.dateOfBirth || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Patient Address</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.patientAddress || 'N/A'}</Typography>
+                        <Typography variant="caption">Patient Address</Typography>
+                        <Typography variant="body2">{row.patientAddress || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Special Needs</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.specialNeeds || 'N/A'}</Typography>
+                        <Typography variant="caption">Special Needs</Typography>
+                        <Typography variant="body2">{row.specialNeeds || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Patient Phone</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{`Mobile: ${row.mobilePhone || 'N/A'}`}</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{`Home: ${row.homePhone || 'N/A'}`}</Typography>
+                        <Typography variant="caption">Patient Phone</Typography>
+                        <Typography variant="body2">{`Mobile: ${row.mobilePhone || 'N/A'}`}</Typography>
+                        <Typography variant="body2">{`Home: ${row.homePhone || 'N/A'}`}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Allergies</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.allergies || 'N/A'}</Typography>
+                        <Typography variant="caption">Allergies</Typography>
+                        <Typography variant="body2">{row.allergies || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
                 <DottedDivider />
                 <SectionHeader title={"Scheduling"} icon={<DateRangeIcon sx={{marginRight: "0.313rem"}}/>}/>               
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Procedure Date and Time</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.procedureDate || 'N/A'}</Typography>
+                        <Typography variant="caption">Procedure Date and Time</Typography>
+                        <Typography variant="body2">{row.procedureDate || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Length of Surgery</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.surgeryLength || 'N/A'}</Typography>
+                        <Typography variant="caption">Length of Surgery</Typography>
+                        <Typography variant="body2">{row.surgeryLength || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Comments</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.comments || 'N/A'}</Typography>
+                        <Typography variant="caption">Comments</Typography>
+                        <Typography variant="body2">{row.comments || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
                 <DottedDivider />
                 <SectionHeader title={"Procedure Details"} icon={<AssignmentIcon sx={{marginRight: "0.313rem"}}/>}/>               
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Site</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.procedureLocation || 'N/A'}</Typography>
+                        <Typography variant="caption">Site</Typography>
+                        <Typography variant="body2">{row.procedureLocation || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Surgeon Name</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.proceduralist || 'N/A'}</Typography>
+                        <Typography variant="caption">Surgeon Name</Typography>
+                        <Typography variant="body2">{row.proceduralist || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Admission Type</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.admissionType || 'N/A'}</Typography>
+                        <Typography variant="caption">Admission Type</Typography>
+                        <Typography variant="body2">{row.admissionType || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Surgical Assistance</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.surgeryAssistance || 'N/A'}</Typography>
+                        <Typography variant="caption">Surgical Assistance</Typography>
+                        <Typography variant="body2">{row.surgeryAssistance || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Procedures</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.procedures || 'N/A'}</Typography>
+                        <Typography variant="caption">Procedures</Typography>
+                        <Typography variant="body2">{row.procedures || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant="caption" sx={{color: "gray.dark"}}>Anesthesia Notes</Typography>
-                        <Typography variant="body2" sx={{color: "black.main"}}>{row.notes || 'N/A'}</Typography>
+                        <Typography variant="caption">Anesthesia Notes</Typography>
+                        <Typography variant="body2">{row.notes || 'N/A'}</Typography>
                     </Grid>
                 </Grid> 
             </LocalizationProvider>

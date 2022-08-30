@@ -1,5 +1,5 @@
 import React from "react";
-import {MenuItem, Select, FormControl, Typography} from "@mui/material";
+import {MenuItem, Select, Typography} from "@mui/material";
 
 interface MenuItem {
     value: string
@@ -8,13 +8,13 @@ interface MenuItem {
 
 interface Props {
     menuItems: MenuItem[]
-    additionalMenuItemText: string
+    title: string
     selectId: string
     additionalStyles?: React.CSSProperties
 }
 
 export default function DropDownComponent(props: Props) {
-    const {menuItems, additionalMenuItemText, selectId, additionalStyles} = props;
+    const {menuItems, title, selectId, additionalStyles} = props;
 
     const defaultStyles = {
         color: "black.main",
@@ -36,7 +36,7 @@ export default function DropDownComponent(props: Props) {
             id={selectId}
             defaultValue={menuItems[0].value}
             renderValue={(value) => (
-                <Typography variant="body2">{additionalMenuItemText} {value}</Typography>
+                <Typography variant="body2">{title} {value}</Typography>
             )}
             sx={{
                 ...defaultStyles,

@@ -46,12 +46,12 @@ export default function CaseNavBar() {
                     <StyledBox>
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
-                            additionalMenuItemText="Date Range:"
+                            title="Date Range:"
                             selectId="case-date-select"
                         />
                         <DropDownComponent
                             menuItems={dashboardStepDropDownValues}
-                            additionalMenuItemText="Step:"
+                            title="Step:"
                             selectId="case-step-select"
                             additionalStyles={{ marginLeft: "0.625rem"}}
                         />
@@ -76,7 +76,7 @@ export default function CaseNavBar() {
                 {isMobile 
                     && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
                         <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" color="black.main" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
+                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
                     </Box>
                 }
             </AppBar>

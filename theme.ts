@@ -115,7 +115,14 @@ export const defaultTheme = createTheme({
         primary: {
             main: "#0288D1"
         }
-
+    },
+    typography: {
+        allVariants: {
+          color: "#37474F"
+        },
+        caption: {
+            color: "#607D8B"
+        }
     },
     components: {
         MuiButton: {

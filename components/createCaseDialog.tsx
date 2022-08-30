@@ -48,7 +48,7 @@ export default function CreateCaseDialog(props: Props) {
                 backgroundColor: "blue.dark", 
                 color: "white.main",
             }}>
-                <Typography variant="h5"> Create Case </Typography>
+                <Typography variant="h5" color="white.main"> Create Case </Typography>
         </DialogTitle>
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>

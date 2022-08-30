@@ -107,7 +107,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
             display: "flex", 
             alignItems: "center",
             marginLeft: "1.5rem",
-            color: "black.main"
         }}
       > 
         {icon}
@@ -120,10 +119,10 @@ export default function CaseCard ({ row }: CaseCardProps) {
     const { name } = props;
     return (
     <Grid item xs={6} sm={3} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-      <Typography variant="caption" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
+      <Typography variant="caption" sx={{ marginBottom: "0.125rem"}}> 
         {name.label}
       </Typography>
-      <Typography variant="body2" data-testid={name.id} sx={{color: "black.main"}}> 
+      <Typography variant="body2" data-testid={name.id}> 
         {row[name.id] || "N/A"}
       </Typography>
     </Grid>)
@@ -135,14 +134,14 @@ export default function CaseCard ({ row }: CaseCardProps) {
       size="small"
       color="primary"
       onClick={() => setDialogState(true)}
-      sx={{marginTop: "12px"}}
+      sx={{marginTop: "0.75rem"}}
     >
       <BallotIcon 
         sx={{
           height: "1rem", 
           width: "1rem", 
-          marginRight: "7px"
-          }}
+          marginRight: "0.438rem"
+        }}
       />
         Case Summary
     </Button>)
@@ -164,17 +163,17 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </ExpandMore>
           }
           title={
-            <Box sx={{ display: "flex", alignItems: "baseline", color: "black.main" }}>
-              <Typography sx={{marginLeft: "7px"}} variant="subtitle1">{`${row.lastName}, ${row.firstName}`}</Typography>
+            <Box sx={{ display: "flex", alignItems: "baseline" }}>
+              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.lastName}, ${row.firstName}`}</Typography>
               <Typography
                 variant="caption"
-                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem", color: "gray.dark" }}
+                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
                 variant="caption"
-                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark" }}
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -224,9 +223,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
               sx={{ borderRight: {xs: 0, sm:"0.063rem dotted"}, borderColor: {xs: 'none', sm: "blue.light"}, height: "50%"}}
             >
               <HeaderCell title={"Case Identifiers"} icon={<AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />} />
-              {caseCardCaseIdentifiers.map((name, index) => (
+              {
+                caseCardCaseIdentifiers.map((name, index) => (
                     <InfoCell name={name} key={index} />
-                ))}
+                ))
+              }
             </Grid>
             {isMobile && <CaseSummaryButton />}
             </Box>

@@ -32,7 +32,7 @@ export default function TopNavBar() {
                 <NotificationImportant sx={{
                     marginRight: "1.563rem"
                 }}/>
-                <Typography variant="caption">
+                <Typography variant="caption" sx={{color: "#ffffff"}}>
                 Welcome, Ben
               </Typography>
               <IconButton

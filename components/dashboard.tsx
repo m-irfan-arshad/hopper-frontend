@@ -72,7 +72,7 @@ export default function Dashboard() {
                         && <Box sx={{ minWidth: 120 }}>
                             <DropDownComponent
                                 menuItems={dashboardSortDropDownValues}
-                                additionalMenuItemText="Sort:"
+                                title="Sort:"
                                 selectId="case-sort-select"
                                 additionalStyles={{ marginLeft: "0.625rem" }}
                             />
@@ -84,7 +84,7 @@ export default function Dashboard() {
                         && <Box sx={{ marginRight: "0.313rem" }}>
                             <DropDownComponent
                                 menuItems={dashboardSortDropDownValues}
-                                additionalMenuItemText="Sort:"
+                                title="Sort:"
                                 selectId="case-sort-select"
                             />
                         </Box>
