@@ -67,6 +67,7 @@ export default function CaseNavBar() {
                             size="small"
                             variant="contained"
                             color="success"
+                            startIcon={<Add />}
                             onClick={() => setDialogState(true)}>
                                 Create Case
                         </Button>
