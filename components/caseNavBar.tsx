@@ -64,15 +64,10 @@ export default function CaseNavBar() {
                     </StyledBox>
                     {!isMobile 
                         && <Button 
-                            variant="contained" 
-                            startIcon={<Add />}
-                            onClick={() => setDialogState(true)}
-                            sx={{
-                                backgroundColor: "green.main",
-                                border: 1,
-                                borderColor: "green.dark",
-                                marginRight: "0.75rem"
-                            }}>
+                            size="small"
+                            variant="contained"
+                            color="success"
+                            onClick={() => setDialogState(true)}>
                                 Create Case
                         </Button>
                     }

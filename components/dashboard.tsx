@@ -45,11 +45,12 @@ export default function Dashboard() {
     return (
         <Box sx={{
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
         }}>
           <Stack sx={{
               width: "92%",
-              maxWidth: "60rem"
+              maxWidth: "60rem",
+              marginBottom: "1.25rem"
           }}>
             <Box sx={{
                 display: "flex",
@@ -93,15 +94,7 @@ export default function Dashboard() {
                             />
                         </Box>
                     }
-                    <Button variant="contained" sx={{    
-                        backgroundColor: {xs: "blue.dark", sm:"blue.light"},
-                        border: "none",
-                        marginRight: "0.75rem",
-                        width: {xs: "2rem", sm: "5rem"},
-                        minWidth: 0,
-                        height: {xs: "2rem", sm:"1.875rem"},
-                        color: {xs: "white", sm:"blue.main"}
-                    }}>
+                    <Button variant="contained" size="small" color="primary">
                         <Logout sx={{
                             transform: "rotate(270deg)", 
                             marginRight: {xs: 0, sm:"0.375rem"}, 

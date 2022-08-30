@@ -108,7 +108,14 @@ export const defaultTheme = createTheme({
             light: "#F1F5F9",
             main: "#37474F",
             dark: "#607D8B"
+        },
+        success: {
+            main: "#4CAF50",
+        },
+        primary: {
+            main: "#0288D1"
         }
+
     },
     components: {
         MuiButton: {
@@ -116,9 +123,8 @@ export const defaultTheme = createTheme({
                 root: {
                     textTransform: "capitalize",
                     boxShadow: "none",
-                    fontSize: "0.625rem",
-                    fontWeight: "700"
-                }
+                    color: "white"
+                },
             }
         },
         MuiInputLabel: {
@@ -137,7 +143,7 @@ export const defaultTheme = createTheme({
         MuiTextField: {
             variants: [
                 {
-                    props: { variant: 'outlined' },
+                    props: { variant: "outlined" },
                     style: {
                         "& .MuiOutlinedInput-input": {
                             fontSize: "0.688rem",
