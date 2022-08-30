@@ -84,7 +84,7 @@ export default function CaseSummaryDialog(props: Props) {
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="caption" sx={{color: "gray.dark"}}>Patient Name</Typography>
-                        <Typography variant="body2">{`${row.firstName} ${row.lastName}`}</Typography>
+                        <Typography variant="body2" sx={{color: "black.main"}}>{`${row.firstName} ${row.lastName}`}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="caption" sx={{color: "gray.dark"}}>DOB</Typography>
@@ -129,7 +129,7 @@ export default function CaseSummaryDialog(props: Props) {
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="caption" sx={{color: "gray.dark"}}>Site</Typography>
-                        <Typography variant="subtitle2">{row.procedureLocation || 'N/A'}</Typography>
+                        <Typography variant="body2" sx={{color: "black.main"}}>{row.procedureLocation || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="caption" sx={{color: "gray.dark"}}>Surgeon Name</Typography>
