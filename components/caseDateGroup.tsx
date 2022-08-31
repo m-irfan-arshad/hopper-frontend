@@ -12,8 +12,8 @@ interface Props {
 export default function caseDateGroup(props: Props) {
     const { date, list } = props;
   return (
-    <Box sx={{ marginBottom: "1.25rem" }}>
-    <Typography variant="body2" sx={{ color: "black.main", marginTop: "1.25rem" }} data-testid="caseDateGroup">
+    <Box sx={{ marginTop: "1.25rem" }}>
+    <Typography variant="caption" sx={{ color: "black.main", marginTop: "1.25rem" }} data-testid="caseDateGroup">
       {`${moment(date).format('MMMM D, YYYY')} (${list.length} cases)`}
     </Typography>
     {

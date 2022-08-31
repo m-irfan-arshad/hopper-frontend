@@ -46,33 +46,29 @@ export default function CaseNavBar() {
                     <StyledBox>
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
-                            additionalMenuItemText="Time:"
+                            title="Date Range:"
                             selectId="case-date-select"
                         />
                         <DropDownComponent
                             menuItems={dashboardStepDropDownValues}
-                            additionalMenuItemText="Step:"
+                            title="Step:"
                             selectId="case-step-select"
-                            additionalStyles={{ marginLeft: "0.625rem" }}
+                            additionalStyles={{ marginLeft: "0.625rem"}}
                         />
                         { !isMobile &&
                             <React.Fragment>
                                 <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="body1" color="black.main">Show Completed Cases</Typography>
+                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
                             </React.Fragment>
                         }
                     </StyledBox>
                     {!isMobile 
                         && <Button 
-                            variant="contained" 
+                            size="small"
+                            variant="contained"
+                            color="success"
                             startIcon={<Add />}
-                            onClick={() => setDialogState(true)}
-                            sx={{
-                                backgroundColor: "green.main",
-                                border: 1,
-                                borderColor: "green.dark",
-                                marginRight: "0.75rem"
-                            }}>
+                            onClick={() => setDialogState(true)}>
                                 Create Case
                         </Button>
                     }
@@ -80,7 +76,7 @@ export default function CaseNavBar() {
                 {isMobile 
                     && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
                         <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" color="black.main" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
+                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
                     </Box>
                 }
             </AppBar>

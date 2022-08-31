@@ -33,6 +33,18 @@ interface CaseCardProps {
   row: SingleCase
 }
 
+interface HeaderCellProps {
+  title: string;
+  icon: React.ReactNode;
+}
+
+interface InfoCellProps {
+  name: {
+    label: string;
+    id: string;
+  }
+}
+
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -52,7 +64,6 @@ function calculateProgressBarColor(numberOfCompletedSteps: number) {
   }
   return "green.main";
 }
-
 
 export default function CaseCard ({ row }: CaseCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -86,6 +97,55 @@ export default function CaseCard ({ row }: CaseCardProps) {
     backgroundColor: "blue.light"
   }
 
+  const HeaderCell = (props: HeaderCellProps) => {
+    const { title, icon } = props;
+    return (
+    <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+      <Typography 
+        variant="subtitle2"
+        sx={{ 
+            display: "flex", 
+            alignItems: "center",
+            marginLeft: "1.5rem",
+        }}
+      > 
+        {icon}
+        {title}
+      </Typography>
+    </Grid>)
+  }
+
+  const InfoCell = (props: InfoCellProps) => {
+    const { name } = props;
+    return (
+    <Grid item xs={6} sm={3} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+      <Typography variant="caption" sx={{ marginBottom: "0.125rem"}}> 
+        {name.label}
+      </Typography>
+      <Typography variant="body2" data-testid={name.id}> 
+        {row[name.id] || "N/A"}
+      </Typography>
+    </Grid>)
+  }
+
+  const CaseSummaryButton = () => {
+    return (<Button 
+      variant="contained"
+      size="small"
+      onClick={() => setDialogState(true)}
+      sx={{marginTop: "0.75rem"}}
+    >
+      <BallotIcon 
+        sx={{
+          height: "1rem", 
+          width: "1rem", 
+          marginRight: "0.438rem"
+        }}
+      />
+        Case Summary
+    </Button>)
+  }
+
   return (
     <React.Fragment>
     <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
@@ -102,17 +162,17 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </ExpandMore>
           }
           title={
-            <Box sx={{ display: "flex", alignItems: "center", color: "black.main" }}>
-              <Typography variant="h2">{`${row.lastName}, ${row.firstName}`}</Typography>
+            <Box sx={{ display: "flex", alignItems: "baseline" }}>
+              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.lastName}, ${row.firstName}`}</Typography>
               <Typography
-                variant="body1"
-                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem", color: "gray.dark" }}
+                variant="caption"
+                sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
                 {row.dateOfBirth}
               </Typography>
               <Typography
-                variant="body1"
-                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem", color: "gray.dark" }}
+                variant="caption"
+                sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
                 {`- ${row.mrn}`}
               </Typography>
@@ -150,90 +210,29 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 height: "50%", 
               }}
             >
-              <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                <Typography 
-                  variant="h5"
-                  sx={{ 
-                      display: "flex", 
-                      alignItems: "center",
-                      marginLeft: "1.5rem",
-                      color: "black.main"
-                  }}
-                >
-                <BiotechIcon sx={{height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}}/>
-                  Procedure Information
-                </Typography>
-              </Grid>
-              {caseCardProcedureInformation.map((name, index) => (
-                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                    <Typography variant="subtitle2" sx={{color: "gray.dark",  marginBottom: "0.125rem"}}> 
-                      {name.label}
-                    </Typography>
-                    <Typography variant="h4" data-testid={name.id} sx={{color: "black.main"}}> 
-                      {row[name.id] || "N/A"}
-                    </Typography>
-                  </Grid>
-              ))}
+              <HeaderCell title={"Procedure Information"} icon={<BiotechIcon sx={{height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}}/>} />
+                {
+                  caseCardProcedureInformation.map((name, index) => (
+                      <InfoCell name={name} key={index}/>
+                  ))
+                }
             </Grid>
             <Grid
               container
               sx={{ borderRight: {xs: 0, sm:"0.063rem dotted"}, borderColor: {xs: 'none', sm: "blue.light"}, height: "50%"}}
             >
-              <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75em", sm: 0}}}> 
-                <Typography 
-                  variant="h5"
-                  sx={{ 
-                      display: "flex", 
-                      alignItems: "center",
-                      marginLeft: "1.5rem",
-                      color: "black.main"
-                  }}
-                >
-                <AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />
-                  Case Identifiers
-                </Typography>
-              </Grid>   
-            {caseCardCaseIdentifiers.map((name, index) => (
-                  <Grid item xs={6} sm={3} key={index} sx={{paddingLeft: "2rem",  marginBottom: {xs: "1.75rem", sm: 0}}}> 
-                  <Typography variant="subtitle2" sx={{color: "gray.dark", marginBottom: "0.125rem"}}>
-                      {name.label}
-                    </Typography>
-                    <Typography variant="h4" sx={{color: "black.main"}}>
-                      {row[name.id] || "N/A"}
-                    </Typography>
-                  </Grid>
-              ))}
-            </Grid>
-            {isMobile 
-              && <Button 
-                  variant="outlined"
-                  onClick={() => setDialogState(true)}
-                  sx={{
-                    backgroundColor: "blue.dark",
-                    borderRadius: 0,
-                    padding: 0,
-                    width: "100%",
-                    "&:hover": {
-                      backgroundColor: "blue.dark"
-                    }
-                  }}
-                >
-                  <BallotIcon 
-                    sx={{
-                      height: "1rem", 
-                      width: "1rem", 
-                      color: "white.main"
-                      }}
-                  />
-                  <Typography variant="body1" sx={{ padding: "0.313rem", color: "white.main"}}>
-                    Case Summary
-                  </Typography>
-                </Button>
+              <HeaderCell title={"Case Identifiers"} icon={<AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />} />
+              {
+                caseCardCaseIdentifiers.map((name, index) => (
+                    <InfoCell name={name} key={index} />
+                ))
               }
+            </Grid>
+            {isMobile && <CaseSummaryButton />}
             </Box>
             {!isMobile 
             && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
-              <Typography variant="h5" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
+              <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
                 {row.steps.map((step, index) => (
@@ -259,37 +258,12 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography variant={step.status? "h5" : "h4"} sx={{color: step.status ? "green.main" : "inherit"}}>
+                    <Typography variant={step.status ? "subtitle2" : "body2"} sx={{color: step.status ? "green.main" : "inherit"}}>
                       {step.text}
                     </Typography>
                   </ListItem>
                 ))}
-                <Button 
-                  variant="outlined"
-                  onClick={() => setDialogState(true)}
-                  sx={{
-                    backgroundColor: "blue.dark",
-                    padding: 0,
-                    width: "70%",
-                    marginTop: "1rem",
-                    maxWidth: "8.75rem",
-                    marginBottom: "0.75rem",
-                    "&:hover": {
-                      backgroundColor: "blue.dark"
-                    }
-                  }}
-                >
-                  <BallotIcon 
-                    sx={{
-                      height: "1rem", 
-                      width: "1rem", 
-                      color: "white.main"
-                      }}
-                  />
-                  <Typography variant="body1" sx={{ padding: "0.313rem", color: "white.main"}}>
-                    Case Summary
-                  </Typography>
-                </Button>
+                <CaseSummaryButton />
             </List>
             }
           </Box>

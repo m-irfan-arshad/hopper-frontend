@@ -45,17 +45,19 @@ export default function Dashboard() {
     return (
         <Box sx={{
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
         }}>
           <Stack sx={{
               width: "92%",
-              maxWidth: "60rem"
+              maxWidth: "60rem",
+              marginBottom: "1.25rem"
           }}>
             <Box sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "center",
-                height: "3.75rem",
+                alignItems: "flex-end",
+                paddingBottom: "0.75rem",
+                height: "4.438rem",
                 borderBottom: "0.063rem solid #D8E4F4"
             }}>
                 <Box sx={{
@@ -63,18 +65,14 @@ export default function Dashboard() {
                     alignItems: "center",
                     justifyContent: "center"
                 }}>
-                    <Typography sx={{
-                        fontSize: "1rem",
-                        color: "black.main",
-                        fontWeight: "700"
-                    }}>
+                    <Typography variant="h6">
                         {`${data.length} Cases`}
                     </Typography>
                     {!isMobile 
                         && <Box sx={{ minWidth: 120 }}>
                             <DropDownComponent
                                 menuItems={dashboardSortDropDownValues}
-                                additionalMenuItemText="Sort:"
+                                title="Sort:"
                                 selectId="case-sort-select"
                                 additionalStyles={{ marginLeft: "0.625rem" }}
                             />
@@ -86,20 +84,12 @@ export default function Dashboard() {
                         && <Box sx={{ marginRight: "0.313rem" }}>
                             <DropDownComponent
                                 menuItems={dashboardSortDropDownValues}
-                                additionalMenuItemText="Sort:"
+                                title="Sort:"
                                 selectId="case-sort-select"
                             />
                         </Box>
                     }
-                    <Button variant="contained" sx={{    
-                        backgroundColor: {xs: "blue.dark", sm:"blue.light"},
-                        border: "none",
-                        marginRight: "0.75rem",
-                        width: {xs: "2rem", sm: "5rem"},
-                        minWidth: 0,
-                        height: {xs: "2rem", sm:"1.875rem"},
-                        color: {xs: "white", sm:"blue.main"}
-                    }}>
+                    <Button variant="contained" size="small">
                         <Logout sx={{
                             transform: "rotate(270deg)", 
                             marginRight: {xs: 0, sm:"0.375rem"}, 

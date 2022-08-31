@@ -108,19 +108,17 @@ export const defaultTheme = createTheme({
             light: "#F1F5F9",
             main: "#37474F",
             dark: "#607D8B"
+        },
+        success: {
+            main: "#4CAF50",
         }
     },
     typography: {
-        title1: {
-            fontSize: "0.875rem",
-            fontWeight: "400",
-            fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`        
+        allVariants: {
+          color: "#37474F"
         },
-        title2: {
-            fontSize: "0.625rem",
-            fontWeight: "400",
-            fontStyle: "italic",
-            fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`   
+        caption: {
+            color: "#607D8B"
         }
     },
     components: {
@@ -129,9 +127,8 @@ export const defaultTheme = createTheme({
                 root: {
                     textTransform: "capitalize",
                     boxShadow: "none",
-                    fontSize: "0.625rem",
-                    fontWeight: "700"
-                }
+                    color: "white"
+                },
             }
         },
         MuiInputLabel: {
@@ -139,7 +136,7 @@ export const defaultTheme = createTheme({
                 {
                     props: { variant: 'standard' },
                     style: {
-                        fontStyle: "italic",
+                        fontStyle: "normal",
                         fontSize: "0.75rem",
                         fontWeight: "400",
                         color: "#37474F"
@@ -147,78 +144,10 @@ export const defaultTheme = createTheme({
                 }
             ]
         },
-        MuiTypography: {
-            variants: [
-                {
-                    props: { variant: 'h1' },
-                    style: {
-                        fontSize: "0.625rem",
-                        fontWeight: "700",
-                    }
-                },
-                {
-                    props: { variant: 'h2' },
-                    style: {
-                        fontSize: "1rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'h3' },
-                    style: {
-                        fontSize: "0.875rem",
-                        fontWeight: "700"
-                    }
-                },
-                {
-                    props: { variant: 'h4' },
-                    style: {
-                        fontSize: "0.875rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'h5' },
-                    style: {
-                        fontSize: "0.875rem",
-                        fontWeight: "500"
-                    }
-                },
-                {
-                    props: { variant: 'body1' },
-                    style: {
-                        fontSize: "0.625rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'body2' },
-                    style: {
-                        fontStyle: "italic",
-                        fontSize: "0.75rem",
-                        fontWeight: "400"
-                    }
-                },
-                {
-                    props: { variant: 'subtitle1' },
-                    style: {
-                        fontSize: "0.75rem",
-                        fontWeight: "700"
-                    }
-                },
-                {
-                    props: { variant: 'subtitle2' },
-                    style: {
-                        fontSize: "0.75rem",
-                        fontWeight: "400"
-                    }
-                },
-            ]
-        },
         MuiTextField: {
             variants: [
                 {
-                    props: { variant: 'outlined' },
+                    props: { variant: "outlined" },
                     style: {
                         "& .MuiOutlinedInput-input": {
                             fontSize: "0.688rem",

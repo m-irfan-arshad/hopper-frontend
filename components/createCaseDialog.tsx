@@ -47,14 +47,12 @@ export default function CreateCaseDialog(props: Props) {
             sx={{
                 backgroundColor: "blue.dark", 
                 color: "white.main",
-                fontSize: "1rem",
-                fontWeight: "400" 
             }}>
-                Create Case
+                <Typography variant="h5" color="white.main"> Create Case </Typography>
         </DialogTitle>
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
+                <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="firstName" variant="standard">First Name</InputLabel>
@@ -90,7 +88,7 @@ export default function CreateCaseDialog(props: Props) {
                         />
                     </Grid>
                 </Grid>
-                <Typography variant="h3" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
+                <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="primarySurgeon" variant="standard">Primary Surgeon</InputLabel>

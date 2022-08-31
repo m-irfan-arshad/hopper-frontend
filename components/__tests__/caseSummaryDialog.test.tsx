@@ -40,55 +40,55 @@ describe("CaseSummaryDialog", () => {
   });
 
   test("renders the caseSummaryDialog", () => {
-    const { getByRole } = render(
+    const { getByText } = render(
       <CaseSummaryDialog {...props} />
     );
 
-    expect(getByRole('heading', {name: 'Patient Name'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'firstName lastName'})).toBeInTheDocument();
+    expect(getByText('Patient Name')).toBeInTheDocument();
+    expect(getByText('firstName lastName')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'DOB'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: '01/01/2020'})).toBeInTheDocument();
+    expect(getByText('DOB')).toBeInTheDocument();
+    expect(getByText('01/01/2020')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Patient Address'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Grand Line'})).toBeInTheDocument();
+    expect(getByText('Patient Address')).toBeInTheDocument();
+    expect(getByText('Grand Line')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Special Needs'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'needs'})).toBeInTheDocument();
+    expect(getByText('Special Needs')).toBeInTheDocument();
+    expect(getByText('needs')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Patient Phone'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Mobile: 111-111-1111'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Home: 999-999-9999'})).toBeInTheDocument();
+    expect(getByText('Patient Phone')).toBeInTheDocument();
+    expect(getByText('Mobile: 111-111-1111')).toBeInTheDocument();
+    expect(getByText('Home: 999-999-9999')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Allergies'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'allergies'})).toBeInTheDocument();
+    expect(getByText('Allergies')).toBeInTheDocument();
+    expect(getByText('allergies')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Procedure Date and Time'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: '01/30/1990'})).toBeInTheDocument();
+    expect(getByText('Procedure Date and Time')).toBeInTheDocument();
+    expect(getByText('01/30/1990')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Length of Surgery'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: '1 hour'})).toBeInTheDocument();
+    expect(getByText('Length of Surgery')).toBeInTheDocument();
+    expect(getByText('1 hour')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Comments'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'comment'})).toBeInTheDocument();
+    expect(getByText('Comments')).toBeInTheDocument();
+    expect(getByText('comment')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Site'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'procedureLocation'})).toBeInTheDocument();
+    expect(getByText('Site')).toBeInTheDocument();
+    expect(getByText('procedureLocation')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Surgeon Name'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'proceduralist'})).toBeInTheDocument();
+    expect(getByText('Surgeon Name')).toBeInTheDocument();
+    expect(getByText('proceduralist')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Admission Type'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Inpatient'})).toBeInTheDocument();
+    expect(getByText('Admission Type')).toBeInTheDocument();
+    expect(getByText('Inpatient')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Surgical Assistance'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Doctor Assist'})).toBeInTheDocument();
+    expect(getByText('Surgical Assistance')).toBeInTheDocument();
+    expect(getByText('Doctor Assist')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Procedures'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Foot Surgery'})).toBeInTheDocument();
+    expect(getByText('Procedures')).toBeInTheDocument();
+    expect(getByText('Foot Surgery')).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Anesthesia Notes'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'note'})).toBeInTheDocument();
+    expect(getByText('Anesthesia Notes')).toBeInTheDocument();
+    expect(getByText('note')).toBeInTheDocument();
   });
 
   test("renders the caseSummaryDialog with N/A for all applicable fields", () => {
@@ -113,19 +113,11 @@ describe("CaseSummaryDialog", () => {
         }
     };
    
-    const { getAllByRole } = render(
+    const { getAllByText } = render(
       <CaseSummaryDialog {...propsClone} />
     );
 
-    expect(getAllByRole('heading', {name: 'N/A'})[0]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[1]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[2]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[3]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[4]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[5]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[6]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[7]).toBeInTheDocument();
-    expect(getAllByRole('heading', {name: 'N/A'})[8]).toBeInTheDocument();
+    expect((getAllByText('N/A')).length).toEqual(9);
   });
 
   test("handles closing of createCaseDialog", () => {
