@@ -20,7 +20,7 @@ export const caseCardProcedureInformation = [
 export const caseCardCaseIdentifiers = [
   {
     label: "Case ID",
-    id: "caseID",
+    id: "caseId",
   },
   {
     label: "MRN",
@@ -88,24 +88,14 @@ export interface Step {
 
 export interface SingleCase {
   [key: string]: any,
-  caseID: string,
-  firstName: string,
-  lastName: string,
-  dateOfBirth: string,
+  caseId: string,
   procedureDate: string,
-  procedureLocation: string,
-  proceduralist: string,
-  patientAddress?: string,
-  specialNeeds?: string,
-  mobilePhone?: string,
-  homePhone?: string,
-  allergies?: string,
-  surgeryLength?: string,
-  comments?: string,
-  admissionType?: string,
-  surgeryAssistance?: string,
-  procedures?: string,
-  notes?: string,
-  mrn: string,
-  steps: Step[]
+  patients: {
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+    mobilePhone?: string,
+    mrn: string,
+    address?: string
+  }
 }

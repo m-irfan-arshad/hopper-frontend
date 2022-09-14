@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
+import moment from "moment";
 import { 
   Card, 
   CardHeader,
@@ -70,7 +71,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [isDialogOpen, setDialogState] = useState(false);
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
+  // const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
+  const numberOfCompletedSteps = 3
 
   const cardStyle = {
     paddingLeft: "0.625rem",
@@ -163,18 +165,18 @@ export default function CaseCard ({ row }: CaseCardProps) {
           }
           title={
             <Box sx={{ display: "flex", alignItems: "baseline" }}>
-              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.lastName}, ${row.firstName}`}</Typography>
+              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.patients.lastName}, ${row.patients.firstName}`}</Typography>
               <Typography
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
-                {row.dateOfBirth}
+                {moment(row.patients.dateOfBirth).format('MM/DD/YYYY')}
               </Typography>
               <Typography
                 variant="caption"
                 sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
-                {`- ${row.mrn}`}
+                {`- ${row.patients.mrn}`}
               </Typography>
                <LinearProgress 
                   variant="determinate" 
@@ -235,7 +237,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
-                {row.steps.map((step, index) => (
+                {/* {row.steps.map((step, index) => (
                   <ListItem
                     key={index}
                   >
@@ -262,7 +264,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       {step.text}
                     </Typography>
                   </ListItem>
-                ))}
+                ))} */}
                 <CaseSummaryButton />
             </List>
             }
