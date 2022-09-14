@@ -19,7 +19,7 @@ export default function caseDateGroup(props: Props) {
     {
         list.map(function(singleCase) {
             return (
-                <CaseCard key={singleCase.caseID} row={singleCase} />
+                <CaseCard key={singleCase.caseId} row={singleCase} />
             )
         })
     }

@@ -1,0 +1,2 @@
+## get cases
+GET http://localhost:3000/api/getCases
