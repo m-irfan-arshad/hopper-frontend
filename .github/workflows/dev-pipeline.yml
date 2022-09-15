@@ -3,6 +3,7 @@ env:
   CLOUD_RUN_PROJECT_ID: ${{ secrets.CLOUD_RUN_PROJECT_ID }}
   CLOUD_RUN_REGION: us-east4
   REPO_NAME: hopper-frontend
+  HOPPER_PASSWORD: ${{ secrets.HOPPER_PASSWORD }}
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
