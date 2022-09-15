@@ -68,7 +68,7 @@ jobs:
 
     - name: Build and tag image
       run: |-
-        docker build . --tag "gcr.io/$CLOUD_RUN_PROJECT_ID/$REPO_NAME:$GITHUB_SHA"
+        docker build . --tag "gcr.io/$CLOUD_RUN_PROJECT_ID/$REPO_NAME:$GITHUB_SHA" --build-arg HOPPER_PASSWORD=${HOPPER_PASSWORD}
         
       # TODO: push to artifact registry instead of container registry
     - name: Push image to GCR
