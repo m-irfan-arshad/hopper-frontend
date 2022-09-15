@@ -68,7 +68,7 @@ jobs:
 
     - name: Build and tag image
       run: |-
-        docker build . --tag "gcr.io/$CLOUD_RUN_PROJECT_ID/$REPO_NAME:$GITHUB_SHA" --build-arg HOPPER_PASSWORD=${HOPPER_PASSWORD}
+        docker build . --tag "gcr.io/$CLOUD_RUN_PROJECT_ID/$REPO_NAME:$GITHUB_SHA"
         
       # TODO: push to artifact registry instead of container registry
     - name: Push image to GCR
@@ -81,7 +81,8 @@ jobs:
           --project $CLOUD_RUN_PROJECT_ID \
           --region $CLOUD_RUN_REGION \
           --allow-unauthenticated \
-          --quiet
+          --quiet \
+          --set-env-vars "HOPPER_PASSWORD=password.secure"
   e2e-test:
     needs: [deploy-image-to-cloud-run]
     runs-on: ubuntu-latest
