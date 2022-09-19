@@ -9,12 +9,13 @@ import { SingleCase, dashboardSortDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 
-
 interface CaseGroup {
     [key: string]: SingleCase[]
 }
 
 export default function Dashboard() {  
+    console.log("env: ", process.env);
+
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
 
     const fetchCases = async () => {
