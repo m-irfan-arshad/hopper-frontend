@@ -14,8 +14,6 @@ interface CaseGroup {
 }
 
 export default function Dashboard() {  
-    console.log("env: ", process.env);
-
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
 
     const fetchCases = async () => {
