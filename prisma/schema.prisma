@@ -16,6 +16,7 @@ model cases {
   locationName       String?   @map("location_name")
   createTime         DateTime? @map("create_time") @db.Timestamp(6)
   updateTime         DateTime? @map("update_time") @db.Timestamp(6)
+  patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model patients {
@@ -30,4 +31,5 @@ model patients {
   dateOfBirth    DateTime? @map("date_of_birth") @db.Date
   createTime     DateTime? @map("create_time") @db.Timestamp(6)
   updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+  cases          cases[]
 }
