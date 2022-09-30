@@ -31,13 +31,6 @@ export default function Home({ flags }: Props) {
         backgroundColor: "gray.light",
         minHeight: "100vh"
       }}>
-        <Head>
-          {/* ensure styling for all device sizes (mobile, desktop etc.) */}
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <header>
-        </header>
         <LoginDialog open={isLoginModalOpen} onForgotPasswordClick={handleForgotPasswordClick} />
         <ForgotPasswordDialog open={isForgotPasswordModalOpen} onBackClick={onBackClick} /> 
       </Box>
