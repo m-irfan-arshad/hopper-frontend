@@ -9,7 +9,8 @@ import {
     DialogActions, 
     DialogContent, 
     DialogTitle,
-    InputLabel
+    InputLabel,
+    styled
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -26,6 +27,13 @@ export default function CreateCaseDialog(props: Props) {
   const {open, closeDialog} = props;
   const [dateOfBirth, setDateOfBirth] = useState<moment.Moment | null>(null);
   const [procedureDate, setProcedureDate] = useState<moment.Moment | null>(null);
+
+  const StyledTextField = styled(TextField)({
+    "& .MuiOutlinedInput-input": {
+        fontSize: "0.688rem"
+    },
+    marginTop: "0.313rem"
+  });
 
   const handleDateOfBirthChange = (newValue: moment.Moment | null) => {
     setDateOfBirth(newValue);
@@ -56,11 +64,11 @@ export default function CreateCaseDialog(props: Props) {
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="firstName" variant="standard">First Name</InputLabel>
-                        <TextField id="firstName" variant="outlined" placeholder="First Name" />
+                        <StyledTextField id="firstName" variant="outlined" placeholder="First Name" />
                     </Grid>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="lastName" variant="standard">Last Name</InputLabel>
-                        <TextField id="lastName" variant="outlined" placeholder="Last Name" />
+                        <StyledTextField id="lastName" variant="outlined" placeholder="Last Name" />
                     </Grid>
                     <Grid item xs={6}>
                     <InputLabel htmlFor="dateOfBirth" variant="standard">Patient Date of Birth</InputLabel>
@@ -69,7 +77,7 @@ export default function CreateCaseDialog(props: Props) {
                             value={dateOfBirth}
                             onChange={handleDateOfBirthChange}
                             renderInput={({inputProps, ...restParams}) => (
-                                <TextField 
+                                <StyledTextField 
                                     id="dateOfBirth"
                                     inputProps={{
                                         ...inputProps, 
@@ -92,19 +100,19 @@ export default function CreateCaseDialog(props: Props) {
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="primarySurgeon" variant="standard">Primary Surgeon</InputLabel>
-                        <TextField id="primarySurgeon" variant="outlined" placeholder="Primary Surgeon" />
+                        <StyledTextField id="primarySurgeon" variant="outlined" placeholder="Primary Surgeon" />
                     </Grid>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="surgicalLocation" variant="standard">Surgical Location</InputLabel>
-                        <TextField id="surgicalLocation" variant="outlined" placeholder="Surgical Location" />
+                        <StyledTextField id="surgicalLocation" variant="outlined" placeholder="Surgical Location" />
                     </Grid>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="procedureUnit" variant="standard">Procedure Unit</InputLabel>
-                        <TextField id="procedureUnit" variant="outlined" placeholder="Procedure Unit" />
+                        <StyledTextField id="procedureUnit" variant="outlined" placeholder="Procedure Unit" />
                     </Grid>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="serviceLine" variant="standard">Service Line</InputLabel>
-                        <TextField id="serviceLine" variant="outlined" placeholder="Service Line" />
+                        <StyledTextField id="serviceLine" variant="outlined" placeholder="Service Line" />
                     </Grid>
                     <Grid item xs={6}>
                         <InputLabel htmlFor="procedureDate" variant="standard">Procedure Date</InputLabel>
@@ -113,7 +121,7 @@ export default function CreateCaseDialog(props: Props) {
                             value={procedureDate}
                             onChange={handleProcedureDateChange}
                             renderInput={({inputProps, ...restParams}) => (
-                                <TextField 
+                                <StyledTextField 
                                     id="procedureDate"
                                     inputProps={{
                                         ...inputProps, 
@@ -134,7 +142,7 @@ export default function CreateCaseDialog(props: Props) {
                 </Grid>
             </LocalizationProvider>
         </DialogContent>
-        <DialogActions sx={{display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "0.063rem solid", padding: "0.625rem", borderColor: "blue.light"}}>
+        <DialogActions sx={{display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "0.063rem solid", padding: "0.625rem", borderColor: "gray.main"}}>
           <Button 
             onClick={handleClose}
             sx={{ color: "blue.main", padding: "0.625rem"}}

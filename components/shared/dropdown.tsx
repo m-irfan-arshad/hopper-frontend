@@ -21,10 +21,10 @@ export default function DropDownComponent(props: Props) {
         height: "2rem",
         borderRadius: "none",
         "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "blue.light",
+            borderColor: "gray.main",
         },
         "&:hover .MuiOutlinedInput-notchedOutline": { 
-            borderColor: "blue.light"
+            borderColor: "gray.main"
         },
         svg: {
             color: "blue.main"
