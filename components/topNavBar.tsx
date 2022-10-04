@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, styled, Typography, Box, IconButton, SvgIcon } from '@mui/material';
+import { AppBar, styled, Typography, Box, IconButton } from '@mui/material';
 import { NotificationImportant, AccountCircle } from "@mui/icons-material";
 import Image from 'next/image';
 import logo from '../medtelLogo.svg';

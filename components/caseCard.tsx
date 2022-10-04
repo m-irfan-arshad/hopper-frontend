@@ -68,7 +68,6 @@ function calculateProgressBarColor(numberOfCompletedSteps: number) {
 }
 
 export default function CaseCard ({ row }: CaseCardProps) {
-  console.log('row',row);
   const [expanded, setExpanded] = useState(false);
   const [isDialogOpen, setDialogState] = useState(false);
 
@@ -127,7 +126,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
         {name.label}
       </Typography>
       <Typography variant="body2" data-testid={name.id}> 
-        {calculateInfoCellValue(name)}
+        {calculateInfoCellValue(props)}
       </Typography>
     </Grid>)
   }
@@ -150,11 +149,12 @@ export default function CaseCard ({ row }: CaseCardProps) {
     </Button>)
   }
 
-  function calculateInfoCellValue(name) {
+  function calculateInfoCellValue(props: InfoCellProps) {
+    const { name } = props;
     if (row[name.id]) {
       return row[name.id];
-    } else if (row.patients[name.id]) {
-      return row.patients[name.id]
+    } else if (R.path(['patients', name.id], row)) {
+      return R.path(['patients', name.id], row);
     } else {
       return 'N/A'
     }
