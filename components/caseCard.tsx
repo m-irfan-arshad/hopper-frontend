@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import moment from "moment";
+import * as R from 'ramda';
 import { 
   Card, 
   CardHeader,
@@ -67,6 +68,7 @@ function calculateProgressBarColor(numberOfCompletedSteps: number) {
 }
 
 export default function CaseCard ({ row }: CaseCardProps) {
+  console.log('row',row);
   const [expanded, setExpanded] = useState(false);
   const [isDialogOpen, setDialogState] = useState(false);
 
@@ -102,7 +104,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const HeaderCell = (props: HeaderCellProps) => {
     const { title, icon } = props;
     return (
-    <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+    <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: "0.75rem"}}}> 
       <Typography 
         variant="subtitle2"
         sx={{ 
@@ -120,12 +122,12 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const InfoCell = (props: InfoCellProps) => {
     const { name } = props;
     return (
-    <Grid item xs={6} sm={3} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+    <Grid item xs={6} sm={3} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: "1.5rem"}}}> 
       <Typography variant="caption" sx={{ marginBottom: "0.125rem"}}> 
         {name.label}
       </Typography>
       <Typography variant="body2" data-testid={name.id}> 
-        {row[name.id] || "N/A"}
+        {calculateInfoCellValue(name)}
       </Typography>
     </Grid>)
   }
@@ -147,6 +149,17 @@ export default function CaseCard ({ row }: CaseCardProps) {
         Case Summary
     </Button>)
   }
+
+  function calculateInfoCellValue(name) {
+    if (row[name.id]) {
+      return row[name.id];
+    } else if (row.patients[name.id]) {
+      return row.patients[name.id]
+    } else {
+      return 'N/A'
+    }
+  } 
+
 
   return (
     <React.Fragment>
