@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import moment from "moment";
+import * as R from 'ramda';
 import { 
   Card, 
   CardHeader,
@@ -83,7 +84,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
       padding: 0,
     },
     borderBottom: expanded ? 1 : "none",
-    borderColor: "blue.light", 
+    borderColor: "gray.main", 
   };
 
   const linearProgressStyle = {
@@ -96,13 +97,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
       backgroundColor: calculateProgressBarColor(numberOfCompletedSteps),
       borderRadius: "0.625rem"
     },
-    backgroundColor: "blue.light"
+    backgroundColor: "gray.main"
   }
 
   const HeaderCell = (props: HeaderCellProps) => {
     const { title, icon } = props;
     return (
-    <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+    <Grid item xs={12} sx={{marginTop: "0.625rem", marginBottom: {xs: "1.75rem", sm: "0.75rem"}}}> 
       <Typography 
         variant="subtitle2"
         sx={{ 
@@ -120,12 +121,12 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const InfoCell = (props: InfoCellProps) => {
     const { name } = props;
     return (
-    <Grid item xs={6} sm={3} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: 0}}}> 
+    <Grid item xs={6} sm={3} sx={{paddingLeft: "2rem", marginBottom: {xs: "1.75rem", sm: "1.5rem"}}}> 
       <Typography variant="caption" sx={{ marginBottom: "0.125rem"}}> 
         {name.label}
       </Typography>
       <Typography variant="body2" data-testid={name.id}> 
-        {row[name.id] || "N/A"}
+        {calculateInfoCellValue(props)}
       </Typography>
     </Grid>)
   }
@@ -148,11 +149,23 @@ export default function CaseCard ({ row }: CaseCardProps) {
     </Button>)
   }
 
+  function calculateInfoCellValue(props: InfoCellProps) {
+    const { name } = props;
+    if (row[name.id]) {
+      return row[name.id];
+    } else if (R.path(['patients', name.id], row)) {
+      return R.path(['patients', name.id], row);
+    } else {
+      return 'N/A'
+    }
+  } 
+
+
   return (
     <React.Fragment>
     <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
     <Box sx={{ marginTop: "0.938rem" }}>
-      <Card sx={{ border: 1, borderColor: "blue.light", boxShadow: "none"}}>
+      <Card sx={{ border: 1, borderColor: "gray.main", boxShadow: "none"}}>
         <CardHeader
           avatar={
             <ExpandMore
@@ -208,7 +221,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
               sx={{ 
                 borderBottom: "0.063rem dotted", 
                 borderRight: {xs: 0, sm:"0.063rem dotted"}, 
-                borderColor:  {xs: "blue.light", sm: "blue.light"},
+                borderColor:  {xs: "gray.main", sm: "gray.main"},
                 height: "50%", 
               }}
             >
@@ -221,7 +234,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             </Grid>
             <Grid
               container
-              sx={{ borderRight: {xs: 0, sm:"0.063rem dotted"}, borderColor: {xs: 'none', sm: "blue.light"}, height: "50%"}}
+              sx={{ borderRight: {xs: 0, sm:"0.063rem dotted"}, borderColor: {xs: 'none', sm: "gray.main"}, height: "50%"}}
             >
               <HeaderCell title={"Case Identifiers"} icon={<AssignmentIcon sx={{ height: '1.25rem', width: "1.25rem", marginRight: "0.313rem"}} />} />
               {
@@ -256,7 +269,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                             height: "0.875rem",
                             width: "0.875rem",
                             marginRight: "0.313rem",
-                            color: "blue.light"
+                            color: "gray.main"
                           }}
                       />
                     }

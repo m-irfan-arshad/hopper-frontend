@@ -160,7 +160,7 @@ export default function CaseSummaryDialog(props: Props) {
                 alignItems: "center", 
                 borderTop: "0.063rem solid", 
                 padding: "0.625rem", 
-                borderColor: "blue.light"
+                borderColor: "gray.main"
             }}>
             <Button 
                 onClick={() => closeDialog()}
