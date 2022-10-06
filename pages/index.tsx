@@ -33,7 +33,6 @@ export function Home({ flags }: Props) {
           {
             flags.displayTopNav ? <TopNavBar /> : null
           }
-          <CaseNavBar />
         </header>
         <Dashboard />
       </Box>
