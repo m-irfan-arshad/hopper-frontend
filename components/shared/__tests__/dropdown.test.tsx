@@ -19,12 +19,7 @@ describe("Dropdown", () => {
         expect(getByRole("button", {name: "Title: First Item"})).toBeInTheDocument();
 
         fireEvent.mouseDown(getByRole("button", {name: "Title: First Item"}));
-
-        expect(getByRole("listbox")).toBeInTheDocument();
-
-        const listbox = within(getByRole('listbox'));
-
-        fireEvent.click(listbox.getByText('Second Item'));
+        fireEvent.click(getByRole("option", {name: "Second Item"}));
 
         expect(props.onChange).toHaveBeenCalledTimes(1);
     });

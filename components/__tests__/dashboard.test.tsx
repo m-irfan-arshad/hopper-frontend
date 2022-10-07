@@ -32,7 +32,7 @@ describe("Dashboard", () => {
     ]; 
 
     global.fetch = jest.fn().mockImplementation(() =>  Promise.resolve({
-        json: () => Promise.resolve( mockData ),
+        json: () => Promise.resolve(mockData),
     }));
 
     test("renders the dashboard", async () => {
@@ -101,10 +101,7 @@ describe("Dashboard", () => {
         expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
 
         fireEvent.mouseDown(getByRole("button", {name: "Sort: Oldest - Newest"}));
-
-        const listbox = getByRole("listbox");
-
-        fireEvent.click(screen.getByText("Newest - Oldest"));
+        fireEvent.click(getByRole("option", {name: "Newest - Oldest"}));
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
