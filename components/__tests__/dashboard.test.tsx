@@ -49,20 +49,6 @@ describe("Dashboard", () => {
         });
     });
 
-    test("calls onChange of dropdown", async () => {
-        const queryClient = new QueryClient();
-
-        const { getByRole, getByText } = render(
-            <QueryClientProvider client={queryClient}>
-                <Dashboard  />
-            </QueryClientProvider>
-        ); 
-
-        await waitFor(() => {
-            expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
-        });
-    });
-
     test("renders and interacts with mobile view of dashboard", async () => { 
         const queryClient = new QueryClient();
 
