@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
+import React, { useState } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { useQuery } from 'react-query';
-import { styled, Box, Stack, Select, Button, Typography, FormControl, MenuItem, useMediaQuery } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
+import { Box, Stack, Button, Typography, useMediaQuery } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
-
+import { useGetCasesHook } from '../hooks';
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -22,44 +19,7 @@ export default function Dashboard() {
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
     const [caseFilterValue, setCaseFilterValue] = useState('All Steps');
 
-    const fetchCases = async () => {
-      const url =  calculateURL();
-      const response = await fetch(url);
-    
-      return response.json();
-    };
-
-    function translateSortOrder() {
-        return dateSortValue === 'Oldest - Newest' ? 'asc' : 'desc'; 
-    }
-
-    function calculateURL() {
-        let parameters;
-        if (dateFilterValue === 'This month') {
-            parameters = new URLSearchParams({ 
-                dateRangeStart: moment().utc().toString(),
-                dateRangeEnd: moment().utc().endOf('month').toString(),
-                orderBy: translateSortOrder()
-            });
-        } else if (dateFilterValue === 'Next month') {
-            parameters = new URLSearchParams({ 
-                dateRangeStart: moment().utc().add(1, 'month').startOf('month').toString(),
-                dateRangeEnd: moment().utc().add(1, 'month').endOf('month').toString(),
-                orderBy: translateSortOrder()
-            });
-        }
-        else if (dateFilterValue === 'Next quarter') {
-            parameters = new URLSearchParams({ 
-                dateRangeStart: moment().utc().toString(),
-                dateRangeEnd:  moment().utc().add(2, 'month').endOf('month').toString(),
-                orderBy: translateSortOrder()
-            });
-        }
-        const url =  `/api/getCases?` + parameters;
-        return url;
-    }
-
-    const { data } = useQuery(["getCases", dateFilterValue, dateSortValue], fetchCases)
+    const { data } = useGetCasesHook(dateFilterValue, dateSortValue);
 
     if (!data) {
         return null;
