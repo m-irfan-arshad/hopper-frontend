@@ -4,7 +4,7 @@ import TopNavBar from "../components/topNavBar";
 import CaseNavBar from "../components/caseNavBar";
 import Dashboard from "../components/dashboard";
 import * as LaunchDarkly from 'launchdarkly-react-client-sdk';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Box } from "@mui/material";
 
 interface Props {
@@ -33,7 +33,6 @@ export function Home({ flags }: Props) {
           {
             flags.displayTopNav ? <TopNavBar /> : null
           }
-          <CaseNavBar />
         </header>
         <Dashboard />
       </Box>
