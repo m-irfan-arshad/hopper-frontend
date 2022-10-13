@@ -1,12 +1,22 @@
 import React, { useState } from "react";
-import { AppBar, styled, Box, Button, Select, MenuItem, Checkbox, Typography, FormControl, useMediaQuery } from '@mui/material';
+import moment from "moment";
+import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./shared/dropdown";
 import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 
-export default function CaseNavBar() {
+interface Props {
+    onDateFilterChange: (value: string) => void
+    onCaseFilterChange: (value: string) => void
+    caseFilterValue: string
+    dateFilterValue: string
+}
+
+export default function CaseNavBar(props: Props) {
+    const { onDateFilterChange, dateFilterValue, onCaseFilterChange, caseFilterValue } = props;
+
     const [isDialogOpen, setDialogState] = useState(false);
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
 
@@ -48,12 +58,16 @@ export default function CaseNavBar() {
                             menuItems={dashboardDateRangeDropDownValues}
                             title="Date Range:"
                             selectId="case-date-select"
+                            onChange={onDateFilterChange}
+                            value={dateFilterValue}
                         />
                         <DropDownComponent
                             menuItems={dashboardStepDropDownValues}
                             title="Step:"
                             selectId="case-step-select"
                             additionalStyles={{ marginLeft: "0.625rem"}}
+                            onChange={onCaseFilterChange}
+                            value={caseFilterValue}
                         />
                         { !isMobile &&
                             <React.Fragment>

@@ -3,10 +3,18 @@ import CaseNavBar from "../caseNavBar";
 
 describe("CaseNavBar", () => {
 
+    const props = {
+        onDateFilterChange: jest.fn(),
+        onCaseFilterChange:  jest.fn(),
+        caseFilterValue: 'All Steps',
+        dateFilterValue:  'This month'
+    }
+
     test("renders the caseNavBar", async() => {
         const { getByRole, getByText } = render(
-            <CaseNavBar  />
-        );  
+            <CaseNavBar  {...props}/>
+        ); 
+       
         expect(getByRole("button", {name: "Date Range: This month"})).toBeInTheDocument();
         expect(getByRole("button", {name: "Step: All Steps"})).toBeInTheDocument();
         expect(getByText("Show Completed Cases")).toBeInTheDocument();
@@ -14,7 +22,7 @@ describe("CaseNavBar", () => {
 
     test("open create case dialog and close it", async () => {
         const { getByRole, queryByRole } = render(
-            <CaseNavBar  />
+            <CaseNavBar  {...props}/>
         );
 
         expect(getByRole("button", {name: "Create Case"})).toBeInTheDocument();

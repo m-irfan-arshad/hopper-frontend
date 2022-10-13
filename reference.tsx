@@ -5,15 +5,11 @@ export const caseCardProcedureInformation = [
   },
   {
     label: "Procedure Location",
-    id: "procedureLocation",
-  },
-  {
-    label: "Proceduralist",
-    id: "proceduralist",
+    id: "locationName",
   },
   {
     label: "Provider",
-    id: "provider",
+    id: "providerName",
   }
 ];
 

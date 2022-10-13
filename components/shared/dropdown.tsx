@@ -11,20 +11,22 @@ interface Props {
     title: string
     selectId: string
     additionalStyles?: React.CSSProperties
+    onChange: (value: string) => void
+    value: string
 }
 
 export default function DropDownComponent(props: Props) {
-    const {menuItems, title, selectId, additionalStyles} = props;
+    const {menuItems, title, selectId, additionalStyles, onChange, value} = props;
 
     const defaultStyles = {
         color: "black.main",
         height: "2rem",
         borderRadius: "none",
         "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "blue.light",
+            borderColor: "gray.main",
         },
         "&:hover .MuiOutlinedInput-notchedOutline": { 
-            borderColor: "blue.light"
+            borderColor: "gray.main"
         },
         svg: {
             color: "blue.main"
@@ -33,8 +35,8 @@ export default function DropDownComponent(props: Props) {
     
     return (
         <Select
+            value={value}
             id={selectId}
-            defaultValue={menuItems[0].value}
             renderValue={(value) => (
                 <Typography variant="body2">{title} {value}</Typography>
             )}
@@ -42,6 +44,7 @@ export default function DropDownComponent(props: Props) {
                 ...defaultStyles,
                 ...additionalStyles
             }}
+            onChange={(value) =>  onChange(value.target.value)}
         >
             {
                 menuItems.map((item, index) => (

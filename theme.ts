@@ -84,7 +84,7 @@ export const defaultTheme = createTheme({
     palette: {
         blue: {
             dark: "#0277BD",
-            light: "#D8E4F4",
+            light: "#1DAFED",
             main: "#42A5F5"
         },
         white: {
@@ -106,7 +106,7 @@ export const defaultTheme = createTheme({
         },
         gray: {
             light: "#F1F5F9",
-            main: "#37474F",
+            main: "#D8E4F4",
             dark: "#607D8B"
         },
         success: {
@@ -150,12 +150,11 @@ export const defaultTheme = createTheme({
                     props: { variant: "outlined" },
                     style: {
                         "& .MuiOutlinedInput-input": {
-                            fontSize: "0.688rem",
                             "&::placeholder": {
-                                fontStyle: "italic"
+                                fontStyle: "italic",
+                                color: "#78909C"
                             }
                         },
-                        marginTop: "0.313rem"
                     }
                 },
             ],
