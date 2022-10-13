@@ -8,7 +8,7 @@
 
 
  test('should get cases', async () => {
-  let req: NextApiRequest = httpMock.createRequest({});
+  let req: NextApiRequest = httpMock.createRequest({url: "https://hopper-frontend/api/getCases?dateRangeStart=Thu+Oct+13+2022+14%3A04%3A06+GMT%2B0000&dateRangeEnd=Mon+Oct+31+2022+23%3A59%3A59+GMT%2B0000&orderBy=asc"});
   let res: any = httpMock.createResponse({});
 
     let cases = [{
@@ -22,6 +22,24 @@
         updateTime: new Date(),
     }]
 
+    const params = {
+      where: {
+        procedureDate: {
+            // eventually this should take in a date range parameter from client instead
+            gte: new Date("2022-10-13T14:04:06.000Z") ,
+            lte: new Date("2022-10-31T23:59:59.000Z")
+        }
+      },
+      orderBy: [
+        {
+          procedureDate: "asc"
+        }
+      ],
+      include: {
+          patients: true
+      }
+  }
+
     prismaMock.cases.findMany.mockResolvedValue(cases)
     
     await getCasesHandler(req, res)
@@ -29,4 +47,6 @@
     expect(data[0].caseId).toEqual(1)
     expect(data[0].patientId).toEqual(1)
     expect(data[0].providerName).toEqual("testProviderName")
+    expect(prismaMock.cases.findMany).toBeCalledTimes(1)
+    expect(prismaMock.cases.findMany).toBeCalledWith(params)
   })
