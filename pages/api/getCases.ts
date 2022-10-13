@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../prisma/clientInstantiation';
+import prisma from '../../prisma/clientInstantiation';
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
   const resultPosts = await prisma.cases.findMany({
