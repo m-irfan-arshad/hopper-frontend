@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('req.query', req.query);
   const resultPosts = await prisma.cases.findMany({
       where: {
         procedureDate: {

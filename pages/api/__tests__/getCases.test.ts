@@ -26,7 +26,7 @@
       where: {
         procedureDate: {
             // eventually this should take in a date range parameter from client instead
-            gte: new Date("2022-10-13T14:04:06.000Z") ,
+            gte: new Date("2022-10-13T14:04:06.000Z"),
             lte: new Date("2022-10-31T23:59:59.000Z")
         }
       },
