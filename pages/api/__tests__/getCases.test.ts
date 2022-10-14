@@ -1,92 +1,60 @@
-import { createMocks, RequestMethod, createRequest, createResponse } from 'node-mocks-http';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../prisma/clientInstantiation';
-import getCases from '../getCases';
+/**
+ * @jest-environment node
+ */
+ import httpMock, { createMocks, RequestMethod } from 'node-mocks-http';
+ import type { NextApiRequest, NextApiResponse } from 'next';
+ import { prismaMock } from '../../../prisma/singleton'
+ import getCasesHandler from '../getCases'
 
-const mockData = [
-    {
-        caseId: 'caseId',
-        procedureDate: '10/10/2022',
-        patients: {
-            firstName: 'firstName',
-            lastName: 'lastName',
-            dateOfBirth: 'DOB',
-            mobilePhone: 'mobilePhone',
-            mrn: 'mrn',
-            address: 'address'
+
+ test('should get cases', async () => {
+  const urlParams = new URLSearchParams({
+    dateRangeStart: new Date("2022-10-13T14:04:06.000Z").toUTCString(), 
+    dateRangeEnd : new Date("2022-10-31T23:59:59.000Z").toUTCString(),
+    orderBy: "asc"
+  });
+
+  let req: NextApiRequest = httpMock.createRequest({
+    url: `/api/getCases?${urlParams.toString()}`
+  });
+  let res: any = httpMock.createResponse({});
+
+    let cases = [{
+        caseId: 1,
+        fhirResourceId: "testId",
+        patientId: 1,
+        procedureDate: new Date(),
+        providerName: "testProviderName",
+        locationName: "testLocationName",
+        createTime: new Date(),
+        updateTime: new Date(),
+    }]
+
+    const params = {
+      where: {
+        procedureDate: {
+            // eventually this should take in a date range parameter from client instead
+            gte: new Date("2022-10-13T14:04:06.000Z"),
+            lte: new Date("2022-10-31T23:59:59.000Z")
         }
-    },
-    {
-            caseId: 'caseId2',
-            procedureDate: '10/11/2022',
-            patients: {
-                firstName: 'firstName2',
-                lastName: 'lastName2',
-                dateOfBirth: 'DOB2',
-                mobilePhone: 'mobilePhone2',
-                mrn: 'mrn2',
-                address: 'address2'
+      },
+      orderBy: [
+        {
+          procedureDate: "asc"
         }
-    }
-]; 
+      ],
+      include: {
+          patients: true
+      }
+  }
 
-jest.mock('@prisma/client', ()=>{
-    return {
-        PrismaClient: function() {
-            return {
-                cases: {
-                    findMany: jest.fn(() => mockData),
-                    update: jest.fn(),
-                },
-            };
-        },
-    };
-});
-
-function mockRequestResponse(method: RequestMethod = 'GET') {
-    const { req, res }: { 
-        req: NextApiRequest & ReturnType<typeof createRequest>; 
-        res: NextApiResponse & ReturnType<typeof createResponse>
-    } = createMocks({ method });
-
-    req.query = { 
-        dateRangeStart: '10/10/2022',
-        dateRangeEnd: '10/20/2022',
-        orderBy: 'asc'
-    };
-    return { req, res };
-}
-
-describe('/api/getCases', () => {
-    test('calls api route and prisma query with expected parameters', async () => {
-        const { req, res } = mockRequestResponse();
-
-        await getCases(req, res);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.statusMessage).toEqual('OK');
-        expect(req.query).toEqual({ 
-            dateRangeStart: '10/10/2022',
-            dateRangeEnd: '10/20/2022',
-            orderBy: 'asc'
-        });
-        expect(prisma.cases.findMany).toHaveBeenCalledTimes(1); 
-        expect(prisma.cases.findMany).toHaveBeenCalledWith({
-            where: {
-                procedureDate: {
-                    gte: new Date(req.query["dateRangeStart"]),
-                    lte: new Date(req.query["dateRangeEnd"])
-                }
-              },
-              orderBy: [
-                {
-                  procedureDate: req.query["orderBy"]
-                }
-              ],
-              include: {
-                  patients: true
-              }
-        }); 
-        expect((res._getJSONData())).toEqual(mockData);
-    });
-});
+    prismaMock.cases.findMany.mockResolvedValue(cases)
+    
+    await getCasesHandler(req, res)
+    const data = res._getJSONData()
+    expect(data[0].caseId).toEqual(1)
+    expect(data[0].patientId).toEqual(1)
+    expect(data[0].providerName).toEqual("testProviderName")
+    expect(prismaMock.cases.findMany).toBeCalledTimes(1)
+    expect(prismaMock.cases.findMany).toBeCalledWith(params)
+  })
