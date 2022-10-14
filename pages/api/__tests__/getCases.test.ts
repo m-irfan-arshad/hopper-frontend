@@ -8,7 +8,16 @@
 
 
  test('should get cases', async () => {
-  let req: NextApiRequest = httpMock.createRequest({url: "https://hopper-frontend/api/getCases?dateRangeStart=Thu+Oct+13+2022+14%3A04%3A06+GMT%2B0000&dateRangeEnd=Mon+Oct+31+2022+23%3A59%3A59+GMT%2B0000&orderBy=asc"});
+  const urlParams = new URLSearchParams({
+    dateRangeStart: new Date("2022-10-13T14:04:06.000Z").toUTCString(), 
+    dateRangeEnd : new Date("2022-10-31T23:59:59.000Z").toUTCString(),
+    orderBy: "asc"
+  });
+
+  console.log("url: ", `/api/getCases?${urlParams.toString()}`)
+  let req: NextApiRequest = httpMock.createRequest({
+    url: `/api/getCases?${urlParams.toString()}`
+  });
   let res: any = httpMock.createResponse({});
 
     let cases = [{
