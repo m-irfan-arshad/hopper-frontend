@@ -14,7 +14,6 @@
     orderBy: "asc"
   });
 
-  console.log("url: ", `/api/getCases?${urlParams.toString()}`)
   let req: NextApiRequest = httpMock.createRequest({
     url: `/api/getCases?${urlParams.toString()}`
   });
