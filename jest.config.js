@@ -8,7 +8,7 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   // Add more setup options before each test is run
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['./jest.setup.js','<rootDir>/prisma/singleton.ts'],
   modulePathIgnorePatterns: ["<rootDir>/playwrightTests/"],
   testEnvironment: "jest-environment-jsdom"
 };

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../prisma/clientInstantiation';
 import { formatDashboardQueryParams } from '../../utils';
+import prisma from '../../prisma/clientInstantiation';
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
   const dashboardParams = {
