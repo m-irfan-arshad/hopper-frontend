@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery } from '@mui/material';
+import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery, TextField } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./shared/dropdown";
 import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
+import InputAdornment from '@mui/material/InputAdornment';
+import Search from '@mui/icons-material/Search';
+import { formatDashboardQueryParams } from '../utils';
 
 interface Props {
     onDateFilterChange: (value: string) => void
     onCaseFilterChange: (value: string) => void
+    search: (value: string) => void
     caseFilterValue: string
     dateFilterValue: string
+    searchBarValue: string
 }
 
 export default function CaseNavBar(props: Props) {
-    const { onDateFilterChange, dateFilterValue, onCaseFilterChange, caseFilterValue } = props;
+    const { onDateFilterChange, dateFilterValue, onCaseFilterChange, caseFilterValue, searchBarValue, search } = props;
 
     const [isDialogOpen, setDialogState] = useState(false);
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
@@ -40,6 +45,45 @@ export default function CaseNavBar(props: Props) {
             marginTop: "1rem"
         }
     });
+
+    function DebouncedInput({
+        value: initialValue,
+        onChange,
+        debounce = 500
+      }: {
+        value: string 
+        onChange: (value: string) => void
+        debounce?: number
+      } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+        const [value, setValue] = useState(initialValue)
+      
+        useEffect(() => {
+          setValue(initialValue)
+        }, [initialValue])
+      
+        useEffect(() => {
+          const timeout = setTimeout(() => {
+            onChange(value)
+          }, debounce)
+      
+          return () => clearTimeout(timeout)
+        }, [value])
+      
+        return (
+          <TextField  
+          InputProps={{
+              startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+        )}} 
+          placeholder="Search" 
+          type="search" 
+          variant="outlined" 
+          value={value} 
+          onChange={e => setValue(e.target.value)} />
+        )
+      }
 
     return (
         <React.Fragment>
@@ -69,6 +113,7 @@ export default function CaseNavBar(props: Props) {
                             onChange={onCaseFilterChange}
                             value={caseFilterValue}
                         />
+                        <DebouncedInput value={searchBarValue} onChange={search}/> 
                         { !isMobile &&
                             <React.Fragment>
                                 <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />

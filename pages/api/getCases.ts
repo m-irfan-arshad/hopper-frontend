@@ -1,16 +1,17 @@
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../prisma/clientInstantiation';
+import { formatDashboardQueryParams } from '../../utils';
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+  const dashboardParams = {
+    searchValue: <string>req.query["searchValue"],
+    dateRangeStart: <string>req.query["dateRangeStart"],
+    dateRangeEnd: <string>req.query["dateRangeEnd"],
+  };
+
   const resultPosts = await prisma.cases.findMany({
-      where: {
-        procedureDate: {
-            // eventually this should take in a date range parameter from client instead
-            gte: new Date(<string>req.query["dateRangeStart"]),
-            lte: new Date(<string>req.query["dateRangeEnd"])
-        }
-      },
+      where: formatDashboardQueryParams(dashboardParams),
       orderBy: [
         {
           procedureDate: <Prisma.SortOrder>req.query["orderBy"]

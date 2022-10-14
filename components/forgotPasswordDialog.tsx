@@ -10,7 +10,7 @@ import {
     styled
 } from '@mui/material';
 import Image from 'next/image';
-import logo from '../medtelLogo.png';
+import logo from '../medtelLogo.svg';
 import { defaultTheme } from "../theme";
 
 interface Props {
