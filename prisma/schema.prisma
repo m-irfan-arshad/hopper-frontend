@@ -16,6 +16,8 @@ model cases {
   locationName       String?   @map("location_name")
   createTime         DateTime? @map("create_time") @db.Timestamp(6)
   updateTime         DateTime? @map("update_time") @db.Timestamp(6)
+  priorAuthorization String    @map("prior_authorization") @default("Incomplete")
+  vendorConfirmation String    @map("vendor_confirmation") @default("Incomplete")
   patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
 }
 
