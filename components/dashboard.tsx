@@ -6,7 +6,7 @@ import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
-import { useGetCasesHook } from '../hooks';
+import { useGetCasesHook } from '../utils/hooks';
 
 interface CaseGroup {
     [key: string]: SingleCase[]
