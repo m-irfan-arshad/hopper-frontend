@@ -6,7 +6,7 @@
  import { prismaMock } from '../../../prisma/singleton'
  import getCasesHandler from '../getCases'
 
- describe("ForgotPasswordDialog", () => {
+ describe("getCases API", () => {
     const urlParams = new URLSearchParams({
         dateRangeStart: new Date("2022-10-13T14:04:06.000Z").toUTCString(), 
         dateRangeEnd : new Date("2022-10-31T23:59:59.000Z").toUTCString(),

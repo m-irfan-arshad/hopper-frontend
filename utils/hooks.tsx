@@ -19,10 +19,6 @@ function translateSortOrder(dateSortValue: string) {
 }
 
 function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, searchBarValue: string) {
-    console.log('dateFilterValue',dateFilterValue);
-    console.log('dateSortValue',dateSortValue);
-    console.log('searchBarValue',searchBarValue);
-
     let parameters;
     if (dateFilterValue === 'This month') {
         parameters = new URLSearchParams({ 
@@ -48,6 +44,6 @@ function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, s
         });
     }
     const url =  `/api/getCases?` + parameters;
-    console.log('parameters',parameters);
+    
     return url;
 }
