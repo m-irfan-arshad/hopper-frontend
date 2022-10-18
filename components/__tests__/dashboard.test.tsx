@@ -1,55 +1,58 @@
-import { fireEvent, render, waitFor, within, screen } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import moment from "moment";
 import Dashboard from "../dashboard";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useGetCasesHook } from '../../utils/hooks';
 
-describe("Dashboard", () => {   
-    const mockData = [
-        {
-            caseId: 'caseId',
-            procedureDate: moment('10/10/2022').utc().format(),
-            patients: {
-                firstName: 'firstName',
-                lastName: 'lastName',
-                dateOfBirth: 'DOB',
-                mobilePhone: 'mobilePhone',
-                mrn: 'mrn',
-                address: 'address'
-            }
-        },
-        {
-                caseId: 'caseId2',
-                procedureDate: moment('10/11/2022').utc().format(),
-                patients: {
-                    firstName: 'firstName2',
-                    lastName: 'lastName2',
-                    dateOfBirth: 'DOB2',
-                    mobilePhone: 'mobilePhone2',
-                    mrn: 'mrn2',
-                    address: 'address2'
-            }
+jest.mock("../../utils/hooks");
+
+const mockData = [
+    {
+        caseId: 'caseId',
+        procedureDate: moment().endOf('month').utc().format(),
+        patients: {
+            firstName: 'firstName',
+            lastName: 'lastName',
+            dateOfBirth: 'DOB',
+            mobilePhone: 'mobilePhone',
+            mrn: 'mrn',
+            address: 'address'
         }
-    ]; 
+    },
+    {
+            caseId: 'caseId2',
+            procedureDate: moment().endOf('month').utc().format(),
+            patients: {
+                firstName: 'firstName2',
+                lastName: 'lastName2',
+                dateOfBirth: 'DOB2',
+                mobilePhone: 'mobilePhone2',
+                mrn: 'mrn2',
+                address: 'address2'
+        }
+    }
+]; 
 
-    global.fetch = jest.fn().mockImplementation(() =>  Promise.resolve({
-        json: () => Promise.resolve(mockData),
-    }));
+describe("Dashboard", () => {  
+    const mockedUseGetCasesHook = useGetCasesHook as jest.Mock<any>; 
+
+    mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: mockData }));
 
     test("renders the dashboard", async () => {
         const queryClient = new QueryClient();
 
-        const { getByRole, getByText } = render(
+        const { getByRole, } = render(
             <QueryClientProvider client={queryClient}>
                 <Dashboard  />
             </QueryClientProvider>
-        ); 
+        );
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
         });
     });
 
-    test("renders and interacts with mobile view of dashboard", async () => { 
+    test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
         const queryClient = new QueryClient();
 
         const { getByRole, queryByRole, rerender } = render(
@@ -60,6 +63,15 @@ describe("Dashboard", () => {
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
+        });
+
+        expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
+
+        fireEvent.mouseDown(getByRole("button", {name: "Sort: Oldest - Newest"}));
+        fireEvent.click(getByRole("option", {name: "Newest - Oldest"}));
+
+        await waitFor(() => {
+            expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
         });
 
         //sets viewport to mobile version   
@@ -84,13 +96,13 @@ describe("Dashboard", () => {
           );
 
         expect(queryByRole("button", {name: "Export"})).not.toBeInTheDocument();
-        expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
+        expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
 
-        fireEvent.mouseDown(getByRole("button", {name: "Sort: Oldest - Newest"}));
-        fireEvent.click(getByRole("option", {name: "Newest - Oldest"}));
+        fireEvent.mouseDown(getByRole("button", {name: "Sort: Newest - Oldest"}));
+        fireEvent.click(getByRole("option", {name: "Oldest - Newest"}));
 
         await waitFor(() => {
-            expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
+            expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
         });
       });
 });

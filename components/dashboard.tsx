@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { Box, Stack, Button, Typography, useMediaQuery } from "@mui/material";
+import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
-import { useGetCasesHook } from '../hooks';
+import { useGetCasesHook } from '../utils/hooks';
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -18,18 +18,15 @@ export default function Dashboard() {
     const [dateFilterValue, setDateFilterValue] = useState('This month');
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
     const [caseFilterValue, setCaseFilterValue] = useState('All Steps');
+    const [searchBarValue, setSearchVarBalue ] = useState('');
 
-    const { data } = useGetCasesHook(dateFilterValue, dateSortValue);
-
-    if (!data) {
-        return null;
-    }
+    const { data = [], isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, searchBarValue);
 
     const caseGroups:CaseGroup = {};
-    
-    data.forEach(function(singleCase: SingleCase) {
-        const date = singleCase.procedureDate.split('T')[0];
-        singleCase.procedureDate = date;
+
+        data.forEach(function(singleCase: SingleCase) {
+            const date = singleCase.procedureDate.split('T')[0];
+            singleCase.procedureDate = date;
             if (date in caseGroups) {
                 caseGroups[date].push(singleCase);
             } else {
@@ -44,12 +41,16 @@ export default function Dashboard() {
                 caseFilterValue={caseFilterValue} 
                 onDateFilterChange={setDateFilterValue}  
                 dateFilterValue={dateFilterValue}
+                searchBarValue={searchBarValue}
+                search={setSearchVarBalue}
             />
             <Box sx={{
                 display: "flex",
                 justifyContent: "center",
             }}>
-            <Stack sx={{
+            <Stack 
+            spacing={isLoading ? 25 : 0}
+            sx={{
                 width: "92%",
                 maxWidth: "60rem",
                 marginBottom: "1.25rem"
@@ -68,7 +69,7 @@ export default function Dashboard() {
                         justifyContent: "center"
                     }}>
                         <Typography variant="h6">
-                            {`${data.length} Cases`}
+                            {`${data.length} ${data.length === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
                         {!isMobile 
                             && <Box sx={{ minWidth: 120 }}>
@@ -114,6 +115,7 @@ export default function Dashboard() {
                         )
                     })
                 }
+                {isLoading && <CircularProgress sx={{alignSelf: 'center'}} />}
             </Stack>
             </Box>
         </React.Fragment>
