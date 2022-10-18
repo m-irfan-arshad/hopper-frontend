@@ -57,6 +57,24 @@ export default function CaseNavBar(props: Props) {
             }}>
                 <StyledBox sx={{ width: "92%", maxWidth: "60rem" }}>
                     <StyledBox>
+                        <DebouncedInput 
+                            value={searchBarValue} 
+                            onChange={search}
+                            placeholder={'Search Name or Case ID'}
+                            additionalStyles={{ 
+                                "& .MuiInputBase-root": {
+                                    height: '2.5rem'
+                                },
+                                "& .MuiOutlinedInput-input": {
+                                    fontSize: "0.875rem",
+                                    "&::placeholder": {
+                                        fontStyle: "normal",
+                                    }
+                                },
+                                marginRight: "0.625rem",
+                                minWidth: "230px"
+                            }}
+                        /> 
                         <DropDownComponent
                             menuItems={dashboardDateRangeDropDownValues}
                             title="Date Range:"
@@ -72,7 +90,6 @@ export default function CaseNavBar(props: Props) {
                             onChange={onCaseFilterChange}
                             value={caseFilterValue}
                         />
-                        <DebouncedInput value={searchBarValue} onChange={search}/> 
                         { !isMobile &&
                             <React.Fragment>
                                 <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
