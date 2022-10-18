@@ -66,10 +66,7 @@ export default function CaseNavBar(props: Props) {
                                     height: '2.5rem'
                                 },
                                 "& .MuiOutlinedInput-input": {
-                                    fontSize: "0.875rem",
-                                    "&::placeholder": {
-                                        fontStyle: "normal",
-                                    }
+                                    fontSize: "0.875rem"
                                 },
                                 marginRight: "0.625rem",
                                 minWidth: "230px"
