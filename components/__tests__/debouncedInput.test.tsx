@@ -5,7 +5,8 @@ describe("DebouncedInput", () => {
     const props = {
         onChange: jest.fn(),
         value: 'initialValue',
-        debounce: 500
+        debounce: 500,
+        placeholder: 'Search'
     };
 
     test("renders the initial debounced input and calls on change", async() => {

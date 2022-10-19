@@ -20,7 +20,7 @@ export default function DropDownComponent(props: Props) {
 
     const defaultStyles = {
         color: "black.main",
-        height: "2rem",
+        height: "2.5rem",
         borderRadius: "none",
         "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "gray.main",
