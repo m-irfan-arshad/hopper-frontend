@@ -149,6 +149,24 @@ export default function CaseCard ({ row }: CaseCardProps) {
     </Button>)
   }
 
+  const UpdateProgressButton = () => {
+    return (<Button 
+      variant="contained"
+      size="small"
+      onClick={() => setDialogState(true)}
+      sx={{marginTop: "0.75rem"}}
+    >
+      <BallotIcon 
+        sx={{
+          height: "1rem", 
+          width: "1rem", 
+          marginRight: "0.438rem"
+        }}
+      />
+        Update Progress
+    </Button>)
+  }
+
   function calculateInfoCellValue(props: InfoCellProps) {
     const { name } = props;
     if (row[name.id]) {
@@ -243,12 +261,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 ))
               }
             </Grid>
-            {isMobile && <CaseSummaryButton />}
+            {isMobile && <div><CaseSummaryButton /> <UpdateProgressButton /></div>}
+            
             </Box>
             {!isMobile 
             && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
-                 Progress
+                 Progress sdsc
               </Typography>
                 {/* {row.steps.map((step, index) => (
                   <ListItem
@@ -279,6 +298,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   </ListItem>
                 ))} */}
                 <CaseSummaryButton />
+                <UpdateProgressButton />
             </List>
             }
           </Box>
