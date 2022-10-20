@@ -13,12 +13,17 @@ import {
     DialogActions, 
     DialogContent, 
     DialogTitle,
-    Box
+    Box,
+    FormGroup,
+    FormControlLabel,
+    Switch
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { SingleCase } from "../reference";
 import DottedDivider from "./shared/dottedDivider";
+import { useUpdateCaseHook } from '../utils/hooks';
+
 
 interface Props {
     open: boolean
@@ -33,6 +38,8 @@ interface SectionHeaderProps {
 
 export default function CaseSummaryDialog(props: Props) {
   const {open, closeDialog, row} = props;
+  
+  const {mutate} = useUpdateCaseHook()
 
   const SectionHeader = (props: SectionHeaderProps) => {
     const {title, icon} = props;
@@ -156,7 +163,7 @@ export default function CaseSummaryDialog(props: Props) {
         <DialogActions 
             sx={{
                 display: "flex", 
-                justifyContent: "flex-start", 
+                justifyContent: "space-between", 
                 alignItems: "center", 
                 borderTop: "0.063rem solid", 
                 padding: "0.625rem", 
@@ -168,6 +175,22 @@ export default function CaseSummaryDialog(props: Props) {
             >
                 Cancel
             </Button>
+            <div style={{display: 'flex', gap: 15, marginRight: 10}}>
+            <Button 
+                variant="contained"
+                size="small"
+                onClick={() => mutate({priorAuthorization: "Complete", caseId: row.caseId})}
+                >
+                    Verify Insurance
+            </Button>
+            <Button 
+                variant="contained"
+                size="small"
+                onClick={() => mutate({vendorConfirmation: "Complete", caseId: row.caseId})}
+                >
+                    Confirm Vendor
+            </Button>
+            </div>
         </DialogActions>
       </Dialog>
   );

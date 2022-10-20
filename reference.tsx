@@ -84,8 +84,10 @@ export interface Step {
 
 export interface SingleCase {
   [key: string]: any,
-  caseId: string,
+  caseId: number,
   procedureDate: string,
+  priorAuthorization: string,
+  vendorConfirmation: string,
   patients: {
     firstName: string,
     lastName: string,

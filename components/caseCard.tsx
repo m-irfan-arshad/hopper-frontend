@@ -72,9 +72,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [isDialogOpen, setDialogState] = useState(false);
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  // const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
-  const numberOfCompletedSteps = 3
-
+  const numberOfCompletedSteps: number = ["vendorConfirmation", "priorAuthorization"].reduce((acc: any, item: string) => row[item] === "Complete" ? 1 + acc : 0 + acc , 0);
   const cardStyle = {
     paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
@@ -146,24 +144,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
         }}
       />
         Case Summary
-    </Button>)
-  }
-
-  const UpdateProgressButton = () => {
-    return (<Button 
-      variant="contained"
-      size="small"
-      onClick={() => setDialogState(true)}
-      sx={{marginTop: "0.75rem"}}
-    >
-      <BallotIcon 
-        sx={{
-          height: "1rem", 
-          width: "1rem", 
-          marginRight: "0.438rem"
-        }}
-      />
-        Update Progress
     </Button>)
   }
 
@@ -261,13 +241,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 ))
               }
             </Grid>
-            {isMobile && <div><CaseSummaryButton /> <UpdateProgressButton /></div>}
+            {isMobile && <CaseSummaryButton />}
             
             </Box>
             {!isMobile 
             && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
-                 Progress sdsc
+                 Progress
               </Typography>
                 {/* {row.steps.map((step, index) => (
                   <ListItem
@@ -298,7 +278,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   </ListItem>
                 ))} */}
                 <CaseSummaryButton />
-                <UpdateProgressButton />
             </List>
             }
           </Box>
