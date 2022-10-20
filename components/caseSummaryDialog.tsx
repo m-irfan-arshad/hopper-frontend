@@ -13,10 +13,7 @@ import {
     DialogActions, 
     DialogContent, 
     DialogTitle,
-    Box,
-    FormGroup,
-    FormControlLabel,
-    Switch
+    Box
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -38,7 +35,6 @@ interface SectionHeaderProps {
 
 export default function CaseSummaryDialog(props: Props) {
   const {open, closeDialog, row} = props;
-  
   const {mutate} = useUpdateCaseHook()
 
   const SectionHeader = (props: SectionHeaderProps) => {
