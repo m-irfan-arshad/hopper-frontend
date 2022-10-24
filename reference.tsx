@@ -93,6 +93,7 @@ export interface SingleCase {
     lastName: string,
     dateOfBirth: string,
     mobilePhone?: string,
+    homePhone?: string,
     mrn: string,
     address?: string
   }

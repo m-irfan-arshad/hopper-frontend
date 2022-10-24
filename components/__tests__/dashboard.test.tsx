@@ -1,8 +1,7 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import moment from "moment";
 import Dashboard from "../dashboard";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useGetCasesHook } from '../../utils/hooks';
+import { useGetCasesHook, useUpdateCaseHook } from '../../utils/hooks';
 
 jest.mock("../../utils/hooks");
 
@@ -35,16 +34,14 @@ const mockData = [
 
 describe("Dashboard", () => {  
     const mockedUseGetCasesHook = useGetCasesHook as jest.Mock<any>; 
-
     mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: mockData }));
 
-    test("renders the dashboard", async () => {
-        const queryClient = new QueryClient();
+    const mockedUseUpdateCaseHook = useUpdateCaseHook as jest.Mock<any>; 
+    mockedUseUpdateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
 
+    test("renders the dashboard", async () => {
         const { getByRole, } = render(
-            <QueryClientProvider client={queryClient}>
                 <Dashboard  />
-            </QueryClientProvider>
         );
 
         await waitFor(() => {
@@ -53,12 +50,8 @@ describe("Dashboard", () => {
     });
 
     test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
-        const queryClient = new QueryClient();
-
         const { getByRole, queryByRole, rerender } = render(
-            <QueryClientProvider client={queryClient}>
                 <Dashboard  />
-            </QueryClientProvider>
         );
 
         await waitFor(() => {
@@ -90,9 +83,7 @@ describe("Dashboard", () => {
           });
 
         rerender(
-            <QueryClientProvider client={queryClient}>
                 <Dashboard  />
-            </QueryClientProvider>
           );
 
         expect(queryByRole("button", {name: "Export"})).not.toBeInTheDocument();
