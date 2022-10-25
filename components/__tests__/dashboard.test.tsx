@@ -1,50 +1,74 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import moment from "moment";
 import Dashboard from "../dashboard";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useGetCasesHook } from '../../utils/hooks';
+import { useGetCasesHook, useUpdateCaseHook } from '../../utils/hooks';
 
 jest.mock("../../utils/hooks");
-
 const mockData = [
     {
-        caseId: 'caseId',
-        procedureDate: moment().endOf('month').utc().format(),
+        caseId: 1,
+        fhirResourceId: "testId",
+        patientId: 1,
+        procedureDate: "01/30/1990",
+        providerName: "testProviderName",
+        locationName: "testLocationName",
+        createTime: new Date(),
+        updateTime: new Date(),
+        procedureLocation: "procedureLocation",
         patients: {
-            firstName: 'firstName',
-            lastName: 'lastName',
-            dateOfBirth: 'DOB',
-            mobilePhone: 'mobilePhone',
-            mrn: 'mrn',
-            address: 'address'
+            patientId: 1,
+            fhirResourceId: "aa22ss",
+            firstName: "Captain",
+            lastName: "Whitebeard",
+            dateOfBirth: "02/01/1990",
+            mobilePhone: "111-111-1111",
+            homePhone: "555-555-5555",
+            address: "330 Philly Lane",
+            mrn: "5678567890",
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     },
     {
-            caseId: 'caseId2',
-            procedureDate: moment().endOf('month').utc().format(),
-            patients: {
-                firstName: 'firstName2',
-                lastName: 'lastName2',
-                dateOfBirth: 'DOB2',
-                mobilePhone: 'mobilePhone2',
-                mrn: 'mrn2',
-                address: 'address2'
+        caseId: 2,
+        fhirResourceId: "testId2",
+        patientId: 1,
+        procedureDate: "01/30/1990",
+        providerName: "testProviderName2",
+        locationName: "testLocationName2",
+        createTime: new Date(),
+        updateTime: new Date(),
+        procedureLocation: "procedureLocation2",
+        patients: {
+            patientId: 1,
+            fhirResourceId: "aa22ss",
+            firstName: "Captain",
+            lastName: "Whitebeard",
+            dateOfBirth: "02/01/1990",
+            mobilePhone: "111-111-1111",
+            homePhone: "555-555-5555",
+            address: "330 Philly Lane",
+            mrn: "5678567890",
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     }
 ]; 
 
 describe("Dashboard", () => {  
     const mockedUseGetCasesHook = useGetCasesHook as jest.Mock<any>; 
-
     mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: mockData }));
 
-    test("renders the dashboard", async () => {
-        const queryClient = new QueryClient();
+    const mockedUseUpdateCaseHook = useUpdateCaseHook as jest.Mock<any>; 
+    mockedUseUpdateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
 
+    test("renders the dashboard", async () => {
         const { getByRole, } = render(
-            <QueryClientProvider client={queryClient}>
                 <Dashboard  />
-            </QueryClientProvider>
         );
 
         await waitFor(() => {
@@ -53,12 +77,8 @@ describe("Dashboard", () => {
     });
 
     test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
-        const queryClient = new QueryClient();
-
         const { getByRole, queryByRole, rerender } = render(
-            <QueryClientProvider client={queryClient}>
                 <Dashboard  />
-            </QueryClientProvider>
         );
 
         await waitFor(() => {
@@ -90,9 +110,7 @@ describe("Dashboard", () => {
           });
 
         rerender(
-            <QueryClientProvider client={queryClient}>
                 <Dashboard  />
-            </QueryClientProvider>
           );
 
         expect(queryByRole("button", {name: "Export"})).not.toBeInTheDocument();

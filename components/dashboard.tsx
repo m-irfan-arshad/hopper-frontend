@@ -25,8 +25,7 @@ export default function Dashboard() {
     const caseGroups:CaseGroup = {};
 
         data.forEach(function(singleCase: SingleCase) {
-            const date = singleCase.procedureDate.split('T')[0];
-            singleCase.procedureDate = date;
+            const date = singleCase.procedureDate || "";
             if (date in caseGroups) {
                 caseGroups[date].push(singleCase);
             } else {

@@ -4,15 +4,30 @@ import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
 
+jest.mock('@tanstack/react-query', () => ({
+  useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+  useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
+  }));
+  
 describe("CaseCard", () => {
   const row = {
-    caseId: "12345",
+    caseId: 1,
+    fhirResourceId: "testId",
+    patientId: 1,
     procedureDate: "2022-05-05T00:00:00Z",
+    providerName: "testProviderName",
+    locationName: "testLocationName",
+    createTime: new Date(),
+    updateTime: new Date(),
     patients: {
       firstName: "Captain",
       lastName: "Whitebeard",
       dateOfBirth: "02/01/1990",
       mrn: "5678567890"
+    },
+    steps: {
+      priorAuthorization: "incomplete",
+      vendorConfirmation: "incomplete",
     }
   };
   test("renders the caseCard and can expand it", async () => {

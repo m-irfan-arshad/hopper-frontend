@@ -29,6 +29,8 @@
             locationName: "testLocationName",
             createTime: new Date(),
             updateTime: new Date(),
+            priorAuthorization: "incomplete",
+            vendorConfirmation: "incomplete",
         }]
 
         const params = {

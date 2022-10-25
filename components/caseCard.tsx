@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import moment from "moment";
 import * as R from 'ramda';
 import { 
   Card, 
@@ -23,7 +22,7 @@ import {
   Ballot as BallotIcon,
   CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
-import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase } from "../reference";
+import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase, caseStepMappings } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 
@@ -72,9 +71,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [isDialogOpen, setDialogState] = useState(false);
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  // const numberOfCompletedSteps: number = row.steps.reduce((acc: any, item: Step) => item.status + acc , 0);
-  const numberOfCompletedSteps = 3
-
+  const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
   const cardStyle = {
     paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
@@ -160,7 +157,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
     }
   } 
 
-
   return (
     <React.Fragment>
     <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
@@ -178,18 +174,18 @@ export default function CaseCard ({ row }: CaseCardProps) {
           }
           title={
             <Box sx={{ display: "flex", alignItems: "baseline" }}>
-              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.patients.lastName}, ${row.patients.firstName}`}</Typography>
+              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.patients?.lastName}, ${row.patients?.firstName}`}</Typography>
               <Typography
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
-                {moment(row.patients.dateOfBirth).format('MM/DD/YYYY')}
+                {row.patients?.dateOfBirth}
               </Typography>
               <Typography
                 variant="caption"
                 sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
-                {`- ${row.patients.mrn}`}
+                {`- ${row.patients?.mrn}`}
               </Typography>
                <LinearProgress 
                   variant="determinate" 
@@ -244,17 +240,18 @@ export default function CaseCard ({ row }: CaseCardProps) {
               }
             </Grid>
             {isMobile && <CaseSummaryButton />}
+            
             </Box>
             {!isMobile 
             && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
-                {/* {row.steps.map((step, index) => (
+                {Object.keys(row.steps).map((key, index) => (
                   <ListItem
                     key={index}
                   >
-                    { step.status ?
+                    { row.steps[key] === "Complete" ?
                       <CheckCircleIcon
                         sx={{
                           height: "0.875rem",
@@ -273,11 +270,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography variant={step.status ? "subtitle2" : "body2"} sx={{color: step.status ? "green.main" : "inherit"}}>
-                      {step.text}
+                    <Typography variant={row.steps[key] === "Complete"  ? "subtitle2" : "body2"} sx={{color: row.steps[key] === "Complete"  ? "green.main" : "inherit"}}>
+                      {caseStepMappings[key as keyof typeof caseStepMappings]}
                     </Typography>
                   </ListItem>
-                ))} */}
+                ))}
                 <CaseSummaryButton />
             </List>
             }

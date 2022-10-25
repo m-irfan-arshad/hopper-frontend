@@ -1,8 +1,26 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import moment from "moment";
 
 export function useGetCasesHook(dateFilterValue: string, dateSortValue: string, searchBarValue: string) {
     return useQuery(["getCases", dateFilterValue, dateSortValue, searchBarValue], () => fetchCases(dateFilterValue, dateSortValue, searchBarValue))
+}
+
+export function useUpdateCaseHook() {
+    const queryClient = useQueryClient()
+    return useMutation((data: object) => fetch("/api/updateCase",
+        {
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['getCases'])
+            },
+        }
+    )
 }
 
 const fetchCases = async (dateFilterValue: string, dateSortValue: string, searchBarValue: string) => {
