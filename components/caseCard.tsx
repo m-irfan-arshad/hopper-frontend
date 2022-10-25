@@ -22,7 +22,7 @@ import {
   Ballot as BallotIcon,
   CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
-import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase, caseMappings } from "../reference";
+import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase, caseStepMappings } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 
@@ -271,7 +271,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                       />
                     }
                     <Typography variant={row.steps[key] === "Complete"  ? "subtitle2" : "body2"} sx={{color: row.steps[key] === "Complete"  ? "green.main" : "inherit"}}>
-                      {caseMappings[key as keyof typeof caseMappings]}
+                      {caseStepMappings[key as keyof typeof caseStepMappings]}
                     </Typography>
                   </ListItem>
                 ))}
