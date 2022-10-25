@@ -26,8 +26,6 @@ describe("CaseSummaryDialog", () => {
       locationName: "testLocationName",
       createTime: new Date(),
       updateTime: new Date(),
-      priorAuthorization: "Incomplete",
-      vendorConfirmation: "Incomplete",
       surgeryLength: "1 hour",
       comments: "comment",
       procedureLocation: "procedureLocation",
@@ -44,6 +42,10 @@ describe("CaseSummaryDialog", () => {
         homePhone: "555-555-5555",
         address: "330 Philly Lane",
         mrn: "5678567890"
+      },
+      steps: {
+        priorAuthorization: "Incomplete",
+        vendorConfirmation: "Incomplete",
       }
     }
   };

@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { formatDashboardQueryParams } from '../../utils/helpers';
+import { formatDashboardQueryParams,casesFormatter } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -21,5 +21,8 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
           patients: true
       }
   })
-  res.json(resultPosts)
+
+  res.json(resultPosts.map(function(oldCase){
+    return casesFormatter({cases: oldCase})
+  }))
 }

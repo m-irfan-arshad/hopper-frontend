@@ -1,12 +1,19 @@
-import { Prisma } from '@prisma/client';
+import { SingleCase } from '../reference';
+import { Prisma, cases, patients } from '@prisma/client';
 
-interface Params { 
+interface DashboardQueryParams { 
     searchValue: string
     dateRangeStart: string
     dateRangeEnd: string
 }
 
-export function formatDashboardQueryParams(params: Params): Prisma.casesWhereInput   {
+interface CasesFormatterProps {
+    cases: cases & {
+        patients: patients | null;
+    }
+}
+
+export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd } = params;
     const nameOne = searchValue.split(' ')[0];
     const nameTwo = searchValue.split(' ')[1];
@@ -71,4 +78,24 @@ export function formatDashboardQueryParams(params: Params): Prisma.casesWhereInp
       }
     }
    }
+}
+
+export function casesFormatter (params: CasesFormatterProps): any {
+    const {cases} = params
+    let newCase: SingleCase = {
+        caseId: cases.caseId,
+        procedureDate: cases.procedureDate.toISOString().split('T')[0],
+        fhirResourceId: cases.fhirResourceId,
+        patientId: cases.patientId,
+        patients: cases.patients,
+        providerName: cases.providerName,
+        locationName: cases.locationName,
+        createTime: cases.createTime,
+        updateTime: cases.updateTime,
+        steps: {
+            priorAuthorization: cases.priorAuthorization,
+            vendorConfirmation: cases.vendorConfirmation,
+          }
+    }
+    return newCase
 }

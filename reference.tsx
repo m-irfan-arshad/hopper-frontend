@@ -1,3 +1,5 @@
+import { Prisma, cases, patients } from '@prisma/client';
+
 export const caseCardProcedureInformation = [
   {
     label: "Date",
@@ -82,19 +84,12 @@ export interface Step {
   status: boolean
 }
 
-export interface SingleCase {
-  [key: string]: any,
-  caseId: number,
-  procedureDate: string,
-  priorAuthorization: string,
-  vendorConfirmation: string,
-  patients: {
-    firstName: string,
-    lastName: string,
-    dateOfBirth: string,
-    mobilePhone?: string,
-    homePhone?: string,
-    mrn: string,
-    address?: string
-  }
+export interface SingleCase extends Omit<cases, 'priorAuthorization' | 'vendorConfirmation' | 'procedureDate'> {
+    [fhirResourceId: string]: any,
+    patients: patients | null,
+    procedureDate: string,
+    steps: {
+      [priorAuthorization: string]:  string,
+      vendorConfirmation:  string,
+    }
 }

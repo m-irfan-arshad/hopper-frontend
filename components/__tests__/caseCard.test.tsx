@@ -19,13 +19,15 @@ describe("CaseCard", () => {
     locationName: "testLocationName",
     createTime: new Date(),
     updateTime: new Date(),
-    priorAuthorization: "incomplete",
-    vendorConfirmation: "incomplete",
     patients: {
       firstName: "Captain",
       lastName: "Whitebeard",
       dateOfBirth: "02/01/1990",
       mrn: "5678567890"
+    },
+    steps: {
+      priorAuthorization: "incomplete",
+      vendorConfirmation: "incomplete",
     }
   };
   test("renders the caseCard and can expand it", async () => {

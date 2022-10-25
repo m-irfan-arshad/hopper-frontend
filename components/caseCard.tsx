@@ -72,7 +72,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [isDialogOpen, setDialogState] = useState(false);
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  const numberOfCompletedSteps: number = ["vendorConfirmation", "priorAuthorization"].reduce((acc: any, item: string) => row[item] === "Complete" ? 1 + acc : 0 + acc , 0);
+  const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
   const cardStyle = {
     paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
@@ -158,7 +158,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
     }
   } 
 
-
   return (
     <React.Fragment>
     <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
@@ -176,18 +175,18 @@ export default function CaseCard ({ row }: CaseCardProps) {
           }
           title={
             <Box sx={{ display: "flex", alignItems: "baseline" }}>
-              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.patients.lastName}, ${row.patients.firstName}`}</Typography>
+              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.patients?.lastName}, ${row.patients?.firstName}`}</Typography>
               <Typography
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
-                {moment(row.patients.dateOfBirth).format('MM/DD/YYYY')}
+                {moment(row.patients?.dateOfBirth).format('MM/DD/YYYY')}
               </Typography>
               <Typography
                 variant="caption"
                 sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
-                {`- ${row.patients.mrn}`}
+                {`- ${row.patients?.mrn}`}
               </Typography>
                <LinearProgress 
                   variant="determinate" 
