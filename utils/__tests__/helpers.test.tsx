@@ -1,4 +1,4 @@
-import { formatDashboardQueryParams } from "../helpers";
+import { formatDashboardQueryParams, formatDate } from "../helpers";
 
 describe("Utils", () => {
     test("formatDashboardQueryParams with case id", async() => {
@@ -86,5 +86,12 @@ describe("Utils", () => {
             ]
           }
         });    
+    });
+
+    test("formatDate", () => {
+
+        const result = formatDate(new Date("1990-10-5"));
+        
+        expect(result).toEqual("10/05/1990");    
     });
 });

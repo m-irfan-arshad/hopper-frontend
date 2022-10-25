@@ -86,8 +86,8 @@ export interface Step {
 
 export interface SingleCase extends Omit<cases, 'priorAuthorization' | 'vendorConfirmation' | 'procedureDate'> {
     [fhirResourceId: string]: any,
-    patients: patients | null,
-    procedureDate: string,
+    patients: Omit<patients, 'createTime' | 'updateTime' | 'dateOfBirth'> & { 'dateOfBirth': string | null } | null,
+    procedureDate: string | null,
     steps: {
       [priorAuthorization: string]:  string,
       vendorConfirmation:  string,

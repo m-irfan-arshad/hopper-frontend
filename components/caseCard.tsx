@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import moment from "moment";
 import * as R from 'ramda';
 import { 
   Card, 
@@ -180,7 +179,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
-                {moment(row.patients?.dateOfBirth).format('MM/DD/YYYY')}
+                {row.patients?.dateOfBirth}
               </Typography>
               <Typography
                 variant="caption"

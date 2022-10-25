@@ -1,5 +1,6 @@
 import { SingleCase } from '../reference';
 import { Prisma, cases, patients } from '@prisma/client';
+import moment from "moment";
 
 interface DashboardQueryParams { 
     searchValue: string
@@ -80,14 +81,24 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
    }
 }
 
+export function formatDate(date: Date | null) : string | null {
+    if (!date) return null
+    return moment(date).format('MM/DD/YYYY')
+}
+
 export function casesFormatter (params: CasesFormatterProps): any {
     const {cases} = params
+    const newPatient = (cases.patients) ? {
+        ...cases.patients,
+        dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
+    } : null
+
     let newCase: SingleCase = {
         caseId: cases.caseId,
-        procedureDate: cases.procedureDate.toISOString().split('T')[0],
+        procedureDate: formatDate(cases.procedureDate),
         fhirResourceId: cases.fhirResourceId,
         patientId: cases.patientId,
-        patients: cases.patients,
+        patients: newPatient,
         providerName: cases.providerName,
         locationName: cases.locationName,
         createTime: cases.createTime,

@@ -77,6 +77,7 @@ export default function CaseSummaryDialog(props: Props) {
         </Button>
   }
 
+
   return (
       <Dialog fullWidth open={open} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <DialogTitle 
@@ -92,7 +93,7 @@ export default function CaseSummaryDialog(props: Props) {
                     variant="caption"
                     color="white.main"
                 >
-                    {`${row.patients?.dateOfBirth?.toString().split('T')[0]} - ${row.patients?.mrn}`}
+                    {`${row.patients?.dateOfBirth} - ${row.patients?.mrn}`}
                 </Typography>
             </Box>
             <Button 
@@ -112,6 +113,10 @@ export default function CaseSummaryDialog(props: Props) {
                         <Typography variant="body2">{`${row.patients?.firstName} ${row.patients?.lastName}`}</Typography>
                     </Grid>
                     <Grid item xs={6}>
+                        <Typography variant="caption">DOB</Typography>
+                        <Typography variant="body2">{row.patients?.dateOfBirth || 'N/A'}</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
                         <Typography variant="caption">Patient Address</Typography>
                         <Typography variant="body2">{row.patients?.address || 'N/A'}</Typography>
                     </Grid>
@@ -126,7 +131,7 @@ export default function CaseSummaryDialog(props: Props) {
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="caption">Procedure Date and Time</Typography>
-                        <Typography variant="body2">{row.procedureDate.toString() || 'N/A'}</Typography>
+                        <Typography variant="body2">{row.procedureDate || 'N/A'}</Typography>
                     </Grid>
                 </Grid>
                 <DottedDivider />

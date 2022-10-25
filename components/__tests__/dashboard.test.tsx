@@ -4,30 +4,57 @@ import Dashboard from "../dashboard";
 import { useGetCasesHook, useUpdateCaseHook } from '../../utils/hooks';
 
 jest.mock("../../utils/hooks");
-
 const mockData = [
     {
-        caseId: 'caseId',
-        procedureDate: moment().endOf('month').utc().format(),
+        caseId: 1,
+        fhirResourceId: "testId",
+        patientId: 1,
+        procedureDate: "01/30/1990",
+        providerName: "testProviderName",
+        locationName: "testLocationName",
+        createTime: new Date(),
+        updateTime: new Date(),
+        procedureLocation: "procedureLocation",
         patients: {
-            firstName: 'firstName',
-            lastName: 'lastName',
-            dateOfBirth: 'DOB',
-            mobilePhone: 'mobilePhone',
-            mrn: 'mrn',
-            address: 'address'
+            patientId: 1,
+            fhirResourceId: "aa22ss",
+            firstName: "Captain",
+            lastName: "Whitebeard",
+            dateOfBirth: "02/01/1990",
+            mobilePhone: "111-111-1111",
+            homePhone: "555-555-5555",
+            address: "330 Philly Lane",
+            mrn: "5678567890",
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     },
     {
-            caseId: 'caseId2',
-            procedureDate: moment().endOf('month').utc().format(),
-            patients: {
-                firstName: 'firstName2',
-                lastName: 'lastName2',
-                dateOfBirth: 'DOB2',
-                mobilePhone: 'mobilePhone2',
-                mrn: 'mrn2',
-                address: 'address2'
+        caseId: 2,
+        fhirResourceId: "testId2",
+        patientId: 1,
+        procedureDate: "01/30/1990",
+        providerName: "testProviderName2",
+        locationName: "testLocationName2",
+        createTime: new Date(),
+        updateTime: new Date(),
+        procedureLocation: "procedureLocation2",
+        patients: {
+            patientId: 1,
+            fhirResourceId: "aa22ss",
+            firstName: "Captain",
+            lastName: "Whitebeard",
+            dateOfBirth: "02/01/1990",
+            mobilePhone: "111-111-1111",
+            homePhone: "555-555-5555",
+            address: "330 Philly Lane",
+            mrn: "5678567890",
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     }
 ]; 
