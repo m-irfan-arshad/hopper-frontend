@@ -22,7 +22,7 @@ import {
   Ballot as BallotIcon,
   CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
-import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase } from "../reference";
+import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase, caseMappings } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 
@@ -247,11 +247,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
-                {/* {row.steps.map((step, index) => (
+                {Object.keys(row.steps).map((key, index) => (
                   <ListItem
                     key={index}
                   >
-                    { step.status ?
+                    { row.steps[key] === "Complete" ?
                       <CheckCircleIcon
                         sx={{
                           height: "0.875rem",
@@ -270,11 +270,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography variant={step.status ? "subtitle2" : "body2"} sx={{color: step.status ? "green.main" : "inherit"}}>
-                      {step.text}
+                    <Typography variant={row.steps[key] === "Complete"  ? "subtitle2" : "body2"} sx={{color: row.steps[key] === "Complete"  ? "green.main" : "inherit"}}>
+                      {caseMappings[key as keyof typeof caseMappings]}
                     </Typography>
                   </ListItem>
-                ))} */}
+                ))}
                 <CaseSummaryButton />
             </List>
             }

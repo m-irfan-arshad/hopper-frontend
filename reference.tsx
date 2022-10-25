@@ -93,3 +93,8 @@ export interface SingleCase extends Omit<cases, 'priorAuthorization' | 'vendorCo
       vendorConfirmation:  string,
     }
 }
+
+export const caseMappings = {
+  priorAuthorization: "Prior Authorization",
+  vendorConfirmation: "Vendor Confirmation"
+}
