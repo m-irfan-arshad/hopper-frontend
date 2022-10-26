@@ -15,7 +15,7 @@ async function main() {
                 dateOfBirth: chance.date({ year: 1970 }),
                 cases: {
                     create: {
-                        procedureDate: chance.date({ year: 2023, month: 3 })
+                        procedureDate: chance.date({ year: new Date().getFullYear(), month: new Date().getMonth() })
                     } 
                 }
             }

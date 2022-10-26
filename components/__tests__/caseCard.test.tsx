@@ -3,6 +3,7 @@ import CaseCard from "../caseCard";
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
+import moment from "moment";
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -20,10 +21,15 @@ describe("CaseCard", () => {
     createTime: new Date(),
     updateTime: new Date(),
     patients: {
+      patientId: 1,
+      fhirResourceId: "aa22ss",
       firstName: "Captain",
       lastName: "Whitebeard",
       dateOfBirth: "02/01/1990",
-      mrn: "5678567890"
+      mobilePhone: "111-111-1111",
+      homePhone: "555-555-5555",
+      address: "330 Philly Lane",
+      mrn: "5678567890",
     },
     steps: {
       priorAuthorization: "incomplete",
@@ -95,6 +101,8 @@ describe("CaseCard", () => {
   // });
   
   test("opens the case summary modal and closes it", async() => {
+    Date.now = jest.fn().mockReturnValue(new Date('2022-10-20'));
+
     const { getByRole, getByTestId, queryByRole } = render(
       <CaseCard row={row} />
     );
@@ -147,5 +155,25 @@ describe("CaseCard", () => {
     fireEvent.click(getByRole("button", {name: "Case Summary"}));
 
     expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();
+  });
+
+  test("renders threat of cancellation when appointment is 24 hours away or less", async () => {
+    const rowClone = {...row, procedureDate: '10/20/2022' }
+    const { getByTestId } = render(
+      <CaseCard row={rowClone} />
+    );
+
+    expect(getByTestId("NotificationImportantIcon")).toBeInTheDocument();
+  });
+
+  test("does not render threat of cancellation when appointment is more than 24 hours away", async () => {
+
+    const rowClone2 = {...row, procedureDate: '10/22/2022' }
+    console.log("rowClone2: ", rowClone2)
+    const { queryByTestId } = render(
+      <CaseCard row={rowClone2} />
+    );
+
+    expect(queryByTestId("NotificationImportantIcon")).toBeNull();
   });
 });
