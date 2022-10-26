@@ -11,7 +11,7 @@ import {
   LinearProgress, 
   List, ListItem, 
   Button,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { 
@@ -20,11 +20,14 @@ import {
   Biotech as BiotechIcon,
   Assignment as AssignmentIcon,
   Ballot as BallotIcon,
-  CheckCircle as CheckCircleIcon
+  CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+
 import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase, caseStepMappings } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
+import moment from "moment";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
@@ -72,6 +75,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
+  const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24;
+  console.log("threatOfCancellation: ", moment(row.procedureDate, 'MM/DD/YYYY').diff(moment.now(), 'hours'))
+
   const cardStyle = {
     paddingLeft: "0.625rem",
     "& .MuiCardHeader-avatar": {
@@ -187,11 +193,14 @@ export default function CaseCard ({ row }: CaseCardProps) {
               >
                 {`- ${row.patients?.mrn}`}
               </Typography>
-               <LinearProgress 
-                  variant="determinate" 
-                  value={20 * numberOfCompletedSteps}
-                  sx={linearProgressStyle} 
-                />  
+
+              {threatOfCancellation && <NotificationImportantIcon color="error" fontSize="small" sx={{position: "relative", top: "0.313rem", left: "0.626rem"}}/>}
+              
+              <LinearProgress 
+                variant="determinate" 
+                value={20 * numberOfCompletedSteps}
+                sx={linearProgressStyle} 
+              />  
             </Box>
           }
           disableTypography
