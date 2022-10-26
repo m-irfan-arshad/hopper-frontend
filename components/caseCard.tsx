@@ -11,7 +11,7 @@ import {
   LinearProgress, 
   List, ListItem, 
   Button,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { 
@@ -20,7 +20,7 @@ import {
   Biotech as BiotechIcon,
   Assignment as AssignmentIcon,
   Ballot as BallotIcon,
-  CheckCircle as CheckCircleIcon,
+  CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 
@@ -76,7 +76,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
   const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24;
-  console.log("threatOfCancellation: ", moment(row.procedureDate, 'MM/DD/YYYY').diff(moment.now(), 'hours'))
 
   const cardStyle = {
     paddingLeft: "0.625rem",
