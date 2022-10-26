@@ -78,7 +78,7 @@ npm run dev
 
 By default this runs on localhost:3000.
 
-TODO: Prisma / local DB setup
-TODO: Branching guidelines
-TODO: Commit guidelines
-TODO: PR guidelines
+- TODO: Prisma / local DB setup
+- TODO: Branching guidelines
+- TODO: Commit guidelines
+- TODO: PR guidelines
