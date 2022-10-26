@@ -75,7 +75,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
-  const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24 && numberOfCompletedSteps < 2;
+  const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24 && numberOfCompletedSteps < Object.keys(row.steps).length;
 
   const cardStyle = {
     paddingLeft: "0.625rem",
