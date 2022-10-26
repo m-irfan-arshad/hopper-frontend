@@ -1,36 +1,84 @@
-# Hopper Frontend - TBD
+# Hopper
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This repo contains all the client and API logic for the Hopper (next-gen Surgiscript) application. This is a living document that outlines the standards for contributing to the project.
+
+
+## Major Dependencies
+
+- [Typescript](https://www.typescriptlang.org/docs/)
+- [Next.js](https://nextjs.org/docs), for both client and server logic. Next built in API Routes are used to create our backend endpoints.
+- [Prisma](https://www.prisma.io/docs/), a typescript ORM to manage the data model and interaction with Postgres.
+- [MUI](https://mui.com/material-ui/getting-started/overview/), a React component library.
+- [React-Query](https://tanstack.com/query/v4/docs/overview), for managing server state.
+
+## General Architecture
+
+TODO: Diagram
+
+Hopper integration function, subscribed to healthcare API pub/sub output and writing to Hopper DB:
+https://github.com/Medtel/66degrees/tree/main/hopper_project_new/hopper-int-source
+
+Cloud Run instance:
+https://console.cloud.google.com/run/detail/us-east4/hopper-frontend/metrics?project=mt-hp-s-dev-b7e1
+
+Cloud SQL instance:
+https://console.cloud.google.com/sql/instances/hopper-db-dev/overview?project=mt-hp-s-dev-b7e1
+
+## Front End State Management
+
+We differentiate conceptually between client state and server state. [React-Query](https://tanstack.com/query/v4/docs/overview) gives us a server state solution, and as of now we have not made the decision to introduce a client state management library. For now we are using the tools and patterns out of the box in React, but this can be reassessed if a use case warrants it. 
+
+## Dependency Management
+
+Package dependencies should be pinned to a specific version as of now and updated manually as needed. The package-lock file should always be committed. We're still evaluating the best way to manage depedencies as the application grows.
+
+## UI Design
+
+All UI designs are maintained in Figma. See the "Hopper-Final" tab for the most up to date screens.
+
+Access designs [here](https://www.figma.com/file/o1rBQOftJUvdKmoT0Em5JT/Hopper-MUI?node-id=8778%3A71616). Let the team know if you do not have access.
+
+
+## Deployment
+
+Deployment is managed via Github Actions. See the dev workflow file [here](https://github.com/Medtel/hopper-frontend/blob/main/.github/workflows/dev-pipeline.yml). Currently only a dev pipeline exists.
+
+- The pipeline runs on pull requests and merges to main.
+- The pipeline will need to successfully build, lint, and run unit tests before moving on to the deployment step.
+- A docker image is created, uploaded to GCPs container registry, and deployed to Cloud Run.
+- After a successful deployment, E2E tests are run against the environment.
+
+Please verify that the pipeline runs successfully after creating a PR.
+
+## Testing
+
+Front End unit tests: [react-testing-library](https://testing-library.com/docs/react-testing-library/intro/) + [jest](https://jestjs.io/docs/getting-started)
+
+API Routes unit tests: [node-mocks-http](https://www.npmjs.com/package/node-mocks-http)
+
+Front End E2E tests: [playwright](https://playwright.dev/docs/intro)
+
+Currently we are not enforcing a certain test coverage, but try to aim for meaningful tests as opposed to blindly pushing coverage forward. This is up to developer discretion, but generally lands somewhere around 80% coverage.
 
 ## Getting Started
 
-First, run the development server:
+Make sure that a recent version of node and npm are installed on your machine.
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+By default this runs on localhost:3000.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+TODO: Prisma / local DB setup
+TODO: Branching guidelines
+TODO: Commit guidelines
+TODO: PR guidelines
