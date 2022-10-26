@@ -157,8 +157,11 @@ describe("CaseCard", () => {
     expect(getByRole("button", {name: "View Full Case"})).toBeInTheDocument();
   });
 
-  test("renders threat of cancellation when appointment is 24 hours away or less", async () => {
-    const rowClone = {...row, procedureDate: '10/20/2022' }
+  test("renders threat of cancellation when appointment is 24 hours away or less and not all steps completed", async () => {
+    const rowClone = {...row, procedureDate: '10/20/2022', steps: {
+      priorAuthorization: "Complete",
+      vendorConfirmation: "Incomplete",
+    }}
     const { getByTestId } = render(
       <CaseCard row={rowClone} />
     );
@@ -167,11 +170,21 @@ describe("CaseCard", () => {
   });
 
   test("does not render threat of cancellation when appointment is more than 24 hours away", async () => {
-
-    const rowClone2 = {...row, procedureDate: '10/22/2022' }
-    console.log("rowClone2: ", rowClone2)
+    const rowClone = {...row, procedureDate: '10/22/2022' }
     const { queryByTestId } = render(
-      <CaseCard row={rowClone2} />
+      <CaseCard row={rowClone} />
+    );
+
+    expect(queryByTestId("NotificationImportantIcon")).toBeNull();
+  });
+
+  test("does not render threat of cancellation when all steps completed", async () => {
+    const rowClone = {...row, procedureDate: '10/20/2022', steps: {
+      priorAuthorization: "Complete",
+      vendorConfirmation: "Complete",
+    }}
+    const { queryByTestId } = render(
+      <CaseCard row={rowClone} />
     );
 
     expect(queryByTestId("NotificationImportantIcon")).toBeNull();
