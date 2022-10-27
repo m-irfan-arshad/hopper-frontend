@@ -6,7 +6,8 @@ interface DashboardQueryParams {
     searchValue: string
     dateRangeStart: string
     dateRangeEnd: string
-    caseStepFilters: string,
+    priorAuthorization: string;
+    vendorConfirmation: string;
 }
 
 interface CasesFormatterProps {
@@ -19,26 +20,20 @@ interface FilterObject {
     procedureDate: object;
     caseId?: object;
     patients?: object;
-    insuranceVerified?: object;
+    priorAuthorization?: object;
     vendorConfirmation?: object;
   }
 
-export function convertCaseStepsToFilters(caseStepString: string): object {
-    const caseStepArray = caseStepString.split(", ")
-    return {
-        ...(caseStepArray.includes("Vendor Confirmation") && {vendorConfirmation: {equals: "Incomplete"}}),
-        ...(caseStepArray.includes("Insurance Authorization") && {priorAuthorization: {equals: "Incomplete"}})
-    }
-}
 export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
-    const { searchValue, dateRangeStart, dateRangeEnd, caseStepFilters } = params;
+    const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
     
     let filterObject: FilterObject = {
         procedureDate: {
             gte: new Date(dateRangeStart),
             lte: new Date(dateRangeEnd)
         },
-        ...convertCaseStepsToFilters(caseStepFilters)
+        ...(priorAuthorization === "true") && {priorAuthorization: {equals: "Incomplete"}},
+        ...(vendorConfirmation === "true") && {vendorConfirmation: {equals: "Incomplete"}}
     }
     
     const nameOne = searchValue.split(' ')[0];

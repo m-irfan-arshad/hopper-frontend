@@ -8,7 +8,8 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
     dateRangeEnd: <string>req.query["dateRangeEnd"],
-    caseStepFilters: <string>req.query["caseStepFilters"],
+    vendorConfirmation: <string>req.query["vendorConfirmation"],
+    priorAuthorization: <string>req.query["priorAuthorization"],
   };
 
   const resultPosts = await prisma.cases.findMany({

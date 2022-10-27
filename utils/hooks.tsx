@@ -36,6 +36,14 @@ function translateSortOrder(dateSortValue: string) {
     return dateSortValue === 'Oldest - Newest' ? 'asc' : 'desc'; 
 }
 
+export function convertCaseStepsToFilters(caseStepString: string): object {
+    const caseStepArray = caseStepString.split(", ")
+    return {
+        vendorConfirmation: caseStepArray.includes("Vendor Confirmation"),
+        priorAuthorization: caseStepArray.includes("Insurance Authorization")
+    }
+}
+
 function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, caseFilterValue: string, searchBarValue: string) {
     let parameters;
     let dateRangeStart = moment().utc()
@@ -58,7 +66,7 @@ function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, c
         dateRangeEnd:  dateRangeEnd.toString(),
         orderBy: translateSortOrder(dateSortValue),
         searchValue: searchBarValue,
-        caseStepFilters: caseFilterValue
+        ...convertCaseStepsToFilters(caseFilterValue)
     });
 
     const url =  `/api/getCases?` + parameters;
