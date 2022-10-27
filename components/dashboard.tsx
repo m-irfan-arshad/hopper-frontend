@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, SelectChangeEvent } from "@mui/material";
+import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import { Logout } from "@mui/icons-material";
-import { SingleCase, dashboardSortDropDownValues, dashboardStepDropDownValues } from "../reference";
+import { SingleCase, dashboardSortDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
@@ -46,7 +46,7 @@ export default function Dashboard() {
             <CaseNavBar 
                 onCaseFilterChange={handleCaseFilterChange} 
                 caseFilterValue={caseFilterValue} 
-                onDateFilterChange={(value) => setDateFilterValue(value)}  
+                onDateFilterChange={setDateFilterValue}  
                 dateFilterValue={dateFilterValue}
                 searchBarValue={searchBarValue}
                 search={setSearchVarBalue}
@@ -85,7 +85,7 @@ export default function Dashboard() {
                                     title="Sort:"
                                     selectId="case-sort-select"
                                     additionalStyles={{ marginLeft: "0.625rem" }}
-                                    onChange={(value) => setDateSortValue(value)}
+                                    onChange={setDateSortValue}
                                     value={dateSortValue}
                                 />
                             </Box>
