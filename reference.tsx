@@ -55,14 +55,6 @@ export const dashboardStepDropDownValues = [
         id: "5"
     },
     {
-        value: "Pre Surgical Testing",
-        id: "6"
-    },
-    {
-        value: "Pre Admission Testing",
-        id: "7"
-    },
-    {
         value: "Vendor Confirmation",
         id: "8"
     },

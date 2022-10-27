@@ -1,5 +1,5 @@
 import React from "react";
-import {MenuItem, Select, Typography} from "@mui/material";
+import {MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 
 interface MenuItem {
     value: string
@@ -11,12 +11,13 @@ interface Props {
     title: string
     selectId: string
     additionalStyles?: React.CSSProperties
-    onChange: (value: string) => void
-    value: string
+    onChange: (value: any) => void
+    value: any,
+    multiple?: boolean
 }
 
 export default function DropDownComponent(props: Props) {
-    const {menuItems, title, selectId, additionalStyles, onChange, value} = props;
+    const {menuItems, title, selectId, additionalStyles, onChange, value, multiple} = props;
 
     const defaultStyles = {
         color: "black.main",
@@ -35,16 +36,17 @@ export default function DropDownComponent(props: Props) {
     
     return (
         <Select
-            value={value}
+            value={multiple ? value.split(", ") : value}
             id={selectId}
-            renderValue={(value) => (
-                <Typography variant="body2">{title} {value}</Typography>
+            multiple={multiple}
+            renderValue={(value: any) => (
+                <Typography variant="body2">{title} {multiple ? value.join(", ") : value}</Typography>
             )}
             sx={{
                 ...defaultStyles,
                 ...additionalStyles
             }}
-            onChange={(value) =>  onChange(value.target.value)}
+            onChange={(event: SelectChangeEvent) => onChange(event.target.value)}
         >
             {
                 menuItems.map((item, index) => (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import moment from "moment";
-import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery, TextField } from '@mui/material';
+import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery, TextField, SelectChangeEvent } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./shared/dropdown";
@@ -10,7 +10,7 @@ import DebouncedInput from './debouncedInput';
 
 interface Props {
     onDateFilterChange: (value: string) => void
-    onCaseFilterChange: (value: string) => void
+    onCaseFilterChange: (value: string[]) => void
     search: (value: string) => void
     caseFilterValue: string
     dateFilterValue: string
@@ -86,6 +86,7 @@ export default function CaseNavBar(props: Props) {
                             additionalStyles={{ marginLeft: "0.625rem"}}
                             onChange={onCaseFilterChange}
                             value={caseFilterValue}
+                            multiple
                         />
                         { !isMobile &&
                             <React.Fragment>

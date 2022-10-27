@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress } from "@mui/material";
+import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, SelectChangeEvent } from "@mui/material";
 import { Logout } from "@mui/icons-material";
-import { SingleCase, dashboardSortDropDownValues } from "../reference";
+import { SingleCase, dashboardSortDropDownValues, dashboardStepDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
@@ -17,10 +17,10 @@ export default function Dashboard() {
 
     const [dateFilterValue, setDateFilterValue] = useState('This month');
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
-    const [caseFilterValue, setCaseFilterValue] = useState('All Steps');
+    const [caseFilterValue, setCaseFilterValue] = useState("All Steps");
     const [searchBarValue, setSearchVarBalue ] = useState('');
 
-    const { data = [], isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, searchBarValue);
+    const { data = [], isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, caseFilterValue, searchBarValue);
 
     const caseGroups:CaseGroup = {};
 
@@ -32,13 +32,21 @@ export default function Dashboard() {
                 caseGroups[date] = new Array(singleCase)
             }
         })
-  
+
+    const handleCaseFilterChange = (value: string[]) => {
+        if (value[value.length -1] === "All Steps" || value.length === 0) {
+            setCaseFilterValue("All Steps");
+        } else {
+            setCaseFilterValue(value.filter(elem => elem != "All Steps").join(", "));
+        }
+    };
+
     return (
         <React.Fragment>
             <CaseNavBar 
-                onCaseFilterChange={setCaseFilterValue} 
+                onCaseFilterChange={handleCaseFilterChange} 
                 caseFilterValue={caseFilterValue} 
-                onDateFilterChange={setDateFilterValue}  
+                onDateFilterChange={(value) => setDateFilterValue(value)}  
                 dateFilterValue={dateFilterValue}
                 searchBarValue={searchBarValue}
                 search={setSearchVarBalue}
@@ -77,7 +85,7 @@ export default function Dashboard() {
                                     title="Sort:"
                                     selectId="case-sort-select"
                                     additionalStyles={{ marginLeft: "0.625rem" }}
-                                    onChange={(val: string) => setDateSortValue(val)}
+                                    onChange={(value) => setDateSortValue(value)}
                                     value={dateSortValue}
                                 />
                             </Box>
