@@ -3,7 +3,7 @@ import { Prisma, cases, patients } from '@prisma/client';
 import moment from "moment";
 
 interface DashboardQueryParams { 
-    searchValue: string
+    searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
     priorAuthorization: string;
@@ -32,10 +32,14 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
             gte: new Date(dateRangeStart),
             lte: new Date(dateRangeEnd)
         },
-        ...(priorAuthorization === "true") && {priorAuthorization: {equals: "Incomplete"}},
-        ...(vendorConfirmation === "true") && {vendorConfirmation: {equals: "Incomplete"}}
+        ...(priorAuthorization === "Incomplete") && {priorAuthorization: {equals: priorAuthorization}},
+        ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
     }
     
+    if (!searchValue) {
+        return filterObject
+    }
+
     const nameOne = searchValue.split(' ')[0];
     const nameTwo = searchValue.split(' ')[1];
     const caseId = parseInt(searchValue);

@@ -3,15 +3,17 @@ import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery } from
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./shared/dropdown";
-import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
+import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues, caseFilterInterface } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
+import MultiSelectDropdownComponent from "./shared/multiSelectDropdown";
+
 
 interface Props {
     onDateFilterChange: (value: string) => void
-    onCaseFilterChange: (value: string[]) => void
+    onCaseFilterChange: (value: caseFilterInterface[]) => void
     search: (value: string) => void
-    caseFilterValue: string
+    caseFilterValue: caseFilterInterface[]
     dateFilterValue: string
     searchBarValue: string
 }
@@ -78,14 +80,13 @@ export default function CaseNavBar(props: Props) {
                             onChange={onDateFilterChange}
                             value={dateFilterValue}
                         />
-                        <DropDownComponent
+                        <MultiSelectDropdownComponent
                             menuItems={dashboardStepDropDownValues}
                             title="Step:"
                             selectId="case-step-select"
                             additionalStyles={{ marginLeft: "0.625rem"}}
                             onChange={onCaseFilterChange}
                             value={caseFilterValue}
-                            multiple
                         />
                         { !isMobile &&
                             <React.Fragment>
