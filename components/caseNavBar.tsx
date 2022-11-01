@@ -106,28 +106,10 @@ export default function CaseNavBar(props: Props) {
                     }
                 </StyledBox>
                 {isMobile 
-                    && <React.Fragment>
-                        <Box sx={{ display: "flex", alignItems: "flex-start", flexDirection: "column", width: "100%"}}>
-                            <div>
-                            <DropDownComponent
-                                menuItems={dashboardDateRangeDropDownValues}
-                                title="Date Range:"
-                                selectId="case-date-select"
-                                onChange={onDateFilterChange}
-                                value={dateFilterValue}
-                            />
-                            <MultiSelectDropdown
-                                menuItems={dashboardStepDropDownValues}
-                                title="Step:"
-                                selectId="case-step-select"
-                                additionalStyles={{ marginLeft: "0.625rem"}}
-                                onChange={onCaseFilterChange}
-                                value={caseFilterValue}
-                            />
-                            </div>
+                    &&
+                    <Box>
                         <Typography variant="body1" sx={{marginTop: "1rem"}}><StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>}/> Show Completed Cases </Typography>
                     </Box>
-                    </React.Fragment>
                 }
             </AppBar>
         </React.Fragment>
