@@ -47,6 +47,8 @@ export default function Dashboard() {
         })
         
     const handleCaseFilterChange = (value: caseFilterInterface[]) => {
+        setPaginationPage(1);
+        
         if (value?.at(-1)?.id === "all" || value?.length === 0) {
             setCaseFilterValue(defaultCaseFilterValue);
         } else {
