@@ -131,6 +131,16 @@ export const defaultTheme = createTheme({
                 },
             }
         },
+        MuiPagination: {
+            styleOverrides: {
+                root: {
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                        backgroundColor: "#0277BD",
+                        color: "white"
+                      }
+                },
+            }
+        },
         MuiInputLabel: {
             variants: [
                 {

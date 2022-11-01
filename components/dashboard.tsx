@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress } from "@mui/material";
+import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
+import { paginationCount } from '../reference';
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -18,13 +19,24 @@ export default function Dashboard() {
     const [dateFilterValue, setDateFilterValue] = useState('This month');
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
     const [caseFilterValue, setCaseFilterValue] = useState('All Steps');
-    const [searchBarValue, setSearchVarBalue ] = useState('');
+    const [searchBarValue, setSearchBarValue ] = useState('');
+    const [paginationPage, setPaginationPage] = useState(1);
 
-    const { data = [], isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, searchBarValue);
+    function handleDateFilterChange(value: string) {
+        setPaginationPage(1);
+        setDateFilterValue(value);
+    }
+
+    function handleSearchBarChange(value: string) {
+        setPaginationPage(1);
+        setSearchBarValue(value);
+    }
+   
+    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, searchBarValue, paginationPage.toString());
 
     const caseGroups:CaseGroup = {};
 
-        data.forEach(function(singleCase: SingleCase) {
+        data.cases.forEach(function(singleCase: SingleCase) {
             const date = singleCase.procedureDate || "";
             if (date in caseGroups) {
                 caseGroups[date].push(singleCase);
@@ -38,10 +50,10 @@ export default function Dashboard() {
             <CaseNavBar 
                 onCaseFilterChange={setCaseFilterValue} 
                 caseFilterValue={caseFilterValue} 
-                onDateFilterChange={setDateFilterValue}  
+                onDateFilterChange={handleDateFilterChange}  
                 dateFilterValue={dateFilterValue}
                 searchBarValue={searchBarValue}
-                search={setSearchVarBalue}
+                search={handleSearchBarChange}
             />
             <Box sx={{
                 display: "flex",
@@ -68,7 +80,7 @@ export default function Dashboard() {
                         justifyContent: "center"
                     }}>
                         <Typography variant="h6">
-                            {`${data.length} ${data.length === 1 ? 'Case' : 'Cases'}`}
+                            {`${data.count} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
                         {!isMobile 
                             && <Box sx={{ minWidth: 120 }}>
@@ -77,7 +89,7 @@ export default function Dashboard() {
                                     title="Sort:"
                                     selectId="case-sort-select"
                                     additionalStyles={{ marginLeft: "0.625rem" }}
-                                    onChange={(val: string) => setDateSortValue(val)}
+                                    onChange={setDateSortValue}
                                     value={dateSortValue}
                                 />
                             </Box>
@@ -90,7 +102,7 @@ export default function Dashboard() {
                                     menuItems={dashboardSortDropDownValues}
                                     title="Sort:"
                                     selectId="case-sort-select"
-                                    onChange={(val: string) => setDateSortValue(val)}
+                                    onChange={setDateSortValue}
                                     value={dateSortValue}
                                 />
                             </Box>
@@ -115,6 +127,16 @@ export default function Dashboard() {
                     })
                 }
                 {isLoading && <CircularProgress sx={{alignSelf: 'center'}} />}
+                {/* test pagination with a lot of pages (10+), tested with less than 50 and 50-100 */}
+                {
+                    data.count > 50 
+                        && <Pagination 
+                                count={Math.ceil(data.count / paginationCount)} 
+                                page={paginationPage} 
+                                onChange={(event, val) => setPaginationPage(val)} 
+                                sx={{ alignSelf: "center", marginTop: "4rem"}}
+                            />
+                }
             </Stack>
             </Box>
         </React.Fragment>

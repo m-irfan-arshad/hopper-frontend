@@ -98,3 +98,5 @@ export const caseStepMappings = {
   priorAuthorization: "Prior Authorization",
   vendorConfirmation: "Vendor Confirmation"
 }
+
+export const paginationCount = 50;
