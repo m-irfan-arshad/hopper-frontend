@@ -41,6 +41,7 @@ export default function CaseNavBar(props: Props) {
         },
         [defaultTheme.breakpoints.down("sm")]: {
             marginLeft: "1.25rem",
+            marginTop: "1rem"
         }
     });
 
@@ -107,8 +108,9 @@ export default function CaseNavBar(props: Props) {
                 </StyledBox>
                 {isMobile 
                     &&
-                    <Box>
-                        <Typography variant="body1" sx={{marginTop: "1rem"}}><StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>}/> Show Completed Cases </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
+                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases </Typography>
                     </Box>
                 }
             </AppBar>

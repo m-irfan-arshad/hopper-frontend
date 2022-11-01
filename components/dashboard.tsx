@@ -5,7 +5,6 @@ import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress } from 
 import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
 import DropDownComponent from "./shared/dropdown";
-
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 

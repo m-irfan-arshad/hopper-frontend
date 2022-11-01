@@ -11,8 +11,8 @@ interface Props {
     title: string
     selectId: string
     additionalStyles?: React.CSSProperties
-    onChange: (value: any) => void
-    value: any,
+    onChange: (value: string) => void
+    value: string,
 }
 
 export default function DropDownComponent(props: Props) {
@@ -37,7 +37,7 @@ export default function DropDownComponent(props: Props) {
         <Select
             value={value}
             id={selectId}
-            renderValue={(value: any) => (
+            renderValue={(value: string) => (
                 <Typography variant="body2">{title} {value}</Typography>
             )}
             sx={{
