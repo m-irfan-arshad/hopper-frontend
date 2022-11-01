@@ -107,10 +107,9 @@ export default function CaseNavBar(props: Props) {
                     }
                 </StyledBox>
                 {isMobile 
-                    &&
-                    <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
+                    && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
                         <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases </Typography>
+                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
                     </Box>
                 }
             </AppBar>

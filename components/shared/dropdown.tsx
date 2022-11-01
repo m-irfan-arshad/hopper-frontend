@@ -12,7 +12,7 @@ interface Props {
     selectId: string
     additionalStyles?: React.CSSProperties
     onChange: (value: string) => void
-    value: string,
+    value: string
 }
 
 export default function DropDownComponent(props: Props) {
