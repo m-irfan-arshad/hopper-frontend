@@ -27,7 +27,7 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
         }
       ],
       include: {
-          patients: true,
+          patients: true
       }
   })
 

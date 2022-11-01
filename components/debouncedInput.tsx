@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { TextField, InputAdornment } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
@@ -35,7 +35,6 @@ export default function DebouncedInput(props: Props) {
     function handleChange(value: string) {     
         setValue(value);
         memoizedDebounceFunction(value);
-      // useCallback(debounce(onChange(value)), []);
     }
   
     return (

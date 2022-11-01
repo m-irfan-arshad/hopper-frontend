@@ -127,7 +127,6 @@ export default function Dashboard() {
                     })
                 }
                 {isLoading && <CircularProgress sx={{alignSelf: 'center'}} />}
-                {/* test pagination with a lot of pages (10+), tested with less than 50 and 50-100 */}
                 {
                     data.count > 50 
                         && <Pagination 
