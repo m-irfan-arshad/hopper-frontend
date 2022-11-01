@@ -6,7 +6,7 @@ import DropDownComponent from "./shared/dropdown";
 import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues, caseFilterInterface } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
-import MultiSelectDropdownComponent from "./shared/multiSelectDropdown";
+import MultiSelectDropdown from "./shared/multiSelectDropdown";
 
 
 interface Props {
@@ -81,7 +81,7 @@ export default function CaseNavBar(props: Props) {
                                 onChange={onDateFilterChange}
                                 value={dateFilterValue}
                             />
-                            <MultiSelectDropdownComponent
+                            <MultiSelectDropdown
                                 menuItems={dashboardStepDropDownValues}
                                 title="Step:"
                                 selectId="case-step-select"
@@ -116,7 +116,7 @@ export default function CaseNavBar(props: Props) {
                                 onChange={onDateFilterChange}
                                 value={dateFilterValue}
                             />
-                            <MultiSelectDropdownComponent
+                            <MultiSelectDropdown
                                 menuItems={dashboardStepDropDownValues}
                                 title="Step:"
                                 selectId="case-step-select"

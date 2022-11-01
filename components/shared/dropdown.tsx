@@ -13,11 +13,10 @@ interface Props {
     additionalStyles?: React.CSSProperties
     onChange: (value: any) => void
     value: any,
-    multiple?: boolean
 }
 
 export default function DropDownComponent(props: Props) {
-    const {menuItems, title, selectId, additionalStyles, onChange, value, multiple} = props;
+    const {menuItems, title, selectId, additionalStyles, onChange, value} = props;
 
     const defaultStyles = {
         color: "black.main",
@@ -36,11 +35,10 @@ export default function DropDownComponent(props: Props) {
     
     return (
         <Select
-            value={multiple ? value.split(", ") : value}
+            value={value}
             id={selectId}
-            multiple={multiple}
             renderValue={(value: any) => (
-                <Typography variant="body2">{title} {multiple ? value.join(", ") : value}</Typography>
+                <Typography variant="body2">{title} {value}</Typography>
             )}
             sx={{
                 ...defaultStyles,
