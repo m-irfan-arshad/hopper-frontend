@@ -6,8 +6,10 @@ describe("CaseNavBar", () => {
     const props = {
         onDateFilterChange: jest.fn(),
         onCaseFilterChange:  jest.fn(),
-        caseFilterValue: 'All Steps',
-        dateFilterValue:  'This month'
+        caseFilterValue: [{"value": 'All Steps', "id": "all"}],
+        dateFilterValue: 'This month',
+        search: jest.fn(),
+        searchBarValue: ""
     }
 
     test("renders the caseNavBar", async() => {

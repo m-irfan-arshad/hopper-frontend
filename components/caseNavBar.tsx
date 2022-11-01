@@ -41,7 +41,6 @@ export default function CaseNavBar(props: Props) {
         },
         [defaultTheme.breakpoints.down("sm")]: {
             marginLeft: "1.25rem",
-            marginTop: "1rem"
         }
     });
 
@@ -73,26 +72,26 @@ export default function CaseNavBar(props: Props) {
                                 minWidth: "230px"
                             }}
                         /> 
-                        <DropDownComponent
-                            menuItems={dashboardDateRangeDropDownValues}
-                            title="Date Range:"
-                            selectId="case-date-select"
-                            onChange={onDateFilterChange}
-                            value={dateFilterValue}
-                        />
-                        <MultiSelectDropdownComponent
-                            menuItems={dashboardStepDropDownValues}
-                            title="Step:"
-                            selectId="case-step-select"
-                            additionalStyles={{ marginLeft: "0.625rem"}}
-                            onChange={onCaseFilterChange}
-                            value={caseFilterValue}
-                        />
-                        { !isMobile &&
-                            <React.Fragment>
-                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
-                            </React.Fragment>
+                    { !isMobile &&
+                        <React.Fragment>
+                            <DropDownComponent
+                                menuItems={dashboardDateRangeDropDownValues}
+                                title="Date Range:"
+                                selectId="case-date-select"
+                                onChange={onDateFilterChange}
+                                value={dateFilterValue}
+                            />
+                            <MultiSelectDropdownComponent
+                                menuItems={dashboardStepDropDownValues}
+                                title="Step:"
+                                selectId="case-step-select"
+                                additionalStyles={{ marginLeft: "0.625rem"}}
+                                onChange={onCaseFilterChange}
+                                value={caseFilterValue}
+                            />
+                            <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                            <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
+                        </React.Fragment>
                         }
                     </StyledBox>
                     {!isMobile 
@@ -107,10 +106,28 @@ export default function CaseNavBar(props: Props) {
                     }
                 </StyledBox>
                 {isMobile 
-                    && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
-                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
+                    && <React.Fragment>
+                        <Box sx={{ display: "flex", alignItems: "flex-start", flexDirection: "column", width: "100%"}}>
+                            <div>
+                            <DropDownComponent
+                                menuItems={dashboardDateRangeDropDownValues}
+                                title="Date Range:"
+                                selectId="case-date-select"
+                                onChange={onDateFilterChange}
+                                value={dateFilterValue}
+                            />
+                            <MultiSelectDropdownComponent
+                                menuItems={dashboardStepDropDownValues}
+                                title="Step:"
+                                selectId="case-step-select"
+                                additionalStyles={{ marginLeft: "0.625rem"}}
+                                onChange={onCaseFilterChange}
+                                value={caseFilterValue}
+                            />
+                            </div>
+                        <Typography variant="body1" sx={{marginTop: "1rem"}}><StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>}/> Show Completed Cases </Typography>
                     </Box>
+                    </React.Fragment>
                 }
             </AppBar>
         </React.Fragment>
