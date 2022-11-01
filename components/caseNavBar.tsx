@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import moment from "moment";
-import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery, TextField } from '@mui/material';
+import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DropDownComponent from "./shared/dropdown";
-import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues } from "../reference";
+import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues, caseFilterInterface } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
+import MultiSelectDropdown from "./shared/multiSelectDropdown";
+
 
 interface Props {
     onDateFilterChange: (value: string) => void
-    onCaseFilterChange: (value: string) => void
+    onCaseFilterChange: (value: caseFilterInterface[]) => void
     search: (value: string) => void
-    caseFilterValue: string
+    caseFilterValue: caseFilterInterface[]
     dateFilterValue: string
     searchBarValue: string
 }
@@ -72,26 +73,26 @@ export default function CaseNavBar(props: Props) {
                                 minWidth: "230px"
                             }}
                         /> 
-                        <DropDownComponent
-                            menuItems={dashboardDateRangeDropDownValues}
-                            title="Date Range:"
-                            selectId="case-date-select"
-                            onChange={onDateFilterChange}
-                            value={dateFilterValue}
-                        />
-                        <DropDownComponent
-                            menuItems={dashboardStepDropDownValues}
-                            title="Step:"
-                            selectId="case-step-select"
-                            additionalStyles={{ marginLeft: "0.625rem"}}
-                            onChange={onCaseFilterChange}
-                            value={caseFilterValue}
-                        />
-                        { !isMobile &&
-                            <React.Fragment>
-                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
-                            </React.Fragment>
+                    { !isMobile &&
+                        <React.Fragment>
+                            <DropDownComponent
+                                menuItems={dashboardDateRangeDropDownValues}
+                                title="Date Range:"
+                                selectId="case-date-select"
+                                onChange={onDateFilterChange}
+                                value={dateFilterValue}
+                            />
+                            <MultiSelectDropdown
+                                menuItems={dashboardStepDropDownValues}
+                                title="Step:"
+                                selectId="case-step-select"
+                                additionalStyles={{ marginLeft: "0.625rem"}}
+                                onChange={onCaseFilterChange}
+                                value={caseFilterValue}
+                            />
+                            <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                            <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
+                        </React.Fragment>
                         }
                     </StyledBox>
                     {!isMobile 

@@ -45,26 +45,23 @@ export const dashboardDateRangeDropDownValues = [
     }
 ];
 
+export interface caseFilterInterface {
+  value: string,
+  id: string
+} 
+
 export const dashboardStepDropDownValues = [
     {
         value: "All Steps",
-        id: "4"
+        id: "all"
     },
     {
         value: "Insurance Authorization",
-        id: "5"
-    },
-    {
-        value: "Pre Surgical Testing",
-        id: "6"
-    },
-    {
-        value: "Pre Admission Testing",
-        id: "7"
+        id: "priorAuthorization"
     },
     {
         value: "Vendor Confirmation",
-        id: "8"
+        id: "vendorConfirmation"
     },
 ];
 

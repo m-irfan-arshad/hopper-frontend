@@ -9,6 +9,8 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
     dateRangeEnd: <string>req.query["dateRangeEnd"],
+    vendorConfirmation: <string>req.query["vendorConfirmation"],
+    priorAuthorization: <string>req.query["priorAuthorization"],
   };
 
   const paginationSkipAmount = (parseInt(<string>req.query["paginationPage"]) - 1) * 50;

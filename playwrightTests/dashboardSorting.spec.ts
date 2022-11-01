@@ -50,15 +50,14 @@ test.describe('Landing Page Features', () => {
     test('Validating Step Drop Down Elements', async ({ page }) => {
         const stepOne = page.locator("#menu->>text='All Steps'");
         const stepTwo = page.locator("#menu->>text='Insurance Authorization'");
-        const stepThree = page.locator("#menu->>text='Pre Surgical Testing'");
+        const stepThree = page.locator("#menu->>text='Vendor Confirmation'");
         const stepDropDownArrow = page.locator("#case-step-select");
         await page.waitForTimeout(800);
         await stepDropDownArrow.click();
         await expect(stepOne).toContainText('All Steps');
         await expect(stepTwo).toContainText('Insurance Authorization');
-        await expect(stepThree).toContainText('Pre Surgical Testing');
-        await stepThree.click();
-        await expect(stepDropDownArrow).toContainText('Step: Pre Surgical Testing');
+        await stepTwo.click();
+        await expect(stepDropDownArrow).toContainText('Step: Insurance Authorization');
     });
 
 });
