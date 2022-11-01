@@ -54,7 +54,7 @@ describe("Hooks", () => {
     );
 
     test("call query with next month, asc order, and case id value", async() => {
-        const { result } = renderHook(() => useGetCasesHook('Next month', 'Oldest - Newest', '1234'), { wrapper });
+        const { result } = renderHook(() => useGetCasesHook('Next month', 'Oldest - Newest', [{"value": "true", "id": "vendorConfirmation"}], '1234'), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
@@ -64,7 +64,8 @@ describe("Hooks", () => {
             dateRangeStart: moment().utc().add(1, 'month').startOf('month').toString(),
             dateRangeEnd: moment().utc().add(1, 'month').endOf('month').toString(),
             orderBy: 'asc',
-            searchValue: '1234'
+            searchValue: '1234',
+            vendorConfirmation: 'Incomplete'
         });
 
         expect(result.current.data).toEqual(mockData);
@@ -72,7 +73,7 @@ describe("Hooks", () => {
     });
 
     test("call query with this month, desc order, and only first name value", async() => {
-        const { result } = renderHook(() => useGetCasesHook('This month', 'Newest - Oldest', 'Bob'), { wrapper });
+        const { result } = renderHook(() => useGetCasesHook('This month', 'Newest - Oldest', [{"value": "true", "id": "vendorConfirmation"}], 'Bob'), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
@@ -82,7 +83,8 @@ describe("Hooks", () => {
             dateRangeStart: moment().utc().toString(),
             dateRangeEnd: moment().utc().endOf('month').toString(),
             orderBy: 'desc',
-            searchValue: 'Bob'
+            searchValue: 'Bob',
+            vendorConfirmation: 'Incomplete'
         });
 
         expect(result.current.data).toEqual(mockData);
@@ -90,7 +92,7 @@ describe("Hooks", () => {
     });
 
     test("call query with next quarter, desc order, and both first and last name", async() => {
-        const { result } = renderHook(() => useGetCasesHook('Next quarter', 'Newest - Oldest', 'Bob Billy'), { wrapper });
+        const { result } = renderHook(() => useGetCasesHook('Next quarter', 'Newest - Oldest', [{"value": "true", "id": "vendorConfirmation"}], 'Bob Billy'), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
@@ -100,7 +102,8 @@ describe("Hooks", () => {
             dateRangeStart: moment().utc().toString(),
             dateRangeEnd: moment().utc().add(2, 'month').endOf('month').toString(),
             orderBy: 'desc',
-            searchValue: 'Bob Billy'
+            searchValue: 'Bob Billy',
+            vendorConfirmation: 'Incomplete'
         });
 
         expect(result.current.data).toEqual(mockData);

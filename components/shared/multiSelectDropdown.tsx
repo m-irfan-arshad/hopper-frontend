@@ -1,5 +1,7 @@
 import React from "react";
 import {MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import { caseFilterInterface } from "../../reference";
+
 
 interface MenuItem {
     value: string
@@ -11,11 +13,11 @@ interface Props {
     title: string
     selectId: string
     additionalStyles?: React.CSSProperties
-    onChange: (value: string) => void
-    value: string
+    onChange: (value: any) => void
+    value: any,
 }
 
-export default function DropDownComponent(props: Props) {
+export default function MultiSelectDropDown(props: Props) {
     const {menuItems, title, selectId, additionalStyles, onChange, value} = props;
 
     const defaultStyles = {
@@ -30,6 +32,11 @@ export default function DropDownComponent(props: Props) {
         },
         svg: {
             color: "blue.main"
+        },
+        maxWidth: "15rem",
+        ".MuiTypography-root": {
+            overflow: "hidden",
+            textOverflow: "ellipsis"
         }
     };
     
@@ -37,8 +44,9 @@ export default function DropDownComponent(props: Props) {
         <Select
             value={value}
             id={selectId}
-            renderValue={(value: string) => (
-                <Typography variant="body2">{title} {value}</Typography>
+            multiple
+            renderValue={(value: any) => (
+                <Typography variant="body2">{title} {value.map((filter: caseFilterInterface)  => filter.value).join(", ")}</Typography>
             )}
             sx={{
                 ...defaultStyles,
@@ -48,7 +56,8 @@ export default function DropDownComponent(props: Props) {
         >
             {
                 menuItems.map((item, index) => (
-                    <MenuItem key={index} value={item.value} sx={{fontSize: "0.688rem"}}>{item.value}</MenuItem>
+                    //@ts-ignore - necessary to load object into value
+                    <MenuItem key={index} value={item} sx={{fontSize: "0.688rem"}}>{item.value}</MenuItem>
                 ))
             }
         </Select>

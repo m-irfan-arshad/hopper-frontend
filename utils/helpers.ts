@@ -3,9 +3,11 @@ import { Prisma, cases, patients } from '@prisma/client';
 import moment from "moment";
 
 interface DashboardQueryParams { 
-    searchValue: string
+    searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
+    priorAuthorization: string;
+    vendorConfirmation: string;
 }
 
 interface CasesFormatterProps {
@@ -14,31 +16,40 @@ interface CasesFormatterProps {
     }
 }
 
-export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
-    const { searchValue, dateRangeStart, dateRangeEnd } = params;
-    const nameOne = searchValue.split(' ')[0];
-    const nameTwo = searchValue.split(' ')[1];
-    const caseId = parseInt(searchValue);
+interface FilterObject {
+    procedureDate: object;
+    caseId?: object;
+    patients?: object;
+    priorAuthorization?: object;
+    vendorConfirmation?: object;
+  }
 
-    const isStringNumeric = /^[0-9]+$/gi.test(searchValue);
+export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
+    const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
     
-    if (isStringNumeric) {
-        return  {
-            procedureDate: {
-                gte: new Date(dateRangeStart),
-                lte: new Date(dateRangeEnd)
-            },
-            caseId: {
-                equals: caseId
-            }
-          }
-    } else if (!nameTwo) {
-    return  {
+    let filterObject: FilterObject = {
         procedureDate: {
             gte: new Date(dateRangeStart),
             lte: new Date(dateRangeEnd)
         },
-        patients: {
+        ...(priorAuthorization === "Incomplete") && {priorAuthorization: {equals: priorAuthorization}},
+        ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
+    }
+    
+    if (!searchValue) {
+        return filterObject
+    }
+
+    const nameOne = searchValue.split(' ')[0];
+    const nameTwo = searchValue.split(' ')[1];
+    const caseId = parseInt(searchValue);
+    const isStringNumeric = /^[0-9]+$/gi.test(searchValue);
+    if (isStringNumeric) {
+        filterObject.caseId = {
+                equals: caseId
+            }
+    } else if (!nameTwo) {
+        filterObject.patients = {
             OR: [
                 {
                     firstName: {
@@ -53,15 +64,10 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
                     },
                 },
             ]
-      }
+        }
     }
-   } else {
-    return  {
-        procedureDate: {
-            gte: new Date(dateRangeStart),
-            lte: new Date(dateRangeEnd)
-        },
-        patients: {
+    else {
+        filterObject.patients = {
         AND: [
           {
             OR: [
@@ -77,8 +83,9 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
           },
         ]
       }
-    }
    }
+
+   return filterObject
 }
 
 export function formatDate(date: Date | null) : string | null {
