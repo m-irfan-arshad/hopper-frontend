@@ -61,7 +61,7 @@ const mockData = [
 
 describe("Dashboard", () => {  
     const mockedUseGetCasesHook = useGetCasesHook as jest.Mock<any>; 
-    mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: mockData }));
+    mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: {cases: mockData, count: 52} }));
 
     const mockedUseUpdateCaseHook = useUpdateCaseHook as jest.Mock<any>; 
     mockedUseUpdateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
@@ -75,6 +75,51 @@ describe("Dashboard", () => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
         });
     });
+
+    test("renders and interacts with date range dropdown", async () => { 
+        const { getByRole, getByPlaceholderText } = render(
+                <Dashboard  />
+        );
+
+        await waitFor(() => {
+            expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
+        });
+
+        expect(getByRole("button", {name: "Date Range: This month"})).toBeInTheDocument();
+
+        fireEvent.mouseDown(getByRole("button", {name: "Date Range: This month"}));
+        fireEvent.click(getByRole("option", {name: "Next month"}));
+
+        await waitFor(() => {
+            expect(getByRole("button", {name: "Date Range: Next month"})).toBeInTheDocument();
+        });
+      });
+
+      test("renders and interacts with search bar and pagination", async () => { 
+        const { getByRole, getByPlaceholderText } = render(
+                <Dashboard  />
+        );
+
+        await waitFor(() => {
+            expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
+        });
+
+        expect(getByRole("button", {name: "Go to page 2"})).toBeInTheDocument();
+
+        expect(getByPlaceholderText("Search Name or Case ID")).toBeInTheDocument();
+
+        fireEvent.click(getByRole("button", {name: "Go to page 2"}));
+
+        expect(getByRole("button", {name: "page 2"})).toBeInTheDocument();
+
+        fireEvent.change(getByPlaceholderText("Search Name or Case ID"), {target: {value: 'searched'}});
+
+        await waitFor(() => {
+            expect(getByRole("button", {name: "Go to page 2"})).toBeInTheDocument();
+        });
+
+        expect(getByRole("searchbox")).toHaveValue('searched');
+      });
 
     test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
         const { getByRole, queryByRole, rerender } = render(

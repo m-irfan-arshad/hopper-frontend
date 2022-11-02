@@ -11,7 +11,8 @@
         dateRangeStart: new Date("2022-10-13T14:04:06.000Z").toUTCString(), 
         dateRangeEnd : new Date("2022-10-31T23:59:59.000Z").toUTCString(),
         orderBy: "asc",
-        searchValue: "searchValue"
+        searchValue: "searchValue",
+        page: '1'
     });
 
     let req: NextApiRequest = httpMock.createRequest({
@@ -57,6 +58,8 @@
                     ]
               }
             },
+            take: 50,
+            skip: 0,
             orderBy: [
                 {
                     procedureDate: "asc"
@@ -68,12 +71,14 @@
         }
 
         prismaMock.cases.findMany.mockResolvedValue(cases)
+        prismaMock.cases.count.mockResolvedValue(1)
 
         await getCasesHandler(req, res)
         const data = res._getJSONData()
-        expect(data[0].caseId).toEqual(1)
-        expect(data[0].patientId).toEqual(1)
-        expect(data[0].providerName).toEqual("testProviderName")
+        expect(data.cases[0].caseId).toEqual(1)
+        expect(data.cases[0].patientId).toEqual(1)
+        expect(data.cases[0].providerName).toEqual("testProviderName")
+        expect(data.count).toEqual(1)
         expect(prismaMock.cases.findMany).toBeCalledTimes(1)
         expect(prismaMock.cases.findMany).toBeCalledWith(params)
     })

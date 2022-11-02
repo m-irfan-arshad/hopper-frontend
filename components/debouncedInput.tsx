@@ -1,30 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { TextField, InputAdornment } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
 interface Props {
     onChange: (value: string) => void
     value: string
-    debounce?: number
+    debounceTime?: number
     placeholder?: string
     additionalStyles?: React.CSSProperties | object
 }
 
 export default function DebouncedInput(props: Props) {
-    const {value: initialValue, debounce = 500, onChange, additionalStyles, placeholder} = props;
+    const {value: initialValue, debounceTime = 500, onChange, additionalStyles, placeholder} = props;
     const [value, setValue] = useState(initialValue);
   
     useEffect(() => {
       setValue(initialValue)
     }, [initialValue])
-  
-    useEffect(() => {
-      const timeout = setTimeout(() => {
-        onChange(value)
-      }, debounce)
-  
-      return () => clearTimeout(timeout)
-    }, [value])
+
+    const debounce = (func: Function) => {
+      let timer: number | null;
+      return function(this: void, ...args: any) {
+        const context = this;
+        if (timer) clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          timer = null;
+          func.apply(context, args);
+        }, debounceTime);
+      };
+    };
+
+    const memoizedDebounceFunction = useCallback(debounce((value: string) => onChange(value)), []);
+
+    function handleChange(value: string) {     
+        setValue(value);
+        memoizedDebounceFunction(value);
+    }
   
     return (
         <TextField  
@@ -39,7 +50,7 @@ export default function DebouncedInput(props: Props) {
             type="search" 
             variant="outlined" 
             value={value} 
-            onChange={e => setValue(e.target.value)}
+            onChange={e => handleChange(e.target.value)}
             sx={additionalStyles}
         />
     )

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress } from "@mui/material";
+import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
+import { paginationCount } from '../reference';
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -14,18 +15,29 @@ interface CaseGroup {
 
 export default function Dashboard() {  
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
+    const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
 
     const [dateFilterValue, setDateFilterValue] = useState('This month');
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
-    const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
     const [caseFilterValue, setCaseFilterValue] = useState(defaultCaseFilterValue);
-    const [searchBarValue, setSearchVarBalue ] = useState('');
+    const [searchBarValue, setSearchBarValue ] = useState('');
+    const [page, setPage] = useState(1);
 
-    const { data = [], isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, caseFilterValue, searchBarValue);
+    function handleDateFilterChange(value: string) {
+        setPage(1);
+        setDateFilterValue(value);
+    }
+
+    function handleSearchBarChange(value: string) {
+        setPage(1);
+        setSearchBarValue(value);
+    }
+   
+    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 
     const caseGroups:CaseGroup = {};
 
-        data.forEach(function(singleCase: SingleCase) {
+        data.cases.forEach(function(singleCase: SingleCase) {
             const date = singleCase.procedureDate || "";
             if (date in caseGroups) {
                 caseGroups[date].push(singleCase);
@@ -35,6 +47,8 @@ export default function Dashboard() {
         })
         
     const handleCaseFilterChange = (value: caseFilterInterface[]) => {
+        setPage(1);
+
         if (value?.at(-1)?.id === "all" || value?.length === 0) {
             setCaseFilterValue(defaultCaseFilterValue);
         } else {
@@ -47,10 +61,10 @@ export default function Dashboard() {
             <CaseNavBar 
                 onCaseFilterChange={handleCaseFilterChange} 
                 caseFilterValue={caseFilterValue} 
-                onDateFilterChange={setDateFilterValue}  
+                onDateFilterChange={handleDateFilterChange}  
                 dateFilterValue={dateFilterValue}
                 searchBarValue={searchBarValue}
-                search={setSearchVarBalue}
+                search={handleSearchBarChange}
             />
             <Box sx={{
                 display: "flex",
@@ -77,7 +91,7 @@ export default function Dashboard() {
                         justifyContent: "center"
                     }}>
                         <Typography variant="h6">
-                            {`${data.length} ${data.length === 1 ? 'Case' : 'Cases'}`}
+                            {`${data.count} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
                         {!isMobile 
                             && <Box sx={{ minWidth: 120 }}>
@@ -99,7 +113,7 @@ export default function Dashboard() {
                                     menuItems={dashboardSortDropDownValues}
                                     title="Sort:"
                                     selectId="case-sort-select"
-                                    onChange={(val: string) => setDateSortValue(val)}
+                                    onChange={setDateSortValue}
                                     value={dateSortValue}
                                 />
                             </Box>
@@ -124,6 +138,15 @@ export default function Dashboard() {
                     })
                 }
                 {isLoading && <CircularProgress sx={{alignSelf: 'center'}} />}
+                {
+                    data.count > 50 
+                        && <Pagination 
+                                count={Math.ceil(data.count / paginationCount)} 
+                                page={page} 
+                                onChange={(event, val) => setPage(val)} 
+                                sx={{ alignSelf: "center", marginTop: "4rem"}}
+                            />
+                }
             </Stack>
             </Box>
         </React.Fragment>

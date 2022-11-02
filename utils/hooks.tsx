@@ -2,8 +2,8 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import moment from "moment";
 import { caseFilterInterface } from "../reference";
 
-export function useGetCasesHook(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string) {
-    return useQuery(["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue], () => fetchCases(dateFilterValue, dateSortValue, caseFilter, searchBarValue))
+export function useGetCasesHook(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
+    return useQuery(["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue, page], () => fetchCases(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page))
 }
 
 export function useUpdateCaseHook() {
@@ -24,8 +24,8 @@ export function useUpdateCaseHook() {
     )
 }
 
-const fetchCases = async (dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string) => {
-    const url =  calculateDashboardURL(dateFilterValue, dateSortValue, caseFilter, searchBarValue);
+const fetchCases = async (dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
+    const url = calculateDashboardURL(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page);
     const response = await fetch(url);
     
     return response.json();
@@ -43,7 +43,7 @@ export function convertCaseStepsToFilters(caseFilter: caseFilterInterface[]): ob
     return returnObject
 }
 
-function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string) {
+function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
     let parameters;
     let dateRangeStart = moment().utc()
     let dateRangeEnd = moment().utc()
@@ -64,11 +64,11 @@ function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, c
         dateRangeStart: dateRangeStart.toString(),
         dateRangeEnd:  dateRangeEnd.toString(),
         orderBy: translateSortOrder(dateSortValue),
+        page: page,
         ...(searchBarValue !== "") && {searchValue: searchBarValue},
         ...convertCaseStepsToFilters(caseFilter)
     });
 
     const url =  `/api/getCases?` + parameters;
-    
     return url;
 }
