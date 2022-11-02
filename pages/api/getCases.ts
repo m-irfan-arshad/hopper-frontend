@@ -13,7 +13,7 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
     priorAuthorization: <string>req.query["priorAuthorization"],
   };
 
-  const paginationSkipAmount = (parseInt(<string>req.query["paginationPage"]) - 1) * 50;
+  const paginationSkipAmount = (parseInt(<string>req.query["page"]) - 1) * 50;
 
   const count =  await prisma.cases.count({
     where: formatDashboardQueryParams(dashboardParams)

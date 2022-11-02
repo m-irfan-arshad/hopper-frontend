@@ -12,7 +12,7 @@
         dateRangeEnd : new Date("2022-10-31T23:59:59.000Z").toUTCString(),
         orderBy: "asc",
         searchValue: "searchValue",
-        paginationPage: '1'
+        page: '1'
     });
 
     let req: NextApiRequest = httpMock.createRequest({

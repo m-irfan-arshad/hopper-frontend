@@ -21,19 +21,19 @@ export default function Dashboard() {
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
     const [caseFilterValue, setCaseFilterValue] = useState(defaultCaseFilterValue);
     const [searchBarValue, setSearchBarValue ] = useState('');
-    const [paginationPage, setPaginationPage] = useState(1);
+    const [page, setPage] = useState(1);
 
     function handleDateFilterChange(value: string) {
-        setPaginationPage(1);
+        setPage(1);
         setDateFilterValue(value);
     }
 
     function handleSearchBarChange(value: string) {
-        setPaginationPage(1);
+        setPage(1);
         setSearchBarValue(value);
     }
    
-    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, caseFilterValue, searchBarValue, paginationPage.toString());
+    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 
     const caseGroups:CaseGroup = {};
 
@@ -47,8 +47,8 @@ export default function Dashboard() {
         })
         
     const handleCaseFilterChange = (value: caseFilterInterface[]) => {
-        setPaginationPage(1);
-        
+        setPage(1);
+
         if (value?.at(-1)?.id === "all" || value?.length === 0) {
             setCaseFilterValue(defaultCaseFilterValue);
         } else {
@@ -142,8 +142,8 @@ export default function Dashboard() {
                     data.count > 50 
                         && <Pagination 
                                 count={Math.ceil(data.count / paginationCount)} 
-                                page={paginationPage} 
-                                onChange={(event, val) => setPaginationPage(val)} 
+                                page={page} 
+                                onChange={(event, val) => setPage(val)} 
                                 sx={{ alignSelf: "center", marginTop: "4rem"}}
                             />
                 }

@@ -64,7 +64,7 @@ describe("Hooks", () => {
             dateRangeStart: moment().utc().add(1, 'month').startOf('month').toString(),
             dateRangeEnd: moment().utc().add(1, 'month').endOf('month').toString(),
             orderBy: 'asc',
-            paginationPage: '1',
+            page: '1',
             searchValue: '1234',
             vendorConfirmation: 'Incomplete'
         });
@@ -84,7 +84,7 @@ describe("Hooks", () => {
             dateRangeStart: moment().utc().toString(),
             dateRangeEnd: moment().utc().endOf('month').toString(),
             orderBy: 'desc',
-            paginationPage: '1',
+            page: '1',
             searchValue: 'Bob',
             vendorConfirmation: 'Incomplete'
         });
@@ -104,7 +104,7 @@ describe("Hooks", () => {
             dateRangeStart: moment().utc().toString(),
             dateRangeEnd: moment().utc().add(2, 'month').endOf('month').toString(),
             orderBy: 'desc',
-            paginationPage: '1',
+            page: '1',
             searchValue: 'Bob Billy',
             vendorConfirmation: 'Incomplete'
         });
