@@ -61,8 +61,8 @@ function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, c
     }
 
     parameters = new URLSearchParams({ 
-        dateRangeStart: dateRangeStart.toString(),
-        dateRangeEnd:  dateRangeEnd.toString(),
+        dateRangeStart: dateRangeStart.format(),
+        dateRangeEnd:  dateRangeEnd.format(),
         orderBy: translateSortOrder(dateSortValue),
         ...(searchBarValue !== "") && {searchValue: searchBarValue},
         ...convertCaseStepsToFilters(caseFilter)

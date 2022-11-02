@@ -61,8 +61,8 @@ describe("Hooks", () => {
         });
 
         const queryString = new URLSearchParams({ 
-            dateRangeStart: moment().utc().add(1, 'month').startOf('month').toString(),
-            dateRangeEnd: moment().utc().add(1, 'month').endOf('month').toString(),
+            dateRangeStart: moment().utc().add(1, 'month').startOf('month').format(),
+            dateRangeEnd: moment().utc().add(1, 'month').endOf('month').format(),
             orderBy: 'asc',
             searchValue: '1234',
             vendorConfirmation: 'Incomplete'
@@ -80,8 +80,8 @@ describe("Hooks", () => {
         });
 
         const queryString = new URLSearchParams({ 
-            dateRangeStart: moment().utc().toString(),
-            dateRangeEnd: moment().utc().endOf('month').toString(),
+            dateRangeStart: moment().utc().format(),
+            dateRangeEnd: moment().utc().endOf('month').format(),
             orderBy: 'desc',
             searchValue: 'Bob',
             vendorConfirmation: 'Incomplete'
@@ -99,8 +99,8 @@ describe("Hooks", () => {
         });
 
         const queryString = new URLSearchParams({ 
-            dateRangeStart: moment().utc().toString(),
-            dateRangeEnd: moment().utc().add(2, 'month').endOf('month').toString(),
+            dateRangeStart: moment().utc().format(),
+            dateRangeEnd: moment().utc().add(2, 'month').endOf('month').format(),
             orderBy: 'desc',
             searchValue: 'Bob Billy',
             vendorConfirmation: 'Incomplete'
