@@ -59,11 +59,11 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-function calculateProgressBarColor(numberOfCompletedSteps: number) {
-  if (numberOfCompletedSteps <= 1) {
+function calculateProgressBarColor(numberOfCompletedSteps: number, numberOfSteps: number) {
+  if (numberOfCompletedSteps < (numberOfSteps / 2)) {
     return "red.main";
   }
-  if (numberOfCompletedSteps <= 4) {
+  if (numberOfCompletedSteps < numberOfSteps) {
     return "yellow.main";
   }
   return "green.main";
@@ -74,8 +74,9 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [isDialogOpen, setDialogState] = useState(false);
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
+  const numberOfSteps = Object.keys(row.steps).length;
   const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
-  const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24 && numberOfCompletedSteps < Object.keys(row.steps).length;
+  const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24 && numberOfCompletedSteps < numberOfSteps;
 
   const cardStyle = {
     paddingLeft: "0.625rem",
@@ -96,7 +97,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
     alignSelf: "center",
     borderRadius: "0.625rem",
     "& .MuiLinearProgress-bar": {
-      backgroundColor: calculateProgressBarColor(numberOfCompletedSteps),
+      backgroundColor: calculateProgressBarColor(numberOfCompletedSteps, numberOfSteps),
       borderRadius: "0.625rem"
     },
     backgroundColor: "gray.main"
@@ -197,7 +198,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
               
               <LinearProgress 
                 variant="determinate" 
-                value={20 * numberOfCompletedSteps}
+                value={(numberOfCompletedSteps/numberOfSteps) * 100}
                 sx={linearProgressStyle} 
               />  
             </Box>
