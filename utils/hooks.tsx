@@ -24,6 +24,10 @@ export function useUpdateCaseHook() {
     )
 }
 
+export function useGetProviderOptionsHook() {
+    return useQuery(["getProviderOptions"], async () => (await fetch("/api/getProviderOptions")).json());
+}
+
 const fetchCases = async (dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
     const url = calculateDashboardURL(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page);
     const response = await fetch(url);
