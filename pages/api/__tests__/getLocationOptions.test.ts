@@ -8,7 +8,7 @@
 
  describe("getLocationOptions API", () => {
     let req: NextApiRequest = httpMock.createRequest({
-        url: `/api/getProviderOptions`
+        url: `/api/getLocationOptions`
     });
     let res: any = httpMock.createResponse({});
 
