@@ -1,9 +1,11 @@
+-- AlterTable
+ALTER TABLE "providers" ADD COLUMN     "location_ids" INTEGER[];
+
 -- CreateTable
 CREATE TABLE "locations" (
     "location_id" SERIAL NOT NULL,
     "fhir_resource_id" TEXT,
     "location_name" TEXT,
-    "provider_ids" INTEGER[],
     "create_time" TIMESTAMP(6),
     "update_time" TIMESTAMP(6),
 
