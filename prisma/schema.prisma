@@ -48,3 +48,12 @@ model providers {
   createTime     DateTime? @map("create_time") @db.Timestamp(6)
   updateTime     DateTime? @map("update_time") @db.Timestamp(6)
 }
+
+model locations {
+  locationId     Int       @id @default(autoincrement()) @map("location_id")
+  fhirResourceId String?   @unique @map("fhir_resource_id")
+  locationName   String?   @map("location_name")
+  providerIds    Int[]     @map("provider_ids")
+  createTime     DateTime? @map("create_time") @db.Timestamp(6)
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+}
