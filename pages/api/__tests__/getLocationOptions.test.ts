@@ -6,13 +6,13 @@
  import { prismaMock } from '../../../prisma/singleton'
  import getLocationOptionsHandler from '../getLocationOptions';
 
- describe("getProviderOptions API", () => {
+ describe("getLocationOptions API", () => {
     let req: NextApiRequest = httpMock.createRequest({
         url: `/api/getProviderOptions`
     });
     let res: any = httpMock.createResponse({});
 
-    test('should get providers', async () => {
+    test('should get locations', async () => {
         let locations = [{
             locationId: 1,
             fhirResourceId: 'fhirResourceId',
