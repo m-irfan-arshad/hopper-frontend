@@ -42,9 +42,18 @@ model providers {
   firstName      String?   @map("first_name")
   lastName       String?   @map("last_name")
   locationName   String?   @map("location_name")
+  locationIds    Int[]     @map("location_ids")
   address        String?
   serviceLine    String?   @map("service_line")
   email          String?
+  createTime     DateTime? @map("create_time") @db.Timestamp(6)
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+}
+
+model locations {
+  locationId     Int       @id @default(autoincrement()) @map("location_id")
+  fhirResourceId String?   @unique @map("fhir_resource_id")
+  locationName   String?   @map("location_name")
   createTime     DateTime? @map("create_time") @db.Timestamp(6)
   updateTime     DateTime? @map("update_time") @db.Timestamp(6)
 }

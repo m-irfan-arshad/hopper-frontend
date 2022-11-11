@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { useGetCasesHook, useGetProviderOptionsHook } from "../hooks";
+import { useGetCasesHook, useGetProviderOptionsHook, useGetLocationOptionsHook } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
 
@@ -56,6 +56,23 @@ const mockProviderData = [
         address: 'address2',
         serviceLine: 'General Surgery2',
         email: 'fake2@email.com',
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+]; 
+
+const mockLocationData = [
+    {
+        locationId: 1,
+        fhirResourceId: 'fhirResourceId',
+        locationName: 'locationName',
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        locationId: 2,
+        fhirResourceId: 'fhirResourceId2',
+        locationName: 'locationName2',
         createTime: new Date(),
         updateTime: new Date()
     }
@@ -140,7 +157,7 @@ describe("Hooks", () => {
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCases?${queryString}`);
     });
 
-    test("call getProviderOptionsHook with", async() => {
+    test("call getProviderOptionsHook", async() => {
         global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
             json: () => Promise.resolve(mockProviderData),
         }));
@@ -153,5 +170,20 @@ describe("Hooks", () => {
 
         expect(result.current.data).toEqual(mockProviderData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getProviderOptions`);
+    });
+
+    test("call getLocationOptionsHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockLocationData),
+        }));
+        
+        const { result } = renderHook(() => useGetLocationOptionsHook([1,2]), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockLocationData);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions?locationIds=1,2`);
     });
 });
