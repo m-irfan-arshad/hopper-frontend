@@ -28,8 +28,10 @@ export function useGetProviderOptionsHook() {
     return useQuery(["getProviderOptions"], async () => (await fetch("/api/getProviderOptions")).json());
 }
 
-export function useGetLocationOptionsHook() {
-    return useQuery(["getLocationOptions"], async () => (await fetch("/api/getLocationOptions")).json());
+export function useGetLocationOptionsHook(locationIds: number[]) {
+    return useQuery(["getLocationOptions", locationIds], async () =>  
+        (await fetch(`/api/getLocationOptions${locationIds ? `?locationIds=${locationIds}` : ''}`)).json()
+    );
 }
 
 const fetchCases = async (dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {

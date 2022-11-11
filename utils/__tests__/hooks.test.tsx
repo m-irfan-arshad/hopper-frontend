@@ -66,7 +66,6 @@ const mockLocationData = [
         locationId: 1,
         fhirResourceId: 'fhirResourceId',
         locationName: 'locationName',
-        providerIds: [1,2,3],
         createTime: new Date(),
         updateTime: new Date()
     },
@@ -74,7 +73,6 @@ const mockLocationData = [
         locationId: 2,
         fhirResourceId: 'fhirResourceId2',
         locationName: 'locationName2',
-        providerIds: [2,3,4],
         createTime: new Date(),
         updateTime: new Date()
     }
@@ -179,13 +177,13 @@ describe("Hooks", () => {
             json: () => Promise.resolve(mockLocationData),
         }));
         
-        const { result } = renderHook(() => useGetLocationOptionsHook(), { wrapper });
+        const { result } = renderHook(() => useGetLocationOptionsHook([1,2]), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
         });
-
+        
         expect(result.current.data).toEqual(mockLocationData);
-        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions`);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions?locationIds=1,2`);
     });
 });
