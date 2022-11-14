@@ -6,6 +6,27 @@ export function useGetCasesHook(dateFilterValue: string, dateSortValue: string, 
     return useQuery(["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue, page], () => fetchCases(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page))
 }
 
+export function useCreateCaseHook() {
+    const queryClient = useQueryClient()
+    return useMutation((data: object) => fetch("/api/createCase",
+        {
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['getCases'])
+            },
+            onError: () => {
+                alert("there was an error")
+            },
+        }
+    )
+}
+
 export function useUpdateCaseHook() {
     const queryClient = useQueryClient()
     return useMutation((data: object) => fetch("/api/updateCase",
