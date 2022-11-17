@@ -6,7 +6,7 @@ test.describe('Landing Page', () => {
         await page.goto(baseURL!);
     });
 
-    test.only('Validating Create Case Modal=', async ({ page }) => {
+    test('Validating Create Case Modal=', async ({ page }) => {
         const createCaseButton = page.locator('button', { hasText: 'Create Case' });
         const patientInformation = page.locator("text='Patient Information'");
         const cancelButton = page.locator('button', {hasText: 'Cancel' });
