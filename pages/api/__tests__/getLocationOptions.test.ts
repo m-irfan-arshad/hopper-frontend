@@ -44,6 +44,43 @@
         }
     ];
 
+    test('should get specific locations', async () => {
+        const req = httpMock.createRequest({
+            url: `/api/getLocationOptions?providerId=3`
+        });
+
+        const res = httpMock.createResponse({});
+
+        const provider_locationParams = {
+            where: {
+                providerId: {
+                    equals: 3
+                }
+            }
+        };
+
+        const locationParams = {
+            where: {
+                locationId: {
+                    in: [2]
+                }
+            }
+        };
+
+        prismaMock.provider_locations.findMany.mockResolvedValueOnce(providerLocationRelations)
+        prismaMock.locations.findMany.mockResolvedValueOnce([locations[1]])
+
+        await getLocationOptionsHandler(req, res)
+        const data = res._getJSONData();
+        expect(data[0].locationId).toEqual(2)
+        expect(data[0].locationName).toEqual('locationName2')
+        expect(data[0].procedureUnits).toEqual(['second'])
+        expect(prismaMock.provider_locations.findMany).toBeCalledTimes(1);
+        expect(prismaMock.provider_locations.findMany).toBeCalledWith(provider_locationParams);
+        expect(prismaMock.locations.findMany).toBeCalledTimes(1);
+        expect(prismaMock.locations.findMany).toBeCalledWith(locationParams);
+    })
+
     test('should return 0 locations', async () => {
         const req = httpMock.createRequest({
             url: `/api/getLocationOptions?providerId=9`
@@ -79,42 +116,4 @@
         expect(prismaMock.provider_locations.findMany).toBeCalledWith(params);
         expect(prismaMock.locations.findMany).toBeCalledTimes(0);
     });
-
-    test('should get specific locations', async () => {
-        const req = httpMock.createRequest({
-            url: `/api/getLocationOptions?providerId=3`
-        });
-
-        const res = httpMock.createResponse({});
-
-        const provider_locationParams = {
-            where: {
-                providerId: {
-                    equals: 3
-                }
-            }
-        };
-
-        const locationParams = {
-            where: {
-                locationId: {
-                    in: [8]
-                }
-            }
-        };
-
-        prismaMock.provider_locations.findMany.mockResolvedValueOnce(providerLocationRelations)
-        prismaMock.locations.findMany.mockResolvedValueOnce([locations[1]])
-
-        await getLocationOptionsHandler(req, res)
-        const data = res._getJSONData();
-        expect(data[0].locationId).toEqual(2)
-        expect(data[0].locationName).toEqual('locationName2')
-        expect(data[0].procedureUnits).toEqual(['second'])
-        expect(prismaMock.provider_locations.findMany).toBeCalledTimes(1);
-        expect(prismaMock.provider_locations.findMany).toBeCalledWith(provider_locationParams);
-        expect(prismaMock.locations.findMany).toBeCalledTimes(1);
-        expect(prismaMock.locations.findMany).toBeCalledWith(locationParams);
-
-    })
 });
