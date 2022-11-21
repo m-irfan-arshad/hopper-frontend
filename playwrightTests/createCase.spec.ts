@@ -9,10 +9,10 @@ test.describe('Landing Page', () => {
     test('Validating Create Case Modal=', async ({ page }) => {
         const createCaseButton = page.locator('button', { hasText: 'Create Case' });
         const patientInformation = page.locator("text='Patient Information'");
-        const cancelButton = page.locator('button', {hasText: 'Cancel' });
-        const {firstName} = createPatientCase();
-        const {lastName} = createPatientCase();
-        const {birthDay} = createPatientCase();
+        const cancelButton = page.locator('button', { hasText: 'Cancel' });
+        const { firstName } = createPatientCase();
+        const { lastName } = createPatientCase();
+        const { birthDay } = createPatientCase();
         await createCaseButton.click();
         await expect(patientInformation).toBeVisible();
         await page.locator('#firstName').type(firstName);
