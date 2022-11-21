@@ -16,6 +16,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from "moment";
+import { useForm, Controller } from "react-hook-form";
 
 
 interface Props {
@@ -25,8 +26,18 @@ interface Props {
 
 export default function CreateCaseDialog(props: Props) {
   const {open, closeDialog} = props;
-  const [dateOfBirth, setDateOfBirth] = useState<moment.Moment | null>(null);
-  const [procedureDate, setProcedureDate] = useState<moment.Moment | null>(null);
+  const { handleSubmit, control, reset, getValues } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      primarySurgeon: "",
+      surgicalLocation: "",
+      procedureUnit: "",
+      serviceLine: "",
+      dateOfBirth: null,
+      procedureDate: null
+    }
+  });
 
   const StyledTextField = styled(TextField)({
     "& .MuiOutlinedInput-input": {
@@ -35,18 +46,77 @@ export default function CreateCaseDialog(props: Props) {
     marginTop: "0.313rem"
   });
 
-  const handleDateOfBirthChange = (newValue: moment.Moment | null) => {
-    setDateOfBirth(newValue);
-  };
-
-  const handleProcedureDateChange = (newValue: moment.Moment | null) => {
-    setProcedureDate(newValue);
-  };
+  const onSubmit = (data: object) => console.log("here: ", data);
 
   function handleClose() {
+      reset();
       closeDialog();
-      setDateOfBirth(null);
-      setProcedureDate(null);
+  }
+
+  interface InputControllerProps {
+    id: "firstName" | "lastName" | "primarySurgeon" | "surgicalLocation" | "procedureUnit" | "serviceLine",
+    title: string,
+    placeholder: string
+  }
+
+  interface DateControllerProps {
+    id: "dateOfBirth" | "procedureDate",
+    title: string,
+    placeholder: string
+  }
+
+
+  function InputController(props: InputControllerProps) {
+    const {id, title, placeholder} = props;
+
+    return <Controller
+        name={id}
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+            <React.Fragment>
+                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
+                <StyledTextField {...field} id={id} variant="outlined" placeholder={placeholder} />
+            </React.Fragment>
+        )}
+      />
+  }
+
+  function DateController(props: DateControllerProps) {
+    const {id, title, placeholder} = props;
+    return <Controller
+        name={id}
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+            <React.Fragment>
+                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
+                <DesktopDatePicker
+                    {...field}
+                    components={{ OpenPickerIcon: DateRangeIcon }}
+                    value={field.value}
+                    onChange={field.onChange}
+                    renderInput={({inputProps, ...restParams}) => (
+                        <StyledTextField 
+                            id={id}
+                            inputProps={{
+                                ...inputProps, 
+                                placeholder: placeholder,
+                            }} 
+                            sx={{
+                                svg: { 
+                                    color: "blue.main",
+                                    height: "0.75rem",
+                                    width: "0.75rem"
+                                }
+                            }} 
+                            {...restParams} 
+                        />
+                    )}
+                />
+            </React.Fragment>
+        )}
+      />
   }
 
   return (
@@ -63,81 +133,31 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="firstName" variant="standard">First Name</InputLabel>
-                        <StyledTextField id="firstName" variant="outlined" placeholder="First Name" />
+                        <InputController id="firstName" title="First Name" placeholder="First Name"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="lastName" variant="standard">Last Name</InputLabel>
-                        <StyledTextField id="lastName" variant="outlined" placeholder="Last Name" />
+                        <InputController id="lastName" title="Last Name" placeholder="Last Name"/>
                     </Grid>
                     <Grid item xs={6}>
-                    <InputLabel htmlFor="dateOfBirth" variant="standard">Patient Date of Birth</InputLabel>
-                        <DesktopDatePicker
-                            components={{ OpenPickerIcon: DateRangeIcon }}
-                            value={dateOfBirth}
-                            onChange={handleDateOfBirthChange}
-                            renderInput={({inputProps, ...restParams}) => (
-                                <StyledTextField 
-                                    id="dateOfBirth"
-                                    inputProps={{
-                                        ...inputProps, 
-                                        placeholder: "Patient Date of Birth",
-                                    }} 
-                                    sx={{
-                                        svg: { 
-                                            color: "blue.main",
-                                            height: "0.75rem",
-                                            width: "0.75rem"
-                                        }
-                                    }} 
-                                    {...restParams} 
-                                />
-                            )}
-                        />
+                        <DateController id="dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
                     </Grid>
                 </Grid>
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="primarySurgeon" variant="standard">Primary Surgeon</InputLabel>
-                        <StyledTextField id="primarySurgeon" variant="outlined" placeholder="Primary Surgeon" />
+                        <InputController id="primarySurgeon" title="Primary Surgeon" placeholder="Primary Surgeon"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="surgicalLocation" variant="standard">Surgical Location</InputLabel>
-                        <StyledTextField id="surgicalLocation" variant="outlined" placeholder="Surgical Location" />
+                        <InputController id="surgicalLocation" title="Surgical Location" placeholder="Surgical Location"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="procedureUnit" variant="standard">Procedure Unit</InputLabel>
-                        <StyledTextField id="procedureUnit" variant="outlined" placeholder="Procedure Unit" />
+                        <InputController id="procedureUnit" title="Procedure Unit" placeholder="Procedure Unit"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="serviceLine" variant="standard">Service Line</InputLabel>
-                        <StyledTextField id="serviceLine" variant="outlined" placeholder="Service Line" />
+                        <InputController id="serviceLine" title="Service Line" placeholder="Service Line"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputLabel htmlFor="procedureDate" variant="standard">Procedure Date</InputLabel>
-                        <DesktopDatePicker
-                            components={{ OpenPickerIcon: DateRangeIcon }}
-                            value={procedureDate}
-                            onChange={handleProcedureDateChange}
-                            renderInput={({inputProps, ...restParams}) => (
-                                <StyledTextField 
-                                    id="procedureDate"
-                                    inputProps={{
-                                        ...inputProps, 
-                                        placeholder: "Procedure Date"
-                                    }} 
-                                    sx={{
-                                        svg: { 
-                                            color: "blue.main", 
-                                            height: "0.75rem",
-                                            width: "0.75rem" 
-                                        }
-                                    }} 
-                                    {...restParams} 
-                                />
-                            )}
-                        />
+                        <DateController id="procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>
             </LocalizationProvider>
@@ -152,6 +172,7 @@ export default function CreateCaseDialog(props: Props) {
           <Button 
             variant="contained" 
             startIcon={<Add />}
+            onClick={handleSubmit(onSubmit)}
             sx={{
                 backgroundColor: "green.main",
                 border: 1,
