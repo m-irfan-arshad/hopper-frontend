@@ -46,6 +46,7 @@ export default function CreateCaseDialog(props: Props) {
     marginTop: "0.313rem"
   });
 
+  //TODO: create case on submit
   const onSubmit = (data: object) => console.log("here: ", data);
 
   function handleClose() {
@@ -65,10 +66,8 @@ export default function CreateCaseDialog(props: Props) {
     placeholder: string
   }
 
-
   function InputController(props: InputControllerProps) {
     const {id, title, placeholder} = props;
-
     return <Controller
         name={id}
         control={control}
