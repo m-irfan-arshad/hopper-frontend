@@ -1,3 +1,4 @@
+import type { NextApiResponse } from 'next'
 import { SingleCase } from '../reference';
 import { Prisma, cases, patients } from '@prisma/client';
 import moment from "moment";
@@ -116,4 +117,24 @@ export function casesFormatter (params: CasesFormatterProps): any {
           }
     }
     return newCase
+}
+
+export function APIErrorHandler(err: any, res: NextApiResponse) {
+    if (typeof (err) === 'string') {
+
+        const is404 = err.toLowerCase().endsWith('not found');
+        const statusCode = is404 ? 404 : 400;
+        return res.status(statusCode).json({ message: err });
+    }
+
+    if (typeof (err) === 'object') {
+        const error = err.message;
+
+        const isInvalidParameter = error.toLowerCase().indexOf('got invalid value');
+        const statusCode = isInvalidParameter ? 400 : 500;
+        return res.status(statusCode).json({ message: error });
+    }
+
+    // default to 500 server error
+    return res.status(500).json({ message: err.message });
 }
