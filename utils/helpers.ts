@@ -140,7 +140,7 @@ export function APIErrorHandler(err: any, res: NextApiResponse) {
         }
 
         const statusCode = isInvalidParameter ? 400 : 500;
-        return res.status(statusCode).json({ message: 'Something went wrong with the following values: ' + invalidParameters }); //make this error about invalid/missing required values and then list off the param it has a problem with?
+        return res.status(statusCode).json({ message: 'Something went wrong with the following values: ' + invalidParameters });
     }
 
     // default to 500 server error
