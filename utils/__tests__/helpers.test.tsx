@@ -108,7 +108,7 @@ describe("Utils", () => {
     test("APIErrorHandler 400", () => {
         const res = httpMock.createResponse({});
 
-        const result = APIErrorHandler({message: 'got invalid value'}, res);
+        const result = APIErrorHandler({message: 'got invalid value argument providerId:'}, res);
         
         expect(result).toEqual(res.status(400).json({ message: 'got invalid value' }));    
     });

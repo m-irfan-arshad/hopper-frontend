@@ -1,6 +1,7 @@
 import type { NextApiResponse } from 'next'
 import { SingleCase } from '../reference';
 import { Prisma, cases, patients } from '@prisma/client';
+import * as R from 'ramda';
 import moment from "moment";
 
 interface DashboardQueryParams { 
@@ -129,10 +130,17 @@ export function APIErrorHandler(err: any, res: NextApiResponse) {
 
     if (typeof (err) === 'object') {
         const error = err.message;
+        let invalidParameters: Array<string> = [];
 
         const isInvalidParameter = error.toLowerCase().indexOf('got invalid value');
+        const numberOfInvalidParameters = R.clone(error).toLowerCase().match(/argument/g)? R.clone(error).toLowerCase().match(/argument/g).length : 0;
+
+        for (let i = 0; i < numberOfInvalidParameters; i++) {
+            invalidParameters = invalidParameters + error.toLowerCase().split('argument')[i + 1].split(':')[0];
+        }
+
         const statusCode = isInvalidParameter ? 400 : 500;
-        return res.status(statusCode).json({ message: error });
+        return res.status(statusCode).json({ message: 'Something went wrong with the following values: ' + invalidParameters }); //make this error about invalid/missing required values and then list off the param it has a problem with?
     }
 
     // default to 500 server error
