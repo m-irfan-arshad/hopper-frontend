@@ -130,17 +130,20 @@ export function APIErrorHandler(err: any, res: NextApiResponse) {
 
     if (typeof (err) === 'object') {
         const error = err.message;
-        let invalidParameters: Array<string> = [];
+        console.log('err',err.message);
+        let invalidParameters: string = '';
 
-        const isInvalidParameter = error.toLowerCase().indexOf('got invalid value');
+        const isInvalidParameter = R.clone(error).toLowerCase().indexOf('got invalid value');
         const numberOfInvalidParameters = R.clone(error).toLowerCase().match(/argument/g)? R.clone(error).toLowerCase().match(/argument/g).length : 0;
 
         for (let i = 0; i < numberOfInvalidParameters; i++) {
-            invalidParameters = invalidParameters + error.toLowerCase().split('argument')[i + 1].split(':')[0];
+            invalidParameters = invalidParameters.concat(
+                `${error.split('Argument')[i + 1].split(':')[0]}${(i +1) === numberOfInvalidParameters ? '' : ','}`
+            );
         }
 
         const statusCode = isInvalidParameter ? 400 : 500;
-        return res.status(statusCode).json({ message: 'Something went wrong with the following values: ' + invalidParameters });
+        return res.status(statusCode).json({ message: 'Something went wrong with the following values:' + invalidParameters });
     }
 
     // default to 500 server error
