@@ -62,6 +62,4 @@ model provider_locations {
   id             Int      @id @default(autoincrement()) @map("id")
   locationId     Int      @map("location_id")
   providerId     Int      @map("provider_id")
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
 }

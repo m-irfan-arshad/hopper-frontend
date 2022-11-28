@@ -15,8 +15,6 @@ CREATE TABLE "provider_locations" (
     "id" SERIAL NOT NULL,
     "location_id" INTEGER NOT NULL,
     "provider_id" INTEGER NOT NULL,
-    "create_time" TIMESTAMP(6),
-    "update_time" TIMESTAMP(6),
 
     CONSTRAINT "provider_locations_pkey" PRIMARY KEY ("id")
 );
