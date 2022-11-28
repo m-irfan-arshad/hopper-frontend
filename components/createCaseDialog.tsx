@@ -16,7 +16,12 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from "moment";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, Resolver } from "react-hook-form";
+import { useCreateCaseHook } from '../utils/hooks';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+
 
 
 interface Props {
@@ -26,18 +31,7 @@ interface Props {
 
 export default function CreateCaseDialog(props: Props) {
   const {open, closeDialog} = props;
-  const { handleSubmit, control, reset, getValues } = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      primarySurgeon: "",
-      surgicalLocation: "",
-      procedureUnit: "",
-      serviceLine: "",
-      dateOfBirth: null,
-      procedureDate: null
-    }
-  });
+  const {mutate} = useCreateCaseHook()
 
   const StyledTextField = styled(TextField)({
     "& .MuiOutlinedInput-input": {
@@ -46,8 +40,10 @@ export default function CreateCaseDialog(props: Props) {
     marginTop: "0.313rem"
   });
 
-  //TODO: create case on submit
-  const onSubmit = (data: object) => console.log("here: ", data);
+  const onSubmit = async (data: object) => {
+    await mutate(data)
+    handleClose()
+  };
 
   function handleClose() {
       reset();
@@ -55,13 +51,13 @@ export default function CreateCaseDialog(props: Props) {
   }
 
   interface InputControllerProps {
-    id: "firstName" | "lastName" | "primarySurgeon" | "surgicalLocation" | "procedureUnit" | "serviceLine",
+    id: any,
     title: string,
     placeholder: string
   }
 
   interface DateControllerProps {
-    id: "dateOfBirth" | "procedureDate",
+    id: any,
     title: string,
     placeholder: string
   }
@@ -118,6 +114,39 @@ export default function CreateCaseDialog(props: Props) {
       />
   }
 
+  const schema = yup.object().shape({
+    patient: yup.object().shape({
+        firstName: yup.string().required(),
+        lastName: yup.string().required(),
+        dateOfBirth: yup.date().required(),
+    }),
+    case: yup.object().shape({
+        primarySurgeon: yup.string().required(),
+        surgicalLocation: yup.string().required(),
+        procedureUnit: yup.string().required(),
+        serviceLine: yup.string().required(),
+        procedureDate: yup.date().required(),
+    })
+  });
+
+  const { handleSubmit, control, reset } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      patient: {
+        firstName: "",
+        lastName: "",
+        dateOfBirth: null,
+      },
+      case: {
+        primarySurgeon: "",
+        surgicalLocation: "",
+        procedureUnit: "",
+        serviceLine: "",
+        procedureDate: null
+      }
+    }
+  });
+
   return (
       <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <DialogTitle 
@@ -132,31 +161,31 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <InputController id="firstName" title="First Name" placeholder="First Name"/>
+                        <InputController id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="lastName" title="Last Name" placeholder="Last Name"/>
+                        <InputController id="patient.lastName" title="Last Name" placeholder="Last Name"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController id="dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
+                        <DateController id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
                     </Grid>
                 </Grid>
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <InputController id="primarySurgeon" title="Primary Surgeon" placeholder="Primary Surgeon"/>
+                        <InputController id="case.primarySurgeon" title="Primary Surgeon" placeholder="Primary Surgeon"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="surgicalLocation" title="Surgical Location" placeholder="Surgical Location"/>
+                        <InputController id="case.surgicalLocation" title="Surgical Location" placeholder="Surgical Location"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="procedureUnit" title="Procedure Unit" placeholder="Procedure Unit"/>
+                        <InputController id="case.procedureUnit" title="Procedure Unit" placeholder="Procedure Unit"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="serviceLine" title="Service Line" placeholder="Service Line"/>
+                        <InputController id="case.serviceLine" title="Service Line" placeholder="Service Line"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController id="procedureDate" title="Procedure Date" placeholder="Procedure Date" />
+                        <DateController id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>
             </LocalizationProvider>
