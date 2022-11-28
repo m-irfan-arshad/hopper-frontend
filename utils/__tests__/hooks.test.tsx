@@ -177,13 +177,13 @@ describe("Hooks", () => {
             json: () => Promise.resolve(mockLocationData),
         }));
         
-        const { result } = renderHook(() => useGetLocationOptionsHook([1,2]), { wrapper });
+        const { result } = renderHook(() => useGetLocationOptionsHook(2), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
         });
         
         expect(result.current.data).toEqual(mockLocationData);
-        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions?locationIds=1,2`);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions?providerId=2`);
     });
 });

@@ -1,4 +1,6 @@
-import { formatDashboardQueryParams, formatDate } from "../helpers";
+import type { NextApiResponse } from 'next'
+import { formatDashboardQueryParams, formatDate, APIErrorHandler } from "../helpers";
+import httpMock from 'node-mocks-http';
 
 describe("Utils", () => {
     test("formatDashboardQueryParams with case id", async() => {
@@ -93,5 +95,29 @@ describe("Utils", () => {
         const result = formatDate(new Date("1990-10-5"));
         
         expect(result).toEqual("10/05/1990");    
+    });
+
+    test("APIErrorHandler 404", () => {
+        const res = httpMock.createResponse({});
+
+        const result = APIErrorHandler('not found', res);
+        
+        expect(result).toEqual(res.status(404).json({ message: 'not found' }));    
+    });
+
+    test("APIErrorHandler 400", () => {
+        const res = httpMock.createResponse({});
+
+        const result = APIErrorHandler({message: 'got invalid value Argument providerId:'}, res);
+        
+        expect(result).toEqual(res.status(400).json({ message: 'got invalid value' }));    
+    });
+
+    test("APIErrorHandler 500", () => {
+        const res = httpMock.createResponse({});
+
+        const result = APIErrorHandler({ message: 'weird message'}, res);
+        
+        expect(result).toEqual(res.status(500).json({ message: 'weird message' }));    
     });
 });
