@@ -1,7 +1,7 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import moment from "moment";
 import Dashboard from "../dashboard";
-import { useGetCasesHook, useUpdateCaseHook } from '../../utils/hooks';
+import { useGetCasesHook, useUpdateCaseHook, useCreateCaseHook } from '../../utils/hooks';
 
 jest.mock("../../utils/hooks");
 const mockData = [
@@ -65,6 +65,9 @@ describe("Dashboard", () => {
 
     const mockedUseUpdateCaseHook = useUpdateCaseHook as jest.Mock<any>; 
     mockedUseUpdateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
+
+    const mockedUseCreateCaseHook = useCreateCaseHook as jest.Mock<any>; 
+    mockedUseCreateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
 
     test("renders the dashboard", async () => {
         const { getByRole, } = render(
