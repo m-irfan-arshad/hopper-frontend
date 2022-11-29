@@ -15,9 +15,9 @@ test.describe('Landing Page', () => {
         const { birthDay } = createPatientCase();
         await createCaseButton.click();
         await expect(patientInformation).toBeVisible();
-        await page.locator('#firstName').type(firstName);
-        await page.locator('#lastName').type(lastName);
-        await page.locator('#dateOfBirth').type(birthDay);
+        await page.locator('#patient.firstName').type(firstName);
+        await page.locator('#patient.lastName').type(lastName);
+        await page.locator('#patient.dateOfBirth').type(birthDay);
         await cancelButton.click();
         await expect(patientInformation).toBeHidden();
     });
