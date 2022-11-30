@@ -35,3 +35,31 @@ model patients {
   updateTime     DateTime? @map("update_time") @db.Timestamp(6)
   cases          cases[]
 }
+
+model providers {
+  providerId     Int       @id @default(autoincrement()) @map("provider_id")
+  fhirResourceId String?   @unique @map("fhir_resource_id")
+  firstName      String?   @map("first_name")
+  lastName       String?   @map("last_name")
+  locationName   String?   @map("location_name")
+  address        String?
+  serviceLine    String?   @map("service_line")
+  email          String?
+  createTime     DateTime? @map("create_time") @db.Timestamp(6)
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+}
+
+model locations {
+  locationId     Int       @id @default(autoincrement()) @map("location_id")
+  fhirResourceId String?   @unique @map("fhir_resource_id")
+  locationName   String?   @map("location_name")
+  procedureUnits String[]  @map("procedure_units")
+  createTime     DateTime? @map("create_time") @db.Timestamp(6)
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+}
+
+model provider_locations {
+  id             Int      @id @default(autoincrement()) @map("id")
+  locationId     Int      @map("location_id")
+  providerId     Int      @map("provider_id")
+}

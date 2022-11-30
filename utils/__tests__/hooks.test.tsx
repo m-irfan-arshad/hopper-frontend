@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { useGetCasesHook } from "../hooks";
+import { useGetCasesHook, useGetProviderOptionsHook, useGetLocationOptionsHook } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
 
@@ -7,7 +7,7 @@ interface Props {
     children: React.ReactNode
 }
 
-const mockData = [
+const mockCaseData = [
     {
         caseId: 'caseId',
         procedureDate: moment('10/10/2022').utc().format(),
@@ -34,8 +34,52 @@ const mockData = [
     }
 ]; 
 
+const mockProviderData = [
+    {
+        providerId: 1,
+        fhirResourceId: "testId",
+        firstName: 'firstName',
+        lastName: 'lastName',
+        locationName: 'NYU Langone',
+        address: 'address',
+        serviceLine: 'General Surgery',
+        email: 'fake@email.com',
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        providerId: 2,
+        fhirResourceId: "testId2",
+        firstName: 'firstName2',
+        lastName: 'lastName2',
+        locationName: 'NYU Langone2',
+        address: 'address2',
+        serviceLine: 'General Surgery2',
+        email: 'fake2@email.com',
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+]; 
+
+const mockLocationData = [
+    {
+        locationId: 1,
+        fhirResourceId: 'fhirResourceId',
+        locationName: 'locationName',
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        locationId: 2,
+        fhirResourceId: 'fhirResourceId2',
+        locationName: 'locationName2',
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+]; 
+
 global.fetch = jest.fn().mockImplementation(() =>  Promise.resolve({
-    json: () => Promise.resolve(mockData),
+    json: () => Promise.resolve(mockCaseData),
 }));
 
 jest.spyOn(Date, 'now').mockReturnValue(new Date('10/17/2022').getTime());
@@ -53,7 +97,7 @@ describe("Hooks", () => {
         </QueryClientProvider>
     );
 
-    test("call query with next month, asc order, and case id value", async() => {
+    test("call getCasesHook with next month, asc order, and case id value", async() => {
         const { result } = renderHook(() => useGetCasesHook('Next month', 'Oldest - Newest', [{"value": "true", "id": "vendorConfirmation"}], '1234', '1'), { wrapper });
 
         await waitFor(() => {
@@ -69,11 +113,11 @@ describe("Hooks", () => {
             vendorConfirmation: 'Incomplete'
         });
 
-        expect(result.current.data).toEqual(mockData);
+        expect(result.current.data).toEqual(mockCaseData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCases?${queryString}`);
     });
 
-    test("call query with this month, desc order, and only first name value", async() => {
+    test("call getCasesHook with this month, desc order, and only first name value", async() => {
         const { result } = renderHook(() => useGetCasesHook('This month', 'Newest - Oldest', [{"value": "true", "id": "vendorConfirmation"}], 'Bob', '1'), { wrapper });
 
         await waitFor(() => {
@@ -89,11 +133,11 @@ describe("Hooks", () => {
             vendorConfirmation: 'Incomplete'
         });
 
-        expect(result.current.data).toEqual(mockData);
+        expect(result.current.data).toEqual(mockCaseData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCases?${queryString}`);
     });
 
-    test("call query with next quarter, desc order, and both first and last name", async() => {
+    test("call getCasesHook with next quarter, desc order, and both first and last name", async() => {
         const { result } = renderHook(() => useGetCasesHook('Next quarter', 'Newest - Oldest', [{"value": "true", "id": "vendorConfirmation"}], 'Bob Billy', '1'), { wrapper });
 
         await waitFor(() => {
@@ -109,7 +153,37 @@ describe("Hooks", () => {
             vendorConfirmation: 'Incomplete'
         });
 
-        expect(result.current.data).toEqual(mockData);
+        expect(result.current.data).toEqual(mockCaseData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCases?${queryString}`);
+    });
+
+    test("call getProviderOptionsHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockProviderData),
+        }));
+        
+        const { result } = renderHook(() => useGetProviderOptionsHook(), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+
+        expect(result.current.data).toEqual(mockProviderData);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getProviderOptions`);
+    });
+
+    test("call getLocationOptionsHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockLocationData),
+        }));
+        
+        const { result } = renderHook(() => useGetLocationOptionsHook(2), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockLocationData);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions?providerId=2`);
     });
 });
