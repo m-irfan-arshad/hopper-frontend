@@ -42,6 +42,7 @@ export default function TopNavBar() {
                     {`Welcome, ${user.name}`}
                     </Typography>
                     <Typography variant="caption" color="white.main" sx={{marginLeft: "1rem"}}>
+                      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                        <a href="/api/auth/logout">Logout</a>
                     </Typography>
                     </>
