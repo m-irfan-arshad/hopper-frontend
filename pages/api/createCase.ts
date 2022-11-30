@@ -5,10 +5,10 @@ import { validateParameters } from '../../utils/helpers';
 const requiredParams = ['fhirResourceId', 'patientId', 'procedureDate', 'providerName', 'locationName', 'priorAuthorization', 'vendorConfirmation'];
 
 export default async function createCaseHandler(req: NextApiRequest, res: NextApiResponse) {
-  const errorMessage = validateParameters(requiredParams, req.body, res);
+  const invalidParamsMessage = validateParameters(requiredParams, req.body, res);
 
-  if (errorMessage) {
-    return errorMessage
+  if (invalidParamsMessage) {
+    return invalidParamsMessage
   }
 
   try {

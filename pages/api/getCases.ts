@@ -8,10 +8,10 @@ import { validateParameters } from '../../utils/helpers';
 const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
-  const errorMessage = validateParameters(requiredParams, req.query, res);
+  const invalidParamsMessage = validateParameters(requiredParams, req.query, res);
 
-  if (errorMessage) {
-    return errorMessage
+  if (invalidParamsMessage) {
+    return invalidParamsMessage
   }
 
   try {
