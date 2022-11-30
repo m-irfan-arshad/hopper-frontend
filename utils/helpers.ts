@@ -29,13 +29,13 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
     
     let filterObject: FilterObject = {
         procedureDate: {
-            gte: new Date(dateRangeStart),
-            lte: new Date(dateRangeEnd)
+            gte: moment(dateRangeStart).startOf("day").toDate(),
+            lte: moment(dateRangeEnd).endOf("day").toDate()
         },
         ...(priorAuthorization === "Incomplete") && {priorAuthorization: {equals: priorAuthorization}},
         ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
     }
-    
+
     if (!searchValue) {
         return filterObject
     }
