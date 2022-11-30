@@ -3,8 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { formatDashboardQueryParams,casesFormatter } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
 import { paginationCount } from '../../reference';
+import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 
-export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+export default withApiAuthRequired(async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+  const session = getSession(req, res);
+
   const dashboardParams = {
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
@@ -39,4 +42,4 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
     }), 
     count: count
   })
-}
+})

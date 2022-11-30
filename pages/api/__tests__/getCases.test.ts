@@ -6,6 +6,11 @@
  import { prismaMock } from '../../../prisma/singleton'
  import getCasesHandler from '../getCases'
 
+ jest.mock('@auth0/nextjs-auth0', () => ({
+        withApiAuthRequired: jest.fn((args) => args),
+        getSession: jest.fn()
+    }));
+
  describe("getCases API", () => {
     const urlParams = new URLSearchParams({
         dateRangeStart: new Date("2022-10-13T14:04:06.000Z").toUTCString(), 
