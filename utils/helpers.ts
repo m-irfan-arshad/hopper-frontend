@@ -6,8 +6,8 @@ interface DashboardQueryParams {
     searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
-    priorAuthorization: string;
-    vendorConfirmation: string;
+    priorAuthorization?: string;
+    vendorConfirmation?: string;
 }
 
 interface CasesFormatterProps {
