@@ -39,4 +39,15 @@ import updateCaseHandler from '../updateCase';
         expect(data.providerName).toEqual("testProviderName")
         expect(prismaMock.cases.update).toBeCalledTimes(1)
     })
+
+    test('should error out', async () => {
+        req = httpMock.createRequest({
+            url: "/api/createCase"
+        });
+        res = httpMock.createResponse({});
+
+        await updateCaseHandler(req, res)
+        const data = res._getJSONData()
+        expect(data.message).toEqual('The following required parameters are missing: caseId')
+    })
 });

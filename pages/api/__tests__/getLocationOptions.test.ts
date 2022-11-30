@@ -116,4 +116,15 @@
         expect(prismaMock.provider_locations.findMany).toBeCalledWith(params);
         expect(prismaMock.locations.findMany).toBeCalledTimes(0);
     });
+
+    test('should error out', async () => {
+        const req = httpMock.createRequest({
+            url: "/api/getLocationOptions"
+        });
+        const res = httpMock.createResponse({});
+
+        await getLocationOptionsHandler(req, res)
+        const data = res._getJSONData()
+        expect(data.message).toEqual('The following required parameters are missing: providerId')
+    })
 });

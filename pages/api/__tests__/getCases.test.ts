@@ -17,7 +17,9 @@
         dateRangeEnd : new Date("2022-10-31T23:59:59.000Z").toUTCString(),
         orderBy: "asc",
         searchValue: "searchValue",
-        page: '1'
+        page: '1',
+        vendorConfirmation: "Incomplete",
+        priorAuthorization: "Incomplete"
     });
 
     let req: NextApiRequest = httpMock.createRequest({
@@ -33,10 +35,10 @@
             procedureDate: new Date(),
             providerName: "testProviderName",
             locationName: "testLocationName",
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
             createTime: new Date(),
             updateTime: new Date(),
-            priorAuthorization: "incomplete",
-            vendorConfirmation: "incomplete",
         }]
 
         const params = {
@@ -45,6 +47,12 @@
                     // eventually this should take in a date range parameter from client instead
                     gte: new Date("2022-10-13T14:04:06.000Z"),
                     lte: new Date("2022-10-31T23:59:59.000Z")
+                },
+                priorAuthorization: {
+                    equals: 'Incomplete'
+                },
+                vendorConfirmation: {
+                    equals: 'Incomplete'
                 },
                 patients: {
                     OR: [
@@ -75,8 +83,8 @@
             }
         }
 
-        prismaMock.cases.findMany.mockResolvedValue(cases)
-        prismaMock.cases.count.mockResolvedValue(1)
+        prismaMock.cases.findMany.mockResolvedValueOnce(cases)
+        prismaMock.cases.count.mockResolvedValueOnce(1)
 
         await getCasesHandler(req, res)
         const data = res._getJSONData()
@@ -86,5 +94,16 @@
         expect(data.count).toEqual(1)
         expect(prismaMock.cases.findMany).toBeCalledTimes(1)
         expect(prismaMock.cases.findMany).toBeCalledWith(params)
+    })
+
+    test('should error out', async () => {
+        req = httpMock.createRequest({
+            url: "/api/getCases"
+        });
+        res = httpMock.createResponse({});
+
+        await getCasesHandler(req, res)
+        const data = res._getJSONData();
+        expect(data.message).toEqual('The following required parameters are missing: dateRangeStart dateRangeEnd page orderBy')
     })
 });
