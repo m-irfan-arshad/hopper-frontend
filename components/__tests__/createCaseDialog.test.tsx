@@ -3,6 +3,11 @@ import CreateCaseDialog from "../createCaseDialog";
 import * as R from 'ramda';
 import moment from "moment";
 
+jest.mock('@tanstack/react-query', () => ({
+  useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+  useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
+  }));
+
 describe("CreateCaseDialog", () => {
   const props = {
     open: true,
