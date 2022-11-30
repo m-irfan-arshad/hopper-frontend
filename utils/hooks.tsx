@@ -49,9 +49,9 @@ export function useGetProviderOptionsHook() {
     return useQuery(["getProviderOptions"], async () => (await fetch("/api/getProviderOptions")).json());
 }
 
-export function useGetLocationOptionsHook(locationIds: number[]) {
-    return useQuery(["getLocationOptions", locationIds], async () =>  
-        (await fetch(`/api/getLocationOptions${locationIds ? `?locationIds=${locationIds}` : ''}`)).json()
+export function useGetLocationOptionsHook(providerId: number) {
+    return useQuery(["getLocationOptions", providerId], async () =>  
+        (await fetch(`/api/getLocationOptions?providerId=${providerId}`)).json()
     );
 }
 

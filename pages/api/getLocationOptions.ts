@@ -1,16 +1,33 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
+import { APIErrorHandler } from '../../utils/helpers';
 
 export default async function getLocationOptionsHandler(req: NextApiRequest, res: NextApiResponse) {
-    const locationIds = req.query['locationIds'] && (<string>req.query['locationIds']).split(',').map(locationId => {
-        return parseInt(locationId);
-    });
+    try {
+        const locationProviderRelations = await prisma.provider_locations.findMany({
+            where: {
+                providerId: {
+                    equals: parseInt(<string>req.query['providerId'])
+                }
+            }
+        });
 
-    const locations = await prisma.locations.findMany({
-        where: {
-            locationId: {in: locationIds || []},
-        }
-    });
+        if (locationProviderRelations.length > 0) {
+            const locationIds = locationProviderRelations.map(relation => {
+                return relation.locationId;
+            });
 
-  res.json(locations)
+            const locations = await prisma.locations.findMany({
+                where: {
+                    locationId: {in: locationIds}
+                }
+            })
+
+            res.json(locations)
+        } else {
+            res.json([])
+        } 
+    } catch(err) {
+        APIErrorHandler(err, res)
+    }
 }
