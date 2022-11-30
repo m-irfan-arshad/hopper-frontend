@@ -17,6 +17,7 @@
     "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "1.9.2",
     "@date-io/moment": "2.13.1",
     "@emotion/react": "11.9.0",
     "@emotion/styled": "11.8.1",
