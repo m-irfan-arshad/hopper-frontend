@@ -1,6 +1,7 @@
 import React from "react";
 import { AppBar, styled, Typography, Box, IconButton } from '@mui/material';
 import { NotificationImportant, AccountCircle } from "@mui/icons-material";
+import { useUser } from '@auth0/nextjs-auth0';
 import Image from 'next/image';
 import logo from '../medtelLogo.svg';
 
@@ -10,6 +11,8 @@ export default function TopNavBar() {
         justifyContent: "space-between",
         alignItems: "center"
     })
+
+    const { user, error, isLoading } = useUser();
 
     return (
           <AppBar position="static" sx={{
@@ -32,18 +35,18 @@ export default function TopNavBar() {
                 <NotificationImportant sx={{
                     marginRight: "1.563rem"
                 }}/>
-                <Typography variant="caption" color="white.main">
-                  Welcome, Ben
-                </Typography>
-              <IconButton
-                size="large"
-                aria-label="current user account"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
+                {
+                  user && (
+                    <>
+                    <Typography variant="caption" color="white.main">
+                    {`Welcome, ${user.name}`}
+                    </Typography>
+                    <Typography variant="caption" color="white.main" sx={{marginLeft: "1rem"}}>
+                       <a href="/api/auth/logout">Logout</a>
+                    </Typography>
+                    </>
+                  )
+                }
               </StyledBox>
             </StyledBox>
           </AppBar>
