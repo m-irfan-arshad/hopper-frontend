@@ -89,30 +89,30 @@ jobs:
           --set-env-vars "AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID" \
           --set-env-vars "AUTH0_SECRET=$AUTH0_SECRET" \
           --set-env-vars "AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET"
-  e2e-test:
-    needs: [deploy-image-to-cloud-run]
-    runs-on: ubuntu-latest
+  # e2e-test:
+  #   needs: [deploy-image-to-cloud-run]
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v3
         
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16.x'
+  #   - name: Setup Node
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: '16.x'
           
-    - name: Install dependencies
-      run: |
-        npm install
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    - name: E2E tests
-      run: |
-        npm run test:e2e
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: playwright-report
-        path: playwright-report
+  #   - name: Install dependencies
+  #     run: |
+  #       npm install
+  #   - name: Install Playwright
+  #     run: npx playwright install --with-deps
+  #   - name: E2E tests
+  #     run: |
+  #       npm run test:e2e
+  #   - name: Upload test results
+  #     if: always()
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: playwright-report
+  #       path: playwright-report
