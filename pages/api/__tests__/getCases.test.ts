@@ -25,10 +25,6 @@
     });
     let res: any = httpMock.createResponse({});
 
-    // test('should return true', async () => {
-    //     return true
-    // })
-
     test('should get cases', async () => {
         let cases = [{
             caseId: 1,
