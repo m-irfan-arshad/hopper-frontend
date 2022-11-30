@@ -1,6 +1,6 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { formatDashboardQueryParams, formatDate, APIErrorHandler } from "../helpers";
+import { formatDashboardQueryParams, formatDate, validateParameters } from "../helpers";
 import httpMock from 'node-mocks-http';
 
 describe("Utils", () => {
@@ -98,27 +98,19 @@ describe("Utils", () => {
         expect(result).toEqual("10/05/1990");    
     });
 
-    test("APIErrorHandler 404", () => {
+    test("validateParameters return invalid parameters", () => {
         const res = httpMock.createResponse({});
 
-        const result = APIErrorHandler('not found', res);
+        const result = validateParameters(['providerId', 'caseId'], {'providerId': 'value', 'key2': 'value2'}, res);
         
-        expect(result).toEqual(res.status(404).json({ message: 'not found' }));    
+        expect(result).toEqual(res.status(400).json({ message: 'The following required parameters are missing:' }));    
     });
 
-    test("APIErrorHandler 400", () => {
+    test("validateParameters return nothing wrong", () => {
         const res = httpMock.createResponse({});
 
-        const result = APIErrorHandler({message: 'got invalid value Argument providerId:'}, res);
+        const result = validateParameters(['providerId', 'caseId'], {'providerId': 'value', 'caseId': 'value2'}, res);
         
-        expect(result).toEqual(res.status(400).json({ message: 'got invalid value' }));    
-    });
-
-    test("APIErrorHandler 500", () => {
-        const res = httpMock.createResponse({});
-
-        const result = APIErrorHandler({ message: 'weird message'}, res);
-        
-        expect(result).toEqual(res.status(500).json({ message: 'weird message' }));    
+        expect(result).toEqual(null);    
     });
 });

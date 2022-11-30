@@ -34,7 +34,6 @@
         updateTime: new Date(),
     }
 
-
     let req: NextApiRequest = httpMock.createRequest({
         url: "/api/createCase",
         body: {case: testCase, patient: testPatient}
@@ -51,5 +50,16 @@
         expect(data.patientId).toEqual(1)
         expect(data.providerName).toEqual("testProviderName")
         expect(prismaMock.cases.create).toBeCalledTimes(1)
+    })
+
+    test('should error out', async () => {
+        req = httpMock.createRequest({
+            url: "/api/createCase"
+        });
+        res = httpMock.createResponse({});
+
+        await createCaseHander(req, res)
+        const data = res._getJSONData()
+        expect(data.message).toEqual('The following required parameters are missing: fhirResourceId patientId procedureDate providerName locationName priorAuthorization vendorConfirmation')
     })
 });
