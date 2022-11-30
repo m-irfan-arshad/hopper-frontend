@@ -1,8 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
-import { APIErrorHandler } from '../../utils/helpers';
+import { validateParameters } from '../../utils/helpers';
+
+const requiredParams = ['providerId'];
 
 export default async function getLocationOptionsHandler(req: NextApiRequest, res: NextApiResponse) {
+    const errorMessage = validateParameters(requiredParams, req.query, res);
+
+    if (errorMessage) {
+      return errorMessage
+    }
+
     try {
         const locationProviderRelations = await prisma.provider_locations.findMany({
             where: {
@@ -12,7 +20,7 @@ export default async function getLocationOptionsHandler(req: NextApiRequest, res
             }
         });
 
-        if (locationProviderRelations.length > 0) {
+        if (locationProviderRelations && locationProviderRelations.length > 0) {
             const locationIds = locationProviderRelations.map(relation => {
                 return relation.locationId;
             });
@@ -27,7 +35,8 @@ export default async function getLocationOptionsHandler(req: NextApiRequest, res
         } else {
             res.json([])
         } 
-    } catch(err) {
-        APIErrorHandler(err, res)
+    } 
+    catch(err) {
+        res.status(500).json({ message: err });
     }
 }

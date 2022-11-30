@@ -1,7 +1,6 @@
 import type { NextApiResponse } from 'next'
-import { SingleCase } from '../reference';
+import { SingleCase, APIParameters } from '../reference';
 import { Prisma, cases, patients } from '@prisma/client';
-import * as R from 'ramda';
 import moment from "moment";
 
 interface DashboardQueryParams { 
@@ -120,32 +119,15 @@ export function casesFormatter (params: CasesFormatterProps): any {
     return newCase
 }
 
-export function APIErrorHandler(err: any, res: NextApiResponse) {
-    if (typeof (err) === 'string') {
-
-        const is404 = err.toLowerCase().endsWith('not found');
-        const statusCode = is404 ? 404 : 400;
-        return res.status(statusCode).json({ message: err });
-    }
-
-    if (typeof (err) === 'object') {
-        const error = err.message;
-        console.log('err',err.message);
-        let invalidParameters: string = '';
-
-        const isInvalidParameter = R.clone(error).toLowerCase().indexOf('got invalid value');
-        const numberOfInvalidParameters = R.clone(error).toLowerCase().match(/argument/g)? R.clone(error).toLowerCase().match(/argument/g).length : 0;
-
-        for (let i = 0; i < numberOfInvalidParameters; i++) {
-            invalidParameters = invalidParameters.concat(
-                `${error.split('Argument')[i + 1].split(':')[0]}${(i +1) === numberOfInvalidParameters ? '' : ','}`
-            );
+export function validateParameters(requiredParams: Array<string>, inputtedParams: APIParameters, res: NextApiResponse) {
+    const invalidParameters = requiredParams.reduce(function(acc: any, key: string) {
+        if (!inputtedParams[key]) {
+            return acc + ' ' + key;
         }
-
-        const statusCode = isInvalidParameter ? 400 : 500;
-        return res.status(statusCode).json({ message: 'Something went wrong with the following values:' + invalidParameters });
-    }
-
-    // default to 500 server error
-    return res.status(500).json({ message: err.message });
+        return acc;
+    }, []);
+    if (invalidParameters.length > 0) {
+        return res.status(400).json({ message: 'The following required parameters are missing:' + invalidParameters });
+    } 
+    return null;
 }

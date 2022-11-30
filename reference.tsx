@@ -91,6 +91,10 @@ export interface SingleCase extends Omit<cases, 'priorAuthorization' | 'vendorCo
     }
 }
 
+export interface APIParameters {
+  [key: string]: string | string[]
+}
+
 export const caseStepMappings = {
   priorAuthorization: "Prior Authorization",
   vendorConfirmation: "Vendor Confirmation"
