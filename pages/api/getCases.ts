@@ -5,7 +5,7 @@ import prisma from '../../prisma/clientInstantiation';
 import { paginationCount } from '../../reference';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
-const requiredParams = ['providerId'];
+const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
 export default withApiAuthRequired(async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
   const invalidParamsMessage = validateParameters(requiredParams, req.query, res);
