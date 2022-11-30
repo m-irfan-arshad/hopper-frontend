@@ -5,7 +5,7 @@ import prisma from '../../prisma/clientInstantiation';
 import { paginationCount } from '../../reference';
 import { validateParameters } from '../../utils/helpers';
 
-const requiredParams = ['searchValue', 'dateRangeStart', 'dateRangeEnd', 'vendorConfirmation', 'priorAuthorization', 'page', 'orderBy'];
+const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
 export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
   const errorMessage = validateParameters(requiredParams, req.query, res);

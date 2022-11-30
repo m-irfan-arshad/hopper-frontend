@@ -99,6 +99,6 @@
 
         await getCasesHandler(req, res)
         const data = res._getJSONData();
-        expect(data.message).toEqual('The following required parameters are missing: searchValue dateRangeStart dateRangeEnd vendorConfirmation priorAuthorization page orderBy')
+        expect(data.message).toEqual('The following required parameters are missing: dateRangeStart dateRangeEnd page orderBy')
     })
 });
