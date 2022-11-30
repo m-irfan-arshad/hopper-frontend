@@ -85,9 +85,9 @@ jobs:
           --region $CLOUD_RUN_REGION \
           --allow-unauthenticated \
           --quiet \
-          --set-env-vars "HOPPER_PASSWORD=$HOPPER_PASSWORD"
-          --set-env-vars "AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID"
-          --set-env-vars "AUTH0_SECRET=$AUTH0_SECRET"
+          --set-env-vars "HOPPER_PASSWORD=$HOPPER_PASSWORD" \
+          --set-env-vars "AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID" \
+          --set-env-vars "AUTH0_SECRET=$AUTH0_SECRET" \
           --set-env-vars "AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET"
   e2e-test:
     needs: [deploy-image-to-cloud-run]
