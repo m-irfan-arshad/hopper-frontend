@@ -191,7 +191,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 variant="caption"
                 sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
-                {`- ${row.patients?.mrn}`}
+                {`- ${row.patients?.mrn || 'N/A'}`}
               </Typography>
 
               {threatOfCancellation && <NotificationImportantIcon color="error" fontSize="small" sx={{position: "relative", top: "0.313rem", left: "0.626rem"}}/>}

@@ -1,3 +1,4 @@
+import { cases, patients } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 import { validateParameters } from '../../utils/helpers';
@@ -5,28 +6,45 @@ import { validateParameters } from '../../utils/helpers';
 const requiredParams = ['fhirResourceId', 'patientId', 'procedureDate', 'providerName', 'locationName', 'priorAuthorization', 'vendorConfirmation'];
 
 export default async function createCaseHandler(req: NextApiRequest, res: NextApiResponse) {
-  const invalidParamsMessage = validateParameters(requiredParams, req.body, res);
+  const invalidParamsMessage = validateParameters(requiredParams, req.body?.case || {}, res);
 
   if (invalidParamsMessage) {
     return invalidParamsMessage
   }
 
+  const caseObject = <cases>req.body.case;
+  const patientObject = <patients>req.body.patient;
+
   try {
-    const newCase = await prisma.cases.create({
+    const newPatient = await prisma.patients.create({
       data: {
-          fhirResourceId: <string>req.body.fhirResourceId,
-          patientId: <number>req.body.patientId,
-          procedureDate: <Date>new Date(req.body.procedureDate),
-          providerName: <string>req.body.providerName,
-          locationName: <string>req.body.locationName,
+          fhirResourceId: <string>patientObject.fhirResourceId,
+          firstName: <string>patientObject.firstName,
+          lastName: <string>patientObject.lastName,
+          mrn: <string>patientObject.mrn,
+          address: <string>patientObject.address,
+          mobilePhone: <string>patientObject.mobilePhone,
+          homePhone: <string>patientObject.homePhone,
+          dateOfBirth: <Date>patientObject.dateOfBirth,
           createTime: new Date(),
-          updateTime: new Date(),
-          priorAuthorization: <string>req.body.priorAuthorization,
-          vendorConfirmation: <string>req.body.vendorConfirmation,
+          updateTime: new Date()
       }
     })
+    const newCase = await prisma.cases.create({
+      data: {
+          fhirResourceId: <string>caseObject.fhirResourceId,
+          patientId: <number>newPatient.patientId,
+          procedureDate: <Date>caseObject.procedureDate,
+          providerName: <string>caseObject.providerName,
+          locationName: <string>caseObject.locationName,
+          createTime: new Date(),
+          updateTime: new Date(),
+          priorAuthorization: <string>caseObject.priorAuthorization,
+          vendorConfirmation: <string>caseObject.vendorConfirmation,
+      }
+    })
+    res.json({...newCase, patients: newPatient})
 
-    res.json(newCase)
   } catch(err) {
     res.status(500).json({ message: err });
   }

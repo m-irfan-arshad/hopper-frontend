@@ -5,6 +5,7 @@
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
  import getCasesHandler from '../getCases'
+ import moment from 'moment'
 
  jest.mock('@auth0/nextjs-auth0', () => ({
         withApiAuthRequired: jest.fn((args) => args),
@@ -45,8 +46,8 @@
             where: {
                 procedureDate: {
                     // eventually this should take in a date range parameter from client instead
-                    gte: new Date("2022-10-13T14:04:06.000Z"),
-                    lte: new Date("2022-10-31T23:59:59.000Z")
+                    gte: moment('10/13/2022').startOf("day").toDate(),
+                    lte: moment('10/31/2022').endOf("day").toDate()
                 },
                 priorAuthorization: {
                     equals: 'Incomplete'

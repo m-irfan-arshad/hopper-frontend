@@ -13,14 +13,12 @@ test.describe('Landing Page', () => {
         const createCaseButton = page.locator('button', { hasText: 'Create Case' });
         const patientInformation = page.locator("text='Patient Information'");
         const cancelButton = page.locator('button', { hasText: 'Cancel' });
-        const { firstName } = createPatientCase();
-        const { lastName } = createPatientCase();
-        const { birthDay } = createPatientCase();
+        const { firstName, lastName, birthDay } = createPatientCase();
         await createCaseButton.click();
         await expect(patientInformation).toBeVisible();
-        await page.locator('//input[@id="patient.firstName"]').type(firstName);
-        await page.locator('//input[@id="patient.lastName"]').type(lastName);
-        await page.locator('//input[@id="patient.dateOfBirth"]').type(birthDay);
+        await page.locator("[id='patient.firstName']").type(firstName);
+        await page.locator("[id='patient.lastName']").type(lastName);
+        await page.locator("[id='patient.dateOfBirth']").type(birthDay);
         await cancelButton.click();
         await expect(patientInformation).toBeHidden();
     });
