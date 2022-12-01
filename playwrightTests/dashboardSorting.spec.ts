@@ -5,6 +5,8 @@ import { DashboardPage } from './dashboardPage';
 test.describe('Landing Page Features', () => {
     test.beforeEach(async ({ page, baseURL }) => {
         await page.goto(baseURL!);
+        const dashboard = new DashboardPage(page);
+        await dashboard.logIn();
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {
