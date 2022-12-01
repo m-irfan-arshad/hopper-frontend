@@ -1,9 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { createPatientCase } from './dataGenerator';
+import { DashboardPage } from './dashboardPage';
 
 test.describe('Landing Page', () => {
     test.beforeEach(async ({ page, baseURL }) => {
+        const dashboard = new DashboardPage(page);
         await page.goto(baseURL!);
+        await dashboard.logIn();
     });
 
     test('Validating Create Case Modal=', async ({ page }) => {
