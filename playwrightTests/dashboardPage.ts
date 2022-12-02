@@ -1,5 +1,6 @@
 import { expect, Locator, Page } from '@playwright/test';
 
+
 export class DashboardPage {
 
     readonly page: Page;
@@ -36,9 +37,12 @@ export class DashboardPage {
     }
 
     async logIn() {
-        // await this.page.goto(baseURL);
-        await this.userName.type("wyatt.lendle@medtel.com");
-        await this.password.type("Password.secure");
+        const url = process.env.PLAYWRIGHT_HOPPER_HOME;
+        const user = process.env.PLAYWRIGHT_DEFAULT_USER;
+        const password = process.env.PLAYWRIGHT_DEFAULT_USER_PASSWORD;
+        await this.page.goto(url);
+        await this.userName.type(user);
+        await this.password.type(password);
         await this.logInButton.click()
     }
 

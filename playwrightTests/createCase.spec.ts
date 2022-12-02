@@ -3,9 +3,8 @@ import { createPatientCase } from './dataGenerator';
 import { DashboardPage } from './dashboardPage';
 
 test.describe('Landing Page', () => {
-    test.beforeEach(async ({ page, baseURL }) => {
+    test.beforeEach(async ({ page }) => {
         const dashboard = new DashboardPage(page);
-        await page.goto(baseURL!);
         await dashboard.logIn();
     });
 
