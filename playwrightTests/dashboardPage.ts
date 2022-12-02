@@ -40,9 +40,9 @@ export class DashboardPage {
         const url = process.env.PLAYWRIGHT_HOPPER_HOME;
         const user = process.env.PLAYWRIGHT_DEFAULT_USER;
         const password = process.env.PLAYWRIGHT_DEFAULT_USER_PASSWORD;
-        await this.page.goto(url);
-        await this.userName.type(user);
-        await this.password.type(password);
+        await this.page.goto(url as string);
+        await this.userName.type(user as string);
+        await this.password.type(password as string);
         await this.logInButton.click()
     }
 
