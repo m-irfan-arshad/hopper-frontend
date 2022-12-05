@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import moment from "moment";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination } from "@mui/material";
 import { Logout } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
 import DropDownComponent from "./shared/dropdown";
+import DateRangePicker from "./shared/dateRangePicker";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
@@ -16,6 +18,9 @@ interface CaseGroup {
 export default function Dashboard() {  
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
     const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
+
+    const [dateRangeStart, setDateRangeStart] = useState(moment().startOf('day'));
+    const [dateRangeEnd, setDateRangeEnd] = useState(moment().endOf('month'));
 
     const [dateFilterValue, setDateFilterValue] = useState('This month');
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
@@ -33,7 +38,7 @@ export default function Dashboard() {
         setSearchBarValue(value);
     }
    
-    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateFilterValue, dateSortValue, caseFilterValue, searchBarValue, page.toString());
+    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateFilterValue, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 
     const caseGroups:CaseGroup = {};
 
@@ -65,6 +70,12 @@ export default function Dashboard() {
                 dateFilterValue={dateFilterValue}
                 searchBarValue={searchBarValue}
                 search={handleSearchBarChange}
+            />
+            <DateRangePicker 
+                dateRangeStart={dateRangeStart}
+                dateRangeEnd={dateRangeEnd} 
+                setDateRangeStart={setDateRangeStart}
+                setDateRangeEnd={setDateRangeEnd}
             />
             <Box sx={{
                 display: "flex",

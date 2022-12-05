@@ -2,8 +2,8 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import moment from "moment";
 import { caseFilterInterface } from "../reference";
 
-export function useGetCasesHook(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
-    return useQuery(["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue, page], () => fetchCases(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page))
+export function useGetCasesHook(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
+    return useQuery(["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue, page], () => fetchCases(dateRangeStart, dateRangeEnd, dateFilterValue, dateSortValue, caseFilter, searchBarValue, page))
 }
 
 export function useCreateCaseHook() {
@@ -55,8 +55,8 @@ export function useGetLocationOptionsHook(providerId: number) {
     );
 }
 
-const fetchCases = async (dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
-    const url = calculateDashboardURL(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page);
+const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
+    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, dateFilterValue, dateSortValue, caseFilter, searchBarValue, page);
     const response = await fetch(url);
     
     return response.json();
@@ -74,22 +74,22 @@ export function convertCaseStepsToFilters(caseFilter: caseFilterInterface[]): ob
     return returnObject
 }
 
-function calculateDashboardURL(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
+function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
     let parameters;
-    let dateRangeStart = moment().utc()
-    let dateRangeEnd = moment().utc()
-    switch(dateFilterValue) {
-        case 'This month':
-            dateRangeEnd = dateRangeEnd.endOf('month')
-            break;
-        case 'Next month':
-            dateRangeStart = dateRangeStart.add(1, 'month').startOf('month')
-            dateRangeEnd = dateRangeEnd.add(1, 'month').endOf('month')
-            break;
-        case 'Next quarter':
-            dateRangeEnd = dateRangeEnd.add(2, 'month').endOf('month')
-            break;
-    }
+    // let dateRangeStart = moment().utc()
+    // let dateRangeEnd = moment().utc()
+    // switch(dateFilterValue) {
+    //     case 'This month':
+    //         dateRangeEnd = dateRangeEnd.endOf('month')
+    //         break;
+    //     case 'Next month':
+    //         dateRangeStart = dateRangeStart.add(1, 'month').startOf('month')
+    //         dateRangeEnd = dateRangeEnd.add(1, 'month').endOf('month')
+    //         break;
+    //     case 'Next quarter':
+    //         dateRangeEnd = dateRangeEnd.add(2, 'month').endOf('month')
+    //         break;
+    // }
 
     parameters = new URLSearchParams({ 
         dateRangeStart: dateRangeStart.format(),
