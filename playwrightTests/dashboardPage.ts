@@ -9,7 +9,7 @@ export class DashboardPage {
     readonly procedureDate: Locator;
     readonly userName: Locator;
     readonly password: Locator;
-    readonly logInButton: Locator;
+    readonly loginButton: Locator;
 
     /**
      * @param {import('@playwright/test').Page} page
@@ -21,7 +21,7 @@ export class DashboardPage {
         this.procedureDate = page.locator('data-testid=procedureDate');
         this.userName = page.locator('#username');
         this.password = page.locator('#password');
-        this.logInButton = page.locator("button[value='default']");
+        this.loginButton = page.locator("button[value='default']");
     }
 
     async openFirstPatientDropDown() {
@@ -36,14 +36,14 @@ export class DashboardPage {
         return await this.procedureDate.textContent();
     }
 
-    async logIn() {
+    async login() {
         const url = process.env.PLAYWRIGHT_HOPPER_HOME;
         const user = process.env.PLAYWRIGHT_DEFAULT_USER;
         const password = process.env.PLAYWRIGHT_DEFAULT_USER_PASSWORD;
         await this.page.goto(url as string);
         await this.userName.type(user as string);
         await this.password.type(password as string);
-        await this.logInButton.click()
+        await this.loginButton.click()
     }
 
 }
