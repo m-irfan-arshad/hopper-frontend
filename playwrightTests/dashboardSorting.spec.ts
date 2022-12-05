@@ -3,8 +3,9 @@ import { test, expect } from '@playwright/test';
 import { DashboardPage } from './dashboardPage';
 
 test.describe('Landing Page Features', () => {
-    test.beforeEach(async ({ page, baseURL }) => {
-        await page.goto(baseURL!);
+    test.beforeEach(async ({ page }) => {
+        const dashboard = new DashboardPage(page);
+        await dashboard.login();
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {

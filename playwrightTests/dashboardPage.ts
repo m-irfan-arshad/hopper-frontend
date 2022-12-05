@@ -1,12 +1,15 @@
 import { expect, Locator, Page } from '@playwright/test';
 
+
 export class DashboardPage {
 
     readonly page: Page;
     readonly patientCardArrow: Locator;
     readonly caseDateGroup: Locator;
     readonly procedureDate: Locator;
-
+    readonly userName: Locator;
+    readonly password: Locator;
+    readonly loginButton: Locator;
 
     /**
      * @param {import('@playwright/test').Page} page
@@ -15,7 +18,10 @@ export class DashboardPage {
         this.page = page;
         this.patientCardArrow = page.locator('data-testid=ArrowDropDownOutlinedIcon');
         this.caseDateGroup = page.locator('data-testid=caseDateGroup');
-        this.procedureDate = page.locator('data-testid=procedureDate')
+        this.procedureDate = page.locator('data-testid=procedureDate');
+        this.userName = page.locator('#username');
+        this.password = page.locator('#password');
+        this.loginButton = page.locator("button[value='default']");
     }
 
     async openFirstPatientDropDown() {
@@ -28,6 +34,16 @@ export class DashboardPage {
 
     async procedureDateContent() {
         return await this.procedureDate.textContent();
+    }
+
+    async login() {
+        const url = process.env.PLAYWRIGHT_HOPPER_HOME;
+        const user = process.env.PLAYWRIGHT_DEFAULT_USER;
+        const password = process.env.PLAYWRIGHT_DEFAULT_USER_PASSWORD;
+        await this.page.goto(url as string);
+        await this.userName.type(user as string);
+        await this.password.type(password as string);
+        await this.loginButton.click()
     }
 
 }
