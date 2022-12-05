@@ -91,8 +91,8 @@ jobs:
           --set-env-vars "AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID" \
           --set-env-vars "AUTH0_SECRET=$AUTH0_SECRET" \
           --set-env-vars "AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET" \
-          --set-env-vars "PLAYWRIGHT_DEFAULT_USER" \
-          --set-env-vars "PLAYWRIGHT_DEFAULT_USER_PASSWORD"
+          --set-env-vars "PLAYWRIGHT_DEFAULT_USER=$PLAYWRIGHT_DEFAULT_USER" \
+          --set-env-vars "PLAYWRIGHT_DEFAULT_USER_PASSWORD=$PLAYWRIGHT_DEFAULT_USER_PASSWORD"
   e2e-test:
     needs: [deploy-image-to-cloud-run]
     runs-on: ubuntu-latest
