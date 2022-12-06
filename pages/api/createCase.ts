@@ -2,10 +2,11 @@ import { cases, patients } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 import { validateParameters } from '../../utils/helpers';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['fhirResourceId', 'patientId', 'procedureDate', 'providerName', 'locationName', 'priorAuthorization', 'vendorConfirmation'];
 
-export default async function createCaseHandler(req: NextApiRequest, res: NextApiResponse) {
+export default withApiAuthRequired(async function createCaseHandler(req: NextApiRequest, res: NextApiResponse) {
   const invalidParamsMessage = validateParameters(requiredParams, req.body?.case || {}, res);
 
   if (invalidParamsMessage) {
@@ -48,4 +49,4 @@ export default async function createCaseHandler(req: NextApiRequest, res: NextAp
   } catch(err) {
     res.status(500).json({ message: err });
   }
-}
+})

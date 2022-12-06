@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 import { validateParameters } from '../../utils/helpers';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['providerId'];
 
-export default async function getLocationOptionsHandler(req: NextApiRequest, res: NextApiResponse) {
+export default withApiAuthRequired(async function getLocationOptionsHandler(req: NextApiRequest, res: NextApiResponse) {
     const invalidParamsMessage = validateParameters(requiredParams, req.query, res);
 
     if (invalidParamsMessage) {
@@ -39,4 +40,4 @@ export default async function getLocationOptionsHandler(req: NextApiRequest, res
     catch(err) {
         res.status(500).json({ message: err });
     }
-}
+})
