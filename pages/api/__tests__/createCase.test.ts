@@ -6,6 +6,11 @@
  import { prismaMock } from '../../../prisma/singleton'
  import createCaseHander from '../createCase'
 
+ jest.mock('@auth0/nextjs-auth0', () => ({
+    withApiAuthRequired: jest.fn((args) => args),
+    getSession: jest.fn()
+}));
+
  describe("createCase API", () => {
 
     const testCase = {

@@ -2,9 +2,13 @@
  * @jest-environment node
  */
  import httpMock from 'node-mocks-http';
- import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
  import getLocationOptionsHandler from '../getLocationOptions';
+
+ jest.mock('@auth0/nextjs-auth0', () => ({
+    withApiAuthRequired: jest.fn((args) => args),
+    getSession: jest.fn()
+}));
 
  describe("getLocationOptions API", () => {
     let locations = [
