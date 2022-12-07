@@ -18,7 +18,9 @@
         createTime: new Date(),
         updateTime: new Date(),
         priorAuthorization: "incomplete",
-        vendorConfirmation: "incomplete"
+        vendorConfirmation: "incomplete",
+        procedureUnit: "testProcedureUnit",
+        serviceLine: "testServiceLine"
     }
     const testPatient = {
         firstName: "Test",
@@ -60,6 +62,6 @@
 
         await createCaseHander(req, res)
         const data = res._getJSONData()
-        expect(data.message).toEqual('The following required parameters are missing: fhirResourceId patientId procedureDate providerName locationName priorAuthorization vendorConfirmation')
+        expect(data.message).toEqual('The following required parameters are missing: procedureDate providerName locationName procedureUnit serviceLine')
     })
 });

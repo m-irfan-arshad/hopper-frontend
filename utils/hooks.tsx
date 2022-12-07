@@ -1,13 +1,30 @@
+import { useContext } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import moment from "moment";
 import { caseFilterInterface } from "../reference";
+import {AlertContext} from "../pages/_app"
 
 export function useGetCasesHook(dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
-    return useQuery(["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue, page], () => fetchCases(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page))
+    const [_, setAlertState] = useContext(AlertContext);
+    return useQuery(
+        ["getCases", dateFilterValue, dateSortValue, caseFilter, searchBarValue, page], 
+        () => fetchCases(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page).then(res => {
+            if (res.ok) {
+              return res.json()
+            }      
+            throw new Error()
+          }),
+        {
+            onError: () => {
+                setAlertState({open: true, title: "Error Fetching Cases", status: "error"})
+            }
+        }
+    )  
 }
 
 export function useCreateCaseHook() {
     const queryClient = useQueryClient()
+    const [_, setAlertState] = useContext(AlertContext);
     return useMutation((data: object) => fetch("/api/createCase",
         {
             method: "post",
@@ -15,20 +32,27 @@ export function useCreateCaseHook() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-        }),
+        }).then(res => {
+            if (res.ok) {
+              return res.json()
+            }      
+            throw new Error()
+          }),
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(['getCases'])
+                setAlertState({open: true, title: "Successfully Created Case", status: "success"})
             },
             onError: () => {
-                alert("there was an error")
-            },
+                setAlertState({open: true, title: "Error Creating Case", status: "error"})
+            }
         }
     )
 }
 
 export function useUpdateCaseHook() {
     const queryClient = useQueryClient()
+    const [_, setAlertState] = useContext(AlertContext);
     return useMutation((data: object) => fetch("/api/updateCase",
         {
             method: "post",
@@ -36,11 +60,19 @@ export function useUpdateCaseHook() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-        }),
+        }).then(res => {
+            if (res.ok) {
+              return res.json()
+            }      
+            throw new Error()
+          }),
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(['getCases'])
             },
+            onError: () => {
+                setAlertState({open: true, title: "Error Updating Case", status: "error"})
+            }
         }
     )
 }
@@ -57,9 +89,7 @@ export function useGetLocationOptionsHook(providerId: number) {
 
 const fetchCases = async (dateFilterValue: string, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
     const url = calculateDashboardURL(dateFilterValue, dateSortValue, caseFilter, searchBarValue, page);
-    const response = await fetch(url);
-    
-    return response.json();
+    return fetch(url)
 };
 
 // <----- helpers ------>

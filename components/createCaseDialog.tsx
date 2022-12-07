@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Add, DateRange as DateRangeIcon } from "@mui/icons-material";
 import { 
     Typography, 
@@ -19,8 +19,6 @@ import { useForm, Controller } from "react-hook-form";
 import { useCreateCaseHook } from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
-
 
 
 interface Props {
@@ -120,15 +118,15 @@ export default function CreateCaseDialog(props: Props) {
         dateOfBirth: yup.date().required(),
     }),
     case: yup.object().shape({
-        primarySurgeon: yup.string().required(),
-        surgicalLocation: yup.string().required(),
+        providerName: yup.string().required(),
+        locationName: yup.string().required(),
         procedureUnit: yup.string().required(),
         serviceLine: yup.string().required(),
         procedureDate: yup.date().required(),
     })
   });
 
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control, reset, formState: { isValid } } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       patient: {
@@ -137,8 +135,8 @@ export default function CreateCaseDialog(props: Props) {
         dateOfBirth: null,
       },
       case: {
-        primarySurgeon: "",
-        surgicalLocation: "",
+        providerName: "",
+        locationName: "",
         procedureUnit: "",
         serviceLine: "",
         procedureDate: null
@@ -172,10 +170,10 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <InputController id="case.primarySurgeon" title="Primary Surgeon" placeholder="Primary Surgeon"/>
+                        <InputController id="case.providerName" title="Primary Surgeon" placeholder="Primary Surgeon"/>
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="case.surgicalLocation" title="Surgical Location" placeholder="Surgical Location"/>
+                        <InputController id="case.locationName" title="Surgical Location" placeholder="Surgical Location"/>
                     </Grid>
                     <Grid item xs={6}>
                         <InputController id="case.procedureUnit" title="Procedure Unit" placeholder="Procedure Unit"/>
@@ -200,10 +198,11 @@ export default function CreateCaseDialog(props: Props) {
             variant="contained" 
             startIcon={<Add />}
             onClick={handleSubmit(onSubmit)}
+            disabled={!isValid}
             sx={{
                 backgroundColor: "green.main",
                 border: 1,
-                borderColor: "green.dark",
+                borderColor: isValid ? "green.dark" : "grey",
                 marginRight: "1.75rem",
             }}>
                 Create Case

@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 import { validateParameters } from '../../utils/helpers';
 
-const requiredParams = ['fhirResourceId', 'patientId', 'procedureDate', 'providerName', 'locationName', 'priorAuthorization', 'vendorConfirmation'];
+const requiredParams = ['procedureDate', 'providerName', 'locationName', 'procedureUnit', 'serviceLine'];
 
 export default async function createCaseHandler(req: NextApiRequest, res: NextApiResponse) {
   const invalidParamsMessage = validateParameters(requiredParams, req.body?.case || {}, res);
