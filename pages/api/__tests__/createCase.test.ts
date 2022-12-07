@@ -19,8 +19,8 @@
         updateTime: new Date(),
         priorAuthorization: "incomplete",
         vendorConfirmation: "incomplete",
-        procedureUnit: "pu",
-        serviceLine: "pup"
+        procedureUnit: "testProcedureUnit",
+        serviceLine: "testServiceLine"
     }
     const testPatient = {
         firstName: "Test",
@@ -48,7 +48,6 @@
 
         await createCaseHander(req, res)
         const data = res._getJSONData()
-        console.log("newdata: ", data)
         expect(data.caseId).toEqual(1)
         expect(data.patientId).toEqual(1)
         expect(data.providerName).toEqual("testProviderName")
