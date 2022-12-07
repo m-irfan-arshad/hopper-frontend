@@ -1,6 +1,10 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import CaseNavBar from "../caseNavBar";
-
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
+    }));
+    
 describe("CaseNavBar", () => {
 
     const props = {

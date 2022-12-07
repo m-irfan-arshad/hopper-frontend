@@ -4,6 +4,12 @@ env:
   CLOUD_RUN_REGION: us-east4
   REPO_NAME: hopper-frontend
   HOPPER_PASSWORD: ${{ secrets.HOPPER_PASSWORD }}
+  AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+  AUTH0_SECRET: ${{ secrets.AUTH0_SECRET }}
+  AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+  PLAYWRIGHT_DEFAULT_USER: ${{ secrets.PLAYWRIGHT_DEFAULT_USER }}
+  PLAYWRIGHT_DEFAULT_USER_PASSWORD: ${{ secrets.PLAYWRIGHT_DEFAULT_USER_PASSWORD }}
+
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   # This is temporary, dev pipeline should only run on pull request events,
@@ -81,7 +87,12 @@ jobs:
           --region $CLOUD_RUN_REGION \
           --allow-unauthenticated \
           --quiet \
-          --set-env-vars "HOPPER_PASSWORD=$HOPPER_PASSWORD"
+          --set-env-vars "HOPPER_PASSWORD=$HOPPER_PASSWORD" \
+          --set-env-vars "AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID" \
+          --set-env-vars "AUTH0_SECRET=$AUTH0_SECRET" \
+          --set-env-vars "AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET" \
+          --set-env-vars "PLAYWRIGHT_DEFAULT_USER=$PLAYWRIGHT_DEFAULT_USER" \
+          --set-env-vars "PLAYWRIGHT_DEFAULT_USER_PASSWORD=$PLAYWRIGHT_DEFAULT_USER_PASSWORD"
   e2e-test:
     needs: [deploy-image-to-cloud-run]
     runs-on: ubuntu-latest

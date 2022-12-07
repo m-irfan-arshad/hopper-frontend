@@ -1,4 +1,5 @@
-import { SingleCase } from '../reference';
+import type { NextApiResponse } from 'next'
+import { SingleCase, APIParameters } from '../reference';
 import { Prisma, cases, patients } from '@prisma/client';
 import moment from "moment";
 
@@ -6,8 +7,8 @@ interface DashboardQueryParams {
     searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
-    priorAuthorization: string;
-    vendorConfirmation: string;
+    priorAuthorization?: string;
+    vendorConfirmation?: string;
 }
 
 interface CasesFormatterProps {
@@ -29,13 +30,13 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
     
     let filterObject: FilterObject = {
         procedureDate: {
-            gte: new Date(dateRangeStart),
-            lte: new Date(dateRangeEnd)
+            gte: moment(dateRangeStart).startOf("day").toDate(),
+            lte: moment(dateRangeEnd).endOf("day").toDate()
         },
         ...(priorAuthorization === "Incomplete") && {priorAuthorization: {equals: priorAuthorization}},
         ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
     }
-    
+
     if (!searchValue) {
         return filterObject
     }
@@ -116,4 +117,17 @@ export function casesFormatter (params: CasesFormatterProps): any {
           }
     }
     return newCase
+}
+
+export function validateParameters(requiredParams: Array<string>, inputtedParams: APIParameters, res: NextApiResponse) {
+    const invalidParameters = requiredParams.reduce(function(acc: any, key: string) {
+        if (!inputtedParams[key]) {
+            return acc + ' ' + key;
+        }
+        return acc;
+    }, []);
+    if (invalidParameters.length > 0) {
+        return res.status(400).json({ message: 'The following required parameters are missing:' + invalidParameters });
+    } 
+    return null;
 }

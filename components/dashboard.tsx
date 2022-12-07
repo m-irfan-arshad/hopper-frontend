@@ -91,7 +91,7 @@ export default function Dashboard() {
                         justifyContent: "center"
                     }}>
                         <Typography variant="h6">
-                            {`${data.count} ${data.count === 1 ? 'Case' : 'Cases'}`}
+                            {`${data.count || 0} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
                         {!isMobile 
                             && <Box sx={{ minWidth: 120 }}>

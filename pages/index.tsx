@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Head from "next/head";
 import TopNavBar from "../components/topNavBar";
-import CaseNavBar from "../components/caseNavBar";
 import Dashboard from "../components/dashboard";
 import * as LaunchDarkly from 'launchdarkly-react-client-sdk';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Box } from "@mui/material";
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+
 
 interface Props {
   flags: {
@@ -46,4 +47,4 @@ export function Home({ flags }: Props) {
   );
 }
 
-export default LaunchDarkly.withLDConsumer()(Home);
+export default LaunchDarkly.withLDConsumer()(withPageAuthRequired(Home));

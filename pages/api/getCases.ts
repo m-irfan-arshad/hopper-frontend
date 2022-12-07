@@ -1,10 +1,19 @@
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { formatDashboardQueryParams,casesFormatter } from '../../utils/helpers';
+import { formatDashboardQueryParams, casesFormatter, validateParameters } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
 import { paginationCount } from '../../reference';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
-export default async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
+
+export default withApiAuthRequired(async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+  const invalidParamsMessage = validateParameters(requiredParams, req.query, res);
+
+    if (invalidParamsMessage) {
+      return invalidParamsMessage
+    }
+
   const dashboardParams = {
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
@@ -39,4 +48,4 @@ export default async function getCasesHandler(req: NextApiRequest, res: NextApiR
     }), 
     count: count
   })
-}
+})
