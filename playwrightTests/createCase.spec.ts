@@ -6,6 +6,8 @@ test.describe('Landing Page', () => {
     test.beforeEach(async ({ page }) => {
         const dashboard = new DashboardPage(page);
         await dashboard.login();
+        page.waitForURL;
+        page.waitForLoadState;
     });
 
     test('Validating Create Case Modal=', async ({ page }) => {
@@ -14,6 +16,7 @@ test.describe('Landing Page', () => {
         const cancelButton = page.locator('button', { hasText: 'Cancel' });
         const { firstName, lastName, birthDay } = createPatientCase();
         await createCaseButton.click();
+        page.waitForLoadState;
         await expect(patientInformation).toBeVisible();
         await page.locator("[id='patient.firstName']").type(firstName);
         await page.locator("[id='patient.lastName']").type(lastName);
