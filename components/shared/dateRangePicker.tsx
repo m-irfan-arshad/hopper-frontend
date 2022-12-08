@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker, PickersDay } from '@mui/x-date-pickers';
@@ -7,19 +7,26 @@ import moment from "moment";
 
 interface Props {
     dateRangeStart: moment.Moment
-    dateRangeEnd: moment.Moment
+    dateRangeEnd: moment.Moment | null
+    isDateRangeStartCalendarOpen: boolean
+    isDateRangeEndCalendarOpen: boolean
+    setDateRangeEndCalendarStatus: (value: boolean) => void
+    setDateRangeStartCalendarStatus: (value: boolean) => void
     setDateRangeStart: (value: moment.Moment) => void
-    setDateRangeEnd: (value: moment.Moment) => void
+    setDateRangeEnd: (value: moment.Moment | null) => void
 }
 
-/*TODO: try to make 2 calendars, the logic being you open the first one, pick a date and then close the first one
-        then open the 2nd calendar with the date from the first one pre highlighted and then click a second one and 
-        execute query; bonus if I can get the highlighting between the
-*/
-
 export default function DateRangePicker(props: Props) {
-    const  { dateRangeStart, dateRangeEnd, setDateRangeStart, setDateRangeEnd } = props;
-    const [isDateRangeEndCalendarOpen, setDateRangeEndCalendar] = useState(false);
+    const { 
+      dateRangeStart, 
+      dateRangeEnd, 
+      setDateRangeStart, 
+      setDateRangeEnd, 
+      isDateRangeStartCalendarOpen, 
+      isDateRangeEndCalendarOpen, 
+      setDateRangeStartCalendarStatus, 
+      setDateRangeEndCalendarStatus 
+    } = props;
 
     const StyledDay = styled(PickersDay, {
         shouldForwardProp: (prop) =>
@@ -54,35 +61,76 @@ export default function DateRangePicker(props: Props) {
         return dateRangeStart.isAfter(date);
     }
 
+    function handleDateRangeStartOpen() {
+      setDateRangeStartCalendarStatus(true);
+      setDateRangeEndCalendarStatus(false);
+    }
+
+    function handleDateRangeStartClose() {
+      setDateRangeStartCalendarStatus(false);
+      setDateRangeEndCalendarStatus(true);
+    }
+
     return (
         <Box sx={{ display: "flex" }}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
-                value={dateRangeStart}
-                onChange={(newValue: moment.Moment | null) => {
-                    if (newValue) {
-                        if (dateRangeEnd.isBefore(newValue)) {
-                            setDateRangeEnd(newValue.startOf('day'));
-                        }
-                        setDateRangeStart(newValue.startOf('day'));
-                        setDateRangeEndCalendar(true);
-                    }
-                }}
-                renderInput={(params) => <TextField {...params} sx={{marginLeft: "200px"}} />}
-            />
-            <DatePicker
-                value={dateRangeEnd}
-                renderDay={renderPickerDay}
-                open={isDateRangeEndCalendarOpen}
-                shouldDisableDate={isBeforeStartDate}
-                onChange={(newValue: moment.Moment | null) => {
-                    if (newValue && newValue.isSameOrAfter(dateRangeStart)) {
-                        setDateRangeEnd(newValue.startOf('day'));
-                    }
-                    setDateRangeEndCalendar(false);
-                }}
-                renderInput={(params) => <TextField {...params} sx={{marginLeft: "200px"}} />}
-            />
+            <Box>
+              <DatePicker
+                  label="Date Range Start"
+                  value={dateRangeStart}
+                  onChange={(newValue: moment.Moment | null) => {
+                      if (newValue) {
+                          setDateRangeEnd(null);
+                          setDateRangeStart(newValue.startOf('day'));
+                      }
+                  }}
+                  open={isDateRangeStartCalendarOpen}
+                  onOpen={() => handleDateRangeStartOpen()}
+                  onClose={() => handleDateRangeStartClose()}
+                  renderInput={(params) => <TextField {...params} sx={{
+                    "& .MuiOutlinedInput-input": {
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      height: "2.5rem"
+                    },
+                    "& .MuiInputLabel-root:not(.MuiInputLabel-shrink)": {
+                      fontSize: "0.875rem",
+                      top: "-0.375rem",
+                    },
+                    width: "10rem"
+                  }} 
+                />}
+              />
+            </Box>
+            <Box>
+              <DatePicker
+                  label="Date Range End"
+                  value={dateRangeEnd}
+                  renderDay={renderPickerDay}
+                  open={isDateRangeEndCalendarOpen}
+                  shouldDisableDate={isBeforeStartDate}
+                  onChange={(newValue: moment.Moment | null) => {
+                      if (newValue && newValue.isSameOrAfter(dateRangeStart)) {
+                          setDateRangeEnd(newValue.endOf('day'));
+                      }
+                      setDateRangeEndCalendarStatus(false);
+                  }}
+                  renderInput={(params) => <TextField {...params} sx={{
+                    "& .MuiOutlinedInput-input": {
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      height: "2.5rem"
+                    },
+                    "& .MuiInputLabel-root:not(& .MuiInputLabel-shrink)": {
+                      fontSize: "0.875rem",
+                      top: "-0.375rem",
+                    },
+                    width: "10rem",
+                    marginLeft: "0.625rem"
+                  }} 
+                />}
+              />
+            </Box>
             </LocalizationProvider>
         </Box>
       );

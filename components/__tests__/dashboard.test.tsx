@@ -70,17 +70,18 @@ describe("Dashboard", () => {
     mockedUseCreateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
 
     test("renders the dashboard", async () => {
-        const { getByRole, } = render(
+        const { getByRole, getByText } = render(
                 <Dashboard  />
         );
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
+            expect(getByText("Show Completed Cases")).toBeInTheDocument();
         });
     });
 
-    test("renders and interacts with date range dropdown", async () => { 
-        const { getByRole, getByPlaceholderText } = render(
+    test("renders the date range picker", async () => { 
+        const { getByRole, getByLabelText } = render(
                 <Dashboard  />
         );
 
@@ -88,14 +89,8 @@ describe("Dashboard", () => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
         });
 
-        expect(getByRole("button", {name: "Date Range: This month"})).toBeInTheDocument();
-
-        fireEvent.mouseDown(getByRole("button", {name: "Date Range: This month"}));
-        fireEvent.click(getByRole("option", {name: "Next month"}));
-
-        await waitFor(() => {
-            expect(getByRole("button", {name: "Date Range: Next month"})).toBeInTheDocument();
-        });
+        expect(getByRole("textbox", {name: "Date Range Start"})).toBeInTheDocument();
+        expect(getByLabelText(`Choose date, selected date is ${moment().utc().format('MMM D, YYYY')}`)).toBeInTheDocument();
       });
 
       test("renders and interacts with search bar and pagination", async () => { 

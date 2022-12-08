@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import moment from "moment";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
-import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination } from "@mui/material";
-import { Logout } from "@mui/icons-material";
+import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
+import { Logout, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import { SingleCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
 import DropDownComponent from "./shared/dropdown";
-import DateRangePicker from "./shared/dateRangePicker";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
@@ -20,27 +19,45 @@ export default function Dashboard() {
     const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
 
     const [dateRangeStart, setDateRangeStart] = useState(moment().startOf('day'));
-    const [dateRangeEnd, setDateRangeEnd] = useState(moment().endOf('month'));
+    const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(moment().add(7, 'days').endOf('day'));
+    const [isDateRangeEndCalendarOpen, setDateRangeEndCalendarStatus] = useState(false);
+    const [isDateRangeStartCalendarOpen, setDateRangeStartCalendarStatus] = useState(false);
 
-    const [dateFilterValue, setDateFilterValue] = useState('This month');
     const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
     const [caseFilterValue, setCaseFilterValue] = useState(defaultCaseFilterValue);
     const [searchBarValue, setSearchBarValue ] = useState('');
     const [page, setPage] = useState(1);
 
-    function handleDateFilterChange(value: string) {
-        setPage(1);
-        setDateFilterValue(value);
-    }
+    const StyledCheckbox = styled(Checkbox)({
+        marginLeft: "0.625rem",
+        marginRight: "0.313rem", 
+        height: "1.5rem", 
+        width: "1.5rem",
+        color: defaultTheme.palette.blue.light,
+        "&.Mui-checked": {
+            color: defaultTheme.palette.green.light
+        }
+    });
 
     function handleSearchBarChange(value: string) {
         setPage(1);
         setSearchBarValue(value);
     }
-   
-    const { data = {cases: [], count: 0}, isLoading } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateFilterValue, dateSortValue, caseFilterValue, searchBarValue, page.toString());
+
+    const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 
     const caseGroups:CaseGroup = {};
+
+    const dateRangePickerProps = {
+        dateRangeStart: dateRangeStart,
+        dateRangeEnd: dateRangeEnd,
+        isDateRangeStartCalendarOpen: isDateRangeStartCalendarOpen,
+        isDateRangeEndCalendarOpen: isDateRangeEndCalendarOpen,
+        setDateRangeStart: setDateRangeStart,
+        setDateRangeEnd: setDateRangeEnd,
+        setDateRangeEndCalendarStatus: setDateRangeEndCalendarStatus,
+        setDateRangeStartCalendarStatus: setDateRangeStartCalendarStatus
+    }
 
         data.cases.forEach(function(singleCase: SingleCase) {
             const date = singleCase.procedureDate || "";
@@ -66,23 +83,16 @@ export default function Dashboard() {
             <CaseNavBar 
                 onCaseFilterChange={handleCaseFilterChange} 
                 caseFilterValue={caseFilterValue} 
-                onDateFilterChange={handleDateFilterChange}  
-                dateFilterValue={dateFilterValue}
                 searchBarValue={searchBarValue}
                 search={handleSearchBarChange}
-            />
-            <DateRangePicker 
-                dateRangeStart={dateRangeStart}
-                dateRangeEnd={dateRangeEnd} 
-                setDateRangeStart={setDateRangeStart}
-                setDateRangeEnd={setDateRangeEnd}
+                dateRangePickerProps={dateRangePickerProps}
             />
             <Box sx={{
                 display: "flex",
                 justifyContent: "center",
             }}>
             <Stack 
-            spacing={isLoading ? 25 : 0}
+            spacing={isFetching ? 25 : 0}
             sx={{
                 width: "92%",
                 maxWidth: "60rem",
@@ -114,21 +124,25 @@ export default function Dashboard() {
                                     onChange={setDateSortValue}
                                     value={dateSortValue}
                                 />
+                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
                             </Box>
                         }
                     </Box>
                     <Box sx={{display: "flex"}}>
-                        {isMobile 
-                            && <Box sx={{ marginRight: "0.313rem" }}>
-                                <DropDownComponent
-                                    menuItems={dashboardSortDropDownValues}
-                                    title="Sort:"
-                                    selectId="case-sort-select"
-                                    onChange={setDateSortValue}
-                                    value={dateSortValue}
-                                />
-                            </Box>
-                        }
+                            {isMobile 
+                                && <Box sx={{ marginRight: "0.313rem" }}>
+                                    <DropDownComponent
+                                        menuItems={dashboardSortDropDownValues}
+                                        title="Sort:"
+                                        selectId="case-sort-select"
+                                        onChange={setDateSortValue}
+                                        value={dateSortValue}
+                                    />
+                                    <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                                    <Typography variant="caption" color="black.main" >Show Completed Cases</Typography>
+                                </Box>
+                            }
                         <Button variant="contained" size="small">
                             <Logout sx={{
                                 transform: "rotate(270deg)", 
@@ -148,7 +162,7 @@ export default function Dashboard() {
                         )
                     })
                 }
-                {isLoading && <CircularProgress sx={{alignSelf: 'center'}} />}
+                {isFetching && <CircularProgress sx={{alignSelf: 'center'}} />}
                 {
                     data.count > 50 
                         && <Pagination 
