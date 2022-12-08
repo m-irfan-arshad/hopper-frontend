@@ -28,7 +28,7 @@ describe("CaseNavBar", () => {
     }
 
     test("renders the caseNavBar", async() => {
-        const { getByRole, getByText } = render(
+        const { getByRole } = render(
             <CaseNavBar  {...props}/>
         ); 
        

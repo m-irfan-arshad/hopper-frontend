@@ -97,7 +97,7 @@ describe("Hooks", () => {
         </QueryClientProvider>
     );
 
-    test("call getCasesHook with", async() => {
+    test("call getCasesHook", async() => {
         const { result } = renderHook(() => useGetCasesHook(moment().utc().startOf('month'), moment().utc().endOf('month'), 'Oldest - Newest', [{"value": "true", "id": "vendorConfirmation"}], '1234', '1'), { wrapper });
 
         await waitFor(() => {
