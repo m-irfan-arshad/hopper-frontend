@@ -4,8 +4,12 @@
  import httpMock from 'node-mocks-http';
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
- import getCasesHandler from '../getCases'
 import updateCaseHandler from '../updateCase';
+
+jest.mock('@auth0/nextjs-auth0', () => ({
+    withApiAuthRequired: jest.fn((args) => args),
+    getSession: jest.fn()
+}));
 
  describe("updateCase API", () => {
 
