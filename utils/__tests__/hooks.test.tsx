@@ -2,84 +2,15 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { useGetCasesHook, useGetProviderOptionsHook, useGetLocationOptionsHook } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
+import {mockCaseData, mockProviderData, mockLocationData} from '../../testReference'
 
 interface Props {
     children: React.ReactNode
-}
-
-const mockCaseData = [
-    {
-        caseId: 'caseId',
-        procedureDate: moment('10/10/2022').utc().format(),
-        patients: {
-            firstName: 'firstName',
-            lastName: 'lastName',
-            dateOfBirth: 'DOB',
-            mobilePhone: 'mobilePhone',
-            mrn: 'mrn',
-            address: 'address'
-        }
-    },
-    {
-            caseId: 'caseId2',
-            procedureDate: moment('10/11/2022').utc().format(),
-            patients: {
-                firstName: 'firstName2',
-                lastName: 'lastName2',
-                dateOfBirth: 'DOB2',
-                mobilePhone: 'mobilePhone2',
-                mrn: 'mrn2',
-                address: 'address2'
-        }
-    }
-]; 
-
-const mockProviderData = [
-    {
-        providerId: 1,
-        fhirResourceId: "testId",
-        firstName: 'firstName',
-        lastName: 'lastName',
-        locationName: 'NYU Langone',
-        address: 'address',
-        serviceLine: 'General Surgery',
-        email: 'fake@email.com',
-        createTime: new Date(),
-        updateTime: new Date()
-    },
-    {
-        providerId: 2,
-        fhirResourceId: "testId2",
-        firstName: 'firstName2',
-        lastName: 'lastName2',
-        locationName: 'NYU Langone2',
-        address: 'address2',
-        serviceLine: 'General Surgery2',
-        email: 'fake2@email.com',
-        createTime: new Date(),
-        updateTime: new Date()
-    }
-]; 
-
-const mockLocationData = [
-    {
-        locationId: 1,
-        fhirResourceId: 'fhirResourceId',
-        locationName: 'locationName',
-        createTime: new Date(),
-        updateTime: new Date()
-    },
-    {
-        locationId: 2,
-        fhirResourceId: 'fhirResourceId2',
-        locationName: 'locationName2',
-        createTime: new Date(),
-        updateTime: new Date()
-    }
-]; 
+} 
 
 global.fetch = jest.fn().mockImplementation(() =>  Promise.resolve({
     json: () => Promise.resolve(mockCaseData),
+    ok: true
 }));
 
 jest.spyOn(Date, 'now').mockReturnValue(new Date('10/17/2022').getTime());

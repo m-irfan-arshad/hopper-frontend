@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
-export default async function getProviderOptionsHandler(req: NextApiRequest, res: NextApiResponse) {
+export default withApiAuthRequired(async function getProviderOptionsHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const providers = await prisma.providers.findMany();
 
@@ -9,4 +10,4 @@ export default async function getProviderOptionsHandler(req: NextApiRequest, res
   } catch(err) {
     res.status(500).json({ message: err });
   }
-}
+})

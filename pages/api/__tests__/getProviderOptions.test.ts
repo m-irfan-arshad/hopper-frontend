@@ -6,6 +6,11 @@
  import { prismaMock } from '../../../prisma/singleton'
  import getProviderOptionsHandler from '../getProviderOptions'
 
+ jest.mock('@auth0/nextjs-auth0', () => ({
+    withApiAuthRequired: jest.fn((args) => args),
+    getSession: jest.fn()
+}));
+
  describe("getProviderOptions API", () => {
     let req: NextApiRequest = httpMock.createRequest({
         url: `/api/getProviderOptions`
