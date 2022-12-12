@@ -79,7 +79,6 @@ export default function DateRangePicker(props: Props) {
                   label="Date Range Start"
                   value={dateRangeStart}
                   onChange={(newValue: moment.Moment | null) => {
-                    console.log(newValue)
                       if (newValue && newValue.isValid()) {
                           setDateRangeEnd(null);
                           setDateRangeStart(newValue.startOf('day'));
