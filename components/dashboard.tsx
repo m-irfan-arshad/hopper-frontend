@@ -95,7 +95,6 @@ export default function Dashboard() {
             spacing={isFetching ? 25 : 0}
             sx={{
                 width: "92%",
-                maxWidth: "60rem",
                 marginBottom: "1.25rem"
             }}>
                 <Box sx={{

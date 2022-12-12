@@ -33,7 +33,8 @@ export default function MultiSelectDropDown(props: Props) {
         svg: {
             color: "blue.main"
         },
-        maxWidth: "15rem",
+        maxWidth: "25rem",
+        marginRight: "0.625rem",
         ".MuiTypography-root": {
             overflow: "hidden",
             textOverflow: "ellipsis"
