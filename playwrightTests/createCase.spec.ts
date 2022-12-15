@@ -10,18 +10,31 @@ test.describe('Landing Page', () => {
         page.waitForLoadState;
     });
 
-    test('Validating Create Case Modal=', async ({ page }) => {
+    test('Submitting a Created Case', async ({ page }) => {
         const createCaseButton = page.locator('button', { hasText: 'Create Case' });
         const patientInformation = page.locator("text='Patient Information'");
-        const cancelButton = page.locator('button', { hasText: 'Cancel' });
-        const { firstName, lastName, birthDay } = createPatientCase();
+        const submitCreateCaseButton = page.locator("text='Create Case' >> nth=2");
+        const { firstName, lastName, birthDay, procedureDate } = createPatientCase();
+        await page.waitForTimeout(800);
         await createCaseButton.click();
-        page.waitForLoadState;
         await expect(patientInformation).toBeVisible();
         await page.locator("[id='patient.firstName']").type(firstName);
         await page.locator("[id='patient.lastName']").type(lastName);
         await page.locator("[id='patient.dateOfBirth']").type(birthDay);
-        await cancelButton.click();
+        await page.locator("[id='case.providerName']").type("Doctor Doctorson");
+        await page.locator("[id='case.locationName']").type("Sacred Heart Hospital");
+        await page.locator("[id='case.procedureUnit']").type("Room 1A");
+        await page.locator("[id='case.serviceLine']").type("8675309");
+        await page.locator("[id='case.procedureDate']").type(procedureDate);
+        await page.waitForTimeout(800);
+        await submitCreateCaseButton.click();
         await expect(patientInformation).toBeHidden();
+        await page.locator("[placeholder$='Search Name or Case ID']").type(firstName)
+        await page.waitForTimeout(800);
+        const patientName= lastName + ", " + firstName
+        const returnName=await page.locator(".MuiTypography-root.MuiTypography-subtitle1.css-1eje5hw").textContent()
+        await expect(returnName).toEqual(patientName);
+        
+         
     });
 });

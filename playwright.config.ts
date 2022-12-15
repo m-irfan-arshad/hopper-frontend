@@ -22,18 +22,18 @@ const config: PlaywrightTestConfig = {
         //traces and logs every step
         trace: 'retain-on-failure'
       }
+    },
+    {
+      name: 'chrome',
+      use: {
+        browserName: 'chromium',
+        headless: true,
+        //screenshots every step
+        screenshot: 'on',
+        //traces and logs every step
+        trace: 'retain-on-failure'
+      }
     }
-    // {
-    //   name: 'chrome',
-    //   use: {
-    //     browserName: 'chromium',
-    //     headless: true,
-    //     //screenshots every step
-    //     screenshot: 'on',
-    //     //traces and logs every step
-    //     trace: 'retain-on-failure'
-    //   }
-    // }
   ],
 };
 export default config;
