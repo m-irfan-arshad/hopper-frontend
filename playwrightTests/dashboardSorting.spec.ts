@@ -34,20 +34,6 @@ test.describe('Landing Page Features', () => {
         await expect(sortTwoDropDownArrowDisplay).toContainText('Sort: Newest - Oldest');
     });
 
-    test('Validating Date Range Drop Down Elements', async ({ page }) => {
-        const dateOne = page.locator("#menu->>text='This month'");
-        const dateTwo = page.locator("#menu->>text='Next month'");
-        const dateThree = page.locator("#menu->>text='Next quarter'");
-        const dateDropDownArrow = page.locator("#case-date-select");
-        await page.waitForTimeout(800);
-        await dateDropDownArrow.click();
-        await expect(dateOne).toContainText('This month');
-        await expect(dateTwo).toContainText('Next month');
-        await expect(dateThree).toContainText('Next quarter');
-        await dateThree.click();
-        await expect(dateDropDownArrow).toContainText('Date Range: Next quarter');
-    });
-
     test('Validating Step Drop Down Elements', async ({ page }) => {
         const stepOne = page.locator("#menu->>text='All Steps'");
         const stepTwo = page.locator("#menu->>text='Insurance Authorization'");
