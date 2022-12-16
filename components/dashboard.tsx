@@ -20,10 +20,8 @@ export default function Dashboard() {
 
     const [dateRangeStart, setDateRangeStart] = useState(moment().startOf('day'));
     const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(moment().add(7, 'days').endOf('day'));
-    const [isDateRangeEndCalendarOpen, setDateRangeEndCalendarStatus] = useState(false);
-    const [isDateRangeStartCalendarOpen, setDateRangeStartCalendarStatus] = useState(false);
 
-    const [dateSortValue, setDateSortValue] = useState('Oldest - Newest');
+    const [dateSortValue, setDateSortValue] = useState('Newest - Oldest');
     const [caseFilterValue, setCaseFilterValue] = useState(defaultCaseFilterValue);
     const [searchBarValue, setSearchBarValue ] = useState('');
     const [page, setPage] = useState(1);
@@ -51,12 +49,8 @@ export default function Dashboard() {
     const dateRangePickerProps = {
         dateRangeStart: dateRangeStart,
         dateRangeEnd: dateRangeEnd,
-        isDateRangeStartCalendarOpen: isDateRangeStartCalendarOpen,
-        isDateRangeEndCalendarOpen: isDateRangeEndCalendarOpen,
         setDateRangeStart: setDateRangeStart,
-        setDateRangeEnd: setDateRangeEnd,
-        setDateRangeEndCalendarStatus: setDateRangeEndCalendarStatus,
-        setDateRangeStartCalendarStatus: setDateRangeStartCalendarStatus
+        setDateRangeEnd: setDateRangeEnd
     }
 
         data.cases.forEach(function(singleCase: SingleCase) {

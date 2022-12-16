@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import moment from "moment";
+import moment, { isMoment } from "moment";
 import { caseFilterInterface } from "../reference";
 import {AlertContext} from "../pages/_app"
 
@@ -24,7 +24,8 @@ export function useGetCasesHook(
         {
             onError: () => {
                 setAlertState({open: true, title: "Error Fetching Cases", status: "error"})
-            }
+            },
+            enabled: isMoment(dateRangeStart) && isMoment(dateRangeEnd),
         }
     )  
 }
@@ -102,7 +103,7 @@ const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Mo
 // <----- helpers ------>
 
 function translateSortOrder(dateSortValue: string) {
-    return dateSortValue === 'Oldest - Newest' ? 'asc' : 'desc'; 
+    return dateSortValue === 'Oldest - Newest' ? 'desc' : 'asc'; 
 }
 
 export function convertCaseStepsToFilters(caseFilter: caseFilterInterface[]): object {

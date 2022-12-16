@@ -20,10 +20,6 @@ interface Props {
 interface dateRangePickerProps {
     dateRangeStart: moment.Moment
     dateRangeEnd: moment.Moment | null
-    isDateRangeEndCalendarOpen: boolean
-    isDateRangeStartCalendarOpen: boolean
-    setDateRangeStartCalendarStatus: (value: boolean) => void
-    setDateRangeEndCalendarStatus: (value: boolean) => void
     setDateRangeStart: (value: moment.Moment) => void
     setDateRangeEnd: (value: moment.Moment | null) => void
 }
@@ -76,10 +72,6 @@ export default function CaseNavBar(props: Props) {
                                 dateRangeEnd={dateRangePickerProps.dateRangeEnd} 
                                 setDateRangeStart={dateRangePickerProps.setDateRangeStart}
                                 setDateRangeEnd={dateRangePickerProps.setDateRangeEnd}
-                                isDateRangeEndCalendarOpen={dateRangePickerProps.isDateRangeEndCalendarOpen}
-                                setDateRangeEndCalendarStatus={dateRangePickerProps.setDateRangeEndCalendarStatus}
-                                isDateRangeStartCalendarOpen={dateRangePickerProps.isDateRangeStartCalendarOpen}
-                                setDateRangeStartCalendarStatus={dateRangePickerProps.setDateRangeStartCalendarStatus}
                             />
                             <MultiSelectDropdown
                                 menuItems={dashboardStepDropDownValues}

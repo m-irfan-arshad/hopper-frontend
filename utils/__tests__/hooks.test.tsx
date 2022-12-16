@@ -38,7 +38,7 @@ describe("Hooks", () => {
         const queryString = new URLSearchParams({ 
             dateRangeStart: moment().utc().startOf('month').format(),
             dateRangeEnd: moment().utc().endOf('month').format(),
-            orderBy: 'asc',
+            orderBy: 'desc',
             page: '1',
             searchValue: '1234',
             vendorConfirmation: 'Incomplete'

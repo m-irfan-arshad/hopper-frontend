@@ -45,6 +45,7 @@ export default function MultiSelectDropDown(props: Props) {
         <Select
             value={value}
             id={selectId}
+            data-testid={selectId}
             multiple
             renderValue={(value: any) => (
                 <Typography variant="body2">{title} {value.map((filter: caseFilterInterface)  => filter.value).join(", ")}</Typography>

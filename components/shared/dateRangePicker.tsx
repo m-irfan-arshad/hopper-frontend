@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker, PickersDay } from '@mui/x-date-pickers';
@@ -8,10 +8,6 @@ import moment from "moment";
 interface Props {
     dateRangeStart: moment.Moment
     dateRangeEnd: moment.Moment | null
-    isDateRangeStartCalendarOpen: boolean
-    isDateRangeEndCalendarOpen: boolean
-    setDateRangeEndCalendarStatus: (value: boolean) => void
-    setDateRangeStartCalendarStatus: (value: boolean) => void
     setDateRangeStart: (value: moment.Moment) => void
     setDateRangeEnd: (value: moment.Moment | null) => void
 }
@@ -22,11 +18,10 @@ export default function DateRangePicker(props: Props) {
       dateRangeEnd, 
       setDateRangeStart, 
       setDateRangeEnd, 
-      isDateRangeStartCalendarOpen, 
-      isDateRangeEndCalendarOpen, 
-      setDateRangeStartCalendarStatus, 
-      setDateRangeEndCalendarStatus 
     } = props;
+
+    const [isDateRangeEndCalendarOpen, setDateRangeEndCalendarStatus] = useState(false);
+    const [isDateRangeStartCalendarOpen, setDateRangeStartCalendarStatus] = useState(false);
 
     const StyledDay = styled(PickersDay, {
         shouldForwardProp: (prop) =>
@@ -46,7 +41,12 @@ export default function DateRangePicker(props: Props) {
         selectedDates: Array<moment.Moment | null>,
         pickersDayProps: any,
       ) => {
-        const shouldHighlightDate = date.isSame(dateRangeStart) || date.isSame(dateRangeEnd);
+        let shouldHighlightDate = false;
+        if (date.isBetween(dateRangeStart, dateRangeEnd, 'days', '[]')) { 
+          shouldHighlightDate = true;
+        } else if (date.isSame(dateRangeStart)) {
+          shouldHighlightDate = true;
+        }
     
         return (
           <StyledDay
@@ -78,15 +78,17 @@ export default function DateRangePicker(props: Props) {
               <DatePicker
                   label="Date Range Start"
                   value={dateRangeStart}
+                  renderDay={renderPickerDay}
                   onChange={(newValue: moment.Moment | null) => {
                       if (newValue && newValue.isValid()) {
                           setDateRangeEnd(null);
                           setDateRangeStart(newValue.startOf('day'));
+                          setDateRangeEndCalendarStatus(true);
                       }
                   }}
                   open={isDateRangeStartCalendarOpen}
                   onOpen={() => handleDateRangeStartOpen()}
-                  onClose={() => handleDateRangeStartClose()}
+                  onClose={() => setDateRangeStartCalendarStatus(false)}
                   renderInput={(params) => <TextField {...params} sx={{
                     "& .MuiOutlinedInput-input": {
                       paddingTop: 0,
@@ -108,6 +110,8 @@ export default function DateRangePicker(props: Props) {
                   value={dateRangeEnd}
                   renderDay={renderPickerDay}
                   open={isDateRangeEndCalendarOpen}
+                  onOpen={handleDateRangeStartClose}
+                  onClose={() => setDateRangeEndCalendarStatus(false)}
                   shouldDisableDate={isBeforeStartDate}
                   onChange={(newValue: moment.Moment | null) => {
                       if (newValue && newValue.isSameOrAfter(dateRangeStart)) {

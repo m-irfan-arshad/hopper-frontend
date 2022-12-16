@@ -128,13 +128,13 @@ describe("Dashboard", () => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
         });
 
-        expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
+        expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
 
-        fireEvent.mouseDown(getByRole("button", {name: "Sort: Oldest - Newest"}));
-        fireEvent.click(getByRole("option", {name: "Newest - Oldest"}));
+        fireEvent.mouseDown(getByRole("button", {name: "Sort: Newest - Oldest"}));
+        fireEvent.click(getByRole("option", {name: "Oldest - Newest"}));
 
         await waitFor(() => {
-            expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
+            expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
         });
 
         //sets viewport to mobile version   
@@ -157,13 +157,13 @@ describe("Dashboard", () => {
           );
 
         expect(queryByRole("button", {name: "Export"})).not.toBeInTheDocument();
-        expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
+        expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
 
-        fireEvent.mouseDown(getByRole("button", {name: "Sort: Newest - Oldest"}));
-        fireEvent.click(getByRole("option", {name: "Oldest - Newest"}));
+        fireEvent.mouseDown(getByRole("button", {name: "Sort: Oldest - Newest"}));
+        fireEvent.click(getByRole("option", {name: "Newest - Oldest"}));
 
         await waitFor(() => {
-            expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
+            expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
         });
       });
 });
