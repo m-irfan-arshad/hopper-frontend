@@ -146,12 +146,8 @@ export default function CreateCaseDialog(props: Props) {
 
   return (
       <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
-        <DialogTitle 
-            sx={{
-                backgroundColor: "blue.dark", 
-                color: "white.main",
-            }}>
-                <Typography variant="h5" color="white.main"> Create Case </Typography>
+        <DialogTitle sx={{backgroundColor: "blue.dark"}}>
+            <Typography sx={{fontSize: "1.5rem"}} color="white.main"> Create Case </Typography>
         </DialogTitle>
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>

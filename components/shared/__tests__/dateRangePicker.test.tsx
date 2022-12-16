@@ -3,8 +3,8 @@ import moment from "moment";
 import DateRangePicker from "../dateRangePicker";
 
 const props = {
-    dateRangeStart: moment("12/13/2022"),
-    dateRangeEnd: moment("12/13/2022").add(7, 'days'),
+    dateRangeStart: moment("2022-12-13"),
+    dateRangeEnd: moment("2022-12-13").add(7, 'days'),
     setDateRangeStart: jest.fn(),
     setDateRangeEnd: jest.fn()
 }
@@ -42,27 +42,6 @@ describe("DateRangePicker", () => {
         await waitFor(() => {
             expect(startInput).toHaveValue('12/19/2022')
             expect(endInput).toHaveValue('01/20/2023')
-            expect(props.setDateRangeEnd).toHaveBeenCalledTimes(2);
-        });
-
-    });
-
-    it("calls onChange of both Date Range Start and Date Range End", async() => {
-        const { getByRole } = render(
-            <DateRangePicker  {...props}/>
-        ); 
-
-        const dateRangeStart = '12/19/2022';
-        const dateRangeEnd = '12/29/2022';
-
-        expect(getByRole("textbox", {name: "Date Range Start"})).toBeInTheDocument();
-        fireEvent.change(getByRole("textbox", {name: "Date Range Start"}), {target: {value: dateRangeStart}});
-        
-        expect(getByRole("textbox", {name: "Date Range End"})).toBeInTheDocument();
-        fireEvent.change(getByRole("textbox", {name: "Date Range End"}), {target: {value: dateRangeEnd}});
-
-        await waitFor(() => {
-            expect(props.setDateRangeStart).toHaveBeenCalledTimes(1);
             expect(props.setDateRangeEnd).toHaveBeenCalledTimes(2);
         });
 

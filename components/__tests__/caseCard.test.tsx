@@ -3,7 +3,6 @@ import CaseCard from "../caseCard";
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
-import moment from "moment";
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),

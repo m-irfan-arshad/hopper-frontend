@@ -1,6 +1,5 @@
 import { render, fireEvent } from "@testing-library/react";
 import CreateCaseDialog from "../createCaseDialog";
-import * as R from 'ramda';
 import moment from "moment";
 
 jest.mock('@tanstack/react-query', () => ({
