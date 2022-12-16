@@ -18,10 +18,6 @@ describe("CaseNavBar", () => {
         dateRangePickerProps: {
             dateRangeStart: moment().utc().startOf('day'),
             dateRangeEnd:  moment().utc().add(7).endOf('day'),
-            isDateRangeEndCalendarOpen: false,
-            isDateRangeStartCalendarOpen: false,
-            setDateRangeStartCalendarStatus: jest.fn(),
-            setDateRangeEndCalendarStatus: jest.fn(),
             setDateRangeStart: jest.fn(),
             setDateRangeEnd: jest.fn()
         }

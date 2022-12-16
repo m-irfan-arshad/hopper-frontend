@@ -123,19 +123,19 @@ export default function Dashboard() {
                         }
                     </Box>
                     <Box sx={{display: "flex"}}>
-                            {isMobile 
-                                && <Box sx={{ marginRight: "0.313rem" }}>
-                                    <DropDownComponent
-                                        menuItems={dashboardSortDropDownValues}
-                                        title="Sort:"
-                                        selectId="case-sort-select"
-                                        onChange={setDateSortValue}
-                                        value={dateSortValue}
-                                    />
-                                    <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                    <Typography variant="caption" color="black.main" >Show Completed Cases</Typography>
-                                </Box>
-                            }
+                        {isMobile 
+                            && <Box sx={{ marginRight: "0.313rem" }}>
+                                <DropDownComponent
+                                    menuItems={dashboardSortDropDownValues}
+                                    title="Sort:"
+                                    selectId="case-sort-select"
+                                    onChange={setDateSortValue}
+                                    value={dateSortValue}
+                                />
+                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
+                                <Typography variant="caption" color="black.main" >Show Completed Cases</Typography>
+                            </Box>
+                        }
                         <Button variant="contained" size="small">
                             <Logout sx={{
                                 transform: "rotate(270deg)", 
