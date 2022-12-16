@@ -6,6 +6,8 @@ test.describe('Landing Page Features', () => {
     test.beforeEach(async ({ page }) => {
         const dashboard = new DashboardPage(page);
         await dashboard.login();
+        page.waitForNavigation;
+        page.waitForLoadState;
     });
 
     test('Validating Procedure Date Sorting', async ({ page }) => {
@@ -22,13 +24,17 @@ test.describe('Landing Page Features', () => {
         const sortDropDownArrow = page.locator("#case-sort-select");
         const sortOne = page.locator("#menu->>text='Oldest - Newest'");
         const sortTwo = page.locator("#menu->>text='Newest - Oldest'");
+        await page.waitForTimeout(800);
         await sortDropDownArrow.click();
         await expect(sortOne).toContainText('Oldest - Newest');
+        await page.waitForTimeout(800);
         await sortOne.click();
         const sortOneDropDownArrowDisplay = page.locator("#case-sort-select");
         await expect(sortOneDropDownArrowDisplay).toContainText('Sort: Oldest - Newest');
+        await page.waitForTimeout(800);
         await sortDropDownArrow.click();
         await expect(sortTwo).toContainText('Newest - Oldest');
+        await page.waitForTimeout(800);
         await sortTwo.click();
         const sortTwoDropDownArrowDisplay = page.locator("#case-sort-select");
         await expect(sortTwoDropDownArrowDisplay).toContainText('Sort: Newest - Oldest');
@@ -37,12 +43,13 @@ test.describe('Landing Page Features', () => {
     test('Validating Step Drop Down Elements', async ({ page }) => {
         const stepOne = page.locator("#menu->>text='All Steps'");
         const stepTwo = page.locator("#menu->>text='Insurance Authorization'");
-        const stepThree = page.locator("#menu->>text='Vendor Confirmation'");
         const stepDropDownArrow = page.locator("#case-step-select");
+        await expect(stepDropDownArrow).toContainText('All Steps');
         await page.waitForTimeout(800);
         await stepDropDownArrow.click();
         await expect(stepOne).toContainText('All Steps');
         await expect(stepTwo).toContainText('Insurance Authorization');
+        await page.waitForTimeout(800);
         await stepTwo.click();
         await expect(stepDropDownArrow).toContainText('Step: Insurance Authorization');
     });
