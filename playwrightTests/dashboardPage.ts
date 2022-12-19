@@ -11,6 +11,9 @@ export class DashboardPage {
     readonly userName: Locator;
     readonly password: Locator;
     readonly loginButton: Locator;
+    readonly createCaseButton: Locator;
+    readonly patientInformation: Locator;
+    readonly submitCreateCaseButton: Locator;
 
     /**
      * @param {import('@playwright/test').Page} page
@@ -24,6 +27,9 @@ export class DashboardPage {
         this.userName = page.locator('[placeholder="yours\\@example\\.com"]');
         this.password = page.locator('[placeholder="your password"]');
         this.loginButton = page.locator('[aria-label="Log In"]');
+        this.createCaseButton = page.locator('button', { hasText: 'Create Case' });
+        this.patientInformation = page.locator("text='Patient Information'");
+        this.submitCreateCaseButton = page.locator("text='Create Case' >> nth=2");
     }
 
     async openFirstPatientDropDown() {
