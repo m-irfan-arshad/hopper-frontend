@@ -30,7 +30,6 @@
     "@prisma/client": "4.7.1",
     "@tanstack/react-query": "4.10.1",
     "dotenv": "16.0.3",
-    "faker": "^6.6.6",
     "jest-environment-jsdom": "28.0.2",
     "launchdarkly-react-client-sdk": "2.26.0",
     "moment": "2.29.4",
@@ -42,7 +41,6 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0",
     "@playwright/test": "1.23.2",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.2.0",

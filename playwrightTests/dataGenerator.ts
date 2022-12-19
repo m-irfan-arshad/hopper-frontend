@@ -1,8 +1,9 @@
-import { faker } from '@faker-js/faker'
 import moment from "moment";
+import Chance from 'chance';
+
+const chance = new Chance();
 
 interface PatientCaseInterface {
-
     birthDay: string;
     firstName: string;
     lastName: string;
@@ -10,21 +11,18 @@ interface PatientCaseInterface {
 }
 
 export function createPatientCase(): PatientCaseInterface {
-
-    const birthDate = faker.date.birthdate()
-    const birthDateFormatted = moment.utc(birthDate).format("MM/DD/YYYY");
-    var someDate = new Date();
-    var numberOfDaysToAdd = 6;
-    var result = someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+    const birthDate = moment.utc(chance.birthday()).format("MM/DD/YYYY")
+    const someDate = new Date();
+    const numberOfDaysToAdd = 6;
+    const result = someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
     const procedureDateFormatted = moment.utc(result).format("MM/DD/YYYY");
 
     return {
-        birthDay: birthDateFormatted,
-        firstName: faker.name.firstName(),
-        lastName: faker.name.lastName(),
+        birthDay: birthDate,
+        firstName: chance.first(),
+        lastName: chance.last(),
         procedureDate: procedureDateFormatted
     };
-
 };
 
 
