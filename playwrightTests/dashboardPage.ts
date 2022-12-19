@@ -1,10 +1,11 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 
 export class DashboardPage {
 
     readonly page: Page;
     readonly patientCardArrow: Locator;
+    readonly caseCardPatientName: Locator;
     readonly caseDateGroup: Locator;
     readonly procedureDate: Locator;
     readonly userName: Locator;
@@ -17,11 +18,12 @@ export class DashboardPage {
     constructor(page: Page) {
         this.page = page;
         this.patientCardArrow = page.locator('data-testid=ArrowDropDownOutlinedIcon');
+        this.caseCardPatientName = page.locator('data-testid=caseCardPatientName');
         this.caseDateGroup = page.locator('data-testid=caseDateGroup');
         this.procedureDate = page.locator('data-testid=procedureDate');
-        this.userName = page.locator('#username');
-        this.password = page.locator('#password');
-        this.loginButton = page.locator("button[value='default']");
+        this.userName = page.locator('[placeholder="yours\\@example\\.com"]');
+        this.password = page.locator('[placeholder="your password"]');
+        this.loginButton = page.locator('[aria-label="Log In"]');
     }
 
     async openFirstPatientDropDown() {
@@ -30,6 +32,10 @@ export class DashboardPage {
 
     async caseDateGroupContent() {
         return await this.caseDateGroup.first().textContent();
+    }
+
+    async caseCardName() {
+        return await this.caseCardPatientName.first().textContent();
     }
 
     async procedureDateContent() {
@@ -41,8 +47,8 @@ export class DashboardPage {
         const user = process.env.PLAYWRIGHT_DEFAULT_USER;
         const password = process.env.PLAYWRIGHT_DEFAULT_USER_PASSWORD;
         await this.page.goto(url as string);
-        await this.userName.type(user as string);
-        await this.password.type(password as string);
+        await this.userName.fill(user as string);
+        await this.password.fill(password as string);
         await this.loginButton.click()
     }
 
