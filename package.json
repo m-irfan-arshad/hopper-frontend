@@ -42,7 +42,6 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0",
     "@playwright/test": "1.23.2",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "13.2.0",

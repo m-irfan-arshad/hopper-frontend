@@ -180,7 +180,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
           }
           title={
             <Box sx={{ display: "flex", alignItems: "baseline" }}>
-              <Typography sx={{marginLeft: "0.438rem"}} variant="subtitle1">{`${row.patients?.lastName}, ${row.patients?.firstName}`}</Typography>
+              <Typography
+                sx={{marginLeft: "0.438rem"}}
+                variant="subtitle1"
+                data-testid="caseCardPatientName"
+              >
+                {`${row.patients?.lastName}, ${row.patients?.firstName}`}
+              </Typography>
               <Typography
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
