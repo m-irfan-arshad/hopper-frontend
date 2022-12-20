@@ -67,11 +67,11 @@ export const dashboardStepDropDownValues = [
 
 export const dashboardSortDropDownValues = [
     {
-        value: "Oldest - Newest",
+        value: "Newest - Oldest",
         id: "9"
     },
     {
-        value: "Newest - Oldest",
+        value: "Oldest - Newest",
         id: "10"
     }
 ];

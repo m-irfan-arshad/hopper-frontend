@@ -46,8 +46,8 @@
             where: {
                 procedureDate: {
                     // eventually this should take in a date range parameter from client instead
-                    gte: moment('10/13/2022').startOf("day").toDate(),
-                    lte: moment('10/31/2022').endOf("day").toDate()
+                    gte: moment('10/13/2022', 'MM/DD/YYYY').startOf("day").toDate(),
+                    lte: moment('10/31/2022', 'MM/DD/YYYY').endOf("day").toDate()
                 },
                 priorAuthorization: {
                     equals: 'Incomplete'

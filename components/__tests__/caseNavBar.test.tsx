@@ -1,4 +1,5 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
+import moment from "moment";
 import CaseNavBar from "../caseNavBar";
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -13,17 +14,23 @@ describe("CaseNavBar", () => {
         caseFilterValue: [{"value": 'All Steps', "id": "all"}],
         dateFilterValue: 'This month',
         search: jest.fn(),
-        searchBarValue: ""
+        searchBarValue: "",
+        dateRangePickerProps: {
+            dateRangeStart: moment().utc().startOf('day'),
+            dateRangeEnd:  moment().utc().add(7).endOf('day'),
+            setDateRangeStart: jest.fn(),
+            setDateRangeEnd: jest.fn()
+        }
     }
 
     test("renders the caseNavBar", async() => {
-        const { getByRole, getByText } = render(
+        const { getByRole } = render(
             <CaseNavBar  {...props}/>
         ); 
        
-        expect(getByRole("button", {name: "Date Range: This month"})).toBeInTheDocument();
+        expect(getByRole("textbox", {name: "Date Range Start"})).toBeInTheDocument();
+        expect(getByRole("textbox", {name: "Date Range End"})).toBeInTheDocument();
         expect(getByRole("button", {name: "Step: All Steps"})).toBeInTheDocument();
-        expect(getByText("Show Completed Cases")).toBeInTheDocument();
     });
 
     test("open create case dialog and close it", async () => {

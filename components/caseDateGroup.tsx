@@ -9,7 +9,7 @@ interface Props {
     list: SingleCase[]
 }
 
-export default function caseDateGroup(props: Props) {
+export default function CaseDateGroup(props: Props) {
     const { date, list } = props;
   return (
     <Box sx={{ marginTop: "1.25rem" }}>

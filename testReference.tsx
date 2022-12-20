@@ -3,7 +3,7 @@ import moment from "moment";
 export const mockCaseData = [
     {
         caseId: 'caseId',
-        procedureDate: moment('10/10/2022').utc().format(),
+        procedureDate: moment('2022-10-10').utc().format(),
         patients: {
             firstName: 'firstName',
             lastName: 'lastName',
@@ -15,7 +15,7 @@ export const mockCaseData = [
     },
     {
             caseId: 'caseId2',
-            procedureDate: moment('10/11/2022').utc().format(),
+            procedureDate: moment('2022-10-11').utc().format(),
             patients: {
                 firstName: 'firstName2',
                 lastName: 'lastName2',

@@ -22,7 +22,7 @@ export default function TopNavBar() {
               justifyContent: "center",
               height: "3.75rem"
           }}>
-            <StyledBox sx={{ width: "92%", maxWidth: "60rem" }}>
+            <StyledBox sx={{ width: "92%" }}>
               <StyledBox>
                 <Image
                   src={logo}

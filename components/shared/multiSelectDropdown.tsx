@@ -33,7 +33,8 @@ export default function MultiSelectDropDown(props: Props) {
         svg: {
             color: "blue.main"
         },
-        maxWidth: "15rem",
+        maxWidth: "25rem",
+        marginRight: "0.625rem",
         ".MuiTypography-root": {
             overflow: "hidden",
             textOverflow: "ellipsis"
@@ -44,6 +45,7 @@ export default function MultiSelectDropDown(props: Props) {
         <Select
             value={value}
             id={selectId}
+            data-testid={selectId}
             multiple
             renderValue={(value: any) => (
                 <Typography variant="body2">{title} {value.map((filter: caseFilterInterface)  => filter.value).join(", ")}</Typography>

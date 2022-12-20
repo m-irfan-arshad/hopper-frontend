@@ -1,25 +1,31 @@
 import React, { useState } from "react";
-import { AppBar, styled, Box, Button, Checkbox, Typography, useMediaQuery } from '@mui/material';
+import { AppBar, styled, Box, Button, Checkbox, Typography, InputLabel, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
-import DropDownComponent from "./shared/dropdown";
-import { dashboardDateRangeDropDownValues, dashboardStepDropDownValues, caseFilterInterface } from "../reference";
+import DateRangePicker from "./shared/dateRangePicker";
+import { dashboardStepDropDownValues, caseFilterInterface } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
 import MultiSelectDropdown from "./shared/multiSelectDropdown";
 
 
 interface Props {
-    onDateFilterChange: (value: string) => void
     onCaseFilterChange: (value: caseFilterInterface[]) => void
     search: (value: string) => void
     caseFilterValue: caseFilterInterface[]
-    dateFilterValue: string
     searchBarValue: string
+    dateRangePickerProps: dateRangePickerProps
+}
+
+interface dateRangePickerProps {
+    dateRangeStart: moment.Moment
+    dateRangeEnd: moment.Moment | null
+    setDateRangeStart: (value: moment.Moment) => void
+    setDateRangeEnd: (value: moment.Moment | null) => void
 }
 
 export default function CaseNavBar(props: Props) {
-    const { onDateFilterChange, dateFilterValue, onCaseFilterChange, caseFilterValue, searchBarValue, search } = props;
+    const { onCaseFilterChange, caseFilterValue, searchBarValue, search, dateRangePickerProps } = props;
 
     const [isDialogOpen, setDialogState] = useState(false);
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
@@ -30,20 +36,6 @@ export default function CaseNavBar(props: Props) {
         alignItems: "center"
     });
 
-    const StyledCheckbox = styled(Checkbox)({
-        marginLeft: "0.625rem",
-        marginRight: "0.313rem", 
-        height: "1.5rem", 
-        width: "1.5rem",
-        color: defaultTheme.palette.blue.light,
-        "&.Mui-checked": {
-            color: defaultTheme.palette.green.light
-        },
-        [defaultTheme.breakpoints.down("sm")]: {
-            marginLeft: "1.25rem",
-            marginTop: "1rem"
-        }
-    });
 
     return (
         <React.Fragment>
@@ -56,7 +48,7 @@ export default function CaseNavBar(props: Props) {
                 height: {xs: "6.75rem", sm:"3.75rem"},
                 boxShadow: "0rem 0.063rem 0rem #D8E4F4"
             }}>
-                <StyledBox sx={{ width: "92%", maxWidth: "60rem" }}>
+                <StyledBox sx={{ width: "92%" }}>
                     <StyledBox>
                         <DebouncedInput 
                             value={searchBarValue} 
@@ -75,12 +67,11 @@ export default function CaseNavBar(props: Props) {
                         /> 
                     { !isMobile &&
                         <React.Fragment>
-                            <DropDownComponent
-                                menuItems={dashboardDateRangeDropDownValues}
-                                title="Date Range:"
-                                selectId="case-date-select"
-                                onChange={onDateFilterChange}
-                                value={dateFilterValue}
+                            <DateRangePicker 
+                                dateRangeStart={dateRangePickerProps.dateRangeStart}
+                                dateRangeEnd={dateRangePickerProps.dateRangeEnd} 
+                                setDateRangeStart={dateRangePickerProps.setDateRangeStart}
+                                setDateRangeEnd={dateRangePickerProps.setDateRangeEnd}
                             />
                             <MultiSelectDropdown
                                 menuItems={dashboardStepDropDownValues}
@@ -90,8 +81,6 @@ export default function CaseNavBar(props: Props) {
                                 onChange={onCaseFilterChange}
                                 value={caseFilterValue}
                             />
-                            <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                            <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
                         </React.Fragment>
                         }
                     </StyledBox>
@@ -106,12 +95,6 @@ export default function CaseNavBar(props: Props) {
                         </Button>
                     }
                 </StyledBox>
-                {isMobile 
-                    && <Box sx={{ display: "flex", alignItems: "center", width: "100%"}}>
-                        <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                        <Typography variant="body1" sx={{marginTop: "1rem"}}>Show Completed Cases</Typography>
-                    </Box>
-                }
             </AppBar>
         </React.Fragment>
     );
