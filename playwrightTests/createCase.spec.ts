@@ -5,15 +5,14 @@ import { DashboardPage } from './dashboardPage';
 test.describe('Landing Page', () => {
     test.beforeEach(async ({ page }) => {
         const dashboard = new DashboardPage(page);
-        await dashboard.login();
-        page.waitForURL;
-        page.waitForLoadState;
+        await page.goto(dashboard.url);
+        
     });
 
-    test.only('Submitting a Created Case', async ({ page }) => {
+    test('Submitting a Created Case', async ({ page }) => {
+        
         const dashboard = new DashboardPage(page);
         const { firstName, lastName, birthDay, procedureDate } = createPatientCase();
-        
         await dashboard.createCaseButton.click();
         await expect(dashboard.patientInformation).toBeVisible();
         await page.locator("[id='patient.firstName']").fill(firstName);
