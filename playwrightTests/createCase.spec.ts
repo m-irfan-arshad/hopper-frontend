@@ -12,7 +12,6 @@ test.describe('Landing Page', () => {
     test('Submitting a Created Case', async ({ page }) => {
         
         const dashboard = new DashboardPage(page);
-        await page.context().storageState({ path: 'storageState.json' });
         const { firstName, lastName, birthDay, procedureDate } = createPatientCase();
         await dashboard.createCaseButton.click();
         await expect(dashboard.patientInformation).toBeVisible();
