@@ -1,5 +1,4 @@
 import { chromium, FullConfig } from '@playwright/test';
-import context from 'launchdarkly-react-client-sdk/lib/context';
 
 async function globalSetup(config: FullConfig) {
     const browser = await chromium.launch();
@@ -12,13 +11,12 @@ async function globalSetup(config: FullConfig) {
     await page.locator('[placeholder="yours\\@example\\.com"]').fill(user as string);
     await page.locator('[placeholder="your password"]').fill(password as string);
     await page.locator('[aria-label="Log In"]').click();
-    page.waitForURL;
-    // Save signed-in state to 'storageState.json'.
-    console.log("Saving storage state");
+    const [res] = await Promise.all([
+        page.waitForResponse(res => res.url().includes(url as string) && res.status() === 200)
+    ]);
+    await res.finished()
     await page.context().storageState({ path: 'storageState.json' });
     await browser.close();
-    console.log("finished setup");
-
 }
 
 export default globalSetup;
