@@ -3,13 +3,17 @@ import { createPatientCase } from './dataGenerator';
 import { DashboardPage } from './dashboardPage';
 
 test.describe('Landing Page', () => {
+    test.beforeEach(async ({ page }) => {
+        const dashboard = new DashboardPage(page);
+        await page.goto(dashboard.url);
+        
+    });
 
     test('Submitting a Created Case', async ({ page }) => {
-
+        
         const dashboard = new DashboardPage(page);
         await page.context().storageState({ path: 'storageState.json' });
         const { firstName, lastName, birthDay, procedureDate } = createPatientCase();
-        await page.goto(dashboard.url);
         await dashboard.createCaseButton.click();
         await expect(dashboard.patientInformation).toBeVisible();
         await page.locator("[id='patient.firstName']").fill(firstName);
@@ -26,8 +30,8 @@ test.describe('Landing Page', () => {
         const [res] = await Promise.all([
             page.waitForResponse(res => res.url().includes('/getCases') && res.url().includes('searchValue') && res.status() === 200),
             page.locator("[placeholder$='Search Name or Case ID']").fill(`${firstName} ${lastName}`)
-        ]);
-
+           ]);
+    
         await res.finished()
         const patientName = `${lastName}, ${firstName}`;
         const caseCardName = await dashboard.caseCardName();
