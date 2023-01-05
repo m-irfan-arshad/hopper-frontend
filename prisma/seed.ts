@@ -3,7 +3,7 @@ import Chance from 'chance';
 
 const chance = new Chance();
 
-async function main() {
+async function createCases() {
     for (let i = 0; i < 50; i++) {
         await prisma.patients.create({
             data: {
@@ -21,6 +21,38 @@ async function main() {
             }
         })
     }
+}
+
+async function createLocations() {
+    for (let i = 0; i < 2; i++) {
+        await prisma.locations.create({
+            data: {
+                locationId: i,
+                locationName: chance.city(),
+                procedureUnits: {
+                    create: [1,2].map(function(){
+                        return { 
+                            fhirResourceId: chance.string({ length: 10 }),
+                            procedureUnitName: 'pu' + chance.word({ syllables: 2 }),
+                            serviceLines: {
+                                create: [1,2].map(function(){
+                                    return {
+                                        fhirResourceId: chance.string({ length: 10 }),
+                                        serviceLineName: 'sl' + chance.word({ syllables: 2 }),
+                                    }
+                                })
+                            }
+                        }
+                    }),
+                  },
+            }
+        })
+    }
+}
+
+async function main() {
+    await createCases();
+    await createLocations();
 }
 
 main()
