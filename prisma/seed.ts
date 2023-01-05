@@ -25,26 +25,33 @@ async function createCases() {
 
 async function createLocations() {
     for (let i = 0; i < 2; i++) {
-        await prisma.locations.create({
+        await prisma.locations.create({   //create locations
             data: {
-                locationId: i,
                 locationName: chance.city(),
-                procedureUnits: {
-                    create: [1,2].map(function(){
-                        return { 
-                            fhirResourceId: chance.string({ length: 10 }),
-                            procedureUnitName: 'pu' + chance.word({ syllables: 2 }),
-                            serviceLines: {
-                                create: [1,2].map(function(){
-                                    return {
-                                        fhirResourceId: chance.string({ length: 10 }),
-                                        serviceLineName: 'sl' + chance.word({ syllables: 2 }),
-                                    }
-                                })
-                            }
+                procedureUnits: {    // create PUs under each location
+                    create: [...Array(2)].map(()=>({ 
+                        fhirResourceId: chance.string({ length: 10 }),
+                        procedureUnitName: 'pu' + chance.word({ syllables: 2 }),
+                        serviceLines: {    // create SLs under each PU
+                            create: [...Array(2)].map(()=>({
+                                fhirResourceId: chance.string({ length: 10 }),
+                                serviceLineName: 'sl' + chance.word({ syllables: 2 }),
+                                providers: {    // create provider relationship for each SL
+                                    create: [...Array(3)].map(()=>({
+                                        provider: {    // create providers for each provider relationship
+                                            create: {
+                                                fhirResourceId: chance.string({ length: 10 }),
+                                                firstName: chance.first({ nationality: 'en' }),
+                                                lastName: chance.last({ nationality: 'en' }),
+                                                address: chance.address()
+                                            }
+                                        }
+                                    }))
+                                }
+                            }))
                         }
-                    }),
-                  },
+                    }))
+                }
             }
         })
     }

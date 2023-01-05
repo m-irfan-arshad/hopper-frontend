@@ -14,8 +14,8 @@ model cases {
   procedureDate      DateTime  @map("procedure_date") @db.Timestamp(6)
   providerName       String?   @map("provider_name")
   locationName       String?   @map("location_name")
-  createTime         DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime         DateTime? @map("update_time") @db.Timestamp(6)
+  createTime         DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime         DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   priorAuthorization String    @map("prior_authorization") @default("Incomplete")
   vendorConfirmation String    @map("vendor_confirmation") @default("Incomplete")
   patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
@@ -31,8 +31,8 @@ model patients {
   mobilePhone    String?   @map("mobile_phone")
   homePhone      String?   @map("home_phone")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Date
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   cases          cases[]
 }
 
@@ -40,8 +40,8 @@ model locations {
   locationId     Int       @id @default(autoincrement()) @map("location_id")
   fhirResourceId String?   @unique @map("fhir_resource_id")
   locationName   String?   @map("location_name")
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   procedureUnits procedureUnits[]
 }
 
@@ -60,7 +60,7 @@ model serviceLines {
   serviceLineName        String?   @map("service_line_name")
   procedureUnitFk procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
   procedureUnitId Int
-  providers providers[]
+  providers ServiceLineToProvider[]
 }
 
 model providers {
@@ -70,8 +70,16 @@ model providers {
   lastName       String?   @map("last_name")
   address        String?
   email          String?
-  serviceLineFk  serviceLines @relation(fields: [serviceLineId], references: [serviceLineId])
-  serviceLineId  Int  
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+  serviceLines ServiceLineToProvider[]
+}
+
+model ServiceLineToProvider {
+  serviceLine       serviceLines     @relation(fields: [serviceLineId], references: [serviceLineId])
+  serviceLineId     Int
+  provider          providers     @relation(fields: [providerId], references: [providerId])
+  providerId        Int
+
+  @@id([serviceLineId, providerId])
 }
