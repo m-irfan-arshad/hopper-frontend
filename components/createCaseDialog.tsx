@@ -16,7 +16,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useForm, Controller } from "react-hook-form";
-import { useCreateCaseHook, caseToPlatformHook } from '../utils/hooks';
+import { useCreateCaseHook } from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -39,8 +39,6 @@ export default function CreateCaseDialog(props: Props) {
 
   const onSubmit = async (data: object) => {
     await mutate(data)
-    const sendCaseToPlatform = caseToPlatformHook()
-    //sendCaseToPlatform(data)
     handleClose()
   };
 

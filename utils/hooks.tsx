@@ -58,21 +58,6 @@ export function useCreateCaseHook() {
     )
 }
 
-export function caseToPlatformHook() {
-    return (data: object) => fetch("/api/caseToPlatform",
-        {
-            method: "post",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(res => {
-            if (res.ok) {
-              return res.json()
-            }      
-        })
-}
-
 export function useUpdateCaseHook() {
     const queryClient = useQueryClient()
     const [_, setAlertState] = useContext(AlertContext);
