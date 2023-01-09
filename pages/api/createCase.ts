@@ -1,13 +1,13 @@
 import { cases, patients } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
-import { validateParameters } from '../../utils/helpers';
+import { validateRequest } from '../../utils/helpers';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['procedureDate', 'providerName', 'locationName', 'procedureUnit', 'serviceLine'];
 
 export default withApiAuthRequired(async function createCaseHandler(req: NextApiRequest, res: NextApiResponse) {
-  const invalidParamsMessage = validateParameters(requiredParams, req.body?.case || {}, res);
+  const invalidParamsMessage = validateRequest(requiredParams, req.body?.case || {}, res);
 
   if (invalidParamsMessage) {
     return invalidParamsMessage

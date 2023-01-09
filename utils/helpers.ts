@@ -1,4 +1,4 @@
-import type { NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { SingleCase, APIParameters } from '../reference';
 import { Prisma, cases, patients } from '@prisma/client';
 import moment from "moment";
@@ -119,7 +119,12 @@ export function casesFormatter (params: CasesFormatterProps): any {
     return newCase
 }
 
-export function validateParameters(requiredParams: Array<string>, inputtedParams: APIParameters, res: NextApiResponse) {
+export function validateParameters(requiredParams: Array<string>, req: NextApiRequest, res: NextApiResponse) {
+    return validateRequest(requiredParams, req.query, res)
+}
+
+
+export function validateRequest(requiredParams: Array<string>, inputtedParams: APIParameters, res: NextApiResponse) {
     const invalidParameters = requiredParams.reduce(function(acc: any, key: string) {
         if (!inputtedParams[key]) {
             return acc + ' ' + key;
@@ -130,4 +135,17 @@ export function validateParameters(requiredParams: Array<string>, inputtedParams
         return res.status(400).json({ message: 'The following required parameters are missing:' + invalidParameters });
     } 
     return null;
+}
+
+
+export function withValidation(requiredParams: Array<string>, queryFunc: Function) {
+    return (...args: [NextApiRequest, NextApiResponse]) => {
+        const invalidParamsMessage = validateParameters(requiredParams, ...args);
+
+        if (invalidParamsMessage) {
+            return invalidParamsMessage
+        }
+
+        return queryFunc(...args)
+    }
 }
