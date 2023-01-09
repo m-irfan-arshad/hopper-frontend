@@ -13,7 +13,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         serviceLines: {
           some: {
             serviceLine: {
-              serviceLineId: req.body.serviceLineId,
+              serviceLineId: parseInt(req.query["serviceLineId"] as string)
             },
           },
         },
