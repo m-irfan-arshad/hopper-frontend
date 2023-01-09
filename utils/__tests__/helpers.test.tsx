@@ -99,17 +99,23 @@ describe("Utils", () => {
     });
 
     test("validateParameters return invalid parameters", () => {
+        let req = httpMock.createRequest({
+            url: `/api/test?providerId=value`
+        });
         const res = httpMock.createResponse({});
 
-        const result = validateParameters(['providerId', 'caseId'], {'providerId': 'value', 'key2': 'value2'}, res);
+        const result = validateParameters(['providerId', 'caseId'], req, res);
         
         expect(result).toEqual(res.status(400).json({ message: 'The following required parameters are missing:' }));    
     });
 
     test("validateParameters return nothing wrong", () => {
+        let req = httpMock.createRequest({
+            url: `/api/test?providerId=value`
+        });
         const res = httpMock.createResponse({});
 
-        const result = validateParameters(['providerId', 'caseId'], {'providerId': 'value', 'caseId': 'value2'}, res);
+        const result = validateParameters(['providerId'], req, res);
         
         expect(result).toEqual(null);    
     });

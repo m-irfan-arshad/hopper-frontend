@@ -3,7 +3,7 @@ import Chance from 'chance';
 
 const chance = new Chance();
 
-async function main() {
+async function createCases() {
     for (let i = 0; i < 50; i++) {
         await prisma.patients.create({
             data: {
@@ -21,6 +21,45 @@ async function main() {
             }
         })
     }
+}
+
+async function createLocations() {
+    for (let i = 0; i < 2; i++) {
+        await prisma.locations.create({   //create locations
+            data: {
+                locationName: chance.city(),
+                procedureUnits: {    // create PUs under each location
+                    create: [...Array(2)].map(()=>({ 
+                        fhirResourceId: chance.string({ length: 10 }),
+                        procedureUnitName: 'pu' + chance.word({ syllables: 2 }),
+                        serviceLines: {    // create SLs under each PU
+                            create: [...Array(2)].map(()=>({
+                                fhirResourceId: chance.string({ length: 10 }),
+                                serviceLineName: 'sl' + chance.word({ syllables: 2 }),
+                                providers: {    // create provider relationship for each SL
+                                    create: [...Array(3)].map(()=>({
+                                        provider: {    // create providers for each provider relationship
+                                            create: {
+                                                fhirResourceId: chance.string({ length: 10 }),
+                                                firstName: chance.first({ nationality: 'en' }),
+                                                lastName: chance.last({ nationality: 'en' }),
+                                                address: chance.address()
+                                            }
+                                        }
+                                    }))
+                                }
+                            }))
+                        }
+                    }))
+                }
+            }
+        })
+    }
+}
+
+async function main() {
+    await createCases();
+    await createLocations();
 }
 
 main()

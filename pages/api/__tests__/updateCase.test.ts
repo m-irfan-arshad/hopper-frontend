@@ -28,12 +28,12 @@ jest.mock('@auth0/nextjs-auth0', () => ({
 
 
     let req: NextApiRequest = httpMock.createRequest({
-        url: "/api/updateCase",
+        url: "/api/updateCase?caseId=1",
         body: testCase
     });
     let res: any = httpMock.createResponse({});
 
-    test('should get cases', async () => {
+    test('should update a case', async () => {
         prismaMock.cases.update.mockResolvedValue(testCase)
 
         await updateCaseHandler(req, res)

@@ -36,26 +36,6 @@ model patients {
   cases          cases[]
 }
 
-model providers {
-  providerId     Int       @id @default(autoincrement()) @map("provider_id")
-  fhirResourceId String?   @unique @map("fhir_resource_id")
-  firstName      String?   @map("first_name")
-  lastName       String?   @map("last_name")
-  locationName   String?   @map("location_name")
-  address        String?
-  serviceLine    String?   @map("service_line")
-  email          String?
-  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
-  serviceLines ServiceLineToProvider[]
-}
-
-model provider_locations {
-  id             Int      @id @default(autoincrement()) @map("id")
-  locationId     Int      @map("location_id")
-  providerId     Int      @map("provider_id")
-}
-
 model locations {
   locationId     Int       @id @default(autoincrement()) @map("location_id")
   fhirResourceId String?   @unique @map("fhir_resource_id")
@@ -76,11 +56,29 @@ model procedureUnits {
 
 model serviceLines {
   serviceLineId     Int       @id @default(autoincrement()) @map("service_line_id")
-  fhirResourceId    String?   @unique @map("fhir_resource_id")
-  serviceLineName   String?   @map("service_line_name")
-  procedureUnitFk   procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
-  procedureUnitId   Int
-  providers         ServiceLineToProvider[]
+  fhirResourceId      String?   @unique @map("fhir_resource_id")
+  serviceLineName        String?   @map("service_line_name")
+  procedureUnitFk procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
+  procedureUnitId Int
+  providers ServiceLineToProvider[]
+}
+
+model providers {
+  providerId     Int       @id @default(autoincrement()) @map("provider_id")
+  fhirResourceId String?   @unique @map("fhir_resource_id")
+  firstName      String?   @map("first_name")
+  lastName       String?   @map("last_name")
+  address        String?
+  email          String?
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+  serviceLines ServiceLineToProvider[]
+}
+
+model provider_locations {
+  id             Int      @id @default(autoincrement()) @map("id")
+  locationId     Int      @map("location_id")
+  providerId     Int      @map("provider_id")
 }
 
 model ServiceLineToProvider {
