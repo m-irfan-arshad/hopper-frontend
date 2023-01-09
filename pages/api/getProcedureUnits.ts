@@ -9,9 +9,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     try {
         const procedureUnits = await prisma.procedureUnits.findMany({
             where: {
-                locationId: {
-                    equals: req.body.locationId
-                }
+                locationId: <number>req.body.locationId
             }
         })
         res.json(procedureUnits)
