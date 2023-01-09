@@ -14,8 +14,8 @@ model cases {
   procedureDate      DateTime  @map("procedure_date") @db.Timestamp(6)
   providerName       String?   @map("provider_name")
   locationName       String?   @map("location_name")
-  createTime         DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime         DateTime? @map("update_time") @db.Timestamp(6)
+  createTime         DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime         DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   priorAuthorization String    @map("prior_authorization") @default("Incomplete")
   vendorConfirmation String    @map("vendor_confirmation") @default("Incomplete")
   patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
@@ -31,8 +31,8 @@ model patients {
   mobilePhone    String?   @map("mobile_phone")
   homePhone      String?   @map("home_phone")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Date
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   cases          cases[]
 }
 
@@ -45,21 +45,48 @@ model providers {
   address        String?
   serviceLine    String?   @map("service_line")
   email          String?
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
-}
-
-model locations {
-  locationId     Int       @id @default(autoincrement()) @map("location_id")
-  fhirResourceId String?   @unique @map("fhir_resource_id")
-  locationName   String?   @map("location_name")
-  procedureUnits String[]  @map("procedure_units")
-  createTime     DateTime? @map("create_time") @db.Timestamp(6)
-  updateTime     DateTime? @map("update_time") @db.Timestamp(6)
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+  serviceLines ServiceLineToProvider[]
 }
 
 model provider_locations {
   id             Int      @id @default(autoincrement()) @map("id")
   locationId     Int      @map("location_id")
   providerId     Int      @map("provider_id")
+}
+
+model locations {
+  locationId     Int       @id @default(autoincrement()) @map("location_id")
+  fhirResourceId String?   @unique @map("fhir_resource_id")
+  locationName   String?   @map("location_name")
+  createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+  procedureUnits procedureUnits[]
+}
+
+model procedureUnits {
+  procedureUnitId     Int       @id @default(autoincrement()) @map("procedure_unit_id")
+  fhirResourceId      String?   @unique @map("fhir_resource_id")
+  procedureUnitName        String?   @map("procedure_unit_name")
+  locationFk locations @relation(fields: [locationId], references: [locationId])
+  locationId Int  
+  serviceLines serviceLines[]
+}
+
+model serviceLines {
+  serviceLineId     Int       @id @default(autoincrement()) @map("service_line_id")
+  fhirResourceId    String?   @unique @map("fhir_resource_id")
+  serviceLineName   String?   @map("service_line_name")
+  procedureUnitFk   procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
+  procedureUnitId   Int
+  providers         ServiceLineToProvider[]
+}
+
+model ServiceLineToProvider {
+  serviceLine       serviceLines     @relation(fields: [serviceLineId], references: [serviceLineId])
+  serviceLineId     Int
+  provider          providers     @relation(fields: [providerId], references: [providerId])
+  providerId        Int
+  @@id([serviceLineId, providerId])
 }

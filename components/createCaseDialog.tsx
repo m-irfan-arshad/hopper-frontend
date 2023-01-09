@@ -16,10 +16,10 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useForm, Controller } from "react-hook-form";
-import { useCreateCaseHook } from '../utils/hooks';
+import { useCreateCaseHook, useGetLocationOptionsHook } from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+import DropDownSearchComponent from "./shared/dropdownSearch";
 
 interface Props {
     open: boolean
@@ -30,11 +30,17 @@ export default function CreateCaseDialog(props: Props) {
   const {open, closeDialog} = props;
   const {mutate} = useCreateCaseHook()
 
+  useGetLocationOptionsHook
+  const { data = [{label: '', id: 1}], isFetching } = useGetLocationOptionsHook();
+
+  console.log('data',data);
+  console.log('isFetching',isFetching);
+
   const StyledTextField = styled(TextField)({
     "& .MuiOutlinedInput-input": {
         fontSize: "0.688rem"
     },
-    marginTop: "0.313rem"
+    marginTop: "0.313rem",
   });
 
   const onSubmit = async (data: object) => {
@@ -53,11 +59,34 @@ export default function CreateCaseDialog(props: Props) {
     placeholder: string
   }
 
+  interface DropDownSearchControllerProps {
+    id: any,
+    title: string,
+    disabled?: boolean
+    placeholder: string
+    additionalStyles?: React.CSSProperties | object
+  }
+
   interface DateControllerProps {
     id: any,
     title: string,
     placeholder: string
   }
+
+  const filmsWithOutValues = [
+    { label: 'Shawshank Redemption', id: 1994 },
+    { label: 'Godfather', id: 1972 },
+    { label: 'Godfather: Part II',  id: 1974 },
+    { label: 'The Dark Knight', id: 2008 },
+    { label: '12 Angry Men',  id: 1957 },
+    { label: "Schindler's List",  id: 1993 },
+    { label: 'Pulp Fiction', id: 1994 },
+    { label: 'Horizon', id: 2000 },
+    { label: 'Family Guy', id: 1950 },
+    { label: 'Jedi',  id: 1998 },
+    { label: 'The Darkest Day', id: 2019 },
+    { label: 'The Second Return', id: 1999 }
+];
 
   function InputController(props: InputControllerProps) {
     const {id, title, placeholder} = props;
@@ -67,8 +96,31 @@ export default function CreateCaseDialog(props: Props) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
+                <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
                 <StyledTextField {...field} id={id} variant="outlined" placeholder={placeholder} />
+            </React.Fragment>
+        )}
+      />
+  }
+
+  function DropDownSearchController(props: DropDownSearchControllerProps) {
+    const {id, title, disabled, placeholder, additionalStyles} = props;
+    return <Controller
+        name={id}
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+            <React.Fragment>
+                <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
+                <DropDownSearchComponent 
+                    {...field}
+                    id={id}
+                    options={data}
+                    onChange={field.onChange}
+                    disabled={disabled} 
+                    placeholder={placeholder} 
+                    additionalStyles={additionalStyles}
+                />
             </React.Fragment>
         )}
       />
@@ -82,7 +134,7 @@ export default function CreateCaseDialog(props: Props) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
+                <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
                 <DesktopDatePicker
                     {...field}
                     components={{ OpenPickerIcon: DateRangeIcon }}
@@ -97,7 +149,6 @@ export default function CreateCaseDialog(props: Props) {
                             }} 
                             sx={{
                                 svg: { 
-                                    color: "blue.main",
                                     height: "0.75rem",
                                     width: "0.75rem"
                                 }
@@ -110,6 +161,8 @@ export default function CreateCaseDialog(props: Props) {
         )}
       />
   }
+
+  useGetLocationOptionsHook
 
   const schema = yup.object().shape({
     patient: yup.object().shape({
@@ -126,7 +179,7 @@ export default function CreateCaseDialog(props: Props) {
     })
   });
 
-  const { handleSubmit, control, reset, formState: { isValid } } = useForm({
+  const { handleSubmit, control, reset, formState: { isValid, dirtyFields } } = useForm({ 
     resolver: yupResolver(schema),
     defaultValues: {
       patient: {
@@ -135,10 +188,10 @@ export default function CreateCaseDialog(props: Props) {
         dateOfBirth: null,
       },
       case: {
-        providerName: "",
-        locationName: "",
-        procedureUnit: "",
-        serviceLine: "",
+        providerName: null,
+        locationName: null,
+        procedureUnit: null,
+        serviceLine: null,
         procedureDate: null
       }
     }
@@ -152,32 +205,32 @@ export default function CreateCaseDialog(props: Props) {
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
-                <Grid container spacing={"2.5rem"}>
+                <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputController id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid>
-                    <Grid item xs={6}>
-                        <InputController id="patient.lastName" title="Last Name" placeholder="Last Name"/>
+                    <Grid item xs={'auto'}>
+                        <InputController id="patient.lastName" title="Last Name" placeholder="Last Name" />
                     </Grid>
                     <Grid item xs={6}>
                         <DateController id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
                     </Grid>
                 </Grid>
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
-                <Grid container spacing={"2.5rem"}>
-                    <Grid item xs={6}>
-                        <InputController id="case.providerName" title="Primary Surgeon" placeholder="Primary Surgeon"/>
+                <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
+                    <Grid item xs={12}>
+                        <DropDownSearchController id="case.locationName" title="Surgical Location" placeholder="Surgical Location" additionalStyles={{ "& .MuiFormControl-root": { width: "100%"}}} />
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="case.locationName" title="Surgical Location" placeholder="Surgical Location"/>
+                        <DropDownSearchController id="case.procedureUnit" title="Procedure Unit" placeholder="Procedure Unit" disabled={dirtyFields.case?.locationName !== true}/>
+                    </Grid>
+                    <Grid item xs={'auto'}>
+                        <DropDownSearchController id="case.serviceLine" title="Service Line" placeholder="Service Line" disabled={dirtyFields.case?.procedureUnit !== true} />
                     </Grid>
                     <Grid item xs={6}>
-                        <InputController id="case.procedureUnit" title="Procedure Unit" placeholder="Procedure Unit"/>
+                        <DropDownSearchController id="case.providerName" title="Primary Surgeon" placeholder="Primary Surgeon" disabled={dirtyFields.case?.serviceLine !== true} additionalStyles={{ marginBottom: "50px"}} />
                     </Grid>
-                    <Grid item xs={6}>
-                        <InputController id="case.serviceLine" title="Service Line" placeholder="Service Line"/>
-                    </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={'auto'}>
                         <DateController id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>
