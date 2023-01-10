@@ -4,7 +4,7 @@
  import httpMock from 'node-mocks-http';
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
- import getProviderOptionsHandler from '../getProviderOptions'
+ import getProvidersHandler from '../getProviders'
 
  jest.mock('@auth0/nextjs-auth0', () => ({
     withApiAuthRequired: jest.fn((args) => args),
@@ -13,7 +13,7 @@
 
  describe("getProviderOptions API", () => {
     let req: NextApiRequest = httpMock.createRequest({
-        url: `/api/getProviderOptions`
+        url: `/api/getProviders?serviceLineId=123`
     });
     let res: any = httpMock.createResponse({});
 
@@ -23,9 +23,7 @@
             fhirResourceId: "testId",
             firstName: 'firstName',
             lastName: 'lastName',
-            locationName: 'NYU Langone',
             address: 'address',
-            serviceLine: 'General Surgery',
             email: 'fake@email.com',
             createTime: new Date(),
             updateTime: new Date()
@@ -33,7 +31,7 @@
 
         prismaMock.providers.findMany.mockResolvedValue(providers)
 
-        await getProviderOptionsHandler(req, res)
+        await getProvidersHandler(req, res)
         const data = res._getJSONData()
         expect(data[0].providerId).toEqual(1)
         expect(data[0].firstName).toEqual('firstName')
