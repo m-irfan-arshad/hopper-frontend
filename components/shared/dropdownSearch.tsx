@@ -2,8 +2,8 @@ import React from "react";
 import {Autocomplete, TextField} from "@mui/material";
 
 interface Option {
-    label: string
-    id: number
+    [key: string]: string
+    fhirResourceId: string
 }
 
 interface Props {
@@ -12,11 +12,12 @@ interface Props {
     placeholder: string
     additionalStyles?: React.CSSProperties | object
     onChange: (value: any) => void
+    labelProperty: string
     options: Option[]
 }
 
 export default function DropDownComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, ...restParams} = props;
+    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperty, ...restParams} = props;
 
     const defaultStyles = {
         "& .MuiOutlinedInput-root": {
@@ -31,10 +32,6 @@ export default function DropDownComponent(props: Props) {
         },
         marginTop: "0.313rem"        
     }
-
-    function isOptionEqualToValue(option: Option, value: Option) {
-        return option.id === value.id; 
-    }
     
     return (
         <Autocomplete
@@ -42,7 +39,8 @@ export default function DropDownComponent(props: Props) {
             data-testid='autocomplete'
             id={id}
             disableClearable
-            isOptionEqualToValue={(option, value) => isOptionEqualToValue(option, value)}
+            isOptionEqualToValue={(option, value) => option.fhirResourceId === value.fhirResourceId}
+            getOptionLabel={(option: Option) => option[labelProperty] || ''}
             onChange={(_, data) => onChange(data)}
             options={options}
             disabled={disabled}
@@ -58,8 +56,5 @@ export default function DropDownComponent(props: Props) {
             renderInput={(params) => <TextField {...params} placeholder={placeholder}  />
         }
       />
-    );
-
-    //TODO: filter options alphabetically in the API
-    
+    );    
 }

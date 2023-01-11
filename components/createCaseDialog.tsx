@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Add, DateRange as DateRangeIcon } from "@mui/icons-material";
 import { 
     Typography, 
@@ -16,7 +16,13 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useForm, Controller } from "react-hook-form";
-import { useCreateCaseHook, useGetLocationOptionsHook } from '../utils/hooks';
+import { 
+    useCreateCaseHook, 
+    useGetLocationsHook, 
+    useGetProcedureUnitsHook,
+    useGetServiceLinesHook, 
+    useGetProvidersHook 
+} from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DropDownSearchComponent from "./shared/dropdownSearch";
@@ -28,14 +34,8 @@ interface Props {
 
 export default function CreateCaseDialog(props: Props) {
   const {open, closeDialog} = props;
-  const {mutate} = useCreateCaseHook()
-
-  useGetLocationOptionsHook
-  const { data = [{label: '', id: 1}], isFetching } = useGetLocationOptionsHook();
-
-  console.log('data',data);
-  console.log('isFetching',isFetching);
-
+  const {mutate} = useCreateCaseHook();
+  
   const StyledTextField = styled(TextField)({
     "& .MuiOutlinedInput-input": {
         fontSize: "0.688rem"
@@ -59,12 +59,19 @@ export default function CreateCaseDialog(props: Props) {
     placeholder: string
   }
 
+  interface DropDownSearchOption {
+    [key: string]: string
+    fhirResourceId: string
+}
+
   interface DropDownSearchControllerProps {
     id: any,
     title: string,
     disabled?: boolean
     placeholder: string
     additionalStyles?: React.CSSProperties | object
+    options: DropDownSearchOption[]
+    labelProperty: string
   }
 
   interface DateControllerProps {
@@ -72,21 +79,6 @@ export default function CreateCaseDialog(props: Props) {
     title: string,
     placeholder: string
   }
-
-  const filmsWithOutValues = [
-    { label: 'Shawshank Redemption', id: 1994 },
-    { label: 'Godfather', id: 1972 },
-    { label: 'Godfather: Part II',  id: 1974 },
-    { label: 'The Dark Knight', id: 2008 },
-    { label: '12 Angry Men',  id: 1957 },
-    { label: "Schindler's List",  id: 1993 },
-    { label: 'Pulp Fiction', id: 1994 },
-    { label: 'Horizon', id: 2000 },
-    { label: 'Family Guy', id: 1950 },
-    { label: 'Jedi',  id: 1998 },
-    { label: 'The Darkest Day', id: 2019 },
-    { label: 'The Second Return', id: 1999 }
-];
 
   function InputController(props: InputControllerProps) {
     const {id, title, placeholder} = props;
@@ -104,7 +96,8 @@ export default function CreateCaseDialog(props: Props) {
   }
 
   function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, additionalStyles} = props;
+    const {id, title, disabled, placeholder, options, labelProperty, additionalStyles} = props;
+
     return <Controller
         name={id}
         control={control}
@@ -114,8 +107,9 @@ export default function CreateCaseDialog(props: Props) {
                 <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
                 <DropDownSearchComponent 
                     {...field}
+                    labelProperty={labelProperty}
                     id={id}
-                    options={data}
+                    options={options}
                     onChange={field.onChange}
                     disabled={disabled} 
                     placeholder={placeholder} 
@@ -162,8 +156,6 @@ export default function CreateCaseDialog(props: Props) {
       />
   }
 
-  useGetLocationOptionsHook
-
   const schema = yup.object().shape({
     patient: yup.object().shape({
         firstName: yup.string().required(),
@@ -171,15 +163,36 @@ export default function CreateCaseDialog(props: Props) {
         dateOfBirth: yup.date().required(),
     }),
     case: yup.object().shape({
-        providerName: yup.string().required(),
-        locationName: yup.string().required(),
-        procedureUnit: yup.string().required(),
-        serviceLine: yup.string().required(),
+        provider: yup.object().shape({
+            providerId: yup.number().required(),
+            fhirResourceId: yup.string().required(),
+            firstName: yup.string().required(),
+            lastName: yup.string().required(),
+            address: yup.string().required(),
+            email: yup.string().required()
+        }),
+        location: yup.object().shape({
+            locationId: yup.number().required(),
+            fhirResourceId: yup.string().required(),
+            locationName: yup.string().required(),
+        }),
+        procedureUnit: yup.object().shape({
+            procedureUnitId: yup.number().required(),
+            fhirResourceId: yup.string().required(),
+            procedureUnitName: yup.string().required(),
+            locationId: yup.number().required()
+        }),
+        serviceLine: yup.object().shape({
+            serviceLineId: yup.number().required(),
+            fhirResourceId: yup.string().required(),
+            serviceLineName: yup.string().required(),
+            procedureUnitId: yup.number().required()
+        }),
         procedureDate: yup.date().required(),
     })
   });
 
-  const { handleSubmit, control, reset, formState: { isValid, dirtyFields } } = useForm({ 
+  const { handleSubmit, control, reset, resetField, watch, formState: { isValid, dirtyFields } } = useForm({ 
     resolver: yupResolver(schema),
     defaultValues: {
       patient: {
@@ -188,14 +201,40 @@ export default function CreateCaseDialog(props: Props) {
         dateOfBirth: null,
       },
       case: {
-        providerName: null,
-        locationName: null,
+        provider: null,
+        location: null,
         procedureUnit: null,
         serviceLine: null,
         procedureDate: null
       }
     }
   });
+
+  const currentFormValues = watch(); 
+
+  const locationId = currentFormValues.case.location ? currentFormValues.case.location["locationId"] : NaN; 
+  const procedureUnitId =  currentFormValues.case.procedureUnit ? currentFormValues.case.procedureUnit["procedureUnitId"] : NaN;
+  const serviceLineId = currentFormValues.case.serviceLine ? currentFormValues.case.serviceLine["serviceLineId"] : NaN;
+
+  const { data: locationData = [] } = useGetLocationsHook();
+  const { data: procedureUnitData = [] } = useGetProcedureUnitsHook(locationId); 
+  const { data: serviceLineData = [] } = useGetServiceLinesHook(procedureUnitId);
+  const { data: providerData = [] } = useGetProvidersHook(serviceLineId);
+
+  useEffect(() => {
+    resetField('case.procedureUnit');
+    resetField('case.serviceLine');
+    resetField('case.provider');
+  }, [currentFormValues.case.location, resetField]);
+
+  useEffect(() => {
+    resetField('case.serviceLine');
+    resetField('case.provider');
+  }, [currentFormValues.case.procedureUnit, resetField]);
+
+  useEffect(() => {
+    resetField('case.provider');
+  }, [currentFormValues.case.serviceLine, resetField]);
 
   return (
       <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
@@ -219,16 +258,45 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
                     <Grid item xs={12}>
-                        <DropDownSearchController id="case.locationName" title="Surgical Location" placeholder="Surgical Location" additionalStyles={{ "& .MuiFormControl-root": { width: "100%"}}} />
+                        <DropDownSearchController
+                            id="case.location" 
+                            options={locationData} 
+                            labelProperty="locationName" 
+                            title="Surgical Location"
+                            placeholder="Surgical Location" 
+                            additionalStyles={{ "& .MuiFormControl-root": { width: "100%"}}} 
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <DropDownSearchController id="case.procedureUnit" title="Procedure Unit" placeholder="Procedure Unit" disabled={dirtyFields.case?.locationName !== true}/>
+                        <DropDownSearchController 
+                            id="case.procedureUnit"
+                            options={procedureUnitData} 
+                            labelProperty="procedureUnitName" 
+                            title="Procedure Unit" 
+                            placeholder="Procedure Unit" 
+                            disabled={!dirtyFields.case?.location}
+                        />
                     </Grid>
                     <Grid item xs={'auto'}>
-                        <DropDownSearchController id="case.serviceLine" title="Service Line" placeholder="Service Line" disabled={dirtyFields.case?.procedureUnit !== true} />
+                        <DropDownSearchController 
+                            id="case.serviceLine" 
+                            options={serviceLineData} 
+                            labelProperty="serviceLineName" 
+                            title="Service Line" 
+                            placeholder="Service Line" 
+                            disabled={!dirtyFields.case?.procedureUnit} 
+                        />
                     </Grid>
                     <Grid item xs={6}>
-                        <DropDownSearchController id="case.providerName" title="Primary Surgeon" placeholder="Primary Surgeon" disabled={dirtyFields.case?.serviceLine !== true} additionalStyles={{ marginBottom: "50px"}} />
+                        <DropDownSearchController 
+                            id="case.provider" 
+                            options={providerData} 
+                            labelProperty="firstName" 
+                            title="Primary Surgeon" 
+                            placeholder="Primary Surgeon" 
+                            disabled={!dirtyFields.case?.serviceLine} 
+                            additionalStyles={{ marginBottom: "50px"}} 
+                        />
                     </Grid>
                     <Grid item xs={'auto'}>
                         <DateController id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
