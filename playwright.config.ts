@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import type { PlaywrightTestConfig } from '@playwright/test';
-const config: PlaywrightTestConfig = {
-  
+const config: PlaywrightTestConfig = {  
   testDir: './playwrightTests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
