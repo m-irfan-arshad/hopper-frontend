@@ -70,3 +70,37 @@ export const mockLocationData = [
         updateTime: new Date()
     }
 ];
+
+export const mockProcedureUnitData = [
+    {
+        procedureUnitId: 1,
+        fhirResourceId: 'fhirResourceId',
+        procedureUnitName: 'procedureUnitName',
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        procedureUnitId: 2,
+        fhirResourceId: 'fhirResourceId2',
+        procedureUnitName: 'procedureUnitName2',
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+];
+
+export const mockServiceLineData = [
+    {
+        serviceLineId: 1,
+        fhirResourceId: 'fhirResourceId',
+        serviceLineName: 'serviceLineName',
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        serviceLineId: 2,
+        fhirResourceId: 'fhirResourceId2',
+        serviceLineName: 'serviceLineName2',
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+];

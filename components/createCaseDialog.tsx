@@ -26,45 +26,33 @@ import {
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DropDownSearchComponent from "./shared/dropdownSearch";
+import { formatCreateCaseParams } from '../utils/helpers';
 
 interface Props {
     open: boolean
     closeDialog: () => void
 }
 
-export default function CreateCaseDialog(props: Props) {
-  const {open, closeDialog} = props;
-  const {mutate} = useCreateCaseHook();
-  
-  const StyledTextField = styled(TextField)({
-    "& .MuiOutlinedInput-input": {
-        fontSize: "0.688rem"
-    },
-    marginTop: "0.313rem"
-  });
-
-  const onSubmit = async (data: object) => {
-    await mutate(data)
-    handleClose()
-  };
-
-  function handleClose() {
-      reset();
-      closeDialog();
-  }
-
-  interface InputControllerProps {
+interface InputControllerProps {
     id: any,
     title: string,
     placeholder: string
-  }
+    control: any
+}
 
-  interface DropDownSearchOption {
+interface DateControllerProps {
+    id: any,
+    title: string,
+    placeholder: string
+    control: any
+}
+
+interface DropDownSearchOption {
     [key: string]: string
     fhirResourceId: string
 }
 
-  interface DropDownSearchControllerProps {
+interface DropDownSearchControllerProps {
     id: any,
     title: string,
     disabled?: boolean
@@ -72,16 +60,19 @@ export default function CreateCaseDialog(props: Props) {
     additionalStyles?: React.CSSProperties | object
     options: DropDownSearchOption[]
     labelProperty: string
-  }
+    control: any
+}
 
-  interface DateControllerProps {
-    id: any,
-    title: string,
-    placeholder: string
-  }
+const StyledTextField = styled(TextField)({
+    "& .MuiOutlinedInput-input": {
+        fontSize: "0.688rem"
+    },
+    marginTop: "0.313rem"
+});
+  
 
-  function InputController(props: InputControllerProps) {
-    const {id, title, placeholder} = props;
+function InputController(props: InputControllerProps) {
+    const {id, title, placeholder, control} = props;
     return <Controller
         name={id}
         control={control}
@@ -93,35 +84,10 @@ export default function CreateCaseDialog(props: Props) {
             </React.Fragment>
         )}
       />
-  }
+}
 
-  function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, options, labelProperty, additionalStyles} = props;
-
-    return <Controller
-        name={id}
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-            <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
-                <DropDownSearchComponent 
-                    {...field}
-                    labelProperty={labelProperty}
-                    id={id}
-                    options={options}
-                    onChange={field.onChange}
-                    disabled={disabled} 
-                    placeholder={placeholder} 
-                    additionalStyles={additionalStyles}
-                />
-            </React.Fragment>
-        )}
-      />
-  }
-
-  function DateController(props: DateControllerProps) {
-    const {id, title, placeholder} = props;
+function DateController(props: DateControllerProps) {
+    const {id, title, placeholder, control} = props;
     return <Controller
         name={id}
         control={control}
@@ -153,7 +119,48 @@ export default function CreateCaseDialog(props: Props) {
                 />
             </React.Fragment>
         )}
-      />
+    />
+}
+
+function DropDownSearchController(props: DropDownSearchControllerProps) {
+    const {id, title, disabled, placeholder, options, labelProperty, additionalStyles, control} = props;
+
+    return <Controller
+            name={id}
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+                <React.Fragment>
+                    <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
+                    <DropDownSearchComponent 
+                        {...field}
+                        labelProperty={labelProperty}
+                        id={id}
+                        options={options}
+                        onChange={field.onChange}
+                        disabled={disabled} 
+                        placeholder={placeholder} 
+                        additionalStyles={additionalStyles}
+                    />
+                </React.Fragment>
+            )}
+        />
+}
+
+export default function CreateCaseDialog(props: Props) {
+  const {open, closeDialog} = props;
+  const {mutate} = useCreateCaseHook();
+
+  const onSubmit = async (data: any) => {
+    const submissionData = formatCreateCaseParams(data);
+    console.log('submission data', submissionData);
+    await mutate(submissionData);
+    //handleClose()
+  };
+
+  function handleClose() {
+      reset();
+      closeDialog();
   }
 
   const schema = yup.object().shape({
@@ -168,8 +175,8 @@ export default function CreateCaseDialog(props: Props) {
             fhirResourceId: yup.string().required(),
             firstName: yup.string().required(),
             lastName: yup.string().required(),
-            address: yup.string().required(),
-            email: yup.string().required()
+            address: yup.string().nullable(true),
+            email: yup.string().nullable(true)
         }),
         location: yup.object().shape({
             locationId: yup.number().required(),
@@ -193,6 +200,7 @@ export default function CreateCaseDialog(props: Props) {
   });
 
   const { handleSubmit, control, reset, resetField, watch, formState: { isValid, dirtyFields } } = useForm({ 
+    mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
       patient: {
@@ -246,19 +254,20 @@ export default function CreateCaseDialog(props: Props) {
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
                     <Grid item xs={6}>
-                        <InputController id="patient.firstName" title="First Name" placeholder="First Name"/>
+                        <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid>
                     <Grid item xs="auto">
-                        <InputController id="patient.lastName" title="Last Name" placeholder="Last Name" />
+                        <InputController control={control} id="patient.lastName" title="Last Name" placeholder="Last Name" />
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
+                        <DateController control={control} id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
                     </Grid>
                 </Grid>
                 <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
                     <Grid item xs={12}>
                         <DropDownSearchController
+                            control={control}
                             id="case.location" 
                             options={locationData} 
                             labelProperty="locationName" 
@@ -269,6 +278,7 @@ export default function CreateCaseDialog(props: Props) {
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
+                            control={control}
                             id="case.procedureUnit"
                             options={procedureUnitData} 
                             labelProperty="procedureUnitName" 
@@ -279,6 +289,7 @@ export default function CreateCaseDialog(props: Props) {
                     </Grid>
                     <Grid item xs="auto">
                         <DropDownSearchController 
+                            control={control}
                             id="case.serviceLine" 
                             options={serviceLineData} 
                             labelProperty="serviceLineName" 
@@ -289,6 +300,7 @@ export default function CreateCaseDialog(props: Props) {
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
+                            control={control}
                             id="case.provider" 
                             options={providerData} 
                             labelProperty="firstName" 
@@ -299,7 +311,7 @@ export default function CreateCaseDialog(props: Props) {
                         />
                     </Grid>
                     <Grid item xs="auto">
-                        <DateController id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
+                        <DateController control={control} id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>
             </LocalizationProvider>

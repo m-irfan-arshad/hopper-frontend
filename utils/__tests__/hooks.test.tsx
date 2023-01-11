@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { useGetCasesHook, useGetProviderOptionsHook, useGetLocationOptionsHook } from "../hooks";
+import { useGetCasesHook, useGetProvidersHook, useGetLocationsHook } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
 import {mockCaseData, mockProviderData, mockLocationData} from '../../testReference'
@@ -53,14 +53,14 @@ describe("Hooks", () => {
             json: () => Promise.resolve(mockProviderData),
         }));
         
-        const { result } = renderHook(() => useGetProviderOptionsHook(), { wrapper });
+        const { result } = renderHook(() => useGetProvidersHook(123), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
         });
 
         expect(result.current.data).toEqual(mockProviderData);
-        expect(global.fetch).toHaveBeenCalledWith(`/api/getProviderOptions`);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getProviders?serviceLineId=123`);
     });
 
     test("call getLocationOptionsHook", async() => {
@@ -68,13 +68,13 @@ describe("Hooks", () => {
             json: () => Promise.resolve(mockLocationData),
         }));
         
-        const { result } = renderHook(() => useGetLocationOptionsHook(2), { wrapper });
+        const { result } = renderHook(() => useGetLocationsHook(), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
         });
         
         expect(result.current.data).toEqual(mockLocationData);
-        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocationOptions?providerId=2`);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getLocations`);
     });
 });

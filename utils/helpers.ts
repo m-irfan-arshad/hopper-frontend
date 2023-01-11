@@ -11,6 +11,38 @@ interface DashboardQueryParams {
     vendorConfirmation?: string;
 }
 
+interface PatientTableParams {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: moment.Moment;
+}
+
+interface CaseTableParams {
+    providerId: number
+    locationId: number
+    procedureUnitId: number
+    serviceLineId: number
+    procedureDate: moment.Moment;
+}
+
+interface CaseFormParams {
+    provider: any
+    location: any
+    procedureUnit: any
+    serviceLine: any
+    procedureDate: moment.Moment;
+}
+
+interface CreateCaseFromFormObject {
+    patient: PatientTableParams
+    case: CaseFormParams 
+}
+
+interface CreateCaseObject {
+    patient: PatientTableParams
+    case: CaseTableParams 
+}
+
 interface CasesFormatterProps {
     cases: cases & {
         patients: patients | null;
@@ -148,4 +180,19 @@ export function withValidation(requiredParams: Array<string>, queryFunc: Functio
 
         return queryFunc(...args)
     }
+}
+
+export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
+    const createCaseObject: CreateCaseObject = {
+        patient: params.patient,
+        case: {
+            procedureDate: params.case.procedureDate,
+            locationId: params.case.location.locationId,
+            procedureUnitId: params.case.procedureUnit.procedureUnitId,
+            providerId: params.case.provider.providerId,
+            serviceLineId: params.case.serviceLine.serviceLineId
+        }
+    }
+    console.log('createCaseObject',createCaseObject);
+    return createCaseObject;
 }

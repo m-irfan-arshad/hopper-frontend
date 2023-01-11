@@ -1,10 +1,19 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import moment from "moment";
 import Dashboard from "../dashboard";
-import { useGetCasesHook, useUpdateCaseHook, useCreateCaseHook } from '../../utils/hooks';
+import { 
+    useGetCasesHook, 
+    useUpdateCaseHook, 
+    useCreateCaseHook, 
+    useGetLocationsHook, 
+    useGetProcedureUnitsHook,
+    useGetServiceLinesHook,
+    useGetProvidersHook
+} from '../../utils/hooks';
+import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData } from "../../testReference";
 
 jest.mock("../../utils/hooks");
-const mockData = [
+const mockCaseData = [
     {
         caseId: 1,
         fhirResourceId: "testId",
@@ -61,13 +70,25 @@ const mockData = [
 
 describe("Dashboard", () => {  
     const mockedUseGetCasesHook = useGetCasesHook as jest.Mock<any>; 
-    mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: {cases: mockData, count: 52} }));
+    mockedUseGetCasesHook.mockImplementation(() => ({ isLoading: false, data: {cases: mockCaseData, count: 52} }));
 
     const mockedUseUpdateCaseHook = useUpdateCaseHook as jest.Mock<any>; 
     mockedUseUpdateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
 
     const mockedUseCreateCaseHook = useCreateCaseHook as jest.Mock<any>; 
     mockedUseCreateCaseHook.mockImplementation(() => ({ mutate: jest.fn() }));
+
+    const mockedUseGetLocationsHook = useGetLocationsHook as jest.Mock<any>; 
+    mockedUseGetLocationsHook.mockImplementation(() => ({ isLoading: false, data: mockLocationData }));
+
+    const mockedUseGetProcedureUnitsHook = useGetProcedureUnitsHook as jest.Mock<any>; 
+    mockedUseGetProcedureUnitsHook.mockImplementation(() => ({ isLoading: false, data: mockProcedureUnitData }));
+
+    const mockedUseGetServiceLinesHook = useGetServiceLinesHook as jest.Mock<any>; 
+    mockedUseGetServiceLinesHook.mockImplementation(() => ({ isLoading: false, data: mockServiceLineData }));
+
+    const mockedUseGetProvidersHook = useGetProvidersHook as jest.Mock<any>; 
+    mockedUseGetProvidersHook.mockImplementation(() => ({ isLoading: false, data: mockProviderData }));
 
     test("renders the dashboard", async () => {
         const { getByRole, getByText } = render(
