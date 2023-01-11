@@ -40,7 +40,7 @@ export default function CreateCaseDialog(props: Props) {
     "& .MuiOutlinedInput-input": {
         fontSize: "0.688rem"
     },
-    marginTop: "0.313rem",
+    marginTop: "0.313rem"
   });
 
   const onSubmit = async (data: object) => {
@@ -88,7 +88,7 @@ export default function CreateCaseDialog(props: Props) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
+                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
                 <StyledTextField {...field} id={id} variant="outlined" placeholder={placeholder} />
             </React.Fragment>
         )}
@@ -128,7 +128,7 @@ export default function CreateCaseDialog(props: Props) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
+                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
                 <DesktopDatePicker
                     {...field}
                     components={{ OpenPickerIcon: DateRangeIcon }}
@@ -248,7 +248,7 @@ export default function CreateCaseDialog(props: Props) {
                     <Grid item xs={6}>
                         <InputController id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid>
-                    <Grid item xs={'auto'}>
+                    <Grid item xs="auto">
                         <InputController id="patient.lastName" title="Last Name" placeholder="Last Name" />
                     </Grid>
                     <Grid item xs={6}>
@@ -277,7 +277,7 @@ export default function CreateCaseDialog(props: Props) {
                             disabled={!dirtyFields.case?.location}
                         />
                     </Grid>
-                    <Grid item xs={'auto'}>
+                    <Grid item xs="auto">
                         <DropDownSearchController 
                             id="case.serviceLine" 
                             options={serviceLineData} 
@@ -298,7 +298,7 @@ export default function CreateCaseDialog(props: Props) {
                             additionalStyles={{ marginBottom: "50px"}} 
                         />
                     </Grid>
-                    <Grid item xs={'auto'}>
+                    <Grid item xs="auto">
                         <DateController id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>

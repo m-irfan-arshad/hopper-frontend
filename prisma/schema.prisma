@@ -75,12 +75,6 @@ model providers {
   serviceLines ServiceLineToProvider[]
 }
 
-model provider_locations {
-  id             Int      @id @default(autoincrement()) @map("id")
-  locationId     Int      @map("location_id")
-  providerId     Int      @map("provider_id")
-}
-
 model ServiceLineToProvider {
   serviceLine       serviceLines     @relation(fields: [serviceLineId], references: [serviceLineId])
   serviceLineId     Int

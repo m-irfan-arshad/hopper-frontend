@@ -5,11 +5,12 @@ import { DashboardPage } from './dashboardPage';
 test.describe('Landing Page', () => {
     test.beforeEach(async ({ page }) => {
         const dashboard = new DashboardPage(page);
-        await page.goto(dashboard.url);
-        
+        await dashboard.login();
+        page.waitForURL;
+        page.waitForLoadState;        
     });
 
-    test('Submitting a Created Case', async ({ page }) => {
+    test.only('Submitting a Created Case', async ({ page }) => {
         
         const dashboard = new DashboardPage(page);
         const { firstName, lastName, birthDay, procedureDate } = createPatientCase();

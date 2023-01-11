@@ -7,7 +7,6 @@
 
 # testing
 /coverage
-storageState.json
 
 # next.js
 /.next/
