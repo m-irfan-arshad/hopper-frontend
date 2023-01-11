@@ -59,7 +59,7 @@ interface DropDownSearchControllerProps {
     placeholder: string
     additionalStyles?: React.CSSProperties | object
     options: DropDownSearchOption[]
-    labelProperty: string
+    labelProperties: string[]
     control: any
 }
 
@@ -123,7 +123,7 @@ function DateController(props: DateControllerProps) {
 }
 
 function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, options, labelProperty, additionalStyles, control} = props;
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control} = props;
 
     return <Controller
             name={id}
@@ -134,7 +134,7 @@ function DropDownSearchController(props: DropDownSearchControllerProps) {
                     <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
                     <DropDownSearchComponent 
                         {...field}
-                        labelProperty={labelProperty}
+                        labelProperties={labelProperties}
                         id={id}
                         options={options}
                         onChange={field.onChange}
@@ -155,7 +155,7 @@ export default function CreateCaseDialog(props: Props) {
     const submissionData = formatCreateCaseParams(data);
     console.log('submission data', submissionData);
     await mutate(submissionData);
-    //handleClose()
+    handleClose();
   };
 
   function handleClose() {
@@ -270,7 +270,7 @@ export default function CreateCaseDialog(props: Props) {
                             control={control}
                             id="case.location" 
                             options={locationData} 
-                            labelProperty="locationName" 
+                            labelProperties={["locationName"]} 
                             title="Surgical Location"
                             placeholder="Surgical Location" 
                             additionalStyles={{ "& .MuiFormControl-root": { width: "100%"}}} 
@@ -281,7 +281,7 @@ export default function CreateCaseDialog(props: Props) {
                             control={control}
                             id="case.procedureUnit"
                             options={procedureUnitData} 
-                            labelProperty="procedureUnitName" 
+                            labelProperties={["procedureUnitName"]}
                             title="Procedure Unit" 
                             placeholder="Procedure Unit" 
                             disabled={!dirtyFields.case?.location}
@@ -292,7 +292,7 @@ export default function CreateCaseDialog(props: Props) {
                             control={control}
                             id="case.serviceLine" 
                             options={serviceLineData} 
-                            labelProperty="serviceLineName" 
+                            labelProperties={["serviceLineName"]}
                             title="Service Line" 
                             placeholder="Service Line" 
                             disabled={!dirtyFields.case?.procedureUnit} 
@@ -303,7 +303,7 @@ export default function CreateCaseDialog(props: Props) {
                             control={control}
                             id="case.provider" 
                             options={providerData} 
-                            labelProperty="firstName" 
+                            labelProperties={["firstName", "lastName"]}
                             title="Primary Surgeon" 
                             placeholder="Primary Surgeon" 
                             disabled={!dirtyFields.case?.serviceLine} 

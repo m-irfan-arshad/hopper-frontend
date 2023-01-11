@@ -76,6 +76,7 @@ export const mockProcedureUnitData = [
         procedureUnitId: 1,
         fhirResourceId: 'fhirResourceId',
         procedureUnitName: 'procedureUnitName',
+        locationId: 1,
         createTime: new Date(),
         updateTime: new Date()
     },
@@ -83,6 +84,7 @@ export const mockProcedureUnitData = [
         procedureUnitId: 2,
         fhirResourceId: 'fhirResourceId2',
         procedureUnitName: 'procedureUnitName2',
+        locationId: 2,
         createTime: new Date(),
         updateTime: new Date()
     }
@@ -93,6 +95,7 @@ export const mockServiceLineData = [
         serviceLineId: 1,
         fhirResourceId: 'fhirResourceId',
         serviceLineName: 'serviceLineName',
+        procedureUnitId: 1,
         createTime: new Date(),
         updateTime: new Date()
     },
@@ -100,6 +103,7 @@ export const mockServiceLineData = [
         serviceLineId: 2,
         fhirResourceId: 'fhirResourceId2',
         serviceLineName: 'serviceLineName2',
+        procedureUnitId: 2,
         createTime: new Date(),
         updateTime: new Date()
     }

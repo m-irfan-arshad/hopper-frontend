@@ -12,12 +12,12 @@ interface Props {
     placeholder: string
     additionalStyles?: React.CSSProperties | object
     onChange: (value: any) => void
-    labelProperty: string
+    labelProperties: string[]
     options: Option[]
 }
 
 export default function DropDownComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperty, ...restParams} = props;
+    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, ...restParams} = props;
 
     const defaultStyles = {
         "& .MuiOutlinedInput-root": {
@@ -32,6 +32,14 @@ export default function DropDownComponent(props: Props) {
         },
         marginTop: "0.313rem"        
     }
+
+    function getOptionLabel(option: Option) {
+        const labelArray = labelProperties.map((p) => {
+            return option[p]
+        });
+        
+        return (labelArray.toString().split(',')).join(' ');
+    }
     
     return (
         <Autocomplete
@@ -40,7 +48,7 @@ export default function DropDownComponent(props: Props) {
             id={id}
             disableClearable
             isOptionEqualToValue={(option, value) => option.fhirResourceId === value.fhirResourceId}
-            getOptionLabel={(option: Option) => option[labelProperty] || ''}
+            getOptionLabel={(option: Option) => getOptionLabel(option)}
             onChange={(_, data) => onChange(data)}
             options={options}
             disabled={disabled}

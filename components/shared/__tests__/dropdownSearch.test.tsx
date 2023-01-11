@@ -2,15 +2,10 @@ import { render, fireEvent, within, waitFor } from "@testing-library/react";
 import DropDownSearchComponent from "../dropdownSearch";
 
 describe("DropdownSearch", () => {
-
-   
-  const options = [
-    { label: 'Shawshank Redemption', id: 1994 },
-    { label: 'Godfather', id: 1972 },
-    { label: 'Godfather: Part II',  id: 1974 },
-    { label: 'The Dark Knight', id: 2008 },
-    { label: '12 Angry Men',  id: 1957 }
-];
+    const options = [
+        { firstName: 'Shawshank', lastName: 'Julio', fhirResourceId: '1994' },
+        { firstName: 'Godfather', lastName: 'John', fhirResourceId: '1972' },
+    ];
 
     const props = {
         id: "patient.firstName",
@@ -18,6 +13,7 @@ describe("DropdownSearch", () => {
         placeholder: 'placeholder',
         additionalStyles: {},
         onChange: jest.fn(),
+        labelProperties: ['firstName'],
         options: options
     }
 
@@ -27,14 +23,14 @@ describe("DropdownSearch", () => {
         ); 
 
         const input = within(getByTestId('autocomplete')).getByRole('combobox');
-        fireEvent.change(input, { target: { value: 'Redemption' } })
+        fireEvent.change(input, { target: { value: 'Shaw' } })
 
         await waitFor(() => {
-            expect(getByText('Shawshank Redemption')).toBeInTheDocument();
+            expect(getByText('Shawshank')).toBeInTheDocument();
         })
 
-        fireEvent.click(getByText("Shawshank Redemption"));
+        fireEvent.click(getByText("Shawshank"));
 
-        expect(getByRole("combobox")).toHaveValue("Shawshank Redemption");
+        expect(getByRole("combobox")).toHaveValue("Shawshank");
     });
 });
