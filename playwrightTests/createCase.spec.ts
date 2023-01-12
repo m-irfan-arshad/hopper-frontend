@@ -19,10 +19,10 @@ test.describe('Landing Page', () => {
         await page.locator("[id='patient.firstName']").fill(firstName);
         await page.locator("[id='patient.lastName']").fill(lastName);
         await page.locator("[id='patient.dateOfBirth']").fill(birthDay);
-        await page.locator("[id='case.provider']").fill("Doctor Doctorson");
         await page.locator("[id='case.location']").fill("Sacred Heart Hospital");
         await page.locator("[id='case.procedureUnit']").fill("Room 1A");
         await page.locator("[id='case.serviceLine']").fill("8675309");
+        await page.locator("[id='case.provider']").fill("Doctor Doctorson");
         await page.locator("[id='case.procedureDate']").fill(procedureDate);
         await dashboard.submitCreateCaseButton.click();
         await expect(dashboard.patientInformation).toBeHidden();
