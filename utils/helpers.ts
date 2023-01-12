@@ -3,11 +3,6 @@ import { SingleCase, APIParameters } from '../reference';
 import { Prisma, cases, patients, locations, providers } from '@prisma/client';
 import moment from "moment";
 
-/*TODO:
-        1. write tests for helpers and hooks file for new functionality added
-        2. Review PR and retest code functionality but SHOULD be ok (tested a lot on 1/11/2023)
-        3. Should I build out the references for provider and location to providerId and locationId on the case?... feels out of scope
-*/
 interface DashboardQueryParams { 
     searchValue?: string
     dateRangeStart: string
