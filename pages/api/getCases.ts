@@ -8,17 +8,18 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
 export default withApiAuthRequired( withValidation(requiredParams, async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+  
+  const dashboardParams = {
+    searchValue: <string>req.query["searchValue"],
+    dateRangeStart: <string>req.query["dateRangeStart"],
+    dateRangeEnd: <string>req.query["dateRangeEnd"],
+    vendorConfirmation: <string>req.query["vendorConfirmation"],
+    priorAuthorization: <string>req.query["priorAuthorization"],
+  };
+
+  const paginationSkipAmount = (parseInt(<string>req.query["page"]) - 1) * 50;
+
   try {
-    const dashboardParams = {
-      searchValue: <string>req.query["searchValue"],
-      dateRangeStart: <string>req.query["dateRangeStart"],
-      dateRangeEnd: <string>req.query["dateRangeEnd"],
-      vendorConfirmation: <string>req.query["vendorConfirmation"],
-      priorAuthorization: <string>req.query["priorAuthorization"],
-    };
-
-    const paginationSkipAmount = (parseInt(<string>req.query["page"]) - 1) * 50;
-
     const count =  await prisma.cases.count({
       where: formatDashboardQueryParams(dashboardParams)
     });
