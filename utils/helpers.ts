@@ -1,8 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { SingleCase, APIParameters } from '../reference';
-import { Prisma, cases, patients } from '@prisma/client';
+import { Prisma, cases, patients, locations, providers } from '@prisma/client';
 import moment from "moment";
 
+/*TODO:
+        1. write tests for helpers and hooks file for new functionality added
+        2. Review PR and retest code functionality but SHOULD be ok (tested a lot on 1/11/2023)
+        3. Should I build out the references for provider and location to providerId and locationId on the case?... feels out of scope
+*/
 interface DashboardQueryParams { 
     searchValue?: string
     dateRangeStart: string
@@ -46,6 +51,8 @@ interface CreateCaseObject {
 interface CasesFormatterProps {
     cases: cases & {
         patients: patients | null;
+        locations: locations | null
+        providers: providers | null
     }
 }
 
@@ -133,14 +140,19 @@ export function casesFormatter (params: CasesFormatterProps): any {
         dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
     } : null
 
+    const newLocation = (cases.locations) ? cases.locations : null;
+    const newProvider = (cases.providers) ? cases.providers : null;
+
     let newCase: SingleCase = {
         caseId: cases.caseId,
         procedureDate: formatDate(cases.procedureDate),
         fhirResourceId: cases.fhirResourceId,
         patientId: cases.patientId,
+        locationId: cases.locationId,
+        providerId: cases.providerId,
         patients: newPatient,
-        providerName: cases.providerName,
-        locationName: cases.locationName,
+        providers: newProvider,
+        locations: newLocation,
         createTime: cases.createTime,
         updateTime: cases.updateTime,
         steps: {
@@ -193,6 +205,5 @@ export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
             serviceLineId: params.case.serviceLine.serviceLineId
         }
     }
-    console.log('createCaseObject',createCaseObject);
     return createCaseObject;
 }

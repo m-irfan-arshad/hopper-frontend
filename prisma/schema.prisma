@@ -19,6 +19,8 @@ model cases {
   priorAuthorization String    @map("prior_authorization") @default("Incomplete")
   vendorConfirmation String    @map("vendor_confirmation") @default("Incomplete")
   patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
+  locations          locations? @relation(fields: [locationId], references: [locationId], onDelete: NoAction, onUpdate: NoAction)
+  providers          providers? @relation(fields: [providerId], references: [providerId], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model patients {
@@ -43,6 +45,7 @@ model locations {
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   procedureUnits procedureUnits[]
+  cases          cases[]
 }
 
 model procedureUnits {
@@ -73,6 +76,7 @@ model providers {
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   serviceLines ServiceLineToProvider[]
+  cases          cases[]
 }
 
 model ServiceLineToProvider {

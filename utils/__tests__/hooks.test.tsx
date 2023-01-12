@@ -1,8 +1,8 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { useGetCasesHook, useGetProvidersHook, useGetLocationsHook } from "../hooks";
+import { useGetCasesHook, useGetProvidersHook, useGetLocationsHook, useGetServiceLinesHook, useGetProcedureUnitsHook } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
-import {mockCaseData, mockProviderData, mockLocationData} from '../../testReference'
+import {mockCaseData, mockProviderData, mockLocationData, mockServiceLineData, mockProcedureUnitData} from '../../testReference'
 
 interface Props {
     children: React.ReactNode
@@ -48,7 +48,7 @@ describe("Hooks", () => {
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCases?${queryString}`);
     });
 
-    test("call getProviderOptionsHook", async() => {
+    test("call getProvidersHook", async() => {
         global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
             json: () => Promise.resolve(mockProviderData),
         }));
@@ -63,7 +63,7 @@ describe("Hooks", () => {
         expect(global.fetch).toHaveBeenCalledWith(`/api/getProviders?serviceLineId=123`);
     });
 
-    test("call getLocationOptionsHook", async() => {
+    test("call getLocationsHook", async() => {
         global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
             json: () => Promise.resolve(mockLocationData),
         }));
@@ -76,5 +76,33 @@ describe("Hooks", () => {
         
         expect(result.current.data).toEqual(mockLocationData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getLocations`);
+    });
+    test("call getProcedureUnitsHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockProcedureUnitData),
+        }));
+        
+        const { result } = renderHook(() => useGetProcedureUnitsHook(1), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockProcedureUnitData);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getProcedureUnits?locationId=1`);
+    });
+    test("call getServiceLinesHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockServiceLineData),
+        }));
+        
+        const { result } = renderHook(() => useGetServiceLinesHook(1), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockServiceLineData);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getServiceLines?procedureUnitId=1`);
     });
 });

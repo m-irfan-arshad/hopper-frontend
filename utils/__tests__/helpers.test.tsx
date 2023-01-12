@@ -1,6 +1,6 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { formatDashboardQueryParams, formatDate, validateParameters } from "../helpers";
+import { formatDashboardQueryParams, formatDate, validateParameters, formatCreateCaseParams } from "../helpers";
 import httpMock from 'node-mocks-http';
 
 describe("Utils", () => {
@@ -119,4 +119,49 @@ describe("Utils", () => {
         
         expect(result).toEqual(null);    
     });
+
+    test("formatCreateCaseParams", () => {
+        const data = {
+            patient: {
+                firstName: 'first',
+                lastName: 'last',
+                dateOfBirth: moment()
+            },
+            case: {
+                provider: {
+                    providerId: 123
+                },
+                location: {
+                    locationId: 145
+                },
+                procedureUnit: {
+                    procedureUnitId: 567
+                },
+                serviceLine: {
+                    serviceLineId: 478
+                },
+                procedureDate: moment()
+            }
+        };
+
+        const resultData = {
+            patient: {
+                firstName: 'first',
+                lastName: 'last',
+                dateOfBirth: moment()
+            },
+            case: {
+                providerId: 123,
+                locationId: 145,
+                procedureUnitId: 567,
+                serviceLineId: 478,
+                procedureDate: moment()
+            }
+        };
+
+        const result = formatCreateCaseParams(data);
+        
+        expect(result).toEqual(resultData);    
+    });
+
 });

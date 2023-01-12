@@ -46,6 +46,7 @@ interface InfoCellProps {
   name: {
     label: string;
     id: string;
+    fromTable?: string
   }
 }
 
@@ -156,8 +157,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
     const { name } = props;
     if (row[name.id]) {
       return row[name.id];
-    } else if (R.path(['patients', name.id], row)) {
-      return R.path(['patients', name.id], row);
+    } else if (name.fromTable) {
+      if (name.id === 'providerName') {
+        return R.path([name.fromTable, 'firstName'], row) ? 
+        `${R.path([name.fromTable, 'firstName'], row)} ${R.path([name.fromTable, 'lastName'], row)}`
+        : 'N/A'
+      }
+      return R.path([name.fromTable, name.id], row);
     } else {
       return 'N/A'
     }
