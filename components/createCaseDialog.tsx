@@ -217,31 +217,26 @@ export default function CreateCaseDialog(props: Props) {
     }
   });
 
-  const currentFormValues = watch(); 
-
-  const locationId = currentFormValues.case.location ? currentFormValues.case.location["locationId"] : NaN; 
-  const procedureUnitId =  currentFormValues.case.procedureUnit ? currentFormValues.case.procedureUnit["procedureUnitId"] : NaN;
-  const serviceLineId = currentFormValues.case.serviceLine ? currentFormValues.case.serviceLine["serviceLineId"] : NaN;
+  const locationDropDownValue = watch('case.location');
+  const procedureUnitDropDownValue = watch('case.procedureUnit');
+  const serviceLineDropDownValue = watch('case.serviceLine');
 
   const { data: locationData = [] } = useGetLocationsHook();
-  const { data: procedureUnitData = [] } = useGetProcedureUnitsHook(locationId); 
-  const { data: serviceLineData = [] } = useGetServiceLinesHook(procedureUnitId);
-  const { data: providerData = [] } = useGetProvidersHook(serviceLineId);
+  const { data: procedureUnitData = [] } = useGetProcedureUnitsHook(locationDropDownValue ? locationDropDownValue['locationId'] : NaN); 
+  const { data: serviceLineData = [] } = useGetServiceLinesHook(procedureUnitDropDownValue ? procedureUnitDropDownValue['procedureUnitId'] : NaN);
+  const { data: providerData = [] } = useGetProvidersHook(serviceLineDropDownValue ? serviceLineDropDownValue['serviceLineId'] : NaN);
 
   useEffect(() => {
     resetField('case.procedureUnit');
-    resetField('case.serviceLine');
-    resetField('case.provider');
-  }, [currentFormValues.case.location, resetField]);
+  }, [locationDropDownValue, resetField]);
 
   useEffect(() => {
     resetField('case.serviceLine');
-    resetField('case.provider');
-  }, [currentFormValues.case.procedureUnit, resetField]);
+  }, [procedureUnitDropDownValue, resetField]);
 
   useEffect(() => {
     resetField('case.provider');
-  }, [currentFormValues.case.serviceLine, resetField]);
+  }, [serviceLineDropDownValue, resetField]);
 
   return (
       <Dialog fullWidth open={open} onClose={handleClose} maxWidth="sm" sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>

@@ -163,7 +163,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
         `${R.path([name.fromTable, 'firstName'], row)} ${R.path([name.fromTable, 'lastName'], row)}`
         : 'N/A'
       }
-      return R.path([name.fromTable, name.id], row);
+      return R.path([name.fromTable, name.id], row) || 'N/A';
     } else {
       return 'N/A'
     }
