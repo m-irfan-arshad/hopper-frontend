@@ -153,7 +153,6 @@ export default function CreateCaseDialog(props: Props) {
 
   const onSubmit = async (data: any) => {
     const submissionData = formatCreateCaseParams(data);
-    console.log('submission data', submissionData);
     await mutate(submissionData);
     handleClose();
   };

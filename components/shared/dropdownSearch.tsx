@@ -16,7 +16,7 @@ interface Props {
     options: Option[]
 }
 
-export default function DropDownComponent(props: Props) {
+export default function DropDownSearchComponent(props: Props) {
     const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, ...restParams} = props;
 
     const defaultStyles = {

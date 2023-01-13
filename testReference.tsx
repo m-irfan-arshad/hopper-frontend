@@ -11,6 +11,10 @@ export const mockCaseData = [
             mobilePhone: 'mobilePhone',
             mrn: 'mrn',
             address: 'address'
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     },
     {
@@ -23,6 +27,10 @@ export const mockCaseData = [
                 mobilePhone: 'mobilePhone2',
                 mrn: 'mrn2',
                 address: 'address2'
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     }
 ]; 
