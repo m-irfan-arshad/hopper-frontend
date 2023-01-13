@@ -19,6 +19,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         },
       },
     });
+    providers.sort((unit1, unit2) => unit1.firstName.toLowerCase() > unit2.firstName.toLowerCase() ? 1 : -1);
 
     res.json(providers)
   } catch(err) {

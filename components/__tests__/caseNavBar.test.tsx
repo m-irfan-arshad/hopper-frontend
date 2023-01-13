@@ -1,13 +1,22 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import moment from "moment";
 import CaseNavBar from "../caseNavBar";
+import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData } from "../../testReference";
+
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
     useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
     }));
     
-describe("CaseNavBar", () => {
+jest.mock("../../utils/hooks", () => ({
+    useCreateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+    useGetLocationsHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockLocationData })),
+    useGetProcedureUnitsHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProcedureUnitData })),
+    useGetServiceLinesHook: jest.fn().mockImplementation(() =>  ({ isLoading: false, data: mockServiceLineData })),
+    useGetProvidersHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProviderData }))
+}));
 
+describe("CaseNavBar", () => {
     const props = {
         onDateFilterChange: jest.fn(),
         onCaseFilterChange:  jest.fn(),

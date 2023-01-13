@@ -85,14 +85,26 @@ export function useUpdateCaseHook() {
     )
 }
 
-export function useGetProviderOptionsHook() {
-    return useQuery(["getProviderOptions"], async () => (await fetch("/api/getProviderOptions")).json());
+export function useGetProvidersHook(serviceLineId: number) {
+    return useQuery(["getProviders", serviceLineId], async () =>  
+        (await fetch(`/api/getProviders?serviceLineId=${serviceLineId}`)).json(), { enabled: serviceLineId > 0 }
+    );
 }
 
-export function useGetLocationOptionsHook(providerId: number) {
-    return useQuery(["getLocationOptions", providerId], async () =>  
-        (await fetch(`/api/getLocationOptions?providerId=${providerId}`)).json()
+export function useGetProcedureUnitsHook(locationId: number) {
+    return useQuery(["getProcedureUnits", locationId], async () =>  
+        (await fetch(`/api/getProcedureUnits?locationId=${locationId}`)).json(), { enabled: locationId > 0 }
     );
+}
+
+export function useGetServiceLinesHook(procedureUnitId: number) {
+    return useQuery(["getServiceLines", procedureUnitId], async () =>  
+        (await fetch(`/api/getServiceLines?procedureUnitId=${procedureUnitId}`)).json(), { enabled: procedureUnitId > 0 }
+    );
+}
+
+export function useGetLocationsHook() {
+    return useQuery(["getLocations"], async () => (await fetch("/api/getLocations")).json());
 }
 
 const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {

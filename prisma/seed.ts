@@ -28,6 +28,7 @@ async function createLocations() {
         await prisma.locations.create({   //create locations
             data: {
                 locationName: chance.city(),
+                fhirResourceId: chance.string({ length: 10 }),
                 procedureUnits: {    // create PUs under each location
                     create: [...Array(2)].map(()=>({ 
                         fhirResourceId: chance.string({ length: 10 }),

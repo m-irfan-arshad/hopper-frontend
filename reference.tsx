@@ -8,10 +8,12 @@ export const caseCardProcedureInformation = [
   {
     label: "Procedure Location",
     id: "locationName",
+    fromTable: "locations"
   },
   {
     label: "Provider",
     id: "providerName",
+    fromTable: "providers"
   }
 ];
 
@@ -23,6 +25,7 @@ export const caseCardCaseIdentifiers = [
   {
     label: "MRN",
     id: "mrn",
+    fromTable: 'patients'
   },
   {
     label: "Quick Actions",

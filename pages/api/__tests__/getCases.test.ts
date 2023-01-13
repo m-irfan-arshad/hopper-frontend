@@ -34,8 +34,15 @@
             fhirResourceId: "testId",
             patientId: 1,
             procedureDate: new Date(),
-            providerName: "testProviderName",
-            locationName: "testLocationName",
+            providerId: 1,
+            locationId: 1,
+            providers: {
+                firstName: "testProviderName",
+                lastName: 'last'
+            },
+            locations: {
+                locationName: "testLocationName"
+            },
             priorAuthorization: "Incomplete",
             vendorConfirmation: "Incomplete",
             createTime: new Date(),
@@ -80,7 +87,9 @@
                 }
             ],
             include: {
-                patients: true
+                patients: true,
+                locations: true,
+                providers: true
             }
         }
 
@@ -91,7 +100,7 @@
         const data = res._getJSONData()
         expect(data.cases[0].caseId).toEqual(1)
         expect(data.cases[0].patientId).toEqual(1)
-        expect(data.cases[0].providerName).toEqual("testProviderName")
+        expect(data.cases[0].providers.firstName).toEqual("testProviderName")
         expect(data.count).toEqual(1)
         expect(prismaMock.cases.findMany).toBeCalledTimes(1)
         expect(prismaMock.cases.findMany).toBeCalledWith(params)

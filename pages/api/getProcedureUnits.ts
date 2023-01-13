@@ -12,6 +12,8 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
                 locationId: parseInt(req.query["locationId"] as string)
             }
         })
+        procedureUnits.sort((unit1, unit2) => unit1.procedureUnitName.toLowerCase() > unit2.procedureUnitName.toLowerCase() ? 1 : -1);
+
         res.json(procedureUnits)
     } catch(err) {
         res.status(500).json({ message: err });

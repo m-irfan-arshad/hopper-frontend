@@ -7,12 +7,14 @@ const requiredParams = ['procedureUnitId'];
 
 export default withValidation(requiredParams, async function getServiceLinesHandler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const procedureUnits = await prisma.serviceLines.findMany({
+        const serviceLines = await prisma.serviceLines.findMany({
             where: {
                 procedureUnitId: parseInt(req.query["procedureUnitId"] as string)
             }
         })
-        res.json(procedureUnits)
+        serviceLines.sort((unit1, unit2) => unit1.serviceLineName.toLowerCase() > unit2.serviceLineName.toLowerCase() ? 1 : -1);
+
+        res.json(serviceLines)
     } catch(err) {
         res.status(500).json({ message: err });
     }

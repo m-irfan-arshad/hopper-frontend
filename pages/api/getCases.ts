@@ -8,6 +8,7 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
 export default withApiAuthRequired( withValidation(requiredParams, async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
+  
   const dashboardParams = {
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
@@ -18,28 +19,34 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
 
   const paginationSkipAmount = (parseInt(<string>req.query["page"]) - 1) * 50;
 
-  const count =  await prisma.cases.count({
-    where: formatDashboardQueryParams(dashboardParams)
-  });
+  try {
+    const count =  await prisma.cases.count({
+      where: formatDashboardQueryParams(dashboardParams)
+    });
 
-  const resultPosts = await prisma.cases.findMany({
-      where: formatDashboardQueryParams(dashboardParams),
-      take: paginationCount,
-      skip: paginationSkipAmount,
-      orderBy: [
-        {
-          procedureDate: <Prisma.SortOrder>req.query["orderBy"]
+    const resultPosts = await prisma.cases.findMany({
+        where: formatDashboardQueryParams(dashboardParams),
+        take: paginationCount,
+        skip: paginationSkipAmount,
+        orderBy: [
+          {
+            procedureDate: <Prisma.SortOrder>req.query["orderBy"]
+          }
+        ],
+        include: {
+            patients: true,
+            locations: true,
+            providers: true
         }
-      ],
-      include: {
-          patients: true
-      }
-  })
+    })
 
-  res.json({
-    cases: resultPosts.map(function(oldCase) {
-      return casesFormatter({cases: oldCase})
-    }), 
-    count: count
-  })
+    res.json({
+      cases: resultPosts.map(function(oldCase) {
+        return casesFormatter({cases: oldCase})
+      }), 
+      count: count
+    })
+  } catch(err) {
+    res.status(500).json({ message: err });
+}
 }))

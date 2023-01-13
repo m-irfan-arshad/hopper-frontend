@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { SingleCase, APIParameters } from '../reference';
-import { Prisma, cases, patients } from '@prisma/client';
+import { Prisma, cases, patients, locations, providers } from '@prisma/client';
 import moment from "moment";
 
 interface DashboardQueryParams { 
@@ -11,9 +11,43 @@ interface DashboardQueryParams {
     vendorConfirmation?: string;
 }
 
+interface PatientTableParams {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: moment.Moment;
+}
+
+interface CaseTableParams {
+    providerId: number
+    locationId: number
+    procedureUnitId: number
+    serviceLineId: number
+    procedureDate: moment.Moment;
+}
+
+interface CaseFormParams {
+    provider: any
+    location: any
+    procedureUnit: any
+    serviceLine: any
+    procedureDate: moment.Moment;
+}
+
+interface CreateCaseFromFormObject {
+    patient: PatientTableParams
+    case: CaseFormParams 
+}
+
+interface CreateCaseObject {
+    patient: PatientTableParams
+    case: CaseTableParams 
+}
+
 interface CasesFormatterProps {
     cases: cases & {
         patients: patients | null;
+        locations: locations | null
+        providers: providers | null
     }
 }
 
@@ -101,14 +135,19 @@ export function casesFormatter (params: CasesFormatterProps): any {
         dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
     } : null
 
+    const newLocation = (cases.locations) ? cases.locations : null;
+    const newProvider = (cases.providers) ? cases.providers : null;
+
     let newCase: SingleCase = {
         caseId: cases.caseId,
         procedureDate: formatDate(cases.procedureDate),
         fhirResourceId: cases.fhirResourceId,
         patientId: cases.patientId,
+        locationId: cases.locationId,
+        providerId: cases.providerId,
         patients: newPatient,
-        providerName: cases.providerName,
-        locationName: cases.locationName,
+        providers: newProvider,
+        locations: newLocation,
         createTime: cases.createTime,
         updateTime: cases.updateTime,
         steps: {
@@ -148,4 +187,18 @@ export function withValidation(requiredParams: Array<string>, queryFunc: Functio
 
         return queryFunc(...args)
     }
+}
+
+export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
+    const createCaseObject: CreateCaseObject = {
+        patient: params.patient,
+        case: {
+            procedureDate: params.case.procedureDate,
+            locationId: params.case.location.locationId,
+            procedureUnitId: params.case.procedureUnit.procedureUnitId,
+            providerId: params.case.provider.providerId,
+            serviceLineId: params.case.serviceLine.serviceLineId
+        }
+    }
+    return createCaseObject;
 }

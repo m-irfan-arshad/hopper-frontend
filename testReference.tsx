@@ -11,6 +11,10 @@ export const mockCaseData = [
             mobilePhone: 'mobilePhone',
             mrn: 'mrn',
             address: 'address'
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     },
     {
@@ -23,6 +27,10 @@ export const mockCaseData = [
                 mobilePhone: 'mobilePhone2',
                 mrn: 'mrn2',
                 address: 'address2'
+        },
+        steps: {
+            priorAuthorization: "Incomplete",
+            vendorConfirmation: "Incomplete",
         }
     }
 ]; 
@@ -66,6 +74,44 @@ export const mockLocationData = [
         locationId: 2,
         fhirResourceId: 'fhirResourceId2',
         locationName: 'locationName2',
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+];
+
+export const mockProcedureUnitData = [
+    {
+        procedureUnitId: 1,
+        fhirResourceId: 'fhirResourceId',
+        procedureUnitName: 'procedureUnitName',
+        locationId: 1,
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        procedureUnitId: 2,
+        fhirResourceId: 'fhirResourceId2',
+        procedureUnitName: 'procedureUnitName2',
+        locationId: 2,
+        createTime: new Date(),
+        updateTime: new Date()
+    }
+];
+
+export const mockServiceLineData = [
+    {
+        serviceLineId: 1,
+        fhirResourceId: 'fhirResourceId',
+        serviceLineName: 'serviceLineName',
+        procedureUnitId: 1,
+        createTime: new Date(),
+        updateTime: new Date()
+    },
+    {
+        serviceLineId: 2,
+        fhirResourceId: 'fhirResourceId2',
+        serviceLineName: 'serviceLineName2',
+        procedureUnitId: 2,
         createTime: new Date(),
         updateTime: new Date()
     }

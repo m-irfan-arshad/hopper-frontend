@@ -6,22 +6,25 @@ test.describe('Landing Page', () => {
     test.beforeEach(async ({ page }) => {
         const dashboard = new DashboardPage(page);
         await page.goto(dashboard.url);
-        
     });
 
-    test('Submitting a Created Case', async ({ page }) => {
-        
+    test.only('Submitting a Created Case', async ({ page }) => {
         const dashboard = new DashboardPage(page);
         const { firstName, lastName, birthDay, procedureDate } = createPatientCase();
+        
         await dashboard.createCaseButton.click();
         await expect(dashboard.patientInformation).toBeVisible();
         await page.locator("[id='patient.firstName']").fill(firstName);
         await page.locator("[id='patient.lastName']").fill(lastName);
         await page.locator("[id='patient.dateOfBirth']").fill(birthDay);
-        await page.locator("[id='case.providerName']").fill("Doctor Doctorson");
-        await page.locator("[id='case.locationName']").fill("Sacred Heart Hospital");
-        await page.locator("[id='case.procedureUnit']").fill("Room 1A");
-        await page.locator("[id='case.serviceLine']").fill("8675309");
+        await page.locator("[id='case.location']").click();
+        await page.locator("text='Feeleove'").click();
+        await page.locator("[id='case.procedureUnit']").click();
+        await page.locator("text='pugigu'").click();
+        await page.locator("[id='case.serviceLine']").click();
+        await page.locator("text='slfuhge'").click();
+        await page.locator("[id='case.provider']").click();
+        await page.locator("text='Edgar McGee'").click();
         await page.locator("[id='case.procedureDate']").fill(procedureDate);
         await dashboard.submitCreateCaseButton.click();
         await expect(dashboard.patientInformation).toBeHidden();

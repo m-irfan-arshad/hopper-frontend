@@ -18,8 +18,8 @@
         fhirResourceId: "testId",
         patientId: 1,
         procedureDate: new Date(),
-        providerName: "testProviderName",
-        locationName: "testLocationName",
+        providerId: 123,
+        locationId: 456,
         createTime: new Date(),
         updateTime: new Date(),
         priorAuthorization: "incomplete",
@@ -55,7 +55,7 @@
         const data = res._getJSONData()
         expect(data.caseId).toEqual(1)
         expect(data.patientId).toEqual(1)
-        expect(data.providerName).toEqual("testProviderName")
+        expect(data.providerId).toEqual(123)
         expect(prismaMock.cases.create).toBeCalledTimes(1)
     })
 
@@ -67,6 +67,6 @@
 
         await createCaseHander(req, res)
         const data = res._getJSONData()
-        expect(data.message).toEqual('The following required parameters are missing: procedureDate providerName locationName procedureUnit serviceLine')
+        expect(data.message).toEqual('The following required parameters are missing: procedureDate providerId locationId')
     })
 });

@@ -22,8 +22,8 @@ describe("CaseSummaryDialog", () => {
       fhirResourceId: "testId",
       patientId: 1,
       procedureDate: "01/30/1990",
-      providerName: "testProviderName",
-      locationName: "testLocationName",
+      providerId: 123,
+      locationId: 456,
       createTime: new Date(),
       updateTime: new Date(),
       procedureLocation: "procedureLocation",
@@ -37,6 +37,14 @@ describe("CaseSummaryDialog", () => {
         homePhone: "555-555-5555",
         address: "330 Philly Lane",
         mrn: "5678567890",
+      },
+      locations: {
+        locationName: "testLocationName",
+        fhirResourceId: "aa22ss"
+      },
+      providers: {
+        firstName: "test",
+        lastName: "provider name"
       },
       steps: {
         priorAuthorization: "Incomplete",
@@ -74,12 +82,12 @@ describe("CaseSummaryDialog", () => {
     expect(getByText('testLocationName')).toBeInTheDocument();
 
     expect(getByText('Surgeon Name')).toBeInTheDocument();
-    expect(getByText('testProviderName')).toBeInTheDocument();
+    expect(getByText('test provider name')).toBeInTheDocument();
 
   });
 
   test("renders the caseSummaryDialog with N/A for all applicable fields", () => {
-    const propsClone = {...testProps, row: {...testProps.row, providerName: ""}}
+    const propsClone = {...testProps, row: {...testProps.row, providers: null}}
       
     const { getAllByText } = render(
       <CaseSummaryDialog {...propsClone} />
