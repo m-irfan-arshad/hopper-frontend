@@ -139,11 +139,11 @@ export default function CaseSummaryDialog(props: Props) {
                 <Grid container spacing={"1rem"}>
                     <Grid item xs={6}>
                         <Typography variant="caption">Site</Typography>
-                        <Typography variant="body2">{row.locations?.locationName || 'N/A'}</Typography>
+                        <Typography variant="body2">{row.locationName || 'N/A'}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="caption">Surgeon Name</Typography>
-                        <Typography variant="body2">{row.providers ? `${row.providers?.firstName} ${row.providers?.lastName}` : 'N/A'}</Typography>
+                        <Typography variant="body2">{row.providerName || 'N/A'}</Typography>
                     </Grid>
                 </Grid> 
             </LocalizationProvider>

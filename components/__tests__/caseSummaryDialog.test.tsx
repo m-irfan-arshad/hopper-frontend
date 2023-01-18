@@ -38,14 +38,8 @@ describe("CaseSummaryDialog", () => {
         address: "330 Philly Lane",
         mrn: "5678567890",
       },
-      locations: {
         locationName: "testLocationName",
-        fhirResourceId: "aa22ss"
-      },
-      providers: {
-        firstName: "test",
-        lastName: "provider name"
-      },
+        providerName: "provider name",
       steps: {
         priorAuthorization: "Incomplete",
         vendorConfirmation: "Incomplete",
@@ -82,12 +76,12 @@ describe("CaseSummaryDialog", () => {
     expect(getByText('testLocationName')).toBeInTheDocument();
 
     expect(getByText('Surgeon Name')).toBeInTheDocument();
-    expect(getByText('test provider name')).toBeInTheDocument();
+    expect(getByText('provider name')).toBeInTheDocument();
 
   });
 
   test("renders the caseSummaryDialog with N/A for all applicable fields", () => {
-    const propsClone = {...testProps, row: {...testProps.row, providers: null}}
+    const propsClone = {...testProps, row: {...testProps.row, providerName: ''}}
       
     const { getAllByText } = render(
       <CaseSummaryDialog {...propsClone} />

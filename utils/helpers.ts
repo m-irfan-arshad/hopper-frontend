@@ -129,15 +129,21 @@ export function formatDate(date: Date | null) : string | null {
 }
 
 export function casesFormatter (params: CasesFormatterProps): any {
-    const {cases} = params
+    const {cases} = params;
     const newPatient = (cases.patients) ? {
-        ...cases.patients,
+        patientId: cases.patients?.patientId,
+        fhirResourceId: cases.patients.fhirResourceId,
+        firstName: cases.patients?.firstName,
+        lastName: cases.patients?.lastName,
+        mrn: cases.patients?.mrn,
+        address: cases.patients?.address,
+        mobilePhone: cases.patients?.mobilePhone,
+        homePhone: cases.patients?.homePhone,
         dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
     } : null
 
-    const newLocation = (cases.locations) ? cases.locations : null;
-    const newProvider = (cases.providers) ? cases.providers : null;
-
+    const providerName = (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : '';
+    
     let newCase: SingleCase = {
         caseId: cases.caseId,
         procedureDate: formatDate(cases.procedureDate),
@@ -146,8 +152,8 @@ export function casesFormatter (params: CasesFormatterProps): any {
         locationId: cases.locationId,
         providerId: cases.providerId,
         patients: newPatient,
-        providers: newProvider,
-        locations: newLocation,
+        providerName: providerName,
+        locationName: cases.locations?.locationName,
         createTime: cases.createTime,
         updateTime: cases.updateTime,
         steps: {
@@ -159,7 +165,8 @@ export function casesFormatter (params: CasesFormatterProps): any {
 }
 
 export function validateParameters(requiredParams: Array<string>, req: NextApiRequest, res: NextApiResponse) {
-    return validateRequest(requiredParams, req.query, res)
+    const isPOST = Object.keys(req.body).length > 0; 
+    return validateRequest(requiredParams, isPOST ? req.body : req.query, res)
 }
 
 

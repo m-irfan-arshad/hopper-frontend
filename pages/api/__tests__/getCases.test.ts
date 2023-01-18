@@ -100,7 +100,7 @@
         const data = res._getJSONData()
         expect(data.cases[0].caseId).toEqual(1)
         expect(data.cases[0].patientId).toEqual(1)
-        expect(data.cases[0].providers.firstName).toEqual("testProviderName")
+        expect(data.cases[0].providerName).toEqual("testProviderName last")
         expect(data.count).toEqual(1)
         expect(prismaMock.cases.findMany).toBeCalledTimes(1)
         expect(prismaMock.cases.findMany).toBeCalledWith(params)
