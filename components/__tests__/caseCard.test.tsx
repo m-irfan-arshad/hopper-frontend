@@ -6,7 +6,8 @@ import * as R from 'ramda';
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
-  useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
+  useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+  QueryClient: jest.fn()
   }));
   
 describe("CaseCard", () => {
@@ -19,6 +20,8 @@ describe("CaseCard", () => {
     locationName: "testLocationName",
     createTime: new Date(),
     updateTime: new Date(),
+    providerId: 1,
+    locationId: 2,
     patients: {
       patientId: 1,
       fhirResourceId: "aa22ss",
@@ -37,7 +40,7 @@ describe("CaseCard", () => {
   };
   test("renders the caseCard and can expand it", async () => {
     const { getByText, queryByText, getByTestId } = render(
-      <CaseCard row={row} />
+        <CaseCard row={row} />
     );
 
     expect(getByText("Whitebeard, Captain")).toBeInTheDocument();

@@ -85,6 +85,12 @@ export function useUpdateCaseHook() {
     )
 }
 
+export function useGetCaseByIdHook(caseId: string) {
+    return useQuery(["getCaseById", caseId], async () =>  
+        (await fetch(`/api/getCaseById?caseId=${caseId}`)).json(), { enabled: caseId !== undefined }
+    );
+}
+
 export function useGetProvidersHook(serviceLineId: number) {
     return useQuery(["getProviders", serviceLineId], async () =>  
         (await fetch(`/api/getProviders?serviceLineId=${serviceLineId}`)).json(), { enabled: serviceLineId > 0 }

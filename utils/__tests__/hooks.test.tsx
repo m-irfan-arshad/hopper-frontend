@@ -1,5 +1,12 @@
 import { renderHook, waitFor } from "@testing-library/react";
-import { useGetCasesHook, useGetProvidersHook, useGetLocationsHook, useGetServiceLinesHook, useGetProcedureUnitsHook } from "../hooks";
+import { 
+    useGetCasesHook, 
+    useGetProvidersHook, 
+    useGetLocationsHook, 
+    useGetServiceLinesHook, 
+    useGetProcedureUnitsHook, 
+    useGetCaseByIdHook 
+} from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
 import {mockCaseData, mockProviderData, mockLocationData, mockServiceLineData, mockProcedureUnitData} from '../../testReference'
@@ -104,5 +111,19 @@ describe("Hooks", () => {
         
         expect(result.current.data).toEqual(mockServiceLineData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getServiceLines?procedureUnitId=1`);
+    });
+    test("call getCaseByIdHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockCaseData[0]),
+        }));
+        
+        const { result } = renderHook(() => useGetCaseByIdHook("1"), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockCaseData[0]);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getCaseById?caseId=1`);
     });
 });

@@ -3,7 +3,6 @@ import Head from "next/head";
 import TopNavBar from "../components/topNavBar";
 import Dashboard from "../components/dashboard";
 import * as LaunchDarkly from 'launchdarkly-react-client-sdk';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Box } from "@mui/material";
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
@@ -16,17 +15,8 @@ interface Props {
   }
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
 export function Home({ flags }: Props) {
   return (
-    <QueryClientProvider client={queryClient}>
       <Box sx={{
         backgroundColor: "gray.light",
         minHeight: "100vh"
@@ -43,7 +33,6 @@ export function Home({ flags }: Props) {
         </header>
         <Dashboard />
       </Box>
-    </QueryClientProvider>
   );
 }
 
