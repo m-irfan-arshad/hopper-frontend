@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from 'next/link';
 import { styled } from "@mui/material/styles";
 import * as R from 'ramda';
 import { 
@@ -167,8 +168,8 @@ export default function CaseCard ({ row }: CaseCardProps) {
     } else {
       return 'N/A'
     }
-  } 
-
+  }
+  
   return (
     <React.Fragment>
     <CaseSummaryDialog open={isDialogOpen} closeDialog={() => setDialogState(false)} row={row} />
@@ -186,13 +187,15 @@ export default function CaseCard ({ row }: CaseCardProps) {
           }
           title={
             <Box sx={{ display: "flex", alignItems: "baseline" }}>
-              <Typography
-                sx={{marginLeft: "0.438rem"}}
-                variant="subtitle1"
-                data-testid="caseCardPatientName"
-              >
-                {`${row.patients?.lastName}, ${row.patients?.firstName}`}
-              </Typography>
+              <Link href={`/case/${row.caseId}`} passHref>
+                <Typography
+                  sx={{marginLeft: "0.438rem", "&:hover": { cursor: "pointer" }}}
+                  variant="subtitle1"
+                  data-testid="caseCardPatientName"
+                >            
+                  {`${row.patients?.lastName}, ${row.patients?.firstName}`}
+                </Typography>
+              </Link>
               <Typography
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}

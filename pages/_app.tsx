@@ -6,20 +6,32 @@ import { defaultTheme } from "../theme"
 import { withLDProvider } from 'launchdarkly-react-client-sdk';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import AlertComponent from "../components/shared/alertComponent"
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 
 export const AlertContext = createContext<any>({open: false, title: '', status: ''});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   const alertState = useState({open: false, title: '', status: ''});
   return (
-    <AlertContext.Provider value={alertState}>
-      <UserProvider>
-        <ThemeProvider theme={defaultTheme}>
-          <Component {...pageProps} />
-          <AlertComponent />
-        </ThemeProvider>
-      </UserProvider>
-    </AlertContext.Provider>
+    <QueryClientProvider client={queryClient}>
+        <AlertContext.Provider value={alertState}>
+          <UserProvider>
+            <ThemeProvider theme={defaultTheme}>
+              <Component {...pageProps} />
+              <AlertComponent />
+            </ThemeProvider>
+          </UserProvider>
+        </AlertContext.Provider>
+    </QueryClientProvider>
   );
 }
 
