@@ -78,7 +78,15 @@ npm run dev
 
 By default this runs on localhost:3000.
 
-- TODO: Prisma / local DB setup
+## Prisma / local DB setup
+
+To set up prisma:
+1) Update the DATABASE_URL parameter in your .env file with your database connection string.
+2) Run the following commands:
+    - npx prisma generate
+    - npx prisma migrate dev
+3) Your database should now include all tables from the prisma schema, along with some sample data. If however the data was not populated, you can manually seed the database by running "npx ts-node prisma/seed.ts"
+
 - TODO: Branching guidelines
 - TODO: Commit guidelines
 - TODO: PR guidelines
