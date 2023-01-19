@@ -87,6 +87,12 @@ To set up prisma:
     - npx prisma migrate dev
 3) Your database should now include all tables from the prisma schema, along with some sample data. If however the data was not populated, you can manually seed the database by running "npx ts-node prisma/seed.ts"
 
+Updating the schema:
+All schema changes should be done through the schema.prisma file. After updating this file, you can run "npx prisma migrate dev" to persist these changes to your database.
+
+NOTE - if you've made multiple migrations for a single PR, you should remove the intermediate migrations by resetting the contents of your local ./prisma/migrations folder to match the migration history on the main branch, and then running "npx prisma migrate dev --name name_of_migration".
+
+
 - TODO: Branching guidelines
 - TODO: Commit guidelines
 - TODO: PR guidelines
