@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, getByPlaceholderText } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import BookingSheetDialog from "../bookingSheetDialog";
 
 describe("BookingSheetDialog", () => {
