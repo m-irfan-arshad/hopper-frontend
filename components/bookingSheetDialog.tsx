@@ -43,7 +43,9 @@ export default function CaseSummaryDialog(props: Props) {
                 paddingLeft: 0
             }}> 
             <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "2rem"}}>
-                <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >{`${data?.patients?.firstName} ${data?.patients?.lastName}`}</Typography>
+                <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
+                    {`${data?.patients?.firstName} ${data?.patients?.lastName}`}
+                </Typography>
                 <IconButton sx={{marginRight: "2.5rem"}} onClick={closeDialog}>
                     <CloseIcon />
                 </IconButton>

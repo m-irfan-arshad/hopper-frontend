@@ -6,8 +6,6 @@ import BookingSheetDialog from "../../components/bookingSheetDialog";
 
 export default function CaseHub() {
   const router = useRouter()
-
-  console.log('router test',router);
   
   const { data } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
