@@ -33,6 +33,15 @@ describe("getCaseById API", () => {
            updateTime: new Date()
        };
 
+       const params = {
+            where: {
+                caseId: 123
+            },
+            include: {
+                patients: true,
+            }
+        };
+
        prismaMock.cases.findUnique.mockResolvedValue(singleCase)
 
        await getCaseById(req, res)
@@ -40,5 +49,6 @@ describe("getCaseById API", () => {
        expect(data.caseId).toEqual(123)
        expect(data.providerName).toEqual('providerName')
        expect(prismaMock.cases.findUnique).toBeCalledTimes(1)
+       expect(prismaMock.cases.findUnique).toBeCalledWith(params)
    })
 });

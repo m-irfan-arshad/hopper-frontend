@@ -12,7 +12,10 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     const resultPosts = await prisma.cases.findUnique({
         where: {
             caseId: parseInt(req.query["caseId"] as string)
-          }
+          },
+          include: {
+            patients: true
+        }
     })
 
     res.json(resultPosts);
