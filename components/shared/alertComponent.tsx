@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Alert, AlertColor, Fade } from "@mui/material";
-import {AlertContext} from "../../pages/_app"
+import {AlertContext} from "../../pages/_app.page"
 
 export default function AlertComponent() {
   const [alertState, setAlertState] = useContext(AlertContext);

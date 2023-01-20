@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import moment, { isMoment } from "moment";
 import { caseFilterInterface } from "../reference";
-import {AlertContext} from "../pages/_app"
+import {AlertContext} from "../pages/_app.page"
 
 export function useGetCasesHook(
     dateRangeStart: moment.Moment, 

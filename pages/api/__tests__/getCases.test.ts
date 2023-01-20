@@ -4,7 +4,7 @@
  import httpMock from 'node-mocks-http';
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
- import getCasesHandler from '../getCases'
+ import getCasesHandler from '../getCases.page'
  import moment from 'moment'
 
  jest.mock('@auth0/nextjs-auth0', () => ({
