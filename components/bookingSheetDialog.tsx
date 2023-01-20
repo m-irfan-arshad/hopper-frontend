@@ -12,7 +12,6 @@ import {
     styled
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { minHeight, textTransform } from "@mui/system";
 
 interface Props {
     open: boolean
@@ -20,7 +19,7 @@ interface Props {
     data: any
 }
 
-export default function CaseSummaryDialog(props: Props) {
+export default function BookingSheetDialog(props: Props) {
   const {open, closeDialog, data} = props;
   const [selectedTab, selectTab] = useState(0);
 
@@ -31,7 +30,7 @@ export default function CaseSummaryDialog(props: Props) {
   });
 
   return (
-      <Dialog maxWidth={'lg'} open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
+      <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <DialogTitle 
             sx={{
                 display: "flex",

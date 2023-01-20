@@ -15,7 +15,7 @@ jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockCaseData[0] })),
   }));
 
-describe('/case/[caseId]', () => {
+describe('[caseId]: Case Hub Page', () => {
   test("renders the case hub page and opens/closes the booking sheet", async() => {
     
     const { getByRole, queryByRole } = render(

@@ -1,7 +1,7 @@
 import { render, fireEvent, waitFor, getByPlaceholderText } from "@testing-library/react";
 import BookingSheetDialog from "../bookingSheetDialog";
 
-describe("LoginDialog", () => {
+describe("BookingSheetDialog", () => {
     const props = {
         closeDialog: jest.fn(),
         open: true,
