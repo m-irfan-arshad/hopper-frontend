@@ -45,10 +45,10 @@ interface CreateCaseObject {
 
 interface CasesFormatterProps {
     cases: cases & {
-        patients: patients | null;
-        locations: locations | null
-        providers: providers | null
-    }
+        patients?: patients | null;
+        locations?: locations | null
+        providers?: providers | null
+    } | null
 }
 
 interface FilterObject {
@@ -130,38 +130,43 @@ export function formatDate(date: Date | null) : string | null {
 
 export function casesFormatter (params: CasesFormatterProps): any {
     const {cases} = params;
-    const newPatient = (cases.patients) ? {
-        patientId: cases.patients?.patientId,
-        fhirResourceId: cases.patients.fhirResourceId,
-        firstName: cases.patients?.firstName,
-        lastName: cases.patients?.lastName,
-        mrn: cases.patients?.mrn,
-        address: cases.patients?.address,
-        mobilePhone: cases.patients?.mobilePhone,
-        homePhone: cases.patients?.homePhone,
-        dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
-    } : null
 
-    const providerName = (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : '';
-    
-    let newCase: SingleCase = {
-        caseId: cases.caseId,
-        procedureDate: formatDate(cases.procedureDate),
-        fhirResourceId: cases.fhirResourceId,
-        patientId: cases.patientId,
-        locationId: cases.locationId,
-        providerId: cases.providerId,
-        patients: newPatient,
-        providerName: providerName,
-        locationName: cases.locations?.locationName,
-        createTime: cases.createTime,
-        updateTime: cases.updateTime,
-        steps: {
-            priorAuthorization: cases.priorAuthorization,
-            vendorConfirmation: cases.vendorConfirmation,
-          }
+    if (cases) {
+        const newPatient = (cases.patients) ? {
+            patientId: cases.patients?.patientId,
+            fhirResourceId: cases.patients.fhirResourceId,
+            firstName: cases.patients?.firstName,
+            lastName: cases.patients?.lastName,
+            mrn: cases.patients?.mrn,
+            address: cases.patients?.address,
+            mobilePhone: cases.patients?.mobilePhone,
+            homePhone: cases.patients?.homePhone,
+            dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
+        } : null
+
+        const providerName = (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : '';
+        
+        let newCase: SingleCase = {
+            caseId: cases.caseId,
+            procedureDate: formatDate(cases.procedureDate),
+            fhirResourceId: cases.fhirResourceId,
+            patientId: cases.patientId,
+            locationId: cases.locationId,
+            providerId: cases.providerId,
+            patients: newPatient,
+            providerName: providerName,
+            locationName: cases.locations?.locationName,
+            createTime: cases.createTime,
+            updateTime: cases.updateTime,
+            steps: {
+                priorAuthorization: cases.priorAuthorization,
+                vendorConfirmation: cases.vendorConfirmation,
+            }
+        }
+        return newCase
+    } else {
+        return params;
     }
-    return newCase
 }
 
 export function validateParameters(requiredParams: Array<string>, req: NextApiRequest, res: NextApiResponse) {
