@@ -4,7 +4,7 @@
  import httpMock from 'node-mocks-http';
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
- import getProvidersHandler from '../getProviders'
+ import getProvidersHandler from '../getProviders.page'
 
  jest.mock('@auth0/nextjs-auth0', () => ({
     withApiAuthRequired: jest.fn((args) => args),

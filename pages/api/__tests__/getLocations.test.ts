@@ -3,7 +3,7 @@
  */
  import httpMock from 'node-mocks-http';
  import { prismaMock } from '../../../prisma/singleton'
- import getLocationOptionsHandler from '../getLocations';
+ import getLocationOptionsHandler from '../getLocations.page';
 
  jest.mock('@auth0/nextjs-auth0', () => ({
     withApiAuthRequired: jest.fn((args) => args),

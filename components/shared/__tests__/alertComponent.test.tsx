@@ -2,7 +2,7 @@ import React, {createContext, useState} from 'react';
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import moment from "moment";
 import AlertComponent from "../alertComponent";
-import {AlertContext} from "../../../pages/_app"
+import {AlertContext} from "../../../pages/_app.page"
     
 describe("AlertComponent", () => {
     test("renders correctly", async () => {
