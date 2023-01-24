@@ -5,6 +5,7 @@ import { Button, Box, Typography, Tabs, Tab, styled } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import { Check, CircleOutlined } from '@mui/icons-material';
+import CaseSummaryContent from "../../components/caseSummaryContent";
 
 interface BookingSheetTabProps {
     label: string
@@ -20,8 +21,10 @@ interface BookingSheetButtonProps {
 export default function CaseHub() {
   const router = useRouter()
   
-  const { data } = useGetCaseByIdHook(router.query.caseId as string);
+  const { data, isFetching, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
+
+  console.log('fetch',isFetching);
 
   const StyledTab = styled((props: any) => {
         const { complete, ...other } = props;
@@ -58,7 +61,9 @@ export default function CaseHub() {
                 justifyContent:"flex-start",
                 fontSize: "1rem",
                 fontWeight: "600",
+                width: "fit-content",
                 paddingLeft: 0,
+                "&:hover": {backgroundColor: "transparent"},
                 ...additionalStyles
             }}
           >
@@ -69,36 +74,49 @@ export default function CaseHub() {
   return (
     <React.Fragment>
         <TopNavBar /> 
-        <Box sx={{display: "flex", flexDirection: "column", width: "25%", marginTop: "1rem", marginLeft: "3rem"}}>
-            <BookingSheetDialog data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
-            <BookingSheetButton
-                additionalStyles={{ color:"blue.main" }}
-                onClick={() => setDialogState(true)}
-            >
-                <Typography variant="overline" sx={{color: "blue.main"}}>
-                    {`< Dashboard`}
+        <Box sx={{backgroundColor: "gray.light", display: "flex", height: "100%"}}>
+            <Box sx={{display: "flex", flexDirection: "column", width: "25%", marginTop: "1rem", marginLeft: "3rem"}}>
+                <BookingSheetDialog data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
+                <BookingSheetButton
+                    additionalStyles={{ color:"blue.main" }}
+                    onClick={() => setDialogState(true)}
+                >
+                    <Typography variant="overline" sx={{color: "blue.main"}}>
+                        {`< Dashboard`}
+                    </Typography>
+                </BookingSheetButton>
+                <Typography variant="h4" >
+                    {`${data?.patients?.lastName}, ${data?.patients?.firstName}`}
                 </Typography>
-            </BookingSheetButton>
-            <Typography variant="h4" >
-                {`${data?.patients?.lastName}, ${data?.patients?.firstName}`}
-            </Typography>
-            <Typography variant="caption" >
-                {`${data?.patients?.dateOfBirth} - ${data?.patients?.mrn} `}
-            </Typography>
-            <BookingSheetButton
-                onClick={() => setDialogState(true)}
-                additionalStyles={{ marginTop:"1rem", color:"black.main" }}
-            >
-                Booking Sheet
-            </BookingSheetButton> 
-            <Tabs orientation="vertical" > 
-                <BookingSheetTab complete label="Patient" /> 
-                <BookingSheetTab label="Financial"  />
-                <BookingSheetTab complete label="Procedure" />
-                <BookingSheetTab label="Scheduling" />
-                <BookingSheetTab label="Implants & Products"  />
-                <BookingSheetTab label="Clinical" />
-            </Tabs>
+                <Typography variant="caption" >
+                    {`${data?.patients?.dateOfBirth} - ${data?.patients?.mrn} `}
+                </Typography>
+                <BookingSheetButton
+                    onClick={() => setDialogState(true)}
+                    additionalStyles={{ marginTop:"1rem", color:"black.main" }}
+                >
+                    Booking Sheet
+                </BookingSheetButton> 
+                <Tabs orientation="vertical" > 
+                    <BookingSheetTab complete label="Patient" /> 
+                    <BookingSheetTab label="Financial"  />
+                    <BookingSheetTab complete label="Procedure" />
+                    <BookingSheetTab label="Scheduling" />
+                    <BookingSheetTab label="Implants & Products"  />
+                    <BookingSheetTab label="Clinical" />
+                </Tabs>
+            </Box>
+            <Box 
+                sx={{
+                    backgroundColor: "white.main", 
+                    borderRadius:"0.625rem", 
+                    padding: "1.5rem", 
+                    paddingTop: 0, 
+                    marginTop: "3rem", 
+                    boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px"
+                }}>
+                {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
+            </Box>
         </Box>
         </React.Fragment>
 
