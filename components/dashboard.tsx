@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
@@ -42,7 +42,19 @@ export default function Dashboard() {
         setSearchBarValue(value);
     }
 
-    const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
+
+    // const [value, setValue] = useState(initialValue);
+  
+    // useEffect(() => {
+    //   setValue(initialValue)
+    // }, [initialValue])
+
+
+    // useEffect(() => {
+    //     refetch();
+    // }, []);
+
+    const { data = {cases: [], count: 0}, isFetching, refetch } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 
     const caseGroups:CaseGroup = {};
 

@@ -6,10 +6,12 @@ import BookingSheetDialog from "../../components/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
+import { useQueryClient } from '@tanstack/react-query'
 
 interface BookingSheetTabProps {
     label: string
     complete?: boolean
+    //onClick: (value: string) => void
 }
 
 interface BookingSheetButtonProps {
@@ -29,6 +31,19 @@ export default function CaseHub() {
   
   const { data, isFetching, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
+  const [tab, selectTab] = useState('Patient');
+
+  function handleSelectTab(selectedTab: string) {
+    setDialogState(true);
+    selectTab(selectedTab)
+  }
+
+  const queryClient = useQueryClient();
+
+  async function RefetchDashboard() {
+    //const queryCache = queryClient.getQueryCache();
+    //console.log('query',queryCache); //can see the getCases query
+  }
 
   const StyledTab = styled((props: any) => {
         const { complete, ...other } = props;
@@ -40,9 +55,9 @@ export default function CaseHub() {
         textTransform: "capitalize",
         minHeight: "40px",
         width: "fit-content",
-        fontWeight: "400",
+        fontWeight:  complete? "400" : "500",
         fontStyle: complete ? "italic" : "normal",
-        color: complete? theme.palette.success.dark : theme.palette.blue.main,
+        color: complete? theme.palette.success.dark : theme.palette.blue.main
   }));
 
   const SectionHeader = (props: SectionHeaderProps) => {
@@ -73,8 +88,10 @@ export default function CaseHub() {
       return <StyledTab
                 complete={complete} 
                 label={label}
+                value={label}
                 icon={complete? <Check sx={{height: "1rem"}} /> : <CircleOutlined sx={{height: "1rem"}} /> }
                 iconPosition="start"
+                onClick={() => handleSelectTab(label)}
             />
   }
 
@@ -100,55 +117,57 @@ export default function CaseHub() {
 
   return (
     <React.Fragment>
-        <TopNavBar /> 
-        <Box sx={{backgroundColor: "gray.light", display: "flex"}}>
-            <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: "3rem"}}>
-                <BookingSheetDialog data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
-                <BookingSheetButton
-                    additionalStyles={{ color:"blue.main" }}
-                    onClick={() => setDialogState(true)}
-                >
-                    <Typography variant="overline" sx={{color: "blue.main"}}>
-                        {`< Dashboard`}
+        <Box sx={{backgroundColor: "gray.light", minHeight: "100vh" }}>
+            <TopNavBar /> 
+            <Box sx={{ display: "flex"}}>
+                <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: "3rem"}}>
+                    <BookingSheetDialog initiallySelectedTab={tab} data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
+                    <BookingSheetButton
+                        additionalStyles={{ color: "blue.main" }}
+                        onClick={() => RefetchDashboard()}
+                    >
+                        <Typography variant="overline" sx={{color: "blue.main"}}>
+                            {`< Dashboard`}
+                        </Typography>
+                    </BookingSheetButton>
+                    <Typography variant="h4" >
+                        {`${data?.patients?.lastName}, ${data?.patients?.firstName}`}
                     </Typography>
-                </BookingSheetButton>
-                <Typography variant="h4" >
-                    {`${data?.patients?.lastName}, ${data?.patients?.firstName}`}
-                </Typography>
-                <Typography variant="caption" >
-                    {`${data?.patients?.dateOfBirth} - ${data?.patients?.mrn} `}
-                </Typography>
-                <BookingSheetButton
-                    onClick={() => setDialogState(true)}
-                    additionalStyles={{ marginTop:"1rem", color:"black.main" }}
-                >
-                    Booking Sheet
-                </BookingSheetButton> 
-                <Tabs orientation="vertical" > 
-                    <BookingSheetTab complete label="Patient" /> 
-                    <BookingSheetTab label="Financial"  />
-                    <BookingSheetTab complete label="Procedure" />
-                    <BookingSheetTab label="Scheduling" />
-                    <BookingSheetTab label="Implants & Products"  />
-                    <BookingSheetTab label="Clinical" />
-                </Tabs>
-            </Box>
-            <Box 
-                sx={{
-                    backgroundColor: "white.main", 
-                    borderRadius:"0.625rem", 
-                    padding: "1.5rem", 
-                    paddingTop: 0, 
-                    marginTop: "3rem", 
-                    boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px"
-                }}>
-                {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
-            </Box>
-            <Box sx={{marginLeft: "3.5rem", flexGrow: 1, marginRight: "3.5rem"}}>
-              <SectionHeader canViewAll title="Activity" icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-              <SectionHeader title="Case Amendments" icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-              <SectionHeader title="Documents" icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-              <SectionHeader canViewAll title="Comments" icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                    <Typography variant="caption" >
+                        {`${data?.patients?.dateOfBirth} - ${data?.patients?.mrn} `}
+                    </Typography>
+                    <BookingSheetButton
+                        onClick={() => handleSelectTab('Patient')}
+                        additionalStyles={{ marginTop:"1rem", color:"black.main" }}
+                    >
+                        Booking Sheet
+                    </BookingSheetButton> 
+                    <Tabs orientation="vertical" value={false} > 
+                        <BookingSheetTab complete label="Patient"  /> 
+                        <BookingSheetTab label="Financial" />
+                        <BookingSheetTab complete label="Procedure" />
+                        <BookingSheetTab label="Scheduling"  />
+                        <BookingSheetTab label="Implants & Products"  />
+                        <BookingSheetTab label="Clinical" />
+                    </Tabs>
+                </Box>
+                <Box 
+                    sx={{
+                        backgroundColor: "white.main", 
+                        borderRadius:"0.625rem", 
+                        padding: "1.5rem", 
+                        paddingTop: 0, 
+                        marginTop: "3rem", 
+                        boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px"
+                    }}>
+                    {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
+                </Box>
+                <Box sx={{marginLeft: "3.5rem", flexGrow: 1, marginRight: "3.5rem"}}>
+                <SectionHeader canViewAll title="Activity" icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                <SectionHeader title="Case Amendments" icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                <SectionHeader title="Documents" icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                <SectionHeader canViewAll title="Comments" icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                </Box>
             </Box>
         </Box>
     </React.Fragment>
