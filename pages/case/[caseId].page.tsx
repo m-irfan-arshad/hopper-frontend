@@ -4,7 +4,7 @@ import { useGetCaseByIdHook } from '../../utils/hooks';
 import { Button, Box, Typography, Tabs, Tab, styled } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
-import { Check, CircleOutlined } from '@mui/icons-material';
+import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
 
 interface BookingSheetTabProps {
@@ -18,13 +18,17 @@ interface BookingSheetButtonProps {
     additionalStyles?: React.CSSProperties
 }
 
+interface SectionHeaderProps {
+    title: string;
+    icon: React.ReactNode;
+    canViewAll?: boolean
+}
+
 export default function CaseHub() {
   const router = useRouter()
   
   const { data, isFetching, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
-
-  console.log('fetch',isFetching);
 
   const StyledTab = styled((props: any) => {
         const { complete, ...other } = props;
@@ -40,6 +44,29 @@ export default function CaseHub() {
         fontStyle: complete ? "italic" : "normal",
         color: complete? theme.palette.success.dark : theme.palette.blue.main,
   }));
+
+  const SectionHeader = (props: SectionHeaderProps) => {
+    const {title, icon, canViewAll} = props;
+    return (
+        <Box sx={{ display: "flex", justifyContent: "space-between", borderBottom: "0.063rem solid", borderColor: "gray.main",  marginTop: "3.5rem"}}>
+            <Typography 
+                variant="subtitle2" 
+                sx={{
+                    display: "flex", 
+                    alignItems: "center"
+                }}>                
+                {icon}
+                {title} 
+            </Typography> 
+            {
+            canViewAll 
+                && <Button sx={{color: "blue.main", fontSize: "10px"}}>
+                    View All
+                </Button>
+            }
+        </Box>
+    )
+  }
 
   const BookingSheetTab = (props: BookingSheetTabProps) => {
       const { label, complete } = props;
@@ -74,8 +101,8 @@ export default function CaseHub() {
   return (
     <React.Fragment>
         <TopNavBar /> 
-        <Box sx={{backgroundColor: "gray.light", display: "flex", height: "100%"}}>
-            <Box sx={{display: "flex", flexDirection: "column", width: "25%", marginTop: "1rem", marginLeft: "3rem"}}>
+        <Box sx={{backgroundColor: "gray.light", display: "flex"}}>
+            <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: "3rem"}}>
                 <BookingSheetDialog data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
                 <BookingSheetButton
                     additionalStyles={{ color:"blue.main" }}
@@ -117,8 +144,13 @@ export default function CaseHub() {
                 }}>
                 {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
             </Box>
+            <Box sx={{marginLeft: "3.5rem", flexGrow: 1, marginRight: "3.5rem"}}>
+              <SectionHeader canViewAll title="Activity" icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+              <SectionHeader title="Case Amendments" icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+              <SectionHeader title="Documents" icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+              <SectionHeader canViewAll title="Comments" icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+            </Box>
         </Box>
-        </React.Fragment>
-
+    </React.Fragment>
     )
 }
