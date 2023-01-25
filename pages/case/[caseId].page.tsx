@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { useGetCaseByIdHook } from '../../utils/hooks';
-import { Button, Box, Typography, Tabs, Tab, styled } from '@mui/material';
+import { Button, Box, Typography, Tabs, Tab, styled, useMediaQuery } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
 import Link from 'next/link';
+import { defaultTheme } from "../../theme";
 
 interface BookingSheetTabProps {
     label: string
@@ -26,6 +27,7 @@ interface SectionHeaderProps {
 }
 
 export default function CaseHub() {
+  const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const router = useRouter()
   
   const { data, isFetching, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
@@ -119,8 +121,8 @@ export default function CaseHub() {
     <React.Fragment>
         <Box sx={{backgroundColor: "gray.light", minHeight: "100vh" }}>
             <TopNavBar /> 
-            <Box sx={{ display: "flex"}}>
-                <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: "3rem"}}>
+            <Box sx={{ display: "flex", flexDirection: isMobile ? "column" : "row"}}>
+                <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: isMobile ? "1.75rem" : "3rem"}}>
                     <BookingSheetDialog 
                         initiallySelectedTab={tab} 
                         data={data} 
@@ -164,11 +166,13 @@ export default function CaseHub() {
                         padding: "1.5rem", 
                         paddingTop: 0, 
                         marginTop: "3rem", 
-                        boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px"
+                        boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px",
+                        marginRight: "1.75rem",
+                        marginLeft:"1.75rem"
                     }}>
                     {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
                 </Box>
-                <Box sx={{marginLeft: "3.5rem", flexGrow: 1, marginRight: "3.5rem"}}>
+                <Box sx={{marginLeft: "1.75rem", flexGrow: 1, marginRight: "1.75rem"}}>
                     <SectionHeader 
                         canViewAll 
                         title="Activity" 
