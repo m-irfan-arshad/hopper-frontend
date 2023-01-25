@@ -1,4 +1,7 @@
 import moment from "moment";
+import { UserProvider } from '@auth0/nextjs-auth0';
+import { ThemeProvider } from "@mui/material/styles";
+import { defaultTheme } from "./theme";
 
 export const mockCaseData = [
     {
@@ -116,3 +119,11 @@ export const mockServiceLineData = [
         updateTime: new Date()
     }
 ];
+
+export const PagesTestWrapper = ({ children }: any) => (
+    <UserProvider >
+        <ThemeProvider theme={defaultTheme} >
+            {children}
+        </ThemeProvider>
+    </UserProvider>
+);

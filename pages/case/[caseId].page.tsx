@@ -6,7 +6,6 @@ import BookingSheetDialog from "../../components/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
-import { useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link';
 
 interface BookingSheetTabProps {
@@ -37,13 +36,6 @@ export default function CaseHub() {
   function handleSelectTab(selectedTab: string) {
     setDialogState(true);
     selectTab(selectedTab)
-  }
-
-  const queryClient = useQueryClient();
-
-  async function RefetchDashboard() {
-    //const queryCache = queryClient.getQueryCache();
-    //console.log('query',queryCache); //can see the getCases query
   }
 
   const StyledTab = styled((props: any) => {
@@ -126,7 +118,6 @@ export default function CaseHub() {
                     <Link href={`/`} passHref>
                         <BookingSheetButton
                             additionalStyles={{ color: "blue.main" }}
-                            onClick={() => RefetchDashboard()}
                         >
                             <Typography variant="overline" sx={{color: "blue.main"}}>
                                 {`< Dashboard`}

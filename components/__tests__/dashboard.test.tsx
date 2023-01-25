@@ -13,6 +13,12 @@ jest.mock("../../utils/hooks", () => ({
     useGetProvidersHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProviderData }))
 }));
 
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({getQueryCache: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+    QueryClient: jest.fn()
+}));
+
 describe("Dashboard", () => {  
     test("renders the dashboard", async () => {
         const { getByRole, getByText } = render(

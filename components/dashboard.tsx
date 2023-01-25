@@ -23,8 +23,6 @@ export default function Dashboard() {
     const queryClient = useQueryClient();
     const queryCache = queryClient.getQueryCache();
 
-    console.log('cache', R.clone(R.path(["queries"],queryCache)));
-
     const latestParameters = R.clone(R.pathOr([], ["queries"], queryCache)).reduce((acc: any, value: any) => {
         if (value.queryKey[0] === "getCases") {
             acc = value.queryKey;
