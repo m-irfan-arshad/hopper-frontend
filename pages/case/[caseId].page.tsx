@@ -11,11 +11,10 @@ import Link from 'next/link';
 interface BookingSheetTabProps {
     label: string
     complete?: boolean
-    //onClick: (value: string) => void
 }
 
 interface BookingSheetButtonProps {
-    onClick: () => void
+    onClick?: () => void
     children: string | React.ReactElement
     additionalStyles?: React.CSSProperties
 }
@@ -56,7 +55,15 @@ export default function CaseHub() {
   const SectionHeader = (props: SectionHeaderProps) => {
     const {title, icon, canViewAll} = props;
     return (
-        <Box sx={{ display: "flex", justifyContent: "space-between", borderBottom: "0.063rem solid", borderColor: "gray.main",  marginTop: "3.5rem"}}>
+        <Box 
+            sx={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+                borderBottom: "0.063rem solid", 
+                borderColor: "gray.main",  
+                marginTop: "3.5rem"
+            }}
+        >
             <Typography 
                 variant="subtitle2" 
                 sx={{
@@ -114,7 +121,12 @@ export default function CaseHub() {
             <TopNavBar /> 
             <Box sx={{ display: "flex"}}>
                 <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: "3rem"}}>
-                    <BookingSheetDialog initiallySelectedTab={tab} data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
+                    <BookingSheetDialog 
+                        initiallySelectedTab={tab} 
+                        data={data} 
+                        open={isDialogOpen} 
+                        closeDialog={() => setDialogState(false)} 
+                    />
                     <Link href={`/`} passHref>
                         <BookingSheetButton
                             additionalStyles={{ color: "blue.main" }}

@@ -54,7 +54,7 @@ export default function Dashboard() {
         setSearchBarValue(value);
     }
 
-    const { data = {cases: [], count: 0}, isFetching, refetch } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
+    const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 
     const caseGroups:CaseGroup = {};
 
