@@ -169,10 +169,24 @@ export default function CaseHub() {
                     {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
                 </Box>
                 <Box sx={{marginLeft: "3.5rem", flexGrow: 1, marginRight: "3.5rem"}}>
-                    <SectionHeader canViewAll title="Activity" icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-                    <SectionHeader title="Case Amendments" icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-                    <SectionHeader title="Documents" icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-                    <SectionHeader canViewAll title="Comments" icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                    <SectionHeader 
+                        canViewAll 
+                        title="Activity" 
+                        icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                    />
+                    <SectionHeader 
+                        title="Case Amendments" 
+                        icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                    />
+                    <SectionHeader 
+                        title="Documents" 
+                        icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                    />
+                    <SectionHeader 
+                        canViewAll 
+                        title="Comments" 
+                        icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                    />
                 </Box>
             </Box>
         </Box>
