@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
@@ -9,6 +9,8 @@ import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
+import { useQueryClient } from '@tanstack/react-query'
+import * as R from 'ramda';
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -18,13 +20,25 @@ export default function Dashboard() {
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
     const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
 
-    const [dateRangeStart, setDateRangeStart] = useState(moment().startOf('day'));
-    const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(moment().add(7, 'days').endOf('day'));
+    const queryClient = useQueryClient();
+    const queryCache = queryClient.getQueryCache();
 
-    const [dateSortValue, setDateSortValue] = useState('Newest - Oldest');
-    const [caseFilterValue, setCaseFilterValue] = useState(defaultCaseFilterValue);
-    const [searchBarValue, setSearchBarValue ] = useState('');
-    const [page, setPage] = useState(1);
+    console.log('cache', R.clone(R.path(["queries"],queryCache)));
+
+    const latestParameters = R.clone(R.pathOr([], ["queries"], queryCache)).reduce((acc: any, value: any) => {
+        if (value.queryKey[0] === "getCases") {
+            acc = value.queryKey;
+        }
+        return acc;
+    }, []);
+    
+    const [dateRangeStart, setDateRangeStart] = useState(latestParameters[1] || moment().startOf('day'));
+    const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(latestParameters[2] || moment().add(7, 'days').endOf('day'));
+
+    const [dateSortValue, setDateSortValue] = useState(latestParameters[3] || 'Newest - Oldest');
+    const [caseFilterValue, setCaseFilterValue] = useState(latestParameters[4] || defaultCaseFilterValue);
+    const [searchBarValue, setSearchBarValue ] = useState(latestParameters[5] || '');
+    const [page, setPage] = useState(latestParameters[6] || 1);
 
     const StyledCheckbox = styled(Checkbox)({
         marginLeft: "0.625rem",
@@ -41,18 +55,6 @@ export default function Dashboard() {
         setPage(1);
         setSearchBarValue(value);
     }
-
-
-    // const [value, setValue] = useState(initialValue);
-  
-    // useEffect(() => {
-    //   setValue(initialValue)
-    // }, [initialValue])
-
-
-    // useEffect(() => {
-    //     refetch();
-    // }, []);
 
     const { data = {cases: [], count: 0}, isFetching, refetch } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
 

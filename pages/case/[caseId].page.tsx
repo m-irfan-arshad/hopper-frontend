@@ -7,6 +7,7 @@ import TopNavBar from "../../components/topNavBar";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
 import { useQueryClient } from '@tanstack/react-query'
+import Link from 'next/link';
 
 interface BookingSheetTabProps {
     label: string
@@ -122,14 +123,16 @@ export default function CaseHub() {
             <Box sx={{ display: "flex"}}>
                 <Box sx={{display: "flex", flexDirection: "column", marginRight: "6rem", marginTop: "1rem", marginLeft: "3rem"}}>
                     <BookingSheetDialog initiallySelectedTab={tab} data={data} open={isDialogOpen} closeDialog={() => setDialogState(false)} />
-                    <BookingSheetButton
-                        additionalStyles={{ color: "blue.main" }}
-                        onClick={() => RefetchDashboard()}
-                    >
-                        <Typography variant="overline" sx={{color: "blue.main"}}>
-                            {`< Dashboard`}
-                        </Typography>
-                    </BookingSheetButton>
+                    <Link href={`/`} passHref>
+                        <BookingSheetButton
+                            additionalStyles={{ color: "blue.main" }}
+                            onClick={() => RefetchDashboard()}
+                        >
+                            <Typography variant="overline" sx={{color: "blue.main"}}>
+                                {`< Dashboard`}
+                            </Typography>
+                        </BookingSheetButton>
+                    </Link>
                     <Typography variant="h4" >
                         {`${data?.patients?.lastName}, ${data?.patients?.firstName}`}
                     </Typography>
@@ -163,10 +166,10 @@ export default function CaseHub() {
                     {!isFetching && !isLoading && <CaseSummaryContent row={data} />}
                 </Box>
                 <Box sx={{marginLeft: "3.5rem", flexGrow: 1, marginRight: "3.5rem"}}>
-                <SectionHeader canViewAll title="Activity" icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-                <SectionHeader title="Case Amendments" icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-                <SectionHeader title="Documents" icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
-                <SectionHeader canViewAll title="Comments" icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                    <SectionHeader canViewAll title="Activity" icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                    <SectionHeader title="Case Amendments" icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                    <SectionHeader title="Documents" icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
+                    <SectionHeader canViewAll title="Comments" icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} />
                 </Box>
             </Box>
         </Box>
