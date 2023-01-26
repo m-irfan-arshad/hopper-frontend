@@ -29,14 +29,21 @@ export default function Dashboard() {
         }
         return acc;
     }, []);
-    
-    const [dateRangeStart, setDateRangeStart] = useState(latestParameters[1] || moment().startOf('day'));
-    const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(latestParameters[2] || moment().add(7, 'days').endOf('day'));
 
-    const [dateSortValue, setDateSortValue] = useState(latestParameters[3] || 'Newest - Oldest');
-    const [caseFilterValue, setCaseFilterValue] = useState(latestParameters[4] || defaultCaseFilterValue);
-    const [searchBarValue, setSearchBarValue ] = useState(latestParameters[5] || '');
-    const [page, setPage] = useState(latestParameters[6] || 1);
+    const latestDateRangeStart = latestParameters[1];
+    const latestDateRangeEnd = latestParameters[2];
+    const latestDateSortValue = latestParameters[3];
+    const latestCaseFilterValue = latestParameters[4];
+    const latestSearchBarValue = latestParameters[5];
+    const latestPage = latestParameters[6];
+
+    const [dateRangeStart, setDateRangeStart] = useState(latestDateRangeStart || moment().startOf('day'));
+    const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(latestDateRangeEnd || moment().add(7, 'days').endOf('day'));
+
+    const [dateSortValue, setDateSortValue] = useState(latestDateSortValue || 'Newest - Oldest');
+    const [caseFilterValue, setCaseFilterValue] = useState(latestCaseFilterValue || defaultCaseFilterValue);
+    const [searchBarValue, setSearchBarValue ] = useState(latestSearchBarValue || '');
+    const [page, setPage] = useState(latestPage || 1);
 
     const StyledCheckbox = styled(Checkbox)({
         marginLeft: "0.625rem",

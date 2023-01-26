@@ -30,7 +30,7 @@ export default function BookingSheetDialog(props: Props) {
 
   const StyledTab = styled(Tab)({
     padding: 0,
-    width: "175px",
+    width: "10.938rem",
     textTransform: "capitalize"
   });
 
@@ -50,7 +50,7 @@ export default function BookingSheetDialog(props: Props) {
                 <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
                     {`${data?.patients?.firstName} ${data?.patients?.lastName}`}
                 </Typography>
-                <IconButton sx={{marginRight: "2.5rem"}} onClick={closeDialog}>
+                <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={closeDialog}>
                     <CloseIcon />
                 </IconButton>
             </Box>
