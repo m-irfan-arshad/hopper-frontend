@@ -106,7 +106,7 @@ export const caseStepMappings = {
 
 export const paginationCount = 50;
 
-export const defaultAppContext = {
+export const defaultCaseFilterContext = {
   dashboard: {
     dateRangeStart:  moment().startOf('day'),
     dateRangeEnd:  moment().add(7, 'days').endOf('day'),

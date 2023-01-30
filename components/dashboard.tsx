@@ -9,7 +9,7 @@ import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
 import * as R from 'ramda';
-import AppContext from "../appContext";
+import { CaseFilterContext } from "../pages/_app.page";
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -18,7 +18,7 @@ interface CaseGroup {
 export default function Dashboard() {  
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
     const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
-    const [context, setContext] = useContext(AppContext);
+    const [context, setContext] = useContext(CaseFilterContext);
 
     function handleStateUpdate(key: any, value: any) {
         const contextState = R.clone(context);
