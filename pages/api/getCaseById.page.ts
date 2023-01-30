@@ -1,6 +1,5 @@
-import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { withValidation } from '../../utils/helpers';
+import { withValidation, casesFormatter } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
@@ -18,7 +17,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         }
     })
 
-    res.json(resultPosts);
+    res.json(casesFormatter({cases: resultPosts}));
   } catch(err) {
     res.status(500).json({ message: err });
   }

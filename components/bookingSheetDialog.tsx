@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { 
     Dialog, 
     DialogActions, 
@@ -17,15 +17,20 @@ interface Props {
     open: boolean
     closeDialog: () => void,
     data: any
+    initiallySelectedTab: string
 }
 
 export default function BookingSheetDialog(props: Props) {
-  const {open, closeDialog, data} = props;
-  const [selectedTab, selectTab] = useState(0);
+  const {open, closeDialog, data, initiallySelectedTab} = props;
+  const [selectedTab, selectTab] = useState(initiallySelectedTab);
+
+  useEffect(() => {
+    selectTab(initiallySelectedTab)
+  }, [initiallySelectedTab]);
 
   const StyledTab = styled(Tab)({
     padding: 0,
-    width: "175px",
+    width: "10.938rem",
     textTransform: "capitalize"
   });
 
@@ -45,18 +50,18 @@ export default function BookingSheetDialog(props: Props) {
                 <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
                     {`${data?.patients?.firstName} ${data?.patients?.lastName}`}
                 </Typography>
-                <IconButton sx={{marginRight: "2.5rem"}} onClick={closeDialog}>
+                <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={closeDialog}>
                     <CloseIcon />
                 </IconButton>
             </Box>
             <Box>
                 <Tabs value={selectedTab} onChange={(event, value) => selectTab(value)}> 
-                    <StyledTab label="Patient" /> 
-                    <StyledTab label="Financial"  />
-                    <StyledTab label="Procedure" />
-                    <StyledTab label="Scheduling" />
-                    <StyledTab label="Implants & Products"  />
-                    <StyledTab label="Clinical" />
+                    <StyledTab label="Patient" value="Patient" /> 
+                    <StyledTab label="Financial" value="Financial"   />
+                    <StyledTab label="Procedure" value="Procedure"  />
+                    <StyledTab label="Scheduling" value="Scheduling" />
+                    <StyledTab label="Implants & Products" value="Implants & Products"  />
+                    <StyledTab label="Clinical" value="Clinical" />
                 </Tabs>
             </Box>
         </DialogTitle>

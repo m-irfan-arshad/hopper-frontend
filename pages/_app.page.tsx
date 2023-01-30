@@ -7,9 +7,10 @@ import { withLDProvider } from 'launchdarkly-react-client-sdk';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import AlertComponent from "../components/shared/alertComponent"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { defaultCaseFilterContext } from '../reference';
 
 export const AlertContext = createContext<any>({open: false, title: '', status: ''});
+export const CaseFilterContext = createContext<any>(defaultCaseFilterContext);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,15 +22,19 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const alertState = useState({open: false, title: '', status: ''});
+  const caseFilterState = useState(defaultCaseFilterContext);
+
   return (
     <QueryClientProvider client={queryClient}>
         <AlertContext.Provider value={alertState}>
-          <UserProvider>
-            <ThemeProvider theme={defaultTheme}>
-              <Component {...pageProps} />
-              <AlertComponent />
-            </ThemeProvider>
-          </UserProvider>
+          <CaseFilterContext.Provider value={caseFilterState}>
+            <UserProvider>
+              <ThemeProvider theme={defaultTheme}>
+                <Component {...pageProps} />
+                <AlertComponent />
+              </ThemeProvider>
+            </UserProvider>
+          </CaseFilterContext.Provider>
         </AlertContext.Provider>
     </QueryClientProvider>
   );

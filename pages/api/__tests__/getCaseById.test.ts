@@ -24,8 +24,8 @@ describe("getCaseById API", () => {
            patientId: 1,
            providerId: 2,
            locationId: 3,
-           providerName: 'providerName',
-           locationName: 'locationName',
+           providers: { firstName: 'providerName', lastName: 'lastName'},
+           locations: { locationName: 'locationName' },
            priorAuthorization: "Incomplete",
            vendorConfirmation: "Incomplete",
            procedureDate: new Date(),
@@ -47,7 +47,8 @@ describe("getCaseById API", () => {
        await getCaseById(req, res)
        const data = res._getJSONData()
        expect(data.caseId).toEqual(123)
-       expect(data.providerName).toEqual('providerName')
+       expect(data.providerName).toEqual('providerName lastName')
+       expect(data.locationName).toEqual('locationName')
        expect(prismaMock.cases.findUnique).toBeCalledTimes(1)
        expect(prismaMock.cases.findUnique).toBeCalledWith(params)
    })

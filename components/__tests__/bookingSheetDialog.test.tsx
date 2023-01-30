@@ -10,7 +10,8 @@ describe("BookingSheetDialog", () => {
                 firstName: 'Bob',
                 lastName: 'Marley'
             }
-        }
+        },
+        initiallySelectedTab: 'Patient'
     };
 
     test("renders and closes the bookingSheetDialog", () => {

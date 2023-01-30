@@ -28,6 +28,9 @@ declare module '@mui/material/styles' {
             light: string;
             main: string;
         }
+        orange: {
+            main: string
+        }
     }
     interface PaletteOptions {
         blue?: {
@@ -56,6 +59,9 @@ declare module '@mui/material/styles' {
             light?: string;
             main? : string;
             dark?: string;
+        }
+        orange?: {
+            main?: string;
         }
     }
     interface TypographyVariantsOptions {
@@ -109,8 +115,12 @@ export const defaultTheme = createTheme({
             main: "#D8E4F4",
             dark: "#607D8B"
         },
+        orange: {
+            main: "#EF6C00"
+        },
         success: {
             main: "#4CAF50",
+            dark: "#43A047"
         }
     },
     typography: {

@@ -1,7 +1,10 @@
+import React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import moment from "moment";
 import Dashboard from "../dashboard";
 import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData, mockCaseData } from "../../testReference";
+import { CaseFilterContext } from "../../pages/_app.page";
+import * as R from 'ramda';
 
 jest.mock("../../utils/hooks", () => ({
     useGetCasesHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: {cases: mockCaseData, count: 52} })),
@@ -13,11 +16,34 @@ jest.mock("../../utils/hooks", () => ({
     useGetProvidersHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProviderData }))
 }));
 
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({getQueryCache: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+    QueryClient: jest.fn()
+}));
+
+const initialDashboardState = [{
+    dashboard: {
+        dateRangeStart:  moment().startOf('day'),
+        dateRangeEnd:  moment().add(7, 'days').endOf('day'),
+        dateSortValue: 'Newest - Oldest',
+        caseFilterValue: [{id: "all", value: "All Steps"}],
+        searchBarValue: '',
+        page: 1
+      }
+}, jest.fn()];
+
+function renderDashboardWithContext(context: any) {
+    return render(
+        <CaseFilterContext.Provider value={context}>
+            <Dashboard />
+        </CaseFilterContext.Provider>
+    )
+}
+
 describe("Dashboard", () => {  
     test("renders the dashboard", async () => {
-        const { getByRole, getByText } = render(
-                <Dashboard  />
-        );
+        const { getByRole, getByText } = renderDashboardWithContext(initialDashboardState);
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
@@ -26,9 +52,7 @@ describe("Dashboard", () => {
     });
 
     test("renders the date range picker", async () => { 
-        const { getByRole, getByLabelText } = render(
-                <Dashboard  />
-        );
+        const { getByRole, getByLabelText } = renderDashboardWithContext(initialDashboardState);
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
@@ -39,35 +63,46 @@ describe("Dashboard", () => {
       });
 
       test("renders and interacts with search bar and pagination", async () => { 
-        const { getByRole, getByPlaceholderText } = render(
-                <Dashboard  />
-        );
+        const { getByRole, getByPlaceholderText, rerender } = renderDashboardWithContext(initialDashboardState);
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
         });
 
         expect(getByRole("button", {name: "Go to page 2"})).toBeInTheDocument();
-
+        
         expect(getByPlaceholderText("Search Name or Case ID")).toBeInTheDocument();
 
         fireEvent.click(getByRole("button", {name: "Go to page 2"}));
+        
+        const newDashboardState = R.clone(initialDashboardState);
+        
+        newDashboardState[0] = {
+            dashboard: {
+                dateRangeStart:  moment().startOf('day'),
+                dateRangeEnd:  moment().add(7, 'days').endOf('day'),
+                dateSortValue: 'Newest - Oldest',
+                caseFilterValue: [{id: "all", value: "All Steps"}],
+                searchBarValue: '',
+                page: 2
+            }
+        }
+            
+        rerender( 
+            <CaseFilterContext.Provider value={newDashboardState}>
+                <Dashboard />
+            </CaseFilterContext.Provider>
+        );
 
         expect(getByRole("button", {name: "page 2"})).toBeInTheDocument();
 
         fireEvent.change(getByPlaceholderText("Search Name or Case ID"), {target: {value: 'searched'}});
 
-        await waitFor(() => {
-            expect(getByRole("button", {name: "Go to page 2"})).toBeInTheDocument();
-        });
-
-        expect(getByRole("searchbox")).toHaveValue('searched');
+        expect(getByPlaceholderText("Search Name or Case ID")).toHaveValue('searched');
       });
 
     test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
-        const { getByRole, queryByRole, rerender } = render(
-                <Dashboard  />
-        );
+        const { getByRole, queryByRole, rerender } = renderDashboardWithContext(initialDashboardState);
 
         await waitFor(() => {
             expect(getByRole("button", {name: "Export"})).toBeInTheDocument();
@@ -78,9 +113,26 @@ describe("Dashboard", () => {
         fireEvent.mouseDown(getByRole("button", {name: "Sort: Newest - Oldest"}));
         fireEvent.click(getByRole("option", {name: "Oldest - Newest"}));
 
-        await waitFor(() => {
-            expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
-        });
+        const newDashboardState = R.clone(initialDashboardState);
+
+        newDashboardState[0] = {
+            dashboard: {
+                dateRangeStart:  moment().startOf('day'),
+                dateRangeEnd:  moment().add(7, 'days').endOf('day'),
+                dateSortValue: 'Oldest - Newest',
+                caseFilterValue: [{id: "all", value: "All Steps"}],
+                searchBarValue: '',
+                page: 2
+            }
+        }
+        
+        rerender( 
+            <CaseFilterContext.Provider value={newDashboardState}>
+                <Dashboard />
+            </CaseFilterContext.Provider>
+        );
+
+        expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
 
         //sets viewport to mobile version   
         Object.defineProperty(window, 'matchMedia', {
@@ -98,8 +150,10 @@ describe("Dashboard", () => {
           });
 
         rerender(
+            <CaseFilterContext.Provider value={newDashboardState}>
                 <Dashboard  />
-          );
+            </CaseFilterContext.Provider>
+        );
 
         expect(queryByRole("button", {name: "Export"})).not.toBeInTheDocument();
         expect(getByRole("button", {name: "Sort: Oldest - Newest"})).toBeInTheDocument();
@@ -107,8 +161,12 @@ describe("Dashboard", () => {
         fireEvent.mouseDown(getByRole("button", {name: "Sort: Oldest - Newest"}));
         fireEvent.click(getByRole("option", {name: "Newest - Oldest"}));
 
-        await waitFor(() => {
-            expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
-        });
+        rerender( 
+            <CaseFilterContext.Provider value={initialDashboardState}>
+                <Dashboard />
+            </CaseFilterContext.Provider>
+        );
+       
+        expect(getByRole("button", {name: "Sort: Newest - Oldest"})).toBeInTheDocument();
       });
 });
