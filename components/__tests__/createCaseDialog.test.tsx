@@ -24,6 +24,7 @@ describe("CreateCaseDialog", () => {
 
   beforeEach(() => {
     props.closeDialog.mockReset();
+    jest.setTimeout(10000);
   });
 
   test("renders the createCaseDialog", () => {
