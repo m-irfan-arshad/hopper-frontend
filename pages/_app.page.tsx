@@ -22,12 +22,12 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const alertState = useState({open: false, title: '', status: ''});
-  const appState = useState(defaultCaseFilterContext);
+  const caseFilterState = useState(defaultCaseFilterContext);
 
   return (
     <QueryClientProvider client={queryClient}>
         <AlertContext.Provider value={alertState}>
-          <CaseFilterContext.Provider value={appState}>
+          <CaseFilterContext.Provider value={caseFilterState}>
             <UserProvider>
               <ThemeProvider theme={defaultTheme}>
                 <Component {...pageProps} />
