@@ -40,7 +40,6 @@ export default function Dashboard() {
     function handleSearchBarChange(value: string) {
         handleStateUpdate('page', 1);
         handleStateUpdate('searchBarValue', value);
-
     }
 
     const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(

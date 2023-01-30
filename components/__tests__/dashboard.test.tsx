@@ -98,7 +98,7 @@ describe("Dashboard", () => {
 
         fireEvent.change(getByPlaceholderText("Search Name or Case ID"), {target: {value: 'searched'}});
 
-        expect(getByRole("searchbox")).toHaveValue('searched');
+        expect(getByPlaceholderText("Search Name or Case ID")).toHaveValue('searched');
       });
 
     test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
