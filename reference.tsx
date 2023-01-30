@@ -1,4 +1,5 @@
-import { Prisma, cases, patients } from '@prisma/client';
+import { cases, patients } from '@prisma/client';
+import moment from "moment";
 
 export const caseCardProcedureInformation = [
   {
@@ -104,3 +105,14 @@ export const caseStepMappings = {
 }
 
 export const paginationCount = 50;
+
+export const defaultAppContext = {
+  dashboard: {
+    dateRangeStart:  moment().startOf('day'),
+    dateRangeEnd:  moment().add(7, 'days').endOf('day'),
+    dateSortValue: 'Newest - Oldest',
+    caseFilterValue: [{id: "all", value: "All Steps"}],
+    searchBarValue: '',
+    page: 1
+  }
+};

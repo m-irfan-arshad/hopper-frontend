@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AppBar, styled, Box, Button, Checkbox, Typography, InputLabel, useMediaQuery } from '@mui/material';
+import { AppBar, styled, Box, Button, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DateRangePicker from "./shared/dateRangePicker";
@@ -7,7 +7,6 @@ import { dashboardStepDropDownValues, caseFilterInterface } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
 import MultiSelectDropdown from "./shared/multiSelectDropdown";
-
 
 interface Props {
     onCaseFilterChange: (value: caseFilterInterface[]) => void

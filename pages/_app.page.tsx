@@ -7,7 +7,8 @@ import { withLDProvider } from 'launchdarkly-react-client-sdk';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import AlertComponent from "../components/shared/alertComponent"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import AppContext from "../appContext";
+import { defaultAppContext } from '../reference';
 
 export const AlertContext = createContext<any>({open: false, title: '', status: ''});
 
@@ -21,15 +22,19 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   const alertState = useState({open: false, title: '', status: ''});
+  const appState = useState(defaultAppContext);
+
   return (
     <QueryClientProvider client={queryClient}>
         <AlertContext.Provider value={alertState}>
-          <UserProvider>
-            <ThemeProvider theme={defaultTheme}>
-              <Component {...pageProps} />
-              <AlertComponent />
-            </ThemeProvider>
-          </UserProvider>
+          <AppContext.Provider value={appState}>
+            <UserProvider>
+              <ThemeProvider theme={defaultTheme}>
+                <Component {...pageProps} />
+                <AlertComponent />
+              </ThemeProvider>
+            </UserProvider>
+          </AppContext.Provider>
         </AlertContext.Provider>
     </QueryClientProvider>
   );

@@ -122,7 +122,7 @@ export default function CaseHub() {
     <React.Fragment>
         <Box sx={{backgroundColor: "gray.light", minHeight: "100vh" }}>
             <TopNavBar />
-            <Box sx={{display: "flex", justifyContent: "center"}}>
+            <Box sx={{display: "flex", justifyContent: "center", paddingLeft: "1rem"}}>
                 <Box 
                     sx={{ 
                         display: "flex", 
@@ -179,11 +179,11 @@ export default function CaseHub() {
                             marginRight: "1.75rem",
                             marginLeft:"1.75rem"
                         }}>
-                        <Box sx={{minWidth: "34.375rem"}}>
+                        <Box sx={{minWidth: isMobile ? 0 :  "34.375rem"}}>
                             {!isFetching && !isLoading && <CaseSummaryContent row={data} /> }
                         </Box>
                     </Box>
-                    <Box sx={{marginLeft: "1.75rem", flexGrow: 2}}>
+                    <Box sx={{marginLeft: "1.75rem", flexGrow: 2, paddingRight: "1rem"}}>
                         <SectionHeader 
                             canViewAll 
                             title="Activity" 

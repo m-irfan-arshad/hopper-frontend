@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import moment from "moment";
+import React, { useContext } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
@@ -9,8 +8,8 @@ import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
-import { useQueryClient } from '@tanstack/react-query'
 import * as R from 'ramda';
+import AppContext from "../appContext";
 
 interface CaseGroup {
     [key: string]: SingleCase[]
@@ -19,31 +18,13 @@ interface CaseGroup {
 export default function Dashboard() {  
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
     const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
+    const [context, setContext] = useContext(AppContext);
 
-    const queryClient = useQueryClient();
-    const queryCache = queryClient.getQueryCache();
-
-    const latestParameters = R.clone(R.pathOr([], ["queries"], queryCache)).reduce((acc: any, value: any) => {
-        if (value.queryKey[0] === "getCases") {
-            acc = value.queryKey;
-        }
-        return acc;
-    }, []);
-
-    const latestDateRangeStart = latestParameters[1];
-    const latestDateRangeEnd = latestParameters[2];
-    const latestDateSortValue = latestParameters[3];
-    const latestCaseFilterValue = latestParameters[4];
-    const latestSearchBarValue = latestParameters[5];
-    const latestPage = latestParameters[6];
-
-    const [dateRangeStart, setDateRangeStart] = useState(latestDateRangeStart || moment().startOf('day'));
-    const [dateRangeEnd, setDateRangeEnd] = useState<moment.Moment | null>(latestDateRangeEnd || moment().add(7, 'days').endOf('day'));
-
-    const [dateSortValue, setDateSortValue] = useState(latestDateSortValue || 'Newest - Oldest');
-    const [caseFilterValue, setCaseFilterValue] = useState(latestCaseFilterValue || defaultCaseFilterValue);
-    const [searchBarValue, setSearchBarValue ] = useState(latestSearchBarValue || '');
-    const [page, setPage] = useState(latestPage || 1);
+    function handleStateUpdate(key: any, value: any) {
+        const contextState = R.clone(context);
+        contextState.dashboard[key] = value;
+        setContext(contextState)
+    }
 
     const StyledCheckbox = styled(Checkbox)({
         marginLeft: "0.625rem",
@@ -57,37 +38,38 @@ export default function Dashboard() {
     });
 
     function handleSearchBarChange(value: string) {
-        setPage(1);
-        setSearchBarValue(value);
+        handleStateUpdate('page', 1);
+        handleStateUpdate('searchBarValue', value);
+
     }
 
-    const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(dateRangeStart, dateRangeEnd, dateSortValue, caseFilterValue, searchBarValue, page.toString());
+    const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(
+        context.dashboard.dateRangeStart, 
+        context.dashboard.dateRangeEnd, 
+        context.dashboard.dateSortValue, 
+        context.dashboard.caseFilterValue, 
+        context.dashboard.searchBarValue, 
+        context.dashboard.page.toString()
+    );
 
     const caseGroups:CaseGroup = {};
 
-    const dateRangePickerProps = {
-        dateRangeStart: dateRangeStart,
-        dateRangeEnd: dateRangeEnd,
-        setDateRangeStart: setDateRangeStart,
-        setDateRangeEnd: setDateRangeEnd
-    }
-
-        data.cases.forEach(function(singleCase: SingleCase) {
-            const date = singleCase.procedureDate || "";
-            if (date in caseGroups) {
-                caseGroups[date].push(singleCase);
-            } else {
-                caseGroups[date] = new Array(singleCase)
-            }
-        })
+    data.cases.forEach(function(singleCase: SingleCase) {
+        const date = singleCase.procedureDate || "";
+        if (date in caseGroups) {
+            caseGroups[date].push(singleCase);
+        } else {
+            caseGroups[date] = new Array(singleCase)
+        }
+    })
         
     const handleCaseFilterChange = (value: caseFilterInterface[]) => {
-        setPage(1);
+        handleStateUpdate('page',1);
 
         if (value?.at(-1)?.id === "all" || value?.length === 0) {
-            setCaseFilterValue(defaultCaseFilterValue);
+            handleStateUpdate('caseFilterValue',defaultCaseFilterValue);
         } else {
-            setCaseFilterValue(value.filter(elem => elem.id !== "all"));
+            handleStateUpdate('caseFilterValue',value.filter(elem => elem.id !== "all"));
         }
     };
 
@@ -95,20 +77,25 @@ export default function Dashboard() {
         <React.Fragment>
             <CaseNavBar 
                 onCaseFilterChange={handleCaseFilterChange} 
-                caseFilterValue={caseFilterValue} 
-                searchBarValue={searchBarValue}
+                caseFilterValue={context.dashboard.caseFilterValue} 
+                searchBarValue={context.dashboard.searchBarValue}
                 search={handleSearchBarChange}
-                dateRangePickerProps={dateRangePickerProps}
+                dateRangePickerProps={{
+                    dateRangeStart: context.dashboard.dateRangeStart,
+                    dateRangeEnd: context.dashboard.dateRangeEnd,
+                    setDateRangeStart: (value: any) => handleStateUpdate('dateRangeStart', value),
+                    setDateRangeEnd:  (value: any) => handleStateUpdate('dateRangeEnd', value)
+                }}
             />
             <Box sx={{
                 display: "flex",
                 justifyContent: "center",
             }}>
             <Stack 
-            spacing={isFetching ? 25 : 0}
-            sx={{
-                width: "92%",
-                marginBottom: "1.25rem"
+                spacing={isFetching ? 25 : 0}
+                sx={{
+                    width: "92%",
+                    marginBottom: "1.25rem"
             }}>
                 <Box sx={{
                     display: "flex",
@@ -128,14 +115,14 @@ export default function Dashboard() {
                         </Typography>
                         {!isMobile 
                             && <Box sx={{ minWidth: 120 }}>
-                                <DropDownComponent
-                                    menuItems={dashboardSortDropDownValues}
-                                    title="Sort:"
-                                    selectId="case-sort-select"
-                                    additionalStyles={{ marginLeft: "0.625rem" }}
-                                    onChange={setDateSortValue}
-                                    value={dateSortValue}
-                                />
+                                    <DropDownComponent
+                                        menuItems={dashboardSortDropDownValues}
+                                        title="Sort:"
+                                        selectId="case-sort-select"
+                                        additionalStyles={{ marginLeft: "0.625rem" }}
+                                        onChange={(value) => handleStateUpdate('dateSortValue', value)}
+                                        value={context.dashboard.dateSortValue}
+                                    />
                                 <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
                                 <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
                             </Box>
@@ -144,13 +131,13 @@ export default function Dashboard() {
                     <Box sx={{display: "flex"}}>
                         {isMobile 
                             && <Box sx={{ marginRight: "0.313rem" }}>
-                                <DropDownComponent
-                                    menuItems={dashboardSortDropDownValues}
-                                    title="Sort:"
-                                    selectId="case-sort-select"
-                                    onChange={setDateSortValue}
-                                    value={dateSortValue}
-                                />
+                                    <DropDownComponent
+                                        menuItems={dashboardSortDropDownValues}
+                                        title="Sort:"
+                                        selectId="case-sort-select"
+                                        onChange={(value) => handleStateUpdate('dateSortValue', value)}
+                                        value={context.dashboard.dateSortValue}
+                                    />
                                 <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
                                 <Typography variant="caption" color="black.main" >Show Completed Cases</Typography>
                             </Box>
@@ -177,10 +164,11 @@ export default function Dashboard() {
                 {isFetching && <CircularProgress sx={{alignSelf: 'center'}} />}
                 {
                     data.count > 50 
-                        && <Pagination 
+                        && 
+                            <Pagination 
                                 count={Math.ceil(data.count / paginationCount)} 
-                                page={page} 
-                                onChange={(event, val) => setPage(val)} 
+                                page={context.dashboard.page} 
+                                onChange={(event, val) => handleStateUpdate('page', val)} 
                                 sx={{ alignSelf: "center", marginTop: "4rem"}}
                             />
                 }
