@@ -17,7 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import PatientTab from './tabs/patientTab';
-import { checkRequiredField } from '../../utils/helpers';
+import { parseFieldConfig } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
 
 
@@ -30,57 +30,6 @@ interface Props {
     initiallySelectedTab: string
 }
 
-const bookingSheetConfig = {
-    organization: "...",
-    tabs: [
-        {
-            label: "Procedure",
-            fields: [
-                {
-                    type: "dropdown",
-                    label: "Procedure Name",
-                    id: "procedure",
-                    queryKey: "getProcedure",
-                    styles: { "& .MuiFormControl-root": { width: "100%"}},
-                    labelProperties: ["procedureName"],
-                    size: 12,
-                    required: true // required to create / complete?
-                },
-                {
-                    type: "dropdown",
-                    label: "Approach",
-                    id: "approach",
-                    labelProperties: ["procedureUnitName"],
-                    size: 6,
-                    queryKey: "getProcedureUnits",
-                    //dependency: "case.location.locationId",
-                    //params: [{field: "locationId", value: "case.location.locationId"}]
-                },
-                {
-                    type: "dropdown",
-                    label: "Service Line",
-                    id: "serviceLine",
-                    labelProperties: ["serviceLineName"],
-                    size: 6,
-                    queryKey: "getServiceLines",
-                    //dependency: "case.procedureUnit.procedureUnitId",
-                    //params: [{field: "procedureUnitId", value: "case.procedureUnit.procedureUnitId"}]
-                },
-                {
-                    type: "dropdown",
-                    label: "Primary Surgeon",
-                    id: "provider",
-                    labelProperties: ["firstName", "lastName"],
-                    size: 6,
-                    queryKey: "getProviders",
-                    //dependency: "case.serviceLine.serviceLineId",
-                    //params: [{field: "serviceLineId", value: "case.serviceLine.serviceLineId"}]
-                }
-            ]
-        }  
-    ]
-}
-
 const configObject = {
     organization: "...",
     tabs: [
@@ -89,7 +38,8 @@ const configObject = {
             fields: [
                 {
                     id: "firstName",
-                    required: true
+                    required: true,
+                    visible: true
                 },
             ]
         }  
@@ -109,7 +59,7 @@ export default function BookingSheetDialog(props: Props) {
 
   const schema = yup.object().shape({
         patient: yup.object().shape({
-            firstName: yup.string().when([], { is: checkRequiredField(configObject, 'Patient', 'firstName'), then: yup.string().required() }),
+            firstName: yup.string().when([], { is: parseFieldConfig(configObject, 'Patient', 'firstName', 'required'), then: yup.string().required() }),
             middleName: yup.string().required(),
             lastName: yup.string().required(),
             dateOfBirth: yup.date().required(),
@@ -181,7 +131,7 @@ export default function BookingSheetDialog(props: Props) {
         </DialogTitle>
         <DialogContent sx={{minHeight: "20rem"}}>
             {selectedTab === "Patient" && (
-                <PatientTab control={control}/>
+                <PatientTab config={configObject} control={control}/>
             )}
         </DialogContent>
         <DialogActions 

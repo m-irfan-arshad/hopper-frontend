@@ -25,7 +25,6 @@ import {
 } from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import DropDownSearchComponent from "./shared/dropdownSearch";
 import { formatCreateCaseParams } from '../utils/helpers';
 import {InputController, DateController, DropDownSearchController} from '../utils/formControllers'
 

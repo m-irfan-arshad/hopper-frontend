@@ -11,7 +11,22 @@ describe("PatientTab", () => {
     const dateNow = moment().format('MM/DD/YYYY');
     
     const props = {
-        control: result.current.control
+        control: result.current.control,
+        config: {
+            organization: "...",
+            tabs: [
+                {
+                    label: "Patient",
+                    fields: [
+                        {
+                            id: "firstName",
+                            required: true,
+                            visible: true
+                        },
+                    ]
+                }  
+            ]
+        }
     };
 
     test("renders the patient tab", () => {
@@ -28,12 +43,34 @@ describe("PatientTab", () => {
         expect(getByPlaceholderText("Zip")).toBeInTheDocument();
     });
 
+    test("does not render fields marked non visible in the patient tab", () => {
+        const { getByPlaceholderText, getByLabelText, getByRole, queryByRole } = render(
+            <PatientTab control={result.current.control} config={{
+                organization: "...",
+                tabs: [
+                    {
+                        label: "Patient",
+                        fields: [
+                            {
+                                id: "firstName",
+                                required: true,
+                                visible: false
+                            },
+                        ]
+                    }  
+                ]
+            }}  />
+        );  
+        expect(queryByRole('textbox', {name: 'First Name'})).not.toBeInTheDocument();
+
+        expect(getByRole('textbox', {name: 'Middle Name'})).toBeInTheDocument();
+        expect(getByPlaceholderText("Middle Name")).toBeInTheDocument();
+    });
+
     test("can update fields in patient tab", () => {
         const { getByPlaceholderText, getByLabelText, getByRole } = render(
             <PatientTab {...props}  />
         );  
-        expect(getByRole('textbox', {name: 'First Name'})).toBeInTheDocument();
-        expect(getByPlaceholderText("First Name")).toBeInTheDocument();
 
         expect(getByRole('textbox', {name: 'Middle Name'})).toBeInTheDocument();
         expect(getByPlaceholderText("Middle Name")).toBeInTheDocument();

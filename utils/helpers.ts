@@ -59,12 +59,14 @@ interface FilterObject {
     vendorConfirmation?: object;
   }
 
-interface ConfigObject {
+export interface ConfigObject {
+    organization: string,
     tabs: Array<{
         label: string,
         fields: Array<{
             id: string,
-            required: boolean
+            required: boolean,
+            visible: boolean
         }>
     }>
 }
@@ -146,9 +148,13 @@ export function casesFormatter (params: CasesFormatterProps): any {
             patientId: cases.patients?.patientId,
             fhirResourceId: cases.patients.fhirResourceId,
             firstName: cases.patients?.firstName,
+            middleName: cases.patients?.middleName,
             lastName: cases.patients?.lastName,
             mrn: cases.patients?.mrn,
             address: cases.patients?.address,
+            city: cases.patients?.city,
+            state: cases.patients?.state,
+            zip: cases.patients?.zip,
             mobilePhone: cases.patients?.mobilePhone,
             homePhone: cases.patients?.homePhone,
             dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
@@ -225,12 +231,11 @@ export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
     return createCaseObject;
 }
 
-export function checkRequiredField(configObject: ConfigObject, tabName: string, fieldName: string) {
+export function parseFieldConfig(configObject: ConfigObject, tabName: string, fieldName: string, checkingFor: "visible" | "required", defaultReturnValue?: boolean) {
     const tab = configObject.tabs.find(tab => tab.label === tabName)
     if (tab) {
         const field = tab.fields.find(field => field.id === fieldName);
-        return field && field.required
+        return field && field[checkingFor]
     }
-    console.error("could not find field ", fieldName, " in tab ", tabName)
-    return false
+    return defaultReturnValue ? defaultReturnValue : false
 }

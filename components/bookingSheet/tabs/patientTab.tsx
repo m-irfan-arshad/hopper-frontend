@@ -11,14 +11,17 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { patients } from "@prisma/client";
+import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
+
 
 
 interface Props {
-    control: any
+    control: any,
+    config: ConfigObject,
 }
 
 export default function PatientTab(props: Props) {
-    const {control} = props;
+    const {control, config} = props;
 
     const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
     const gridStyles = {
@@ -31,10 +34,10 @@ export default function PatientTab(props: Props) {
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "3rem", color: "gray.dark"}}>Patient</Typography>
-                <Grid container justifyContent={"space-between"} spacing={"2.5rem"} sx={gridStyles}>
-                    <Grid item xs={4}>
+                <Grid container justifyContent={"left"} spacing={"2.5rem"} sx={gridStyles}>
+                    { parseFieldConfig(config, 'Patient', 'firstName', 'visible', true) && <Grid item xs={4} >
                         <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
-                    </Grid>
+                    </Grid> }
                     <Grid item xs={4}>
                         <InputController control={control} id="patient.middleName" title="Middle Name" placeholder="Middle Name"/>
                     </Grid>
