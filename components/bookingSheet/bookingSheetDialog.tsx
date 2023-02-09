@@ -120,7 +120,7 @@ export default function BookingSheetDialog(props: Props) {
             </Box>
             <Box>
                 <Tabs value={selectedTab} onChange={(event, value) => selectTab(value)}> 
-                    <StyledTab label="Patient" value="Patient"></StyledTab> 
+                    <StyledTab label="Patient" value="Patient" /> 
                     <StyledTab label="Financial" value="Financial"   />
                     <StyledTab label="Procedure" value="Procedure"  />
                     <StyledTab label="Scheduling" value="Scheduling" />
