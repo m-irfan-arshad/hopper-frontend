@@ -59,6 +59,16 @@ interface FilterObject {
     vendorConfirmation?: object;
   }
 
+interface ConfigObject {
+    tabs: Array<{
+        label: string,
+        fields: Array<{
+            id: string,
+            required: boolean
+        }>
+    }>
+}
+
 export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
     
@@ -213,4 +223,14 @@ export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
         }
     }
     return createCaseObject;
+}
+
+export function checkRequiredField(configObject: ConfigObject, tabName: string, fieldName: string) {
+    const tab = configObject.tabs.find(tab => tab.label === tabName)
+    if (tab) {
+        const field = tab.fields.find(field => field.id === fieldName);
+        return field && field.required
+    }
+    console.error("could not find field ", fieldName, " in tab ", tabName)
+    return false
 }

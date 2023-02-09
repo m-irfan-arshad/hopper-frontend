@@ -1,0 +1,73 @@
+import React, {useEffect} from "react";
+import { 
+    Typography, 
+    Grid, 
+    Box
+} from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { Control, useForm } from "react-hook-form";
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
+import { patients } from "@prisma/client";
+
+
+interface Props {
+    control: any
+}
+
+export default function PatientTab(props: Props) {
+    const {control} = props;
+
+    const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
+    const gridStyles = {
+        ".MuiGrid-item": {
+            "paddingTop": "1rem",
+        }
+    }
+
+    return (
+        <Box>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "3rem", color: "gray.dark"}}>Patient</Typography>
+                <Grid container justifyContent={"space-between"} spacing={"2.5rem"} sx={gridStyles}>
+                    <Grid item xs={4}>
+                        <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputController control={control} id="patient.middleName" title="Middle Name" placeholder="Middle Name"/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputController control={control} id="patient.lastName" title="Last Name" placeholder="Last Name" />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <DateController control={control} id="patient.dateOfBirth" title="Date of Birth" placeholder="Date of Birth" />
+                    </Grid>
+                    <Grid item xs={6}>
+                    <DropDownSearchController 
+                            title="Sex"
+                            control={control}
+                            id="patient.sex"
+                            options={patientSexData} 
+                            labelProperties={["sex"]}
+                            placeholder="Sex" 
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputController control={control} id="patient.address" title="Address" placeholder="Address" />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputController control={control} id="patient.city" title="City" placeholder="City" />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputController control={control} id="patient.state" title="State" placeholder="State" />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <InputController control={control} id="patient.zip" title="Zip" placeholder="Zip" />
+                    </Grid>
+                </Grid>
+            </LocalizationProvider>
+        </Box>
+    )
+}

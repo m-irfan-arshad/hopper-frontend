@@ -27,9 +27,13 @@ model patients {
   patientId      Int       @id @default(autoincrement()) @map("patient_id")
   fhirResourceId String?   @unique @map("fhir_resource_id")
   firstName      String?   @map("first_name")
+  middleName     String?   @map("middle_name")
   lastName       String?   @map("last_name")
   mrn            String?
   address        String?
+  city           String?
+  state          String?
+  zip            Int?
   mobilePhone    String?   @map("mobile_phone")
   homePhone      String?   @map("home_phone")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Date

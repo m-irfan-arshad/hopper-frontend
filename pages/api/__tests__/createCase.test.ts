@@ -29,13 +29,17 @@
     }
     const testPatient = {
         firstName: "Test",
+        middleName: "J",
         lastName: "Patient",
         patientId: 1,
         fhirResourceId: "11223344",
         address: "112 Drive Drive",
+        city: "New York",
+        state: "New York",
         mobilePhone: "1234567",
         homePhone: "1234567",
         mrn: "1234567",
+        zip: 10000,
         dateOfBirth: new Date(),
         createTime: new Date(),
         updateTime: new Date(),

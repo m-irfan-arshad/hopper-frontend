@@ -15,7 +15,7 @@ import {
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { 
     useCreateCaseHook, 
     useGetLocationsHook, 
@@ -27,124 +27,11 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import DropDownSearchComponent from "./shared/dropdownSearch";
 import { formatCreateCaseParams } from '../utils/helpers';
+import {InputController, DateController, DropDownSearchController} from '../utils/formControllers'
 
 interface Props {
     open: boolean
     closeDialog: () => void
-}
-
-interface InputControllerProps {
-    id: any,
-    title: string,
-    placeholder: string
-    control: any
-}
-
-interface DateControllerProps {
-    id: any,
-    title: string,
-    placeholder: string
-    control: any
-}
-
-interface DropDownSearchOption {
-    [key: string]: string
-    fhirResourceId: string
-}
-
-interface DropDownSearchControllerProps {
-    id: any,
-    title: string,
-    disabled?: boolean
-    placeholder: string
-    additionalStyles?: React.CSSProperties | object
-    options: DropDownSearchOption[]
-    labelProperties: string[]
-    control: any
-}
-
-const StyledTextField = styled(TextField)({
-    "& .MuiOutlinedInput-input": {
-        fontSize: "0.688rem"
-    },
-    marginTop: "0.313rem"
-});
-  
-
-function InputController(props: InputControllerProps) {
-    const {id, title, placeholder, control} = props;
-    return <Controller
-        name={id}
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-            <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <StyledTextField {...field} id={id} variant="outlined" placeholder={placeholder} />
-            </React.Fragment>
-        )}
-      />
-}
-
-function DateController(props: DateControllerProps) {
-    const {id, title, placeholder, control} = props;
-    return <Controller
-        name={id}
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-            <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <DesktopDatePicker
-                    {...field}
-                    components={{ OpenPickerIcon: DateRangeIcon }}
-                    value={field.value}
-                    onChange={field.onChange}
-                    renderInput={({inputProps, ...restParams}) => (
-                        <StyledTextField 
-                            id={id}
-                            inputProps={{
-                                ...inputProps, 
-                                placeholder: placeholder,
-                            }} 
-                            sx={{
-                                svg: { 
-                                    height: "0.75rem",
-                                    width: "0.75rem"
-                                }
-                            }} 
-                            {...restParams} 
-                        />
-                    )}
-                />
-            </React.Fragment>
-        )}
-    />
-}
-
-function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control} = props;
-
-    return <Controller
-            name={id}
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-                <React.Fragment>
-                    <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
-                    <DropDownSearchComponent 
-                        {...field}
-                        labelProperties={labelProperties}
-                        id={id}
-                        options={options}
-                        onChange={field.onChange}
-                        disabled={disabled} 
-                        placeholder={placeholder} 
-                        additionalStyles={additionalStyles}
-                    />
-                </React.Fragment>
-            )}
-        />
 }
 
 export default function CreateCaseDialog(props: Props) {
@@ -250,7 +137,7 @@ export default function CreateCaseDialog(props: Props) {
                     <Grid item xs={6}>
                         <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid>
-                    <Grid item xs="auto">
+                    <Grid item xs={6}>
                         <InputController control={control} id="patient.lastName" title="Last Name" placeholder="Last Name" />
                     </Grid>
                     <Grid item xs={6}>
@@ -281,7 +168,7 @@ export default function CreateCaseDialog(props: Props) {
                             disabled={!dirtyFields.case?.location}
                         />
                     </Grid>
-                    <Grid item xs="auto">
+                    <Grid item xs={6}>
                         <DropDownSearchController 
                             control={control}
                             id="case.serviceLine" 
@@ -304,7 +191,7 @@ export default function CreateCaseDialog(props: Props) {
                             additionalStyles={{ marginBottom: "50px"}} 
                         />
                     </Grid>
-                    <Grid item xs="auto">
+                    <Grid item xs={6}>
                         <DateController control={control} id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>

@@ -1,10 +1,14 @@
 import { render, fireEvent } from "@testing-library/react";
-import BookingSheetDialog from "../bookingSheetDialog";
+import BookingSheetDialog from "./bookingSheetDialog";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 describe("BookingSheetDialog", () => {
+    const queryClient = new QueryClient();
+
     const props = {
         closeDialog: jest.fn(),
         open: true,
+        initiallySelectedTab: "Patient",
         data: {
             patients: {
                 firstName: 'Bob',
@@ -15,7 +19,9 @@ describe("BookingSheetDialog", () => {
 
     test("renders and closes the bookingSheetDialog", () => {
         const { getByRole } = render(
-            <BookingSheetDialog {...props}  />
+            <QueryClientProvider client={queryClient}>
+                <BookingSheetDialog {...props}  />
+            </QueryClientProvider>
         );  
         expect(getByRole("tab", {name: "Patient"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
@@ -31,7 +37,10 @@ describe("BookingSheetDialog", () => {
 
     test("changes tab of the bookingSheetDialog", () => {
         const { getByRole } = render(
-            <BookingSheetDialog {...props}  />
+            <QueryClientProvider client={queryClient}>
+                <BookingSheetDialog {...props}  />
+            </QueryClientProvider>
+
         );  
         expect(getByRole("tab", {name: "Patient"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
