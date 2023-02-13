@@ -42,14 +42,6 @@ function renderDashboardWithContext(context: any) {
 }
 
 describe("Dashboard", () => {  
-    const appState = [{dashboard: {
-        dateRangeStart:  moment().startOf('day'),
-        dateRangeEnd:  moment().add(7, 'days').endOf('day'),
-        dateSortValue: 'Newest - Oldest',
-        caseFilterValue: [{id: "all", value: "All Steps"}],
-        searchBarValue: '',
-        page: 1
-      }}, jest.fn()]
 
     test("renders the dashboard", async () => {
         const { getByRole, getByText } = renderDashboardWithContext(initialDashboardState);
