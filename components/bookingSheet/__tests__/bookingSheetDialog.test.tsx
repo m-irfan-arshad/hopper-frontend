@@ -1,5 +1,5 @@
 import { render, fireEvent } from "@testing-library/react";
-import BookingSheetDialog from "./bookingSheetDialog";
+import BookingSheetDialog from "../bookingSheetDialog";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 describe("BookingSheetDialog", () => {
@@ -14,7 +14,7 @@ describe("BookingSheetDialog", () => {
                 firstName: 'Bob',
                 lastName: 'Marley'
             }
-        }
+        },
     };
 
     test("renders and closes the bookingSheetDialog", () => {

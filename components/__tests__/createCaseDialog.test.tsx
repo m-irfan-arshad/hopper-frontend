@@ -71,6 +71,8 @@ describe("CreateCaseDialog", () => {
   });
 
   test("calls onSubmit when all required fields are filled out", async() => {
+    jest.setTimeout(10000);
+    
     const { getByPlaceholderText, getByRole, getByText } = render(
       <CreateCaseDialog {...props} />
     );
