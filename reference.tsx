@@ -116,3 +116,19 @@ export const defaultCaseFilterContext = {
     page: 1
   }
 };
+
+export const bookingSheetConfigObject = {
+  organization: "...",
+  tabs: [
+      {
+          label: "Patient",
+          fields: [
+              {
+                  id: "firstName",
+                  required: true,
+                  visible: true
+              },
+          ]
+      }
+  ]
+}

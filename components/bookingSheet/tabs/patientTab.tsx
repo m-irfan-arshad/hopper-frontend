@@ -10,7 +10,6 @@ import { Control, useForm } from "react-hook-form";
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
-import { patients } from "@prisma/client";
 import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
 
 
@@ -24,6 +23,7 @@ export default function PatientTab(props: Props) {
     const {control, config} = props;
 
     const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
+    const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
     const gridStyles = {
         ".MuiGrid-item": {
             "paddingTop": "1rem",
@@ -33,8 +33,8 @@ export default function PatientTab(props: Props) {
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "3rem", color: "gray.dark"}}>Patient</Typography>
-                <Grid container justifyContent={"left"} spacing={"2.5rem"} sx={gridStyles}>
+                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "3rem", color: "gray.dark", height: "8rem"}}>Patient</Typography>
+                <Grid container justifyContent={"left"} spacing={"2rem"} rowSpacing={"8rem"} sx={gridStyles}>
                     { parseFieldConfig(config, 'Patient', 'firstName', 'visible', true) && <Grid item xs={4} >
                         <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid> }
@@ -48,7 +48,7 @@ export default function PatientTab(props: Props) {
                         <DateController control={control} id="patient.dateOfBirth" title="Date of Birth" placeholder="Date of Birth" />
                     </Grid>
                     <Grid item xs={6}>
-                    <DropDownSearchController 
+                        <DropDownSearchController 
                             title="Sex"
                             control={control}
                             id="patient.sex"
@@ -64,7 +64,14 @@ export default function PatientTab(props: Props) {
                         <InputController control={control} id="patient.city" title="City" placeholder="City" />
                     </Grid>
                     <Grid item xs={4}>
-                        <InputController control={control} id="patient.state" title="State" placeholder="State" />
+                        <DropDownSearchController 
+                            title="State"
+                            control={control}
+                            id="patient.state"
+                            options={stateData} 
+                            labelProperties={["state"]}
+                            placeholder="State" 
+                        />
                     </Grid>
                     <Grid item xs={4}>
                         <InputController control={control} id="patient.zip" title="Zip" placeholder="Zip" />

@@ -32,8 +32,9 @@ model patients {
   mrn            String?
   address        String?
   city           String?
-  state          String?
-  zip            Int?
+  state          Json?
+  zip            String?
+  sex            Json?
   mobilePhone    String?   @map("mobile_phone")
   homePhone      String?   @map("home_phone")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Date

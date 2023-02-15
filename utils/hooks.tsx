@@ -44,6 +44,7 @@ export function useCreateCaseHook() {
             if (res.ok) {
               return res.json()
             }      
+            console.log("res: ", res)
             throw new Error()
           }),
         {
@@ -78,7 +79,8 @@ export function useUpdateCaseHook() {
             onSuccess: () => {
                 queryClient.invalidateQueries(['getCases'])
             },
-            onError: () => {
+            onError: (err) => {
+                console.log("error: ", JSON.stringify(err))
                 setAlertState({open: true, title: "Error Updating Case", status: "error"})
             }
         }

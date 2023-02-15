@@ -19,6 +19,7 @@ import * as yup from 'yup';
 import PatientTab from './tabs/patientTab';
 import { parseFieldConfig } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
+import { bookingSheetConfigObject } from '../../reference';
 
 
 
@@ -30,42 +31,25 @@ interface Props {
     initiallySelectedTab: string
 }
 
-const configObject = {
-    organization: "...",
-    tabs: [
-        {
-            label: "Patient",
-            fields: [
-                {
-                    id: "firstName",
-                    required: true,
-                    visible: true
-                },
-            ]
-        }  
-    ]
-}
-
-
-
 export default function BookingSheetDialog(props: Props) {
   const {open, closeDialog, data, initiallySelectedTab} = props;
   const [selectedTab, selectTab] = useState(initiallySelectedTab);
   const {mutate} = useUpdateCaseHook()
 
-  const onSubmit = async (data: any) => {
-    mutate({patients: data})
+  const onSubmit = async (formData: any) => {
+    mutate({caseId: data.caseId, patients: {update: formData.patient}})
   };
 
   const schema = yup.object().shape({
         patient: yup.object().shape({
-            firstName: yup.string().when([], { is: parseFieldConfig(configObject, 'Patient', 'firstName', 'required'), then: yup.string().required() }),
+            firstName: yup.string().when([], { is: parseFieldConfig(bookingSheetConfigObject, 'Patient', 'firstName', 'required'), then: yup.string().required() }),
             middleName: yup.string().required(),
             lastName: yup.string().required(),
             dateOfBirth: yup.date().required(),
+            sex: yup.object().required(),
             address: yup.string().required(),
             city: yup.string().required(),
-            state: yup.string().required(),
+            state: yup.object().required(),
             zip: yup.string().required() //.matches(/^[0-9]+$/).min(5).max(5),
         }),
     });
@@ -82,8 +66,11 @@ export default function BookingSheetDialog(props: Props) {
 
     useEffect(() => {
         if (data) {
+            let filteredPatient = data?.patients
+            delete filteredPatient.fhirResourceId
+            delete filteredPatient.homePhone
             reset({
-                'patient': data?.patients
+                'patient': filteredPatient
             });
         }
     }, [data]); 
@@ -129,9 +116,9 @@ export default function BookingSheetDialog(props: Props) {
                 </Tabs>
             </Box>
         </DialogTitle>
-        <DialogContent sx={{minHeight: "20rem"}}>
+        <DialogContent sx={{height: "20rem", overflow: "scroll"}}>
             {selectedTab === "Patient" && (
-                <PatientTab config={configObject} control={control}/>
+                <PatientTab config={bookingSheetConfigObject} control={control}/>
             )}
         </DialogContent>
         <DialogActions 

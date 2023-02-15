@@ -57,7 +57,7 @@ export function InputController(props: InputControllerProps) {
         render={({ field }) => (
             <React.Fragment>
                 <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <StyledTextField {...field} id={id} variant="outlined" placeholder={placeholder} sx={{width: '100%'}} />
+                <StyledTextField {...field} id={id} variant="outlined" autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
             </React.Fragment>
         )}
       />
@@ -80,6 +80,7 @@ export function DateController(props: DateControllerProps) {
                     renderInput={({inputProps, ...restParams}) => (
                         <StyledTextField 
                             id={id}
+                            autoComplete='off'
                             inputProps={{
                                 ...inputProps, 
                                 placeholder: placeholder,

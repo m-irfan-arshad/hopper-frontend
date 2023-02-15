@@ -131,7 +131,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
         ]
       }
    }
-
+   console.log("filter: ", filterObject)
    return filterObject
 }
 
@@ -154,6 +154,7 @@ export function casesFormatter (params: CasesFormatterProps): any {
             address: cases.patients?.address,
             city: cases.patients?.city,
             state: cases.patients?.state,
+            sex: cases.patients?.sex,
             zip: cases.patients?.zip,
             mobilePhone: cases.patients?.mobilePhone,
             homePhone: cases.patients?.homePhone,
