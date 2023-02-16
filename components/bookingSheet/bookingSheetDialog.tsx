@@ -37,7 +37,12 @@ export default function BookingSheetDialog(props: Props) {
   const {mutate} = useUpdateCaseHook()
 
   const onSubmit = async (formData: any) => {
-    mutate({caseId: data.caseId, patients: {update: formData.patient}})
+    let preparedFormData = {...formData};
+    preparedFormData.patient.sex = formData?.patient.sex?.sex;
+    preparedFormData.patient.state = formData?.patient.state?.state;
+
+    await mutate({caseId: data.caseId, patients: {update: preparedFormData.patient}})
+    closeDialog()
   };
 
   const schema = yup.object().shape({
@@ -46,15 +51,19 @@ export default function BookingSheetDialog(props: Props) {
             middleName: yup.string().required(),
             lastName: yup.string().required(),
             dateOfBirth: yup.date().required(),
-            sex: yup.object().required(),
+            sex: yup.object().shape({ 
+                sex: yup.string().required()
+            }),
             address: yup.string().required(),
             city: yup.string().required(),
-            state: yup.object().required(),
+            state: yup.object().shape({ 
+                state: yup.string().required()
+            }),
             zip: yup.string().required() //.matches(/^[0-9]+$/).min(5).max(5),
         }),
     });
 
-    const { handleSubmit, control, reset, formState: { isValid, dirtyFields } } = useForm({ 
+    const { handleSubmit, control, reset, getValues, formState: { isValid, dirtyFields } } = useForm({ 
         mode: 'onChange',
         resolver: yupResolver(schema),
         defaultValues: {
@@ -63,12 +72,16 @@ export default function BookingSheetDialog(props: Props) {
             }
         }
     });
-
+    
     useEffect(() => {
         if (data) {
-            let filteredPatient = data?.patients
+            let filteredPatient = {...data?.patients}
             delete filteredPatient.fhirResourceId
             delete filteredPatient.homePhone
+
+            filteredPatient.sex !== null && (filteredPatient.sex = {sex: filteredPatient.sex});
+            filteredPatient.state !== null && (filteredPatient.state = {state: filteredPatient.state});
+            
             reset({
                 'patient': filteredPatient
             });

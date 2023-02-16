@@ -6,7 +6,7 @@ import * as r from "ramda";
 
 const requiredParams = ['caseId'];
 
-export default async function updateCaseHandler(req: NextApiRequest, res: NextApiResponse) {
+export default withApiAuthRequired( withValidation(requiredParams, async function updateCaseHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     let bodyNoCaseId = r.clone(req.body);
     delete bodyNoCaseId.caseId;
@@ -21,4 +21,4 @@ export default async function updateCaseHandler(req: NextApiRequest, res: NextAp
   } catch(err) {
     res.status(500).json({ message: err });
   }
-}
+}))

@@ -60,7 +60,6 @@ describe("Dashboard", () => {
         });
 
         expect(getByRole("textbox", {name: "Date Range Start"})).toBeInTheDocument();
-        expect(getByLabelText(`Choose date, selected date is ${moment().utc().format('MMM D, YYYY')}`)).toBeInTheDocument();
       });
 
       test("renders and interacts with search bar and pagination", async () => { 

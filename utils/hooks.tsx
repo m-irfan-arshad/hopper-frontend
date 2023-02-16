@@ -78,6 +78,7 @@ export function useUpdateCaseHook() {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries(['getCases'])
+                setAlertState({open: true, title: "Successfully Updated Case", status: "success"})
             },
             onError: (err) => {
                 console.log("error: ", JSON.stringify(err))
