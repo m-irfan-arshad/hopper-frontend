@@ -13,13 +13,14 @@ import {
     Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import PatientTab from './tabs/patientTab';
 import { parseFieldConfig } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject } from '../../reference';
+import PatientTab from './tabs/patientTab';
+import FinancialTab from "./tabs/financialTab";
 
 
 interface Props {
@@ -55,17 +56,30 @@ export default function BookingSheetDialog(props: Props) {
             middleName: yup.string().required(),
             lastName: yup.string().required(),
             dateOfBirth: yup.date().required(),
-            sex: yup.object().shape({ 
-                sex: yup.string().required()
-            }),
+            sex: yup.object().shape({ sex: yup.string().required() }),
             address: yup.string().required(),
             city: yup.string().required(),
-            state: yup.object().shape({ 
-                state: yup.string().required()
-            }),
+            state: yup.object().shape({ state: yup.string().required() }),
             zip: yup.string().required()
         }),
+        financial: yup.array().of(yup.object().shape({
+            insurance: yup.object().shape({ insurance: yup.string().required() }),
+            insuranceGroupName: yup.string().required(),
+            insuranceGroupNumber: yup.string().required(),
+            priorAuthApproved: yup.object().shape({ priorAuthApproved: yup.string().required() }),
+            priorAuthId: yup.object().shape({ priorAuthId: yup.string().required() }),
+            priorAuthDate: yup.date().required(),
+        }))
     });
+
+    const defaultInsuranceValue = {
+        insurance: null,
+        insuranceGroupName: '',
+        insuranceGroupNumber: '',
+        priorAuthApproved: '',
+        priorAuthId: null,
+        priorAuthDate: null,
+    }
 
     const { handleSubmit, control, reset, getValues, formState: { isValid, dirtyFields } } = useForm({ 
         mode: 'onChange',
@@ -73,8 +87,14 @@ export default function BookingSheetDialog(props: Props) {
         defaultValues: {
             patient: {
                 dateOfBirth: null,
-            }
+            },
+            financial: [ defaultInsuranceValue ]
         }
+    });
+
+    const financialMethods = useFieldArray({
+        control,
+        name: "financial",
     });
     
     useEffect(() => {
@@ -128,9 +148,8 @@ export default function BookingSheetDialog(props: Props) {
             </Box>
         </DialogTitle>
         <DialogContent sx={{height: "28rem", overflow: "scroll"}}>
-            {selectedTab === "Patient" && (
-                <PatientTab config={bookingSheetConfigObject} control={control}/>
-            )}
+            {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control}/>}
+            {selectedTab === "Financial" && <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
         </DialogContent>
         <DialogActions 
             sx={{

@@ -135,3 +135,5 @@ export const bookingSheetConfigObject = {
 
 export const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
 export const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
+export const insuranceData = [{insurance: 'insurance1'}, {insurance: 'insurance2'}, {insurance: 'insurance3'}]; 
+export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthApproved: 'No'}]; 

@@ -15,7 +15,7 @@ import { patientSexData, stateData } from '../../../reference';
 
 
 interface Props {
-    control: any,
+    control: Control<any, any>,
     config: ConfigObject,
 }
 
@@ -30,8 +30,8 @@ export default function PatientTab(props: Props) {
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "3rem", color: "gray.dark", height: "8rem"}}>Patient</Typography>
-                <Grid container justifyContent={"left"} spacing={"2rem"} rowSpacing={"8rem"} sx={gridStyles}>
+                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark"}}>Patient</Typography>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1rem"} sx={gridStyles}>
                     { parseFieldConfig(config, 'Patient', 'firstName', 'visible', true) && <Grid item xs={4} >
                         <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid> }
