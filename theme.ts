@@ -125,6 +125,7 @@ export const defaultTheme = createTheme({
     },
     typography: {
         allVariants: {
+          WebkitFontSmoothing: "antialiased",
           color: "#37474F"
         },
         caption: {

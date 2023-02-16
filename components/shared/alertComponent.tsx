@@ -17,7 +17,7 @@ export default function AlertComponent() {
 
   return (
     <Fade in={alertState.open}>
-      <Alert sx={{position: 'fixed', bottom: 50, right: 50, zIndex: 10000, boxShadow: 1}}severity={alertState.status} onClose={() => setAlertState({open: false, status: alertState.status, title: alertState.title})}>{alertState.title}</Alert>
+      <Alert sx={{position: 'fixed', bottom: 50, right: 50, zIndex: 10000, boxShadow: 1}}severity={alertState.status ? alertState.status : 'error'} onClose={() => setAlertState({open: false, status: alertState.status, title: alertState.title})}>{alertState.title}</Alert>
     </Fade>
   );
 }

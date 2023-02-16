@@ -3,7 +3,7 @@ import {Autocomplete, TextField} from "@mui/material";
 
 interface Option {
     [key: string]: string
-    fhirResourceId: string
+    fhirResourceId?: any
 }
 
 interface Props {
@@ -54,7 +54,10 @@ export default function DropDownSearchComponent(props: Props) {
             disabled={disabled}
             sx={{
                 ...defaultStyles,
-                ...additionalStyles
+                ...additionalStyles,
+                '.MuiTextField-root': {
+                    width: '100%'
+                }
             }}
             ListboxProps={{
                 style: {

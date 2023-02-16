@@ -3,6 +3,11 @@ import Chance from 'chance';
 
 const chance = new Chance();
 
+const locationOptions = ['Healthy Heart Hospital', 'Senior Day Care', 'Burger King', 'Medtel Hospital']
+const procedureUnitOptions = ['OR', 'CATH LAB', 'PU1', 'PU2']
+const serviceLineOptions = ['Orthopedics', 'Cardiology', 'Oncology']
+const providerOptions = [{firstName: 'Sauce', lastName: 'Gardner'}, {firstName: 'Mike', lastName: 'White'}, {firstName: 'Garrett', lastName: 'Wilson'}, {firstName: 'Quincy', lastName: 'Williams'}]
+
 async function createCases() {
     for (let i = 0; i < 50; i++) {
         await prisma.patients.create({
@@ -24,26 +29,26 @@ async function createCases() {
 }
 
 async function createLocations() {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 4; i++) {
         await prisma.locations.create({   //create locations
             data: {
-                locationName: chance.city(),
+                locationName: locationOptions[i],
                 fhirResourceId: chance.string({ length: 10 }),
                 procedureUnits: {    // create PUs under each location
-                    create: [...Array(2)].map(()=>({ 
+                    create: [...Array(4)].map((_, j)=>({ 
                         fhirResourceId: chance.string({ length: 10 }),
-                        procedureUnitName: 'pu' + chance.word({ syllables: 2 }),
+                        procedureUnitName: procedureUnitOptions[j],
                         serviceLines: {    // create SLs under each PU
-                            create: [...Array(2)].map(()=>({
+                            create: [...Array(3)].map((_, k)=>({
                                 fhirResourceId: chance.string({ length: 10 }),
-                                serviceLineName: 'sl' + chance.word({ syllables: 2 }),
+                                serviceLineName: serviceLineOptions[k],
                                 providers: {    // create provider relationship for each SL
-                                    create: [...Array(3)].map(()=>({
+                                    create: [...Array(4)].map((_, l)=>({
                                         provider: {    // create providers for each provider relationship
                                             create: {
                                                 fhirResourceId: chance.string({ length: 10 }),
-                                                firstName: chance.first({ nationality: 'en' }),
-                                                lastName: chance.last({ nationality: 'en' }),
+                                                firstName: providerOptions[l].firstName,
+                                                lastName: providerOptions[l].lastName,
                                                 address: chance.address()
                                             }
                                         }

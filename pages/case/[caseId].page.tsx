@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { useGetCaseByIdHook } from '../../utils/hooks';
 import { Button, Box, Typography, Tabs, Tab, styled, useMediaQuery } from '@mui/material';
-import BookingSheetDialog from "../../components/bookingSheetDialog";
+import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";

@@ -14,6 +14,7 @@ jest.mock('next/router', () => ({
 
 jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockCaseData[0] })),
+    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
 }));
 
 describe('[caseId]: Case Hub Page', () => {

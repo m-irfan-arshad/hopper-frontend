@@ -59,6 +59,18 @@ interface FilterObject {
     vendorConfirmation?: object;
   }
 
+export interface ConfigObject {
+    organization: string,
+    tabs: Array<{
+        label: string,
+        fields: Array<{
+            id: string,
+            required: boolean,
+            visible: boolean
+        }>
+    }>
+}
+
 export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
     
@@ -119,7 +131,6 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
         ]
       }
    }
-
    return filterObject
 }
 
@@ -136,9 +147,14 @@ export function casesFormatter (params: CasesFormatterProps): any {
             patientId: cases.patients?.patientId,
             fhirResourceId: cases.patients.fhirResourceId,
             firstName: cases.patients?.firstName,
+            middleName: cases.patients?.middleName,
             lastName: cases.patients?.lastName,
             mrn: cases.patients?.mrn,
             address: cases.patients?.address,
+            city: cases.patients?.city,
+            state: cases.patients?.state,
+            sex: cases.patients?.sex,
+            zip: cases.patients?.zip,
             mobilePhone: cases.patients?.mobilePhone,
             homePhone: cases.patients?.homePhone,
             dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
@@ -213,4 +229,13 @@ export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
         }
     }
     return createCaseObject;
+}
+
+export function parseFieldConfig(configObject: ConfigObject, tabName: string, fieldName: string, checkingFor: "visible" | "required", defaultReturnValue?: boolean) {
+    const tab = configObject.tabs.find(tab => tab.label === tabName)
+    if (tab) {
+        const field = tab.fields.find(field => field.id === fieldName);
+        return field && field[checkingFor]
+    }
+    return defaultReturnValue ? defaultReturnValue : false
 }
