@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
-
+import { patientSexData, stateData } from '../../../reference';
 
 
 interface Props {
@@ -21,9 +21,6 @@ interface Props {
 
 export default function PatientTab(props: Props) {
     const {control, config} = props;
-
-    const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
-    const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
     const gridStyles = {
         ".MuiGrid-item": {
             "paddingTop": "1rem",

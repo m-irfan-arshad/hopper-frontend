@@ -22,14 +22,18 @@ import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject } from '../../reference';
 
 
-
-
 interface Props {
     open: boolean
     closeDialog: () => void,
     data: any
     initiallySelectedTab: string
 }
+
+const StyledTab = styled(Tab)({
+    padding: 0,
+    width: "10.938rem",
+    textTransform: "capitalize"
+});
 
 export default function BookingSheetDialog(props: Props) {
   const {open, closeDialog, data, initiallySelectedTab} = props;
@@ -91,12 +95,6 @@ export default function BookingSheetDialog(props: Props) {
   useEffect(() => {
     selectTab(initiallySelectedTab)
   }, [initiallySelectedTab]);
-
-  const StyledTab = styled(Tab)({
-    padding: 0,
-    width: "10.938rem",
-    textTransform: "capitalize"
-  });
 
   return (
       <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>

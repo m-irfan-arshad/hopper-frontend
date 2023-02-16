@@ -131,7 +131,6 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
         ]
       }
    }
-   console.log("filter: ", filterObject)
    return filterObject
 }
 

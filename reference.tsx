@@ -132,3 +132,6 @@ export const bookingSheetConfigObject = {
       }
   ]
 }
+
+export const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
+export const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
