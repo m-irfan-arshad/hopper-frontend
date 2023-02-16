@@ -56,6 +56,37 @@ async function createLocations() {
             }
         })
     }
+
+    await prisma.locations.create({   //create static location for integration test
+        data: {
+            locationName: 'Feeleove',
+            fhirResourceId: chance.string({ length: 10 }),
+            procedureUnits: { 
+                create: [{ 
+                    fhirResourceId: chance.string({ length: 10 }),
+                    procedureUnitName: 'pugigu',
+                    serviceLines: {
+                        create: [{
+                            fhirResourceId: chance.string({ length: 10 }),
+                            serviceLineName: 'slfuhge',
+                            providers: {
+                                create: [{
+                                    provider: {
+                                        create: {
+                                            fhirResourceId: chance.string({ length: 10 }),
+                                            firstName: 'Edgar',
+                                            lastName: 'McGee',
+                                            address: chance.address()
+                                        }
+                                    }
+                                }]
+                            }
+                        }]
+                    }
+                }]
+            }
+        }
+    })
 }
 
 async function main() {
