@@ -18,13 +18,13 @@ test.describe('Landing Page', () => {
         await page.locator("[id='patient.lastName']").fill(lastName);
         await page.locator("[id='patient.dateOfBirth']").fill(birthDay);
         await page.locator("[id='case.location']").click();
-        await page.locator("text='Feeleove'").click();
+        await page.locator("text='Healthy Heart Hospital'").click();
         await page.locator("[id='case.procedureUnit']").click();
-        await page.locator("text='pugigu'").click();
+        await page.locator("text='OR'").click();
         await page.locator("[id='case.serviceLine']").click();
-        await page.locator("text='slfuhge'").click();
+        await page.locator("text='Orthopedics'").click();
         await page.locator("[id='case.provider']").click();
-        await page.locator("text='Edgar McGee'").click();
+        await page.locator("text='Sauce Gardner'").click();
         await page.locator("[id='case.procedureDate']").fill(procedureDate);
         await dashboard.submitCreateCaseButton.click();
         await expect(dashboard.patientInformation).toBeHidden();

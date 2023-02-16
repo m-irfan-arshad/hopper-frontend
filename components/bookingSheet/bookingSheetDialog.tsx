@@ -127,7 +127,7 @@ export default function BookingSheetDialog(props: Props) {
                 </Tabs>
             </Box>
         </DialogTitle>
-        <DialogContent sx={{height: "20rem", overflow: "scroll"}}>
+        <DialogContent sx={{height: "28rem", overflow: "scroll"}}>
             {selectedTab === "Patient" && (
                 <PatientTab config={bookingSheetConfigObject} control={control}/>
             )}
