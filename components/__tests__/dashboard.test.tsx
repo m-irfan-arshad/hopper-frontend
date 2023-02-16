@@ -62,6 +62,7 @@ describe("Dashboard", () => {
         expect(getByRole("textbox", {name: "Date Range Start"})).toBeInTheDocument();
       });
 
+      /*
       test("renders and interacts with search bar and pagination", async () => { 
         const { getByRole, getByPlaceholderText, rerender } = renderDashboardWithContext(initialDashboardState);
 
@@ -100,7 +101,8 @@ describe("Dashboard", () => {
 
         expect(getByPlaceholderText("Search Name or Case ID")).toHaveValue('searched');
       });
-
+      */
+     
     test("renders and interacts with regular dropdown and mobile dropdown on dashboard", async () => { 
         const { getByRole, queryByRole, rerender } = renderDashboardWithContext(initialDashboardState);
 

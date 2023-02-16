@@ -63,7 +63,7 @@ export default function BookingSheetDialog(props: Props) {
             state: yup.object().shape({ 
                 state: yup.string().required()
             }),
-            zip: yup.string().required() //.matches(/^[0-9]+$/).min(5).max(5),
+            zip: yup.string().required()
         }),
     });
 
