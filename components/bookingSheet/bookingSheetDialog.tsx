@@ -21,6 +21,8 @@ import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject } from '../../reference';
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
+import { cases, insurances } from "@prisma/client";
+import * as R from 'ramda';
 
 
 interface Props {
@@ -36,35 +38,71 @@ const StyledTab = styled(Tab)({
     textTransform: "capitalize"
 });
 
+const defaultInsuranceValue = {
+    insurance: null,
+    insuranceGroupName: '',
+    insuranceGroupNumber: '',
+    priorAuthApproved: '',
+    priorAuthId: null,
+    priorAuthDate: null,
+}
+
+function prepareCaseForApi(caseId: number, formData: any) {
+    let patientData = formData.patient;
+    patientData.sex = patientData.sex?.sex;
+    patientData.state = patientData.state?.state;
+
+    let newInsurances: object[] = [];
+    let updatedInsurances: object[] = [];
+    formData.financial.forEach((elem: any) => {
+        let formattedFinancials = {...elem,
+            insurance: elem.insurance.insurance,
+            priorAuthApproved: elem.priorAuthApproved.priorAuthApproved
+        };
+
+        if (formattedFinancials.insuranceId) {
+            delete formattedFinancials.insuranceId;
+            delete formattedFinancials.caseId;
+            updatedInsurances.push({data: formattedFinancials, where: {insuranceId: elem.insuranceId}})
+        } else {
+            newInsurances.push(formattedFinancials)
+        } 
+    })
+    
+    return {
+        caseId: caseId, 
+        patients: {update: patientData}, 
+        insurances: {create: newInsurances, update: updatedInsurances}
+    }
+}
+
+function prepareCaseForForm(data: any) {
+    const parsedCase: any = {};
+    parsedCase.patient = {
+        ...data?.patients,
+        ...(data?.patients.sex && {sex: {sex: data?.patients.sex}}),
+        ...(data?.patients.state && {state: {state: data?.patients.state}})
+    }
+
+    if (!R.isEmpty(data.insurances)) {
+        parsedCase.financial = [...data?.insurances].map((elem: any) => ({
+            ...elem,
+            ...(elem.insurance && {insurance: {insurance: elem.insurance}}),
+            ...(elem.priorAuthApproved && {priorAuthApproved: {priorAuthApproved: elem.priorAuthApproved}})
+        }))
+    } else {
+        parsedCase.financial = [defaultInsuranceValue]
+    }
+    return parsedCase;
+}
+
 export default function BookingSheetDialog(props: Props) {
   const {open, closeDialog, data, initiallySelectedTab} = props;
   const [selectedTab, selectTab] = useState(initiallySelectedTab);
   const {mutate} = useUpdateCaseHook()
 
   const onSubmit = async (formData: any) => {
-    let preparedFormData = {...formData};
-    preparedFormData.patient.sex = formData?.patient.sex?.sex;
-    preparedFormData.patient.state = formData?.patient.state?.state;
-    let createObjectList: any[] = [];
-    let updateObjectList: any[] = [];
-    preparedFormData.financial.forEach((elem: any) => {
-        let formattedFinancials = {...elem};
-        formattedFinancials.insurance = formattedFinancials.insurance.insurance;
-        formattedFinancials.priorAuthApproved = formattedFinancials.priorAuthApproved.priorAuthApproved;
-        if (formattedFinancials.insuranceId) {
-            const insuranceId = {...formattedFinancials}.insuranceId
-            delete formattedFinancials.insuranceId
-            delete formattedFinancials.caseId
-            updateObjectList.push({data: formattedFinancials, where: {insuranceId: insuranceId}})
-        } else {
-            createObjectList.push(formattedFinancials)
-        } 
-    })
-    preparedFormData.financial = {create: createObjectList, update: updateObjectList}
-    
-    const query = {caseId: data.caseId, patients: {update: preparedFormData.patient}, insurances: preparedFormData.financial}
-    console.log("query: ", query)
-
+    const query = prepareCaseForApi(data.caseId, formData)
     await mutate(query)
     closeDialog()
   };
@@ -91,15 +129,6 @@ export default function BookingSheetDialog(props: Props) {
         }))
     });
 
-    const defaultInsuranceValue = {
-        insurance: null,
-        insuranceGroupName: '',
-        insuranceGroupNumber: '',
-        priorAuthApproved: '',
-        priorAuthId: null,
-        priorAuthDate: null,
-    }
-
     const { handleSubmit, control, reset, getValues, formState: { isValid, dirtyFields } } = useForm({ 
         mode: 'onChange',
         resolver: yupResolver(schema),
@@ -111,6 +140,8 @@ export default function BookingSheetDialog(props: Props) {
         }
     });
 
+    console.log("values: ", getValues())
+
     const financialMethods = useFieldArray({
         control,
         name: "financial",
@@ -118,22 +149,7 @@ export default function BookingSheetDialog(props: Props) {
     
     useEffect(() => {
         if (data) {
-            const filteredPatient = {
-                ...data?.patients,
-                ...(data?.patients.sex && {sex: {sex: data?.patients.sex}}),
-                ...(data?.patients.state && {state: {state: data?.patients.state}})
-            }
-
-            const filteredFinancial = [...data?.insurances].map((elem: any) => ({
-                ...elem,
-                ...(elem.insurance && {insurance: {insurance: elem.insurance}}),
-                ...(elem.priorAuthApproved && {priorAuthApproved: {priorAuthApproved: elem.priorAuthApproved}})
-            }))
-            
-            reset({
-                'patient': filteredPatient,
-                'financial': filteredFinancial
-            });
+            reset(prepareCaseForForm(data));
         }
     }, [data]); 
 

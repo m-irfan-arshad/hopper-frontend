@@ -28,15 +28,13 @@ interface Props {
 export default function FinancialTab(props: Props) {
     const {control, config, methods, defaultValue} = props;
     const { append, remove, fields } = methods;
-    const gridStyles = {
-    }
 
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark" }}>Financial</Typography>
-                {fields.map((item, index)=>(<React.Fragment>
-                    <Grid key={'' + item.id + index} container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1rem"} sx={gridStyles}>
+                {fields.map((item, index, itemList)=>(<React.Fragment>
+                    <Grid key={'' + item.id + index} container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1.3rem"}>
                         <Grid item xs={12}>
                             <DropDownSearchController 
                                 {...item}
@@ -72,9 +70,9 @@ export default function FinancialTab(props: Props) {
                             <DateController control={control} id={`financial.${index}.priorAuthDate`} title="Prior Auth Date" placeholder="Prior Auth Date" />
                         </Grid>
                     </Grid>
-                    <Divider light sx={{marginTop: "2rem", marginBottom: "2rem"}}/>
+                    {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "3rem", marginBottom: "3rem"}}/>}
                 </React.Fragment>))}
-                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start" }}>
+                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "2rem" }}>
                     <Button 
                         variant="contained" 
                         onClick={()=>{append(defaultValue)}}

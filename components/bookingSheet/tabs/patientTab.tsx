@@ -21,17 +21,12 @@ interface Props {
 
 export default function PatientTab(props: Props) {
     const {control, config} = props;
-    const gridStyles = {
-        ".MuiGrid-item": {
-            "paddingTop": "1rem",
-        }
-    }
 
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark"}}>Patient</Typography>
-                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1rem"} sx={gridStyles}>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1.3rem"}>
                     { parseFieldConfig(config, 'Patient', 'firstName', 'visible', true) && <Grid item xs={4} >
                         <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
                     </Grid> }
