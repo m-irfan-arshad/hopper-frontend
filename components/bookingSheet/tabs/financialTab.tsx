@@ -36,7 +36,7 @@ export default function FinancialTab(props: Props) {
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark" }}>Financial</Typography>
                 {fields.map((item, index)=>(<React.Fragment>
-                    <Grid key={item.id} container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1rem"} sx={gridStyles}>
+                    <Grid key={'' + item.id + index} container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1rem"} sx={gridStyles}>
                         <Grid item xs={12}>
                             <DropDownSearchController 
                                 {...item}
@@ -48,10 +48,10 @@ export default function FinancialTab(props: Props) {
                                 placeholder="Insurance" 
                             />
                         </Grid>
-                        <Grid key={item.id} item xs={6}>
+                        <Grid item xs={6}>
                             <InputController control={control} id={`financial.${index}.insuranceGroupName`} title="Insurance Group Name" placeholder="Insurance Group Name"/>
                         </Grid>
-                        <Grid key={item.id} item xs={6}>
+                        <Grid item xs={6}>
                             <InputController control={control} id={`financial.${index}.insuranceGroupNumber`} title="Insurance Group Number" placeholder="Insurance Group Number"/>
                         </Grid>
                         <Grid item xs={4}>
@@ -65,11 +65,11 @@ export default function FinancialTab(props: Props) {
                                 placeholder="Prior Auth Approved" 
                             />
                         </Grid>
-                        <Grid key={item.id} item xs={4}>
+                        <Grid item xs={4}>
                             <InputController control={control} id={`financial.${index}.priorAuthId`} title="Prior Auth Id" placeholder="Prior Auth Id"/>
                         </Grid>
                         <Grid item xs={4}>
-                            <DateController control={control} id="financial.${index}.priorAuthDate" title="Prior Auth Date" placeholder="Prior Auth Date" />
+                            <DateController control={control} id={`financial.${index}.priorAuthDate`} title="Prior Auth Date" placeholder="Prior Auth Date" />
                         </Grid>
                     </Grid>
                     <Divider light sx={{marginTop: "2rem", marginBottom: "2rem"}}/>

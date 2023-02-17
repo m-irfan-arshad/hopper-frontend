@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("LOCAL_DATABASE_URL")
 }
 
 model cases {
@@ -21,6 +21,7 @@ model cases {
   patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
   locations          locations? @relation(fields: [locationId], references: [locationId], onDelete: NoAction, onUpdate: NoAction)
   providers          providers? @relation(fields: [providerId], references: [providerId], onDelete: NoAction, onUpdate: NoAction)
+  insurances         insurances[]  
 }
 
 model patients {
@@ -37,7 +38,7 @@ model patients {
   sex            String?
   mobilePhone    String?   @map("mobile_phone")
   homePhone      String?   @map("home_phone")
-  dateOfBirth    DateTime? @map("date_of_birth") @db.Date
+  dateOfBirth    DateTime? @map("date_of_birth") @db.Timestamp(6)
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   cases          cases[]
@@ -56,19 +57,19 @@ model locations {
 model procedureUnits {
   procedureUnitId     Int       @id @default(autoincrement()) @map("procedure_unit_id")
   fhirResourceId      String   @unique @map("fhir_resource_id")
-  procedureUnitName        String   @map("procedure_unit_name")
-  locationFk locations @relation(fields: [locationId], references: [locationId])
-  locationId Int  
-  serviceLines serviceLines[]
+  procedureUnitName   String   @map("procedure_unit_name")
+  locationFk          locations  @relation(fields: [locationId], references: [locationId])
+  locationId          Int  
+  serviceLines        serviceLines[]
 }
 
 model serviceLines {
   serviceLineId     Int       @id @default(autoincrement()) @map("service_line_id")
-  fhirResourceId      String   @unique @map("fhir_resource_id")
-  serviceLineName        String   @map("service_line_name")
-  procedureUnitFk procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
-  procedureUnitId Int
-  providers ServiceLineToProvider[]
+  fhirResourceId    String   @unique @map("fhir_resource_id")
+  serviceLineName   String   @map("service_line_name")
+  procedureUnitFk   procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
+  procedureUnitId   Int
+  providers         ServiceLineToProvider[]
 }
 
 model providers {
@@ -80,7 +81,7 @@ model providers {
   email          String?
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
-  serviceLines ServiceLineToProvider[]
+  serviceLines   ServiceLineToProvider[]
   cases          cases[]
 }
 
@@ -90,4 +91,16 @@ model ServiceLineToProvider {
   provider          providers     @relation(fields: [providerId], references: [providerId])
   providerId        Int
   @@id([serviceLineId, providerId])
+}
+
+model insurances {
+  insuranceId           Int   @id @default(autoincrement()) @map("insurance_id")
+  insurance             String? @map("insurance")
+  insuranceGroupName    String? @map("insurance_group_name")
+  insuranceGroupNumber  String? @map("insurance_group_number")
+  priorAuthApproved     String? @map("prior_auth_approved")
+  priorAuthId           String? @map("prior_auth_id")
+  priorAuthDate         DateTime? @map("prior_auth_date") @db.Timestamp(6)
+  caseId                Int? @map("case_id")
+  cases                 cases? @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
 }

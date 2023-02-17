@@ -36,7 +36,8 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         include: {
             patients: true,
             locations: true,
-            providers: true
+            providers: true,
+            insurances: true
         }
     })
 

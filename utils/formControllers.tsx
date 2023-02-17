@@ -73,7 +73,6 @@ export function DateController(props: DateControllerProps) {
             <React.Fragment>
                 <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
                 <DesktopDatePicker
-                    {...field}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}

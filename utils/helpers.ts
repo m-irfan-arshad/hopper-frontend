@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { SingleCase, APIParameters } from '../reference';
-import { Prisma, cases, patients, locations, providers } from '@prisma/client';
+import { Prisma, cases, patients, locations, providers, insurances } from '@prisma/client';
 import moment from "moment";
 
 interface DashboardQueryParams { 
@@ -46,8 +46,9 @@ interface CreateCaseObject {
 interface CasesFormatterProps {
     cases: cases & {
         patients?: patients | null;
-        locations?: locations | null
-        providers?: providers | null
+        locations?: locations | null;
+        providers?: providers | null;
+        insurances?: insurances[] | null;
     } | null
 }
 
@@ -144,21 +145,11 @@ export function casesFormatter (params: CasesFormatterProps): any {
 
     if (cases) {
         const newPatient = (cases.patients) ? {
-            patientId: cases.patients?.patientId,
-            fhirResourceId: cases.patients.fhirResourceId,
-            firstName: cases.patients?.firstName,
-            middleName: cases.patients?.middleName,
-            lastName: cases.patients?.lastName,
-            mrn: cases.patients?.mrn,
-            address: cases.patients?.address,
-            city: cases.patients?.city,
-            state: cases.patients?.state,
-            sex: cases.patients?.sex,
-            zip: cases.patients?.zip,
-            mobilePhone: cases.patients?.mobilePhone,
-            homePhone: cases.patients?.homePhone,
+            ...cases.patients,
             dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
         } : null
+
+        const newInsurance = cases.insurances?.map((insurance: insurances) => ({...insurance, priorAuthDate: formatDate(insurance.priorAuthDate)}))
 
         const providerName = (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : '';
         
@@ -170,6 +161,7 @@ export function casesFormatter (params: CasesFormatterProps): any {
             locationId: cases.locationId,
             providerId: cases.providerId,
             patients: newPatient,
+            insurances: newInsurance,
             providerName: providerName,
             locationName: cases.locations?.locationName,
             createTime: cases.createTime,

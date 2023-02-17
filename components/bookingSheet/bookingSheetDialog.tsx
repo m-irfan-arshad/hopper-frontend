@@ -45,8 +45,27 @@ export default function BookingSheetDialog(props: Props) {
     let preparedFormData = {...formData};
     preparedFormData.patient.sex = formData?.patient.sex?.sex;
     preparedFormData.patient.state = formData?.patient.state?.state;
+    let createObjectList: any[] = [];
+    let updateObjectList: any[] = [];
+    preparedFormData.financial.forEach((elem: any) => {
+        let formattedFinancials = {...elem};
+        formattedFinancials.insurance = formattedFinancials.insurance.insurance;
+        formattedFinancials.priorAuthApproved = formattedFinancials.priorAuthApproved.priorAuthApproved;
+        if (formattedFinancials.insuranceId) {
+            const insuranceId = {...formattedFinancials}.insuranceId
+            delete formattedFinancials.insuranceId
+            delete formattedFinancials.caseId
+            updateObjectList.push({data: formattedFinancials, where: {insuranceId: insuranceId}})
+        } else {
+            createObjectList.push(formattedFinancials)
+        } 
+    })
+    preparedFormData.financial = {create: createObjectList, update: updateObjectList}
+    
+    const query = {caseId: data.caseId, patients: {update: preparedFormData.patient}, insurances: preparedFormData.financial}
+    console.log("query: ", query)
 
-    await mutate({caseId: data.caseId, patients: {update: preparedFormData.patient}})
+    await mutate(query)
     closeDialog()
   };
 
@@ -67,7 +86,7 @@ export default function BookingSheetDialog(props: Props) {
             insuranceGroupName: yup.string().required(),
             insuranceGroupNumber: yup.string().required(),
             priorAuthApproved: yup.object().shape({ priorAuthApproved: yup.string().required() }),
-            priorAuthId: yup.object().shape({ priorAuthId: yup.string().required() }),
+            priorAuthId: yup.string().required(),
             priorAuthDate: yup.date().required(),
         }))
     });
@@ -99,15 +118,21 @@ export default function BookingSheetDialog(props: Props) {
     
     useEffect(() => {
         if (data) {
-            let filteredPatient = {...data?.patients}
-            delete filteredPatient.fhirResourceId
-            delete filteredPatient.homePhone
+            const filteredPatient = {
+                ...data?.patients,
+                ...(data?.patients.sex && {sex: {sex: data?.patients.sex}}),
+                ...(data?.patients.state && {state: {state: data?.patients.state}})
+            }
 
-            filteredPatient.sex !== null && (filteredPatient.sex = {sex: filteredPatient.sex});
-            filteredPatient.state !== null && (filteredPatient.state = {state: filteredPatient.state});
+            const filteredFinancial = [...data?.insurances].map((elem: any) => ({
+                ...elem,
+                ...(elem.insurance && {insurance: {insurance: elem.insurance}}),
+                ...(elem.priorAuthApproved && {priorAuthApproved: {priorAuthApproved: elem.priorAuthApproved}})
+            }))
             
             reset({
-                'patient': filteredPatient
+                'patient': filteredPatient,
+                'financial': filteredFinancial
             });
         }
     }, [data]); 
