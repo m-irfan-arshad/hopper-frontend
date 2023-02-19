@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("LOCAL_DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model cases {
@@ -101,6 +101,8 @@ model insurances {
   priorAuthApproved     String? @map("prior_auth_approved")
   priorAuthId           String? @map("prior_auth_id")
   priorAuthDate         DateTime? @map("prior_auth_date") @db.Timestamp(6)
+  createTime            DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime            DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   caseId                Int? @map("case_id")
   cases                 cases? @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
 }
