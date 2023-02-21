@@ -25,17 +25,21 @@ import {
 } from "@mui/icons-material";
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 
-import { caseCardProcedureInformation, caseCardCaseIdentifiers, Step, SingleCase, caseStepMappings } from "../reference";
+import { caseCardProcedureInformation, caseCardCaseIdentifiers, caseStepMappings } from "../reference";
+import { FullCase } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 import moment from "moment";
+import { formatDate } from "../utils/helpers";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 
 interface CaseCardProps {
-  row: SingleCase
+  row: FullCase & {
+    steps: any
+  }
 }
 
 interface HeaderCellProps {
@@ -156,8 +160,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
   function calculateInfoCellValue(props: InfoCellProps) {
     const { name } = props;
-    if (row[name.id]) {
-      return row[name.id];
+    //@ts-ignore
+    const elemValue = row[name.id];
+    if (elemValue) {
+      if (name.id === 'procedureDate') {
+        return formatDate(row[name.id])
+      }
+      return elemValue;
     } else if (name.fromTable) {
       if (name.id === 'providerName') {
         return R.path([name.fromTable, 'firstName'], row) ? 
@@ -200,7 +209,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
-                {row.patients?.dateOfBirth}
+                {formatDate(row.patients?.dateOfBirth)}
               </Typography>
               <Typography
                 variant="caption"

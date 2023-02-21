@@ -19,22 +19,23 @@ import { insuranceData, priorAuthApprovedData } from '../../../reference';
 
 
 interface Props {
-    control: Control<any, any>,
+    form: any,
     config: ConfigObject,
     methods: UseFieldArrayReturn<any, any>
     defaultValue: object
 }
 
 export default function FinancialTab(props: Props) {
-    const {control, config, methods, defaultValue} = props;
+    const {form, config, methods, defaultValue} = props;
     const { append, remove, fields } = methods;
+    const {control, unregister, register} = form;
 
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark" }}>Financial</Typography>
-                {fields.map((item, index, itemList)=>(<React.Fragment>
-                    <Grid key={'' + item.id + index} container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1.3rem"}>
+                {fields.map((item, index, itemList)=>(<React.Fragment key={'' + item.id + index}>
+                    <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1.3rem"}>
                         <Grid item xs={12}>
                             <DropDownSearchController 
                                 {...item}
@@ -75,7 +76,7 @@ export default function FinancialTab(props: Props) {
                 <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "2rem" }}>
                     <Button 
                         variant="contained" 
-                        onClick={()=>{append(defaultValue)}}
+                        onClick={()=>append(defaultValue)}
                         startIcon={<Add />}
                         disabled={false}
                         size="small"

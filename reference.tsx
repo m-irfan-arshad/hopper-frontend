@@ -1,4 +1,4 @@
-import { cases, patients } from '@prisma/client';
+import { Prisma, cases, patients } from '@prisma/client';
 import moment from "moment";
 
 export const caseCardProcedureInformation = [
@@ -85,16 +85,6 @@ export interface Step {
   status: boolean
 }
 
-export interface SingleCase extends Omit<cases, 'priorAuthorization' | 'vendorConfirmation' | 'procedureDate'> {
-    [fhirResourceId: string]: any,
-    patients: Omit<patients, 'createTime' | 'updateTime' | 'dateOfBirth'> & { 'dateOfBirth': string | null } | null,
-    procedureDate: string | null,
-    steps: {
-      [priorAuthorization: string]:  string,
-      vendorConfirmation:  string,
-    }
-}
-
 export interface APIParameters {
   [key: string]: string | string[]
 }
@@ -137,3 +127,7 @@ export const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}];
 export const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
 export const insuranceData = [{insurance: 'insurance1'}, {insurance: 'insurance2'}, {insurance: 'insurance3'}]; 
 export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthApproved: 'No'}]; 
+
+export type FullCase = Prisma.casesGetPayload<{
+  include: { patients?: true, locations?: true, providers?: true, serviceLines?: true, procedureUnits?: true, insurances?: true }
+}>

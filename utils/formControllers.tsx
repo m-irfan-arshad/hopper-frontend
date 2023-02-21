@@ -8,6 +8,7 @@ import {
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
+import { useGenericQueryHook } from "./hooks"
 
 
 interface InputControllerProps {
@@ -35,9 +36,14 @@ interface DropDownSearchControllerProps {
     disabled?: boolean
     placeholder: string
     additionalStyles?: React.CSSProperties | object
-    options: DropDownSearchOption[]
+    options?: DropDownSearchOption[]
     labelProperties: string[]
-    control: any
+    control: any,
+    queryKey?: string, 
+    params?: Array<{field: string, value: string}>, 
+    dependency?: string,
+    getValues?: any
+
 }
   
 
@@ -101,26 +107,30 @@ export function DateController(props: DateControllerProps) {
 }
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control} = props;
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control, queryKey, params, dependency, getValues} = props;
+    const paramString = '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&')
+    const isDisabled = dependency ? !getValues(dependency) : disabled;
+    
+    const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGenericQueryHook({queryKey: queryKey, paramString: paramString, dependency: getValues(dependency)}) : {data: options}
 
     return <Controller
             name={id}
             control={control}
             rules={{ required: true }}
-            render={({ field }) => (
-                <React.Fragment>
-                    <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
-                    <DropDownSearchComponent 
-                        {...field}
-                        labelProperties={labelProperties}
-                        id={id}
-                        options={options}
-                        onChange={field.onChange}
-                        disabled={disabled} 
-                        placeholder={placeholder} 
-                        additionalStyles={{...additionalStyles}}
-                    />
-                </React.Fragment>
-            )}
+            render={({ field }) => {
+                return (<React.Fragment>
+                        <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
+                        <DropDownSearchComponent 
+                            value={field.value}
+                            labelProperties={labelProperties}
+                            id={id}
+                            options={dropdownData}
+                            onChange={field.onChange}
+                            disabled={isDisabled} 
+                            placeholder={placeholder} 
+                            additionalStyles={{...additionalStyles}}
+                        />
+                    </React.Fragment>)
+            }}
         />
 }

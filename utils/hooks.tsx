@@ -147,3 +147,14 @@ function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: mome
     const url =  `/api/getCases?` + parameters;
     return url;
 }
+
+interface CaseFieldHookProps {
+    queryKey: string,
+    paramString: string,
+    dependency: any
+}
+
+export function useGenericQueryHook(props: CaseFieldHookProps) {
+    const {queryKey, paramString, dependency} = props
+    return useQuery([queryKey, dependency], async () => (await fetch(`/api/${queryKey}${paramString}`)).json());
+}

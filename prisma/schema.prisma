@@ -10,17 +10,21 @@ datasource db {
 model cases {
   caseId             Int       @id @default(autoincrement()) @map("case_id")
   fhirResourceId     String?   @unique @map("fhir_resource_id")
-  patientId          Int?      @map("patient_id")
   procedureDate      DateTime  @map("procedure_date") @db.Timestamp(6)
-  providerId         Int?       @map("provider_id")
-  locationId         Int?       @map("location_id")
   createTime         DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime         DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   priorAuthorization String    @map("prior_authorization") @default("Incomplete")
   vendorConfirmation String    @map("vendor_confirmation") @default("Incomplete")
+  patientId          Int?      @map("patient_id")
+  locationId         Int?       @map("location_id")
+  providerId         Int?       @map("provider_id")
+  serviceLineId      Int?       @map("service_line_id")
+  procedureUnitId    Int?       @map("procedure_unit_id")
   patients           patients? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
   locations          locations? @relation(fields: [locationId], references: [locationId], onDelete: NoAction, onUpdate: NoAction)
   providers          providers? @relation(fields: [providerId], references: [providerId], onDelete: NoAction, onUpdate: NoAction)
+  serviceLines       serviceLines? @relation(fields: [serviceLineId], references: [serviceLineId], onDelete: NoAction, onUpdate: NoAction)
+  procedureUnits     procedureUnits? @relation(fields: [procedureUnitId], references: [procedureUnitId], onDelete: NoAction, onUpdate: NoAction)
   insurances         insurances[]  
 }
 
@@ -61,6 +65,7 @@ model procedureUnits {
   locationFk          locations  @relation(fields: [locationId], references: [locationId])
   locationId          Int  
   serviceLines        serviceLines[]
+  cases               cases[]
 }
 
 model serviceLines {
@@ -70,6 +75,7 @@ model serviceLines {
   procedureUnitFk   procedureUnits @relation(fields: [procedureUnitId], references: [procedureUnitId])
   procedureUnitId   Int
   providers         ServiceLineToProvider[]
+  cases             cases[]
 }
 
 model providers {

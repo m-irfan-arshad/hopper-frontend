@@ -43,8 +43,8 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
 
     res.json({
       cases: resultPosts.map(function(oldCase) {
-        return casesFormatter({cases: oldCase})
-      }), 
+        return casesFormatter(oldCase)
+      }),
       count: count
     })
   } catch(err) {

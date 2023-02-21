@@ -21,8 +21,11 @@ import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject } from '../../reference';
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
-import { cases, insurances } from "@prisma/client";
+import { cases, insurances, patients } from "@prisma/client";
 import * as R from 'ramda';
+import moment from "moment";
+import SchedulingTab from "./tabs/schedulingTab";
+import { configure } from "@testing-library/react";
 
 
 interface Props {
@@ -43,18 +46,20 @@ const defaultInsuranceValue = {
     insuranceGroupName: '',
     insuranceGroupNumber: '',
     priorAuthApproved: '',
-    priorAuthId: null,
+    priorAuthId: '',
     priorAuthDate: null,
 }
 
 function prepareCaseForApi(caseId: number, formData: any, dirtyFields: any) {
-    let query: {caseId: number, patients?: object, insurances?: object} = {caseId: caseId};
-    if (dirtyFields.patient) {
+    let query: {caseId: number, patients?: {update: any}, insurances?: object} = {caseId: caseId};
+    if (false && dirtyFields.patient) {
         query.patients = { update: {
             ...getDirtyValues(dirtyFields.patient, formData.patient),
             ...(dirtyFields.patient.sex && {sex: formData.patient.sex?.sex}),
             ...(dirtyFields.patient.state && {state: formData.patient.state?.state}),
+            updateTime: moment()
         }}
+        delete query.patients?.update.patientId
     }
     
     if (dirtyFields.financial) {
@@ -62,15 +67,18 @@ function prepareCaseForApi(caseId: number, formData: any, dirtyFields: any) {
         let updateInsurances: object[] = [];
         formData.financial.forEach((insObj: any, index: number) => {
             const updatedFields = dirtyFields.financial[index]
-            if (R.isNil(updatedFields)) return;
+            if (R.isNil(updatedFields)) return; // check if any fields in this insurance was updated
 
             let formattedFinancials = {
                 ...getDirtyValues(updatedFields, insObj),
                 ...(updatedFields.insurance && {insurance: insObj.insurance?.insurance}),
                 ...(updatedFields.priorAuthApproved && {priorAuthApproved: insObj.priorAuthApproved?.priorAuthApproved}),
+                updateTime: moment()
             };
 
-            if (insObj.insuranceId) {
+            if (insObj.insuranceId) { //if there is insuranceId present, update. Otherwise create
+                delete formattedFinancials.insuranceId;
+                delete formattedFinancials.caseId;
                 updateInsurances.push({data: formattedFinancials, where: {insuranceId: insObj.insuranceId}})
             } else {
                 newInsurances.push(formattedFinancials)
@@ -79,7 +87,6 @@ function prepareCaseForApi(caseId: number, formData: any, dirtyFields: any) {
         query.insurances = {create: newInsurances, update: updateInsurances}
     }
 
-    console.log("query: ", query)
     return query
 }
 
@@ -92,7 +99,7 @@ function prepareCaseForForm(data: any) {
     }
 
     if (!R.isEmpty(data.insurances)) {
-        parsedCase.financial = [...data?.insurances].map((elem: any) => ({
+        parsedCase.financial = [...data?.insurances]?.map((elem: any) => ({
             ...elem,
             ...(elem.insurance && {insurance: {insurance: elem.insurance}}),
             ...(elem.priorAuthApproved && {priorAuthApproved: {priorAuthApproved: elem.priorAuthApproved}})
@@ -100,34 +107,57 @@ function prepareCaseForForm(data: any) {
     } else {
         parsedCase.financial = [defaultInsuranceValue]
     }
+
+    parsedCase.scheduling = {
+        location: data?.locations,
+        procedureUnit: data?.procedureUnits,
+        serviceLine: data?.serviceLines,
+        provider: data?.providers
+    }
+
     return parsedCase;
 }
 
 export default function BookingSheetDialog(props: Props) {
-  const {open, closeDialog, data, initiallySelectedTab} = props;
-  const [selectedTab, selectTab] = useState(initiallySelectedTab);
-  const {mutate} = useUpdateCaseHook()
+    const {open, closeDialog, data, initiallySelectedTab} = props;
+    const [selectedTab, selectTab] = useState(initiallySelectedTab);
+    const {mutate} = useUpdateCaseHook()
 
-    const { handleSubmit, control, reset, getValues, formState: { isValid, dirtyFields } } = useForm({ 
+    const form = useForm({ 
         mode: 'onChange',
         defaultValues: {
             patient: {
+                firstName: '',
+                middleName: '',
+                lastName: '',
                 dateOfBirth: null,
+                sex: null,
+                address: '',
+                city: '',
+                state: null,
+                zip: ''
             },
-            financial: [defaultInsuranceValue]
+            financial: [{...defaultInsuranceValue}],
+            scheduling: {
+                location: null,
+                procedureUnit: null,
+                serviceLine: null,
+                provider: null
+            }
         }
     });
-
+    const { handleSubmit, control, reset, watch, resetField, getValues, formState: { isValid, dirtyFields } } = form;
     const financialMethods = useFieldArray({control, name: "financial"});
 
     const onSubmit = async (formData: any) => {
         const query = prepareCaseForApi(data.caseId, formData, dirtyFields)
         await mutate(query)
         closeDialog()
-      };
-    
+    };
+        
+    //populate form with data from API
     useEffect(() => {
-        if(data) reset(prepareCaseForForm(data));
+        if(data) reset(prepareCaseForForm(data), {keepDefaultValues: true, keepDirty: true});
     }, [data]);
 
     useEffect(() => {
@@ -168,7 +198,8 @@ export default function BookingSheetDialog(props: Props) {
             </DialogTitle>
             <DialogContent sx={{height: "28rem", overflow: "scroll"}}>
                 {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control}/>}
-                {selectedTab === "Financial" && <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
+                {selectedTab === "Financial" && <FinancialTab config={bookingSheetConfigObject} form={form} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
+                {selectedTab === "Scheduling" && <SchedulingTab config={bookingSheetConfigObject} form={form}/>}
             </DialogContent>
             <DialogActions 
                 sx={{

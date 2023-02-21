@@ -14,6 +14,7 @@ interface Props {
     onChange: (value: any) => void
     labelProperties: string[]
     options: Option[]
+    value?: any
 }
 
 export default function DropDownSearchComponent(props: Props) {
