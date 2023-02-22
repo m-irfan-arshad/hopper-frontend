@@ -14,10 +14,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
       where: {
         caseId: <number>req.body.caseId
       },
-      data: <object>bodyNoCaseId,
-      include: {
-        patients: true
-      },
+      data: <object>bodyNoCaseId
     })
 
     res.json(updatedCase)
