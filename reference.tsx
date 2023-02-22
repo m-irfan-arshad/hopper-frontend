@@ -131,3 +131,11 @@ export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthAppr
 export type FullCase = Prisma.casesGetPayload<{
   include: { patients?: true, locations?: true, providers?: true, serviceLines?: true, procedureUnits?: true, insurances?: true }
 }>
+
+export type FormattedFullCase = FullCase & {
+  steps: {
+    [key: string]: string
+    priorAuthorization: string,
+    vendorConfirmation: string
+  }
+}

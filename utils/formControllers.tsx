@@ -3,9 +3,11 @@ import { DateRange as DateRangeIcon } from "@mui/icons-material";
 import { 
     TextField, 
     InputLabel,
-    styled
+    styled,
+    TextFieldProps
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
@@ -22,7 +24,8 @@ interface DateControllerProps {
     id: any,
     title?: string,
     placeholder: string
-    control: any
+    control: any,
+    withTime?: boolean
 }
 
 interface DropDownSearchOption {
@@ -70,7 +73,26 @@ export function InputController(props: InputControllerProps) {
 }
 
 export function DateController(props: DateControllerProps) {
-    const {id, title, placeholder, control} = props;
+    const {id, title, placeholder, control, withTime} = props;
+    const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
+        <StyledTextField 
+            id={id}
+            autoComplete='off'
+            inputProps={{
+                ...inputProps, 
+                placeholder: placeholder,
+            }} 
+            sx={{
+                svg: { 
+                    height: "0.75rem",
+                    width: "0.75rem"
+                },
+                width: "100%"
+            }} 
+            {...restParams} 
+        />
+    )
+
     return <Controller
         name={id}
         control={control}
@@ -78,29 +100,17 @@ export function DateController(props: DateControllerProps) {
         render={({ field }) => (
             <React.Fragment>
                 <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <DesktopDatePicker
+                {withTime ? <DateTimePicker
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}
-                    renderInput={({inputProps, ...restParams}) => (
-                        <StyledTextField 
-                            id={id}
-                            autoComplete='off'
-                            inputProps={{
-                                ...inputProps, 
-                                placeholder: placeholder,
-                            }} 
-                            sx={{
-                                svg: { 
-                                    height: "0.75rem",
-                                    width: "0.75rem"
-                                },
-                                width: "100%"
-                            }} 
-                            {...restParams} 
-                        />
-                    )}
-                />
+                    renderInput={renderInput}
+                /> :  <DesktopDatePicker
+                    components={{ OpenPickerIcon: DateRangeIcon }}
+                    value={field.value}
+                    onChange={field.onChange}
+                    renderInput={renderInput}
+                />}
             </React.Fragment>
         )}
     />

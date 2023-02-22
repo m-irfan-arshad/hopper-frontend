@@ -52,7 +52,7 @@ const defaultInsuranceValue = {
 
 function prepareCaseForApi(caseId: number, formData: any, dirtyFields: any) {
     let query: {caseId: number, patients?: {update: any}, insurances?: object} = {caseId: caseId};
-    if (false && dirtyFields.patient) {
+    if (dirtyFields.patient) {
         query.patients = { update: {
             ...getDirtyValues(dirtyFields.patient, formData.patient),
             ...(dirtyFields.patient.sex && {sex: formData.patient.sex?.sex}),
@@ -198,8 +198,8 @@ export default function BookingSheetDialog(props: Props) {
             </DialogTitle>
             <DialogContent sx={{height: "28rem", overflow: "scroll"}}>
                 {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control}/>}
-                {selectedTab === "Financial" && <FinancialTab config={bookingSheetConfigObject} form={form} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
-                {selectedTab === "Scheduling" && <SchedulingTab config={bookingSheetConfigObject} form={form}/>}
+                {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
+                {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} form={form}/>}
             </DialogContent>
             <DialogActions 
                 sx={{

@@ -92,6 +92,9 @@ export default function SchedulingTab(props: Props) {
                             params={[{field: "serviceLineId", value: "scheduling.serviceLine.serviceLineId"}]}
                         />
                     </Grid>
+                    <Grid item xs={6}>
+                        <DateController withTime control={control} id={'scheduling.procedureDate'} title="Procedure Date" placeholder="Procedure Date" />
+                    </Grid>
                 </Grid>
             </LocalizationProvider>
         </Box>

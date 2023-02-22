@@ -26,7 +26,7 @@ import {
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 
 import { caseCardProcedureInformation, caseCardCaseIdentifiers, caseStepMappings } from "../reference";
-import { FullCase } from "../reference";
+import { FormattedFullCase } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 import moment from "moment";
@@ -37,9 +37,7 @@ interface ExpandMoreProps extends IconButtonProps {
 }
 
 interface CaseCardProps {
-  row: FullCase & {
-    steps: any
-  }
+  row: FormattedFullCase
 }
 
 interface HeaderCellProps {

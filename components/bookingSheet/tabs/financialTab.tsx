@@ -19,16 +19,15 @@ import { insuranceData, priorAuthApprovedData } from '../../../reference';
 
 
 interface Props {
-    form: any,
+    control: Control<any, any>,
     config: ConfigObject,
     methods: UseFieldArrayReturn<any, any>
     defaultValue: object
 }
 
 export default function FinancialTab(props: Props) {
-    const {form, config, methods, defaultValue} = props;
+    const {control, config, methods, defaultValue} = props;
     const { append, remove, fields } = methods;
-    const {control, unregister, register} = form;
 
     return (
         <Box>

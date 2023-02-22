@@ -1,11 +1,12 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import CaseHub from '../[caseId].page';
-import { mockCaseData } from "../../../testReference";
+import { mockSingleCase } from "../../../testReference";
 import { PagesTestWrapper } from "../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
-    QueryClient: jest.fn()
+    QueryClient: jest.fn(),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
 }));
 
 jest.mock('next/router', () => ({
@@ -13,11 +14,12 @@ jest.mock('next/router', () => ({
 }))
 
 jest.mock("../../../utils/hooks", () => ({
-    useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockCaseData[0] })),
-    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+    useGetCaseByIdHook: jest.fn().mockImplementation(() => ({data: mockSingleCase})),
+    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
 }));
 
 describe('[caseId]: Case Hub Page', () => {
+
   test("renders the case hub page", async() => {
     
     const { getByRole } = render(
@@ -68,7 +70,7 @@ describe('[caseId]: Case Hub Page', () => {
     });
   });
 
-  test("click on a random tab to open the booking sheet to the correct tab", async() => {
+  test("click on a tab to open the booking sheet to the correct tab", async() => {
     
     const { getByRole } = render(
         <PagesTestWrapper >

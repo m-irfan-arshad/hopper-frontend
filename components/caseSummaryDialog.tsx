@@ -18,7 +18,7 @@ import {
 import { Check } from "@mui/icons-material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { SingleCase } from "../reference";
+import { FormattedFullCase } from "../reference";
 import DottedDivider from "./shared/dottedDivider";
 import { useUpdateCaseHook } from '../utils/hooks';
 import CaseSummaryContent from './caseSummaryContent';
@@ -27,7 +27,7 @@ import CaseSummaryContent from './caseSummaryContent';
 interface Props {
     open: boolean
     closeDialog: () => void,
-    row: SingleCase
+    row: FormattedFullCase
 }
 
 interface StepCompletedButtonProps {

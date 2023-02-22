@@ -1,14 +1,14 @@
 import { render, renderHook, fireEvent } from '@testing-library/react'        
 import PatientTab from "../patientTab";
-import { patients } from "@prisma/client";
 import moment from "moment";
 import { useForm } from "react-hook-form";
+import { mockSingleCase } from "../../../../testReference";
 
 
 
 describe("PatientTab", () => {
     const { result } = renderHook(() => useForm())
-    const dateNow = moment().format('MM/DD/YYYY');
+    const birthDate = moment('1990-02-01').format('MM/DD/YYYY');
     
     const props = {
         control: result.current.control,
@@ -84,8 +84,8 @@ describe("PatientTab", () => {
         expect(getByLabelText("Date of Birth")).toBeInTheDocument();
         expect(getByPlaceholderText("Date of Birth")).toBeInTheDocument();
 
-        fireEvent.change(getByPlaceholderText("Date of Birth"), {target: {value: dateNow}})
-        expect(getByPlaceholderText("Date of Birth")).toHaveValue(dateNow);
+        fireEvent.change(getByPlaceholderText("Date of Birth"), {target: {value: birthDate}})
+        expect(getByPlaceholderText("Date of Birth")).toHaveValue('02/01/1990');
     });
 });
 

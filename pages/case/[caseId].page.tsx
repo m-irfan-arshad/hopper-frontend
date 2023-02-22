@@ -30,7 +30,7 @@ export default function CaseHub() {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const router = useRouter()
   
-  const { data, isFetching, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
+  const { data } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
   const [tab, selectTab] = useState('Patient');
 
@@ -180,7 +180,7 @@ export default function CaseHub() {
                             marginLeft:"1.75rem"
                         }}>
                         <Box sx={{minWidth: isMobile ? 0 :  "34.375rem"}}>
-                            {!isFetching && !isLoading && <CaseSummaryContent row={data} /> }
+                            {data && <CaseSummaryContent row={data} /> }
                         </Box>
                     </Box>
                     <Box sx={{marginLeft: "1.75rem", flexGrow: 2, paddingRight: "1rem"}}>

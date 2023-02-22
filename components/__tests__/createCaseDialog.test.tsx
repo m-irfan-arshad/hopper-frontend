@@ -22,6 +22,9 @@ describe("CreateCaseDialog", () => {
     closeDialog: jest.fn()
   };
 
+  const procedureDateAndTime = moment().format('MM/DD/YYYY hh:mm A');
+  const birthDate = moment().add(1).format('MM/DD/YYYY');
+
   beforeEach(() => {
     props.closeDialog.mockReset();
   });
@@ -57,17 +60,15 @@ describe("CreateCaseDialog", () => {
     const { getByPlaceholderText } = render(
       <CreateCaseDialog {...props} />
     );
-    const dateNow = moment().format('MM/DD/YYYY');
-    const dateTomorrow = moment().add(1).format('MM/DD/YYYY');
 
     expect(getByPlaceholderText("Procedure Date")).toBeInTheDocument();
     expect(getByPlaceholderText("Patient Date of Birth")).toBeInTheDocument();
 
-    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: dateNow}})
-    fireEvent.change(getByPlaceholderText("Patient Date of Birth"), {target: {value: dateTomorrow}})
+    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: procedureDateAndTime}})
+    fireEvent.change(getByPlaceholderText("Patient Date of Birth"), {target: {value: birthDate}})
 
-    expect(getByPlaceholderText("Procedure Date")).toHaveValue(dateNow);
-    expect(getByPlaceholderText("Patient Date of Birth")).toHaveValue(dateTomorrow);
+    expect(getByPlaceholderText("Procedure Date")).toHaveValue(procedureDateAndTime);
+    expect(getByPlaceholderText("Patient Date of Birth")).toHaveValue(birthDate);
   });
 
   test("calls onSubmit when all required fields are filled out", async() => {
@@ -76,8 +77,6 @@ describe("CreateCaseDialog", () => {
     const { getByPlaceholderText, getByRole, getByText } = render(
       <CreateCaseDialog {...props} />
     );
-    const dateNow = moment().format('MM/DD/YYYY');
-    const dateTomorrow = moment().add(1).format('MM/DD/YYYY');
     
     expect(getByRole('textbox', {name: 'First Name'})).toBeInTheDocument();
     expect(getByRole('textbox', {name: 'Last Name'})).toBeInTheDocument();
@@ -91,8 +90,8 @@ describe("CreateCaseDialog", () => {
 
     fireEvent.change(getByRole('textbox', {name: 'First Name'}), {target: {value: 'firstName'}});
     fireEvent.change(getByRole('textbox', {name: 'Last Name'}), {target: {value: 'lastName'}});
-    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: dateNow}})
-    fireEvent.change(getByPlaceholderText("Patient Date of Birth"), {target: {value: dateTomorrow}})
+    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: procedureDateAndTime}})
+    fireEvent.change(getByPlaceholderText("Patient Date of Birth"), {target: {value: birthDate}})
     fireEvent.change(getByRole("combobox", {name: 'Surgical Location'}), {target: {value: mockLocationData[0].locationName}})
 
     await waitFor(() => {
