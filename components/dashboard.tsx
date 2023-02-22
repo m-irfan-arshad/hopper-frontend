@@ -3,16 +3,17 @@ import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
 import { Logout, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
-import { SingleCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
+import { FormattedFullCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
+import { formatDate } from '../utils/helpers';
 import * as R from 'ramda';
 import { CaseFilterContext } from "../pages/_app.page";
 
 interface CaseGroup {
-    [key: string]: SingleCase[]
+    [key: string]: FormattedFullCase[]
 }
 
 export default function Dashboard() {  
@@ -53,8 +54,8 @@ export default function Dashboard() {
 
     const caseGroups:CaseGroup = {};
 
-    data.cases.forEach(function(singleCase: SingleCase) {
-        const date = singleCase.procedureDate || "";
+    data.cases.forEach(function(singleCase: FormattedFullCase) {
+        const date = formatDate(singleCase.procedureDate) || "";
         if (date in caseGroups) {
             caseGroups[date].push(singleCase);
         } else {
