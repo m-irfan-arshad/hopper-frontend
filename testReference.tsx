@@ -3,6 +3,8 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 
+const sampleDate = moment('2023-01-09').toDate();
+
 export const mockSingleProvider = {
     providerId: 1,
     fhirResourceId: "testId",
@@ -12,8 +14,8 @@ export const mockSingleProvider = {
     address: 'address',
     serviceLine: 'General Surgery',
     email: 'fake@email.com',
-    createTime: new Date(),
-    updateTime: new Date()
+    createTime: sampleDate,
+    updateTime: sampleDate
 }
 
 export const mockSingleInsurance = {
@@ -23,9 +25,9 @@ export const mockSingleInsurance = {
     insuranceGroupNumber: "33222",
     priorAuthApproved: "Yes",
     priorAuthId: "12ws",
-    priorAuthDate: new Date(),
-    createTime: new Date(),
-    updateTime: new Date(),
+    priorAuthDate: sampleDate,
+    createTime: sampleDate,
+    updateTime: sampleDate,
     caseId: 1
 }
 
@@ -34,8 +36,8 @@ export const mockSingleServiceLine = {
     fhirResourceId: 'fhirResourceId',
     serviceLineName: 'serviceLineName',
     procedureUnitId: 1,
-    createTime: new Date(),
-    updateTime: new Date()
+    createTime: sampleDate,
+    updateTime: sampleDate
 }
 
 export const mockSingleProcedureUnit = {
@@ -43,16 +45,16 @@ export const mockSingleProcedureUnit = {
     fhirResourceId: 'fhirResourceId',
     procedureUnitName: 'procedureUnitName',
     locationId: 1,
-    createTime: new Date(),
-    updateTime: new Date()
+    createTime: sampleDate,
+    updateTime: sampleDate
 }
 
 export const mockSingleLocation = {
     locationId: 1,
     fhirResourceId: 'fhirResourceId',
     locationName: 'Medtel Hospital',
-    createTime: new Date(),
-    updateTime: new Date()
+    createTime: sampleDate,
+    updateTime: moment('2023-01-09').toDate()
 }
 
 export const mockSinglePatient = {
@@ -70,15 +72,15 @@ export const mockSinglePatient = {
     mobilePhone: '221-345-2211',
     homePhone: '333-544-2222',
     dateOfBirth: moment('1990-02-01').toDate(),
-    createTime: new Date(),
-    updateTime: new Date(),
+    createTime: sampleDate,
+    updateTime: sampleDate,
 }
 
 export const mockSingleCase = {
     caseId: 1,
     fhirResourceId: 'mockCaseFRId',
-    createTime: new Date(),
-    updateTime: new Date(),
+    createTime: sampleDate,
+    updateTime: sampleDate,
     priorAuthorization: "Incomplete",
     vendorConfirmation: "Incomplete",
     patientId: 1,
@@ -130,8 +132,8 @@ export const mockProviderData = [
         address: 'address2',
         serviceLine: 'General Surgery2',
         email: 'fake2@email.com',
-        createTime: new Date(),
-        updateTime: new Date()
+        createTime: sampleDate,
+        updateTime: sampleDate
     }
 ]; 
 
@@ -141,8 +143,8 @@ export const mockLocationData = [
         locationId: 2,
         fhirResourceId: 'fhirResourceId2',
         locationName: 'locationName2',
-        createTime: new Date(),
-        updateTime: new Date()
+        createTime: sampleDate,
+        updateTime: sampleDate
     }
 ];
 
@@ -153,8 +155,8 @@ export const mockProcedureUnitData = [
         fhirResourceId: 'fhirResourceId2',
         procedureUnitName: 'procedureUnitName2',
         locationId: 2,
-        createTime: new Date(),
-        updateTime: new Date()
+        createTime: sampleDate,
+        updateTime: sampleDate
     }
 ];
 
@@ -165,8 +167,8 @@ export const mockServiceLineData = [
         fhirResourceId: 'fhirResourceId2',
         serviceLineName: 'serviceLineName2',
         procedureUnitId: 2,
-        createTime: new Date(),
-        updateTime: new Date()
+        createTime: sampleDate,
+        updateTime: sampleDate
     }
 ];
 
