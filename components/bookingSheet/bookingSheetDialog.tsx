@@ -166,7 +166,7 @@ export default function BookingSheetDialog(props: Props) {
 
     const validForm = isValid && !R.isEmpty(dirtyFields)
     return (
-        <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
+        <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem", maxWidth: "60rem" }}}>
             <DialogTitle 
                 sx={{
                     display: "flex",
@@ -196,7 +196,7 @@ export default function BookingSheetDialog(props: Props) {
                     </Tabs>
                 </Box>
             </DialogTitle>
-            <DialogContent sx={{height: "30rem", overflow: "scroll"}}>
+            <DialogContent sx={{height: "30rem", overflowY: "scroll"}}>
                 {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control}/>}
                 {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
                 {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} form={form}/>}
