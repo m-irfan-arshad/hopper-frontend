@@ -15,21 +15,31 @@ interface Props {
     labelProperties: string[]
     options: Option[]
     value?: any
+    label?: string
 }
 
 export default function DropDownSearchComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, ...restParams} = props;
+    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, ...restParams} = props;
 
     const defaultStyles = {
-        "& .MuiOutlinedInput-root": {
+        '& .MuiOutlinedInput-root': {
             paddingY: 0,
-            height: "40px",
+            height: "47px",
+            '& fieldset': {
+                borderColor: '#0000003B',
+            },
+            '&:hover fieldset': {
+                borderColor: '#0000003B',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#1976D2',
+            },
+          },
+        "& .MuiInputLabel-outlined": {
+            color: "#00000099"
         },
         "& .MuiInputBase-formControl": {
-            fontSize: "0.688rem"
-        },
-        '& .MuiAutocomplete-input, & .MuiInputLabel-root': {
-            fontSize: ".688rem",
+            fontSize: ".875rem"
         },
         marginTop: "0.313rem"        
     }
@@ -58,14 +68,14 @@ export default function DropDownSearchComponent(props: Props) {
                 ...additionalStyles,
                 '.MuiTextField-root': {
                     width: '100%'
-                }
+                },
             }}
             ListboxProps={{
                 style: {
-                    fontSize: ".688rem"
+                    fontSize: ".875rem"
                 }
             }}
-            renderInput={(params) => <TextField {...params} placeholder={placeholder}  />
+            renderInput={(params) => <TextField {...params} label={label} InputLabelProps={{ style: {backgroundColor: 'white'}, shrink: true }} placeholder={placeholder}  />
         }
       />
     );    

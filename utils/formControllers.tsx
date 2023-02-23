@@ -52,7 +52,25 @@ interface DropDownSearchControllerProps {
 
 const StyledTextField = styled(TextField)({
     "& .MuiOutlinedInput-input": {
-        fontSize: "0.688rem"
+        fontSize: ".875rem",
+        height: "23px"
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: '#0000003B',
+        },
+        '&:hover fieldset': {
+            borderColor: '#0000003B',
+        },
+        '&.Mui-focused fieldset': {
+          borderColor: '#1976D2',
+        },
+      },
+    "& .MuiInputLabel-outlined": {
+        color: "#00000099",
+        '&.Mui-focused fieldset': {
+            color: '#1976D2'
+          },
     },
     marginTop: "0.313rem"
 });
@@ -65,8 +83,7 @@ export function InputController(props: InputControllerProps) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <StyledTextField {...field} id={id} variant="outlined" autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
+                <StyledTextField InputLabelProps={{ shrink: true }} {...field} id={id} variant="outlined" label={title} autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
             </React.Fragment>
         )}
       />
@@ -76,6 +93,7 @@ export function DateController(props: DateControllerProps) {
     const {id, title, placeholder, control, withTime} = props;
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
         <StyledTextField 
+            InputLabelProps={{ shrink: true }} 
             id={id}
             autoComplete='off'
             inputProps={{
@@ -84,8 +102,8 @@ export function DateController(props: DateControllerProps) {
             }} 
             sx={{
                 svg: { 
-                    height: "0.75rem",
-                    width: "0.75rem"
+                    height: "1rem",
+                    width: "1rem"
                 },
                 width: "100%"
             }} 
@@ -99,13 +117,14 @@ export function DateController(props: DateControllerProps) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
                 {withTime ? <DateTimePicker
+                    label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}
                     renderInput={renderInput}
                 /> :  <DesktopDatePicker
+                    label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}
@@ -126,11 +145,10 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
     return <Controller
             name={id}
             control={control}
-            rules={{ required: true }}
             render={({ field }) => {
                 return (<React.Fragment>
-                        <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
-                        <DropDownSearchComponent 
+                        <DropDownSearchComponent
+                            label={title}
                             value={field.value}
                             labelProperties={labelProperties}
                             id={id}

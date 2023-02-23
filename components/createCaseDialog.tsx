@@ -131,7 +131,7 @@ export default function CreateCaseDialog(props: Props) {
         </DialogTitle>
         <DialogContent>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
+                <Typography variant="subtitle1" sx={{marginTop: "1.5rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
                 <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
                     <Grid item xs={6}>
                         <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>

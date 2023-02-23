@@ -32,9 +32,9 @@ export default function FinancialTab(props: Props) {
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark" }}>Financial</Typography>
+                <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark" }}>Financial</Typography>
                 {fields.map((item, index, itemList)=>(<React.Fragment key={'' + item.id + index}>
-                    <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1.3rem"}>
+                    <Grid container justifyContent={"left"} spacing={"1.25rem"} rowSpacing={"2.25rem"}>
                         <Grid item xs={12}>
                             <DropDownSearchController 
                                 {...item}
@@ -72,7 +72,7 @@ export default function FinancialTab(props: Props) {
                     </Grid>
                     {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "3rem", marginBottom: "3rem"}}/>}
                 </React.Fragment>))}
-                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "2rem" }}>
+                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "3rem" }}>
                     <Button 
                         variant="contained" 
                         onClick={()=>append(defaultValue)}
