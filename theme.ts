@@ -184,9 +184,9 @@ export const defaultTheme = createTheme({
                     color: 'black.main',
                     "& .MuiOutlinedInput-input": {
                         fontSize: ".875rem",
-                        height: "23px",
-                        paddingTop: "12px",
-                        paddingBottom: "12px",
+                        height: "1.25rem",
+                        paddingTop: "0.75rem",
+                        paddingBottom: "0.75rem",
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
                         borderColor: "#D8E4F4"
@@ -222,7 +222,7 @@ export const defaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     '& .MuiOutlinedInput-root': {
-                        padding: "0px 39px 0px 9px",
+                        padding: "0px 2.438rem 0px 0.563rem",
                         height: "2.938rem",
                     },
                 }
