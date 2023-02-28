@@ -13,11 +13,16 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
             caseId: parseInt(req.query["caseId"] as string)
           },
           include: {
-            patients: true
+            insurances: true,
+            patients: true,
+            locations: true,
+            providers: true,
+            serviceLines: true,
+            procedureUnits: true
         }
     })
 
-    res.json(casesFormatter({cases: resultPosts}));
+    res.json(casesFormatter(resultPosts));
   } catch(err) {
     res.status(500).json({ message: err });
   }

@@ -3,11 +3,14 @@ import { DateRange as DateRangeIcon } from "@mui/icons-material";
 import { 
     TextField, 
     InputLabel,
-    styled
+    styled,
+    TextFieldProps
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
+import { useGenericQueryHook } from "./hooks"
 
 
 interface InputControllerProps {
@@ -21,7 +24,8 @@ interface DateControllerProps {
     id: any,
     title?: string,
     placeholder: string
-    control: any
+    control: any,
+    withTime?: boolean
 }
 
 interface DropDownSearchOption {
@@ -35,19 +39,16 @@ interface DropDownSearchControllerProps {
     disabled?: boolean
     placeholder: string
     additionalStyles?: React.CSSProperties | object
-    options: DropDownSearchOption[]
+    options?: DropDownSearchOption[]
     labelProperties: string[]
-    control: any
+    control: any,
+    queryKey?: string, 
+    params?: Array<{field: string, value: string}>, 
+    dependency?: string,
+    getValues?: any
+
 }
   
-
-const StyledTextField = styled(TextField)({
-    "& .MuiOutlinedInput-input": {
-        fontSize: "0.688rem"
-    },
-    marginTop: "0.313rem"
-});
-
 export function InputController(props: InputControllerProps) {
     const {id, title, placeholder, control} = props;
     return <Controller
@@ -56,72 +57,82 @@ export function InputController(props: InputControllerProps) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <StyledTextField {...field} id={id} variant="outlined" autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
+                <TextField InputLabelProps={{ shrink: true }} {...field} id={id} variant="outlined" label={title} autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
             </React.Fragment>
         )}
       />
 }
 
 export function DateController(props: DateControllerProps) {
-    const {id, title, placeholder, control} = props;
+    const {id, title, placeholder, control, withTime} = props;
+    const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
+        <TextField 
+            InputLabelProps={{ shrink: true }} 
+            id={id}
+            autoComplete='off'
+            inputProps={{
+                ...inputProps, 
+                placeholder: placeholder,
+            }} 
+            sx={{
+                svg: { 
+                    height: "1rem",
+                    width: "1rem"
+                },
+                width: "100%"
+            }} 
+            {...restParams} 
+        />
+    )
+
     return <Controller
         name={id}
         control={control}
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <InputLabel htmlFor={id} variant="standard">{title}</InputLabel>
-                <DesktopDatePicker
-                    {...field}
+                {withTime ? <DateTimePicker
+                    label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}
-                    renderInput={({inputProps, ...restParams}) => (
-                        <StyledTextField 
-                            id={id}
-                            autoComplete='off'
-                            inputProps={{
-                                ...inputProps, 
-                                placeholder: placeholder,
-                            }} 
-                            sx={{
-                                svg: { 
-                                    height: "0.75rem",
-                                    width: "0.75rem"
-                                },
-                                width: "100%"
-                            }} 
-                            {...restParams} 
-                        />
-                    )}
-                />
+                    renderInput={renderInput}
+                /> :  <DesktopDatePicker
+                    label={title}
+                    components={{ OpenPickerIcon: DateRangeIcon }}
+                    value={field.value}
+                    onChange={field.onChange}
+                    renderInput={renderInput}
+                />}
             </React.Fragment>
         )}
     />
 }
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control} = props;
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control, queryKey, params, dependency, getValues} = props;
+    const paramString = '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&')
+    const isDisabled = dependency ? !getValues(dependency) : disabled;
+    
+    const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGenericQueryHook({queryKey: queryKey, paramString: paramString, dependency: getValues(dependency)}) : {data: options}
 
     return <Controller
             name={id}
             control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-                <React.Fragment>
-                    <InputLabel htmlFor={id} variant="standard" >{title}</InputLabel>
-                    <DropDownSearchComponent 
-                        {...field}
-                        labelProperties={labelProperties}
-                        id={id}
-                        options={options}
-                        onChange={field.onChange}
-                        disabled={disabled} 
-                        placeholder={placeholder} 
-                        additionalStyles={{...additionalStyles}}
-                    />
-                </React.Fragment>
-            )}
+            render={({ field }) => {
+                return (<React.Fragment>
+                        <DropDownSearchComponent
+                            label={title}
+                            value={field.value}
+                            labelProperties={labelProperties}
+                            id={id}
+                            options={dropdownData}
+                            onChange={field.onChange}
+                            disabled={isDisabled} 
+                            placeholder={placeholder} 
+                            additionalStyles={{...additionalStyles}}
+                        />
+                    </React.Fragment>)
+            }}
         />
 }

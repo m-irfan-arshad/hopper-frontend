@@ -14,24 +14,12 @@ interface Props {
     onChange: (value: any) => void
     labelProperties: string[]
     options: Option[]
+    value?: any
+    label?: string
 }
 
 export default function DropDownSearchComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, ...restParams} = props;
-
-    const defaultStyles = {
-        "& .MuiOutlinedInput-root": {
-            paddingY: 0,
-            height: "40px",
-        },
-        "& .MuiInputBase-formControl": {
-            fontSize: "0.688rem"
-        },
-        '& .MuiAutocomplete-input, & .MuiInputLabel-root': {
-            fontSize: ".688rem",
-        },
-        marginTop: "0.313rem"        
-    }
+    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, ...restParams} = props;
 
     function getOptionLabel(option: Option) {
         const labelArray = labelProperties.map((p) => {
@@ -53,18 +41,17 @@ export default function DropDownSearchComponent(props: Props) {
             options={options}
             disabled={disabled}
             sx={{
-                ...defaultStyles,
                 ...additionalStyles,
                 '.MuiTextField-root': {
                     width: '100%'
-                }
+                },
             }}
             ListboxProps={{
                 style: {
-                    fontSize: ".688rem"
+                    fontSize: ".875rem"
                 }
             }}
-            renderInput={(params) => <TextField {...params} placeholder={placeholder}  />
+            renderInput={(params) => <TextField {...params} label={label} InputLabelProps={{ shrink: true }} placeholder={placeholder}  />
         }
       />
     );    

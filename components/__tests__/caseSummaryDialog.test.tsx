@@ -2,6 +2,7 @@ import { render, fireEvent } from "@testing-library/react";
 import CaseSummaryDialog from "../caseSummaryDialog";
 import * as R from 'ramda';
 import { useUpdateCaseHook } from '../../utils/hooks';
+import { mockSingleCase } from "../../testReference";
 
 jest.mock("../../utils/hooks");
 
@@ -17,34 +18,7 @@ describe("CaseSummaryDialog", () => {
   const testProps = {
     open: true,
     closeDialog: jest.fn(),
-    row: {
-      caseId: 1,
-      fhirResourceId: "testId",
-      patientId: 1,
-      procedureDate: "01/30/1990",
-      providerId: 123,
-      locationId: 456,
-      createTime: new Date(),
-      updateTime: new Date(),
-      procedureLocation: "procedureLocation",
-      patients: {
-        patientId: 1,
-        fhirResourceId: "aa22ss",
-        firstName: "Captain",
-        lastName: "Whitebeard",
-        dateOfBirth: "02/01/1990",
-        mobilePhone: "111-111-1111",
-        homePhone: "555-555-5555",
-        address: "330 Philly Lane",
-        mrn: "5678567890",
-      },
-        locationName: "testLocationName",
-        providerName: "provider name",
-      steps: {
-        priorAuthorization: "Incomplete",
-        vendorConfirmation: "Incomplete",
-      }
-    }
+    row: mockSingleCase
   };
 
   beforeEach(() => {
@@ -63,25 +37,25 @@ describe("CaseSummaryDialog", () => {
     expect(getByText('02/01/1990')).toBeInTheDocument();
 
     expect(getByText('Patient Address')).toBeInTheDocument();
-    expect(getByText('330 Philly Lane')).toBeInTheDocument();
+    expect(getByText('360 Washington Ave')).toBeInTheDocument();
 
     expect(getByText('Patient Phone')).toBeInTheDocument();
-    expect(getByText('Mobile: 111-111-1111')).toBeInTheDocument();
-    expect(getByText('Home: 555-555-5555')).toBeInTheDocument();
+    expect(getByText('Mobile: 221-345-2211')).toBeInTheDocument();
+    expect(getByText('Home: 333-544-2222')).toBeInTheDocument();
 
     expect(getByText('Procedure Date and Time')).toBeInTheDocument();
-    expect(getByText('01/30/1990')).toBeInTheDocument();
+    expect(getByText('10/10/2022')).toBeInTheDocument();
 
     expect(getByText('Site')).toBeInTheDocument();
-    expect(getByText('testLocationName')).toBeInTheDocument();
+    expect(getByText('Medtel Hospital')).toBeInTheDocument();
 
     expect(getByText('Surgeon Name')).toBeInTheDocument();
-    expect(getByText('provider name')).toBeInTheDocument();
+    expect(getByText('Lee, Robert')).toBeInTheDocument();
 
   });
 
   test("renders the caseSummaryDialog with N/A for all applicable fields", () => {
-    const propsClone = {...testProps, row: {...testProps.row, providerName: ''}}
+    const propsClone = {...testProps, row: {...testProps.row, providers: null}}
       
     const { getAllByText } = render(
       <CaseSummaryDialog {...propsClone} />

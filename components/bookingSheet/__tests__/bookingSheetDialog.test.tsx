@@ -1,27 +1,31 @@
 import { render, fireEvent } from "@testing-library/react";
 import BookingSheetDialog from "../bookingSheetDialog";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { mockSingleCase } from "../../../testReference";
+import { PagesTestWrapper } from "../../../testReference";
+
+
+jest.mock('@tanstack/react-query', () => ({
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() })
+}));
+
+jest.mock("../../../utils/hooks", () => ({
+    useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockSingleCase })),
+    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
+}));
 
 describe("BookingSheetDialog", () => {
-    const queryClient = new QueryClient();
-
     const props = {
         closeDialog: jest.fn(),
         open: true,
         initiallySelectedTab: "Patient",
-        data: {
-            patients: {
-                firstName: 'Bob',
-                lastName: 'Marley'
-            }
-        },
+        data: mockSingleCase,
     };
 
     test("renders and closes the bookingSheetDialog", () => {
         const { getByRole } = render(
-            <QueryClientProvider client={queryClient}>
+            <PagesTestWrapper>
                 <BookingSheetDialog {...props}  />
-            </QueryClientProvider>
+            </PagesTestWrapper>
         );  
         expect(getByRole("tab", {name: "Patient"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
@@ -37,9 +41,9 @@ describe("BookingSheetDialog", () => {
 
     test("changes tab of the bookingSheetDialog", () => {
         const { getByRole } = render(
-            <QueryClientProvider client={queryClient}>
+            <PagesTestWrapper>
                 <BookingSheetDialog {...props}  />
-            </QueryClientProvider>
+            </PagesTestWrapper>
 
         );  
         expect(getByRole("tab", {name: "Patient"})).toBeInTheDocument();

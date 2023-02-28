@@ -12,36 +12,21 @@ export default withApiAuthRequired(async function createCaseHandler(req: NextApi
   if (invalidParamsMessage) {
     return invalidParamsMessage
   }
-
-  const caseObject = <cases>req.body.case;
-  const patientObject = <patients>req.body.patient;
-
+  
   try {
     const newPatient = await prisma.patients.create({
       data: {
-          fhirResourceId: <string>patientObject.fhirResourceId,
-          firstName: <string>patientObject.firstName,
-          lastName: <string>patientObject.lastName,
-          mrn: <string>patientObject.mrn,
-          address: <string>patientObject.address,
-          mobilePhone: <string>patientObject.mobilePhone,
-          homePhone: <string>patientObject.homePhone,
-          dateOfBirth: <Date>patientObject.dateOfBirth,
+          ...req.body.patient,
           createTime: new Date(),
           updateTime: new Date()
       }
     })
     const newCase = await prisma.cases.create({
       data: {
-          fhirResourceId: <string>caseObject.fhirResourceId,
+          ...req.body.case,
           patientId: <number>newPatient.patientId,
-          procedureDate: <Date>caseObject.procedureDate,
-          providerId: <number>caseObject.providerId,
-          locationId: <number>caseObject.locationId,
           createTime: new Date(),
-          updateTime: new Date(),
-          priorAuthorization: <string>caseObject.priorAuthorization,
-          vendorConfirmation: <string>caseObject.vendorConfirmation,
+          updateTime: new Date()
       }
     })
     res.json({...newCase, patients: newPatient})

@@ -3,6 +3,9 @@ import CaseCard from "../caseCard";
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
+import { mockSingleCase } from "../../testReference";
+import moment from 'moment'
+
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -11,36 +14,9 @@ jest.mock('@tanstack/react-query', () => ({
   }));
   
 describe("CaseCard", () => {
-  const row = {
-    caseId: 1,
-    fhirResourceId: "testId",
-    patientId: 1,
-    procedureDate: "2022-05-05T00:00:00Z",
-    providerName: "testProviderName",
-    locationName: "testLocationName",
-    createTime: new Date(),
-    updateTime: new Date(),
-    providerId: 1,
-    locationId: 2,
-    patients: {
-      patientId: 1,
-      fhirResourceId: "aa22ss",
-      firstName: "Captain",
-      lastName: "Whitebeard",
-      dateOfBirth: "02/01/1990",
-      mobilePhone: "111-111-1111",
-      homePhone: "555-555-5555",
-      address: "330 Philly Lane",
-      mrn: "5678567890",
-    },
-    steps: {
-      priorAuthorization: "Incomplete",
-      vendorConfirmation: "Incomplete",
-    }
-  };
   test("renders the caseCard and can expand it", async () => {
     const { getByText, queryByText, getByTestId } = render(
-        <CaseCard row={row} />
+        <CaseCard row={mockSingleCase} />
     );
 
     expect(getByText("Whitebeard, Captain")).toBeInTheDocument();
@@ -61,13 +37,13 @@ describe("CaseCard", () => {
   test("renders progress bar with varied lengths/colors", () => {
     const {container} = render(
       <ThemeProvider theme={defaultTheme}>
-        <CaseCard row={row} />
+        <CaseCard row={mockSingleCase} />
       </ThemeProvider>
     );
 
     // expect(container.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #EF5350');
 
-    const rowClone = R.clone(row);
+    const rowClone = R.clone(mockSingleCase);
     rowClone.steps =  {
       priorAuthorization: "Incomplete",
       vendorConfirmation: "Complete"
@@ -81,7 +57,7 @@ describe("CaseCard", () => {
 
    expect(containerClone.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #FFA726');
 
-    const rowClone2 = R.clone(row);
+    const rowClone2 = R.clone(mockSingleCase);
     rowClone2.steps =  {
       priorAuthorization: "Complete",
       vendorConfirmation: "Complete"
@@ -100,7 +76,7 @@ describe("CaseCard", () => {
     Date.now = jest.fn().mockReturnValue(new Date('2022-10-20'));
 
     const { getByRole, getByTestId, queryByRole } = render(
-      <CaseCard row={row} />
+      <CaseCard row={mockSingleCase} />
     );
 
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
@@ -138,7 +114,7 @@ describe("CaseCard", () => {
     });
 
     const { getByRole, queryByRole, getByTestId } = render(
-      <CaseCard row={row} />
+      <CaseCard row={mockSingleCase} />
     );
 
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
@@ -154,7 +130,7 @@ describe("CaseCard", () => {
   });
 
   test("renders threat of cancellation when appointment is 24 hours away or less and not all steps completed", async () => {
-    const rowClone = {...row, procedureDate: '10/20/2022', steps: {
+    const rowClone = {...mockSingleCase, procedureDate: moment('2022-10-20').toDate(), steps: {
       priorAuthorization: "Complete",
       vendorConfirmation: "Incomplete",
     }}
@@ -166,7 +142,7 @@ describe("CaseCard", () => {
   });
 
   test("does not render threat of cancellation when appointment is more than 24 hours away", async () => {
-    const rowClone = {...row, procedureDate: '10/22/2022' }
+    const rowClone = {...mockSingleCase, procedureDate: moment('2022-10-22').toDate() }
     const { queryByTestId } = render(
       <CaseCard row={rowClone} />
     );
@@ -175,7 +151,7 @@ describe("CaseCard", () => {
   });
 
   test("does not render threat of cancellation when all steps completed", async () => {
-    const rowClone = {...row, procedureDate: '10/20/2022', steps: {
+    const rowClone = {...mockSingleCase, procedureDate: moment('2022-10-20').toDate(), steps: {
       priorAuthorization: "Complete",
       vendorConfirmation: "Complete",
     }}

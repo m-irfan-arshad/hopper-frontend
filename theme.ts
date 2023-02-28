@@ -176,21 +176,57 @@ export const defaultTheme = createTheme({
                                 color: "#78909C"
                             }
                         },
-                    }
+                    },
                 },
             ],
             styleOverrides: {
                 root: {
+                    color: 'black.main',
+                    "& .MuiOutlinedInput-input": {
+                        fontSize: ".875rem",
+                        height: "1.25rem",
+                        paddingTop: "0.75rem",
+                        paddingBottom: "0.75rem",
+                    },
                     "& .MuiOutlinedInput-notchedOutline": {
                         borderColor: "#D8E4F4"
                      },
                      width: "220px",
-                     "& .MuiOutlinedInput-input": {
-                        paddingTop: "12px",
-                        paddingBottom: "12px",
-                     },
+                     '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                            borderColor: '#0000003B',
+                        },
+                        '&:hover fieldset': {
+                            borderColor: '#0000003B',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1976D2',
+                        },
+                      },
+                    "& .MuiInputLabel-outlined": {
+                        color: "#00000099",
+                        backgroundColor: 'white',
+                        paddingRight: '.4rem',
+                        '&.Mui-focused fieldset': {
+                            color: '#1976D2'
+                          },
+                    },
+                    "& .MuiInputBase-formControl": {
+                        fontSize: ".875rem"
+                    },
+                    marginTop: "0.313rem"
                 }
             }
         },
+        MuiAutocomplete: {
+            styleOverrides: {
+                root: {
+                    '& .MuiOutlinedInput-root': {
+                        padding: "0px 2.438rem 0px 0.563rem",
+                        height: "2.938rem",
+                    },
+                }
+            } 
+        }
     }
 })

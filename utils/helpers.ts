@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SingleCase, APIParameters } from '../reference';
-import { Prisma, cases, patients, locations, providers } from '@prisma/client';
+import { APIParameters, FullCase } from '../reference';
+import { Prisma, cases, patients, locations, providers, insurances } from '@prisma/client';
 import moment from "moment";
 
 interface DashboardQueryParams { 
@@ -41,14 +41,6 @@ interface CreateCaseFromFormObject {
 interface CreateCaseObject {
     patient: PatientTableParams
     case: CaseTableParams 
-}
-
-interface CasesFormatterProps {
-    cases: cases & {
-        patients?: patients | null;
-        locations?: locations | null
-        providers?: providers | null
-    } | null
 }
 
 interface FilterObject {
@@ -134,46 +126,23 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
    return filterObject
 }
 
-export function formatDate(date: Date | null) : string | null {
+export function formatDate(date: Date | null | undefined) : string | null {
     if (!date) return null
     return moment(date).format('MM/DD/YYYY')
 }
 
-export function casesFormatter (params: CasesFormatterProps): any {
-    const {cases} = params;
-
+export function casesFormatter (cases: FullCase | null): FullCase & {steps: object} | null {
     if (cases) {
-        const newPatient = (cases.patients) ? {
-            patientId: cases.patients?.patientId,
-            fhirResourceId: cases.patients.fhirResourceId,
-            firstName: cases.patients?.firstName,
-            middleName: cases.patients?.middleName,
-            lastName: cases.patients?.lastName,
-            mrn: cases.patients?.mrn,
-            address: cases.patients?.address,
-            city: cases.patients?.city,
-            state: cases.patients?.state,
-            sex: cases.patients?.sex,
-            zip: cases.patients?.zip,
-            mobilePhone: cases.patients?.mobilePhone,
-            homePhone: cases.patients?.homePhone,
-            dateOfBirth: formatDate(cases.patients?.dateOfBirth) 
-        } : null
-
-        const providerName = (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : '';
+        const formattedProviders = (cases.providers) ?  {
+            ...cases.providers, 
+            providerName: (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : ''
+        } : null;
         
-        let newCase: SingleCase = {
+        let newCase = {
+            ...cases,
             caseId: cases.caseId,
-            procedureDate: formatDate(cases.procedureDate),
             fhirResourceId: cases.fhirResourceId,
-            patientId: cases.patientId,
-            locationId: cases.locationId,
-            providerId: cases.providerId,
-            patients: newPatient,
-            providerName: providerName,
-            locationName: cases.locations?.locationName,
-            createTime: cases.createTime,
-            updateTime: cases.updateTime,
+            providers: formattedProviders,
             steps: {
                 priorAuthorization: cases.priorAuthorization,
                 vendorConfirmation: cases.vendorConfirmation,
@@ -181,7 +150,7 @@ export function casesFormatter (params: CasesFormatterProps): any {
         }
         return newCase
     } else {
-        return params;
+        return null;
     }
 }
 
@@ -238,4 +207,14 @@ export function parseFieldConfig(configObject: ConfigObject, tabName: string, fi
         return field && field[checkingFor]
     }
     return defaultReturnValue ? defaultReturnValue : false
+}
+
+/**
+ * Similar to react-hook-form's getDirtyFields, however it also returns the value of the dirty field instead of a boolean.
+ * Useful for building performative update queries.
+ */
+export function getDirtyValues(dirtyFields: any, allValues: any): object {
+    if (dirtyFields === true || Array.isArray(dirtyFields))
+      return allValues;
+    return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
 }

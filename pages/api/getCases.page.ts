@@ -36,17 +36,18 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         include: {
             patients: true,
             locations: true,
-            providers: true
+            providers: true,
+            insurances: true
         }
     })
 
     res.json({
       cases: resultPosts.map(function(oldCase) {
-        return casesFormatter({cases: oldCase})
-      }), 
+        return casesFormatter(oldCase)
+      }),
       count: count
     })
-  } catch(err) {
-    res.status(500).json({ message: err });
+  } catch(err: any) {
+    res.status(500).json({ message: err.message });
 }
 }))
