@@ -22,7 +22,7 @@ describe("CreateCaseDialog", () => {
     closeDialog: jest.fn()
   };
 
-  const procedureDateAndTime = moment().format('MM/DD/YYYY hh:mm A');
+  const procedureDate = moment().format('MM/DD/YYYY');
   const birthDate = moment().add(1).format('MM/DD/YYYY');
 
   beforeEach(() => {
@@ -64,10 +64,10 @@ describe("CreateCaseDialog", () => {
     expect(getByPlaceholderText("Procedure Date")).toBeInTheDocument();
     expect(getByPlaceholderText("Patient Date of Birth")).toBeInTheDocument();
 
-    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: procedureDateAndTime}})
+    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: procedureDate}})
     fireEvent.change(getByPlaceholderText("Patient Date of Birth"), {target: {value: birthDate}})
 
-    expect(getByPlaceholderText("Procedure Date")).toHaveValue(procedureDateAndTime);
+    expect(getByPlaceholderText("Procedure Date")).toHaveValue(procedureDate);
     expect(getByPlaceholderText("Patient Date of Birth")).toHaveValue(birthDate);
   });
 
@@ -90,7 +90,7 @@ describe("CreateCaseDialog", () => {
 
     fireEvent.change(getByRole('textbox', {name: 'First Name'}), {target: {value: 'firstName'}});
     fireEvent.change(getByRole('textbox', {name: 'Last Name'}), {target: {value: 'lastName'}});
-    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: procedureDateAndTime}})
+    fireEvent.change(getByPlaceholderText("Procedure Date"), {target: {value: procedureDate}})
     fireEvent.change(getByPlaceholderText("Patient Date of Birth"), {target: {value: birthDate}})
     fireEvent.change(getByRole("combobox", {name: 'Surgical Location'}), {target: {value: mockLocationData[0].locationName}})
 
