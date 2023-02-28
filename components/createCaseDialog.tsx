@@ -190,7 +190,7 @@ export default function CreateCaseDialog(props: Props) {
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController withTime control={control} id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
+                        <DateController control={control} id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>
             </LocalizationProvider>

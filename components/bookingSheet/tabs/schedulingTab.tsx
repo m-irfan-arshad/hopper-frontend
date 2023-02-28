@@ -37,8 +37,8 @@ export default function SchedulingTab(props: Props) {
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="h5" sx={{marginTop: "2rem", marginBottom: "2rem", color: "gray.dark"}}>Scheduling</Typography>
-                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"1.3rem"}>
+                <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Scheduling</Typography>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"2.25rem"}>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Surgical Location"
