@@ -49,32 +49,6 @@ interface DropDownSearchControllerProps {
 
 }
   
-
-const StyledTextField = styled(TextField)({
-    "& .MuiOutlinedInput-input": {
-        fontSize: ".875rem",
-        height: "23px"
-    },
-    '& .MuiOutlinedInput-root': {
-        '& fieldset': {
-            borderColor: '#0000003B',
-        },
-        '&:hover fieldset': {
-            borderColor: '#0000003B',
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: '#1976D2',
-        },
-      },
-    "& .MuiInputLabel-outlined": {
-        color: "#00000099",
-        '&.Mui-focused fieldset': {
-            color: '#1976D2'
-          },
-    },
-    marginTop: "0.313rem"
-});
-
 export function InputController(props: InputControllerProps) {
     const {id, title, placeholder, control} = props;
     return <Controller
@@ -83,7 +57,7 @@ export function InputController(props: InputControllerProps) {
         rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <StyledTextField InputLabelProps={{ shrink: true }} {...field} id={id} variant="outlined" label={title} autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
+                <TextField InputLabelProps={{ shrink: true }} {...field} id={id} variant="outlined" label={title} autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
             </React.Fragment>
         )}
       />
@@ -92,7 +66,7 @@ export function InputController(props: InputControllerProps) {
 export function DateController(props: DateControllerProps) {
     const {id, title, placeholder, control, withTime} = props;
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
-        <StyledTextField 
+        <TextField 
             InputLabelProps={{ shrink: true }} 
             id={id}
             autoComplete='off'

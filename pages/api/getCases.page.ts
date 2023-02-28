@@ -47,7 +47,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
       }),
       count: count
     })
-  } catch(err) {
-    res.status(500).json({ message: err });
+  } catch(err: any) {
+    res.status(500).json({ message: err.message });
 }
 }))

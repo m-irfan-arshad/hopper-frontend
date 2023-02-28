@@ -23,22 +23,21 @@ export default function MultiSelectDropDown(props: Props) {
     const defaultStyles = {
         color: "black.main",
         height: "2.5rem",
-        borderRadius: "none",
-        "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "gray.main",
+        position: "relative",
+        maxWidth: '25rem',
+        marginRight: '.625rem',
+        top: '.15rem',
+        '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#0000003B',
+          },
+        ".MuiSelect-select": {
+            display: 'flex',
+            alignItems: 'center',
         },
-        "&:hover .MuiOutlinedInput-notchedOutline": { 
-            borderColor: "gray.main"
-        },
-        svg: {
-            color: "blue.main"
-        },
-        maxWidth: "25rem",
-        marginRight: "0.625rem",
         ".MuiTypography-root": {
             overflow: "hidden",
-            textOverflow: "ellipsis"
-        }
+            textOverflow: "ellipsis",
+        },
     };
     
     return (
@@ -59,7 +58,7 @@ export default function MultiSelectDropDown(props: Props) {
             {
                 menuItems.map((item, index) => (
                     //@ts-ignore - necessary to load object into value
-                    <MenuItem key={index} value={item} sx={{fontSize: "0.688rem"}}>{item.value}</MenuItem>
+                    <MenuItem key={index} value={item} sx={{fontSize: "0.825rem"}}>{item.value}</MenuItem>
                 ))
             }
         </Select>

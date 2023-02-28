@@ -162,7 +162,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
     const elemValue = row[name.id];
     if (elemValue) {
       if (name.id === 'procedureDate') {
-        return formatDate(row[name.id])
+        return formatDate(elemValue)
       }
       return elemValue;
     } else if (name.fromTable) {

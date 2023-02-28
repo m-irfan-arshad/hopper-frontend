@@ -6,11 +6,8 @@ import {
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Control, useForm } from "react-hook-form";
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
-import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
+import { DateController, DropDownSearchController} from '../../../utils/formControllers'
+import { ConfigObject } from '../../../utils/helpers';
 
 interface Props {
     form: any,

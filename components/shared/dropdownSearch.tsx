@@ -21,29 +21,6 @@ interface Props {
 export default function DropDownSearchComponent(props: Props) {
     const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, ...restParams} = props;
 
-    const defaultStyles = {
-        '& .MuiOutlinedInput-root': {
-            paddingY: 0,
-            height: "47px",
-            '& fieldset': {
-                borderColor: '#0000003B',
-            },
-            '&:hover fieldset': {
-                borderColor: '#0000003B',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#1976D2',
-            },
-          },
-        "& .MuiInputLabel-outlined": {
-            color: "#00000099"
-        },
-        "& .MuiInputBase-formControl": {
-            fontSize: ".875rem"
-        },
-        marginTop: "0.313rem"        
-    }
-
     function getOptionLabel(option: Option) {
         const labelArray = labelProperties.map((p) => {
             return option[p]
@@ -64,7 +41,6 @@ export default function DropDownSearchComponent(props: Props) {
             options={options}
             disabled={disabled}
             sx={{
-                ...defaultStyles,
                 ...additionalStyles,
                 '.MuiTextField-root': {
                     width: '100%'
@@ -75,7 +51,7 @@ export default function DropDownSearchComponent(props: Props) {
                     fontSize: ".875rem"
                 }
             }}
-            renderInput={(params) => <TextField {...params} label={label} InputLabelProps={{ style: {backgroundColor: 'white'}, shrink: true }} placeholder={placeholder}  />
+            renderInput={(params) => <TextField {...params} label={label} InputLabelProps={{ shrink: true }} placeholder={placeholder}  />
         }
       />
     );    

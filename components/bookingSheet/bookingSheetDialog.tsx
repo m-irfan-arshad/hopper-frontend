@@ -14,18 +14,14 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, useFieldArray } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { parseFieldConfig, getDirtyValues } from '../../utils/helpers';
+import { getDirtyValues } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject } from '../../reference';
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
-import { cases, insurances, patients } from "@prisma/client";
 import * as R from 'ramda';
 import moment from "moment";
 import SchedulingTab from "./tabs/schedulingTab";
-import { configure } from "@testing-library/react";
 
 
 interface Props {
@@ -50,7 +46,7 @@ const defaultInsuranceValue = {
     priorAuthDate: null,
 }
 
-function prepareCaseForApi(caseId: number, formData: any, dirtyFields: any) {
+function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
     let query: {caseId: number, patients?: {update: any}, insurances?: object} = {caseId: caseId};
     if (dirtyFields.patient) {
         query.patients = { update: {
@@ -90,7 +86,7 @@ function prepareCaseForApi(caseId: number, formData: any, dirtyFields: any) {
     return query
 }
 
-function prepareCaseForForm(data: any) {
+function prepareFormForRender(data: any) {
     const parsedCase: any = {};
     parsedCase.patient = {
         ...data?.patients,
@@ -146,18 +142,18 @@ export default function BookingSheetDialog(props: Props) {
             }
         }
     });
-    const { handleSubmit, control, reset, watch, resetField, getValues, formState: { isValid, dirtyFields } } = form;
+    const { handleSubmit, control, reset, formState: { isValid, dirtyFields } } = form;
     const financialMethods = useFieldArray({control, name: "financial"});
 
     const onSubmit = async (formData: any) => {
-        const query = prepareCaseForApi(data.caseId, formData, dirtyFields)
+        const query = prepareFormForSubmission(data.caseId, formData, dirtyFields)
         await mutate(query)
         closeDialog()
     };
         
     //populate form with data from API
     useEffect(() => {
-        if(data) reset(prepareCaseForForm(data), {keepDefaultValues: true, keepDirty: true});
+        if(data) reset(prepareFormForRender(data), {keepDefaultValues: true, keepDirty: true});
     }, [data]);
 
     useEffect(() => {
@@ -196,7 +192,7 @@ export default function BookingSheetDialog(props: Props) {
                     </Tabs>
                 </Box>
             </DialogTitle>
-            <DialogContent sx={{height: "30rem", overflowY: "scroll"}}>
+            <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
                 {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control}/>}
                 {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
                 {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} form={form}/>}

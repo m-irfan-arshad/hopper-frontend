@@ -72,7 +72,7 @@ export default function FinancialTab(props: Props) {
                     </Grid>
                     {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "3rem", marginBottom: "3rem"}}/>}
                 </React.Fragment>))}
-                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "3rem" }}>
+                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "4rem" }}>
                     <Button 
                         variant="contained" 
                         onClick={()=>append(defaultValue)}

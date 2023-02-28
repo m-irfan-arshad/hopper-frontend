@@ -143,7 +143,7 @@ export default function CreateCaseDialog(props: Props) {
                         <DateController control={control} id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
                     </Grid>
                 </Grid>
-                <Typography variant="subtitle1" sx={{marginTop: "3rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
+                <Typography variant="subtitle1" sx={{marginTop: "2.5rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
                 <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
                     <Grid item xs={12}>
                         <DropDownSearchController
@@ -153,7 +153,6 @@ export default function CreateCaseDialog(props: Props) {
                             labelProperties={["locationName"]} 
                             title="Surgical Location"
                             placeholder="Surgical Location" 
-                            additionalStyles={{ "& .MuiFormControl-root": { width: "100%"}}} 
                         />
                     </Grid>
                     <Grid item xs={6}>
