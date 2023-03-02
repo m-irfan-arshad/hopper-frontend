@@ -8,6 +8,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { ConfigObject } from '../../../utils/helpers';
+import { admissionTypeData } from '../../../reference';
+import * as R from 'ramda';
 
 interface Props {
     form: any,
@@ -16,23 +18,24 @@ interface Props {
 
 export default function SchedulingTab(props: Props) {
     const {form, config} = props;
-    const { control, watch, resetField, getValues } = form;
+    const { control, watch, resetField, getValues, formState: { isValid, dirtyFields } } = form;
 
     const locationDropDownValue = watch('scheduling.location');
     const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
     const serviceLineDropDownValue = watch('scheduling.serviceLine');
+    const isDirty = !R.isEmpty(dirtyFields)
 
     useEffect(() => {
-        resetField('scheduling.procedureUnit');
-    }, [locationDropDownValue, resetField]);
+        isDirty && resetField('scheduling.procedureUnit');
+    }, [locationDropDownValue]);
 
     useEffect(() => {
-        resetField('scheduling.serviceLine');
-    }, [procedureUnitDropDownValue, resetField]);
+        isDirty && resetField('scheduling.serviceLine');
+    }, [procedureUnitDropDownValue]);
 
     useEffect(() => {
-        resetField('scheduling.provider');
-    }, [serviceLineDropDownValue, resetField]);
+        isDirty && resetField('scheduling.provider');
+    }, [serviceLineDropDownValue]);
 
     return (
         <Box>
@@ -91,6 +94,16 @@ export default function SchedulingTab(props: Props) {
                     </Grid>
                     <Grid item xs={6}>
                         <DateController withTime control={control} id={'scheduling.procedureDate'} title="Procedure Date" placeholder="Procedure Date" />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <DropDownSearchController 
+                            title="Admission Type"
+                            control={control}
+                            id="scheduling.admissionType"
+                            options={admissionTypeData} 
+                            labelProperties={["admissionType"]}
+                            placeholder="Admission Type" 
+                        />
                     </Grid>
                 </Grid>
             </LocalizationProvider>

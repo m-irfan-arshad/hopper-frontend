@@ -8,6 +8,7 @@ import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline
 import CaseSummaryContent from "../../components/caseSummaryContent";
 import Link from 'next/link';
 import { defaultTheme } from "../../theme";
+import { formatDate } from "../../utils/helpers";
 
 interface BookingSheetTabProps {
     label: string
@@ -33,6 +34,9 @@ export default function CaseHub() {
   const { data } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
   const [tab, selectTab] = useState('Patient');
+
+  const mrnString = data?.patients?.mrn ? `- ${data.patients.mrn}` : '';
+  const headerIconStyles = {marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"};
 
   function handleSelectTab(selectedTab: string) {
     setDialogState(true);
@@ -151,7 +155,7 @@ export default function CaseHub() {
                             {data?.patients ? `${data?.patients?.lastName}, ${data?.patients?.firstName}` : 'N/A'}
                         </Typography>
                         <Typography variant="caption" >
-                            {data?.patients ? `${data?.patients?.dateOfBirth} - ${data?.patients?.mrn}` : 'N/A'}
+                            {data?.patients ? `${formatDate(data?.patients?.dateOfBirth)} ${mrnString}` : 'N/A'}
                         </Typography>
                         <BookingSheetButton
                             onClick={() => handleSelectTab('Patient')}
@@ -187,20 +191,20 @@ export default function CaseHub() {
                         <SectionHeader 
                             canViewAll 
                             title="Activity" 
-                            icon={< Bolt sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                            icon={< Bolt sx={headerIconStyles} />} 
                         />
                         <SectionHeader 
                             title="Case Amendments" 
-                            icon={< Assignment sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                            icon={< Assignment sx={headerIconStyles} />} 
                         />
                         <SectionHeader 
                             title="Documents" 
-                            icon={< ContentCopy sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                            icon={< ContentCopy sx={headerIconStyles} />} 
                         />
                         <SectionHeader 
                             canViewAll 
                             title="Comments" 
-                            icon={< ChatBubbleOutline sx={{marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"}} />} 
+                            icon={< ChatBubbleOutline sx={headerIconStyles} />} 
                         />
                     </Box>
                 </Box>

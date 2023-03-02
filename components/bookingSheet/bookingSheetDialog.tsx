@@ -16,13 +16,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm, useFieldArray } from "react-hook-form";
 import { getDirtyValues } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
-import { bookingSheetConfigObject } from '../../reference';
+import { bookingSheetConfigObject, defaultInsuranceValue } from '../../reference';
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
 import * as R from 'ramda';
 import moment from "moment";
 import SchedulingTab from "./tabs/schedulingTab";
-
 
 interface Props {
     open: boolean
@@ -37,17 +36,21 @@ const StyledTab = styled(Tab)({
     textTransform: "capitalize"
 });
 
-const defaultInsuranceValue = {
-    insurance: null,
-    insuranceGroupName: '',
-    insuranceGroupNumber: '',
-    priorAuthApproved: '',
-    priorAuthId: '',
-    priorAuthDate: null,
-}
-
 function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
-    let query: {caseId: number, patients?: {update: any}, insurances?: object} = {caseId: caseId};
+    let query: any = {caseId: caseId};
+    console.log("formData: ", formData)
+    if (dirtyFields.scheduling) {
+        const scheduling = formData.scheduling
+        query = {
+            ...query,
+            locationId: scheduling.location.locationId,
+            procedureUnitId: scheduling.procedureUnit.procedureUnitId,
+            serviceLineId: scheduling.serviceLine.serviceLineId,
+            providerId: scheduling.provider.providerId,
+            procedureDate: scheduling.procedureDate,
+            admissionType: scheduling.admissionType.admissionType,
+        }
+    }
     if (dirtyFields.patient) {
         query.patients = { update: {
             ...getDirtyValues(dirtyFields.patient, formData.patient),
@@ -108,7 +111,9 @@ function prepareFormForRender(data: any) {
         location: data?.locations,
         procedureUnit: data?.procedureUnits,
         serviceLine: data?.serviceLines,
-        provider: data?.providers
+        provider: data?.providers,
+        procedureDate: data?.procedureDate,
+        admissionType: data?.admissionType
     }
 
     return parsedCase;
@@ -120,7 +125,7 @@ export default function BookingSheetDialog(props: Props) {
     const {mutate} = useUpdateCaseHook()
 
     const form = useForm({ 
-        mode: 'onChange',
+        mode: 'onSubmit',
         defaultValues: {
             patient: {
                 firstName: '',
@@ -138,11 +143,13 @@ export default function BookingSheetDialog(props: Props) {
                 location: null,
                 procedureUnit: null,
                 serviceLine: null,
-                provider: null
+                provider: null,
+                procedureDate: null,
+                admissionType: null
             }
         }
     });
-    const { handleSubmit, control, reset, formState: { isValid, dirtyFields } } = form;
+    const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
     const financialMethods = useFieldArray({control, name: "financial"});
 
     const onSubmit = async (formData: any) => {
@@ -150,6 +157,8 @@ export default function BookingSheetDialog(props: Props) {
         await mutate(query)
         closeDialog()
     };
+
+    console.log("errors: ", errors)
         
     //populate form with data from API
     useEffect(() => {
@@ -207,7 +216,7 @@ export default function BookingSheetDialog(props: Props) {
                     <Button 
                 variant="contained" 
                 onClick={handleSubmit(onSubmit)}
-                disabled={!validForm}
+                disabled={false}
                 sx={{
                     backgroundColor: "blue.main",
                     border: 1,

@@ -13,7 +13,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
             caseId: parseInt(req.query["caseId"] as string)
           },
           include: {
-            insurances: true,
+            financial: true,
             patients: true,
             locations: true,
             providers: true,

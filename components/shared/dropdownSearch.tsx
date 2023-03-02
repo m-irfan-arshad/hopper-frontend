@@ -35,7 +35,7 @@ export default function DropDownSearchComponent(props: Props) {
             data-testid='autocomplete'
             id={id}
             disableClearable
-            isOptionEqualToValue={(option, value) => option.fhirResourceId === value.fhirResourceId}
+            isOptionEqualToValue={(option, value) => getOptionLabel(option) === getOptionLabel(value)}
             getOptionLabel={(option: Option) => getOptionLabel(option)}
             onChange={(_, data) => onChange(data)}
             options={options}

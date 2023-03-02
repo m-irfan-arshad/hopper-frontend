@@ -126,10 +126,11 @@ export const bookingSheetConfigObject = {
 export const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
 export const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
 export const insuranceData = [{insurance: 'insurance1'}, {insurance: 'insurance2'}, {insurance: 'insurance3'}]; 
-export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthApproved: 'No'}]; 
+export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthApproved: 'No'}];
+export const admissionTypeData = [{admissionType: 'Admission 1'}, {admissionType: 'Admission 2'}];
 
 export type FullCase = Prisma.casesGetPayload<{
-  include: { patients?: true, locations?: true, providers?: true, serviceLines?: true, procedureUnits?: true, insurances?: true }
+  include: { patients?: true, locations?: true, providers?: true, serviceLines?: true, procedureUnits?: true, financial?: true }
 }>
 
 export type FormattedFullCase = FullCase & {
@@ -138,4 +139,13 @@ export type FormattedFullCase = FullCase & {
     priorAuthorization: string,
     vendorConfirmation: string
   }
+}
+
+export const defaultInsuranceValue = {
+  insurance: null,
+  insuranceGroupName: '',
+  insuranceGroupNumber: '',
+  priorAuthApproved: '',
+  priorAuthId: '',
+  priorAuthDate: null,
 }

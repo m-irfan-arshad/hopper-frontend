@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { APIParameters, FullCase } from '../reference';
-import { Prisma, cases, patients, locations, providers, insurances } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import moment from "moment";
 
 interface DashboardQueryParams { 
