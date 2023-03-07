@@ -70,7 +70,7 @@ describe('[caseId]: Case Hub Page', () => {
     });
   });
 
-  test("click on a boooking sheet tab to open the booking sheet to the correct tab", async() => {
+  test("click on the Document tab to open the Document section on the case hub page", async() => {
     
     const { getByRole } = render(
         <PagesTestWrapper >
@@ -86,7 +86,7 @@ describe('[caseId]: Case Hub Page', () => {
 
   });
 
-  test("click on the Document tab to open the Document section on the case hub page", async() => {
+  test("click on a boooking sheet tab to open the booking sheet to the correct tab", async() => {
     
     const { getByRole } = render(
         <PagesTestWrapper >

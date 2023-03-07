@@ -185,7 +185,16 @@ export default function CaseHub() {
                             {data && <CaseSummaryContent row={data} /> }
                         </Box>
                     </Box>
-                    <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft: "1.75rem", flexGrow: 2, paddingRight: "1rem"}}>
+                    <Box 
+                      sx={{
+                        display: "flex", 
+                        flexDirection: "column", 
+                        alignItems: "flex-end", 
+                        marginLeft: "1.75rem", 
+                        flexGrow: 2, 
+                        paddingRight: "1rem"
+                      }}
+                    >
                         <Tabs 
                             sx={{
                                 borderBottom: "0.063rem solid #D1E4ED", 
@@ -206,7 +215,19 @@ export default function CaseHub() {
                         </Tabs>
                         {caseTab === "Documents" && 
                             <React.Fragment>
-                                <Button sx={{color: "blue.dark", fontSize: "0.625rem", fontWeight: "700", marginTop: "1rem", marginBottom: "1rem", padding: 0, '&:hover': {backgroundColor: 'transparent'}}}>
+                                <Button 
+                                  sx={{
+                                    color: "blue.dark", 
+                                    fontSize: "0.625rem", 
+                                    fontWeight: "700", 
+                                    marginTop: "1rem", 
+                                    marginBottom: "1rem", 
+                                    padding: 0, 
+                                    '&:hover': {
+                                      backgroundColor: 'transparent'
+                                    }
+                                  }}
+                                >
                                     + Upload Document
                                 </Button>
                                 {

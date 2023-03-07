@@ -5,7 +5,6 @@ interface Props {
     additionalStyles?: React.CSSProperties | object
 }
 
-
 export default function DottedDivider(props: Props) {
   const { additionalStyles } = props;
 
