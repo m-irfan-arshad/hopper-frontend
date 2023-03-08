@@ -10,6 +10,7 @@ import DocumentTabItem from "../../components/documentTabItem";
 import Link from 'next/link';
 import { defaultTheme } from "../../theme";
 import moment from "moment";
+import { formatDate } from "../../utils/helpers";
 
 interface BookingSheetTabProps {
     label: string
@@ -153,7 +154,7 @@ export default function CaseHub() {
                             {data?.patients ? `${data?.patients?.lastName}, ${data?.patients?.firstName}` : 'N/A'}
                         </Typography>
                         <Typography variant="caption" >
-                            {data?.patients ? `${moment(data?.patients?.dateOfBirth).format('MM/DD/YYYY')} - ${data?.patients?.mrn}` : 'N/A'}
+                            {data?.patients ? `${formatDate(data?.patients?.dateOfBirth)} - ${data?.patients?.mrn}` : 'N/A'}
                         </Typography>
                         <BookingSheetButton
                             onClick={() => handleselectBookingSheetTab('Patient')}
