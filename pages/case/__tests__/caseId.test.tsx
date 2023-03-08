@@ -42,10 +42,10 @@ describe('[caseId]: Case Hub Page', () => {
     expect(getByRole('heading', {name: 'Scheduling'})).toBeInTheDocument();
     expect(getByRole('heading', {name: 'Procedure Details'})).toBeInTheDocument();
 
-    expect(getByRole('heading', {name: 'Activity'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Case Amendments'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Comments'})).toBeInTheDocument();
-    expect(getByRole('heading', {name: 'Documents'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Activity (2)'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Amendments (2)'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Comments (2)'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
 
   });
 
@@ -70,7 +70,23 @@ describe('[caseId]: Case Hub Page', () => {
     });
   });
 
-  test("click on a tab to open the booking sheet to the correct tab", async() => {
+  test("click on the Document tab to open the Document section on the case hub page", async() => {
+    
+    const { getByRole } = render(
+        <PagesTestWrapper >
+          <CaseHub />
+        </PagesTestWrapper>
+    );
+
+    expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
+
+    fireEvent.click(getByRole('tab', {name: 'Documents (2)'}));
+
+    expect(getByRole('button', {name: '+ Upload Document'})).toBeInTheDocument();
+
+  });
+
+  test("click on a boooking sheet tab to open the booking sheet to the correct tab", async() => {
     
     const { getByRole } = render(
         <PagesTestWrapper >
