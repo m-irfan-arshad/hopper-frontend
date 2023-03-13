@@ -107,7 +107,7 @@ export default function UploadDocumentDialog(props: Props) {
                     && <Button 
                         component="label"
                         sx={{
-                            boxShadow: "0 0.125rem 0.125rem 0 #00000024, 0 0.063rem 0.313rem 0 #0000001F, 0 0.188rem 0.063rem -0.125rem #00000033",
+                            boxShadow: "0 .125rem .125rem 0 #00000024, 0 .063rem .313rem 0 #0000001F, 0 .188rem .063rem -.125rem #00000033",
                             fontSize: "0.625rem",
                             backgroundColor: "blue.dark",
                             "&:hover": {
@@ -208,7 +208,7 @@ export default function UploadDocumentDialog(props: Props) {
                             variant="contained" 
                             disabled={selectedDocTypes.length === 0}
                             sx={{
-                                boxShadow: "0 0.188rem 0.063rem -0.125rem rgba(0, 0, 0, 0.2), 0 0.125rem 0.125rem rgba(0, 0, 0, 0.14), 0 0.063rem 0.313rem rgba(0, 0, 0, 0.12)",
+                                boxShadow: "0 .188rem .063rem -.125rem #00000033, 0 .125rem .125rem #00000033, 0 .063rem .313rem #0000001f",
                                 borderRadius: "0.25rem",
                                 backgroundColor: "success.light",
                             }}

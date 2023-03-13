@@ -29,10 +29,6 @@ interface Props {
 export default function MultiSelectDropDown(props: Props) {
     const {menuItems, selectId, onChange, selectedOptions, onDelete, additionalStyles, label} = props;
 
-    const defaultStyles = {   
-        width: "100%",
-    };
-
     const ListItem = styled('li')(({ theme }) => ({
         marginRight: "0.5rem",
     }));
@@ -41,7 +37,7 @@ export default function MultiSelectDropDown(props: Props) {
         <FormControl
           variant="outlined"
           sx={{   
-            ...defaultStyles,
+            width: "100%",
             ...additionalStyles
           }}
         >
