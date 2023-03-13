@@ -11,8 +11,8 @@ interface Props {
 export default function DocumentTabItem(props: Props) {
 
     return (
-        <Box>
-            <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem", width: "450px"}}> 
+        <Box sx={{width: "100%"}}>
+            <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem"}}> 
                 <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
                     <Typography sx={{fontSize: "0.75rem", fontWeight: "500", textTransform: 'capitalize'}}>
                         {props.data.fileTypes.join(", ")} 

@@ -6,7 +6,8 @@ import {
     DialogActions, 
     DialogContent, 
     Box,
-    Typography
+    Typography,
+    styled
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -79,6 +80,10 @@ export default function UploadDocumentDialog(props: Props) {
     setDocTypeOptions(currentDocOptions => [...currentDocOptions, chipToDelete]);
   }
 
+  const BoxShadowButton = styled(Button)({
+    boxShadow: "0 .125rem .125rem 0 #00000024, 0 .063rem .313rem 0 #0000001F, 0 .188rem .063rem -.125rem #00000033",
+  }) as typeof Button;
+
   return (
       <Dialog fullWidth open={open} maxWidth="sm" sx={{"& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <Box sx={{display: "flex", flexDirection: "column"}}>
@@ -104,10 +109,9 @@ export default function UploadDocumentDialog(props: Props) {
                     </Typography>
             
                     { !file 
-                    && <Button 
+                    && <BoxShadowButton 
                         component="label"
                         sx={{
-                            boxShadow: "0 .125rem .125rem 0 #00000024, 0 .063rem .313rem 0 #0000001F, 0 .188rem .063rem -.125rem #00000033",
                             fontSize: "0.625rem",
                             backgroundColor: "blue.dark",
                             "&:hover": {
@@ -120,7 +124,7 @@ export default function UploadDocumentDialog(props: Props) {
                         <Typography variant="smallButton" sx={{color: "white.main", marginLeft: "0.313rem"}} >
                             Select File
                         </Typography>
-                    </Button>
+                    </BoxShadowButton>
                     }
                     { file 
                     && <React.Fragment>
@@ -204,11 +208,10 @@ export default function UploadDocumentDialog(props: Props) {
                         minHeight: "5rem",
                         paddingY: "0.625rem"
                     }}>
-                        <Button 
+                        <BoxShadowButton 
                             variant="contained" 
                             disabled={selectedDocTypes.length === 0}
                             sx={{
-                                boxShadow: "0 .188rem .063rem -.125rem #00000033, 0 .125rem .125rem #00000033, 0 .063rem .313rem #0000001f",
                                 borderRadius: "0.25rem",
                                 backgroundColor: "success.light",
                             }}
@@ -216,7 +219,7 @@ export default function UploadDocumentDialog(props: Props) {
                             <Typography variant="largeButton">
                                 Save
                             </Typography>
-                        </Button>
+                        </BoxShadowButton>
                 </DialogActions>
                 }
             </LocalizationProvider>

@@ -128,7 +128,7 @@ export default function CaseHub() {
         <Box sx={{backgroundColor: "gray.light", minHeight: "100vh" }}>
             <TopNavBar />
             <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <Box sx={{display: "flex", justifyContent: "center", paddingLeft: "1rem"}}>
+            <Box sx={{display: "flex", justifyContent: "center", marginLeft: "1rem"}}>
                 <Box 
                     sx={{ 
                         display: "flex", 
@@ -195,13 +195,16 @@ export default function CaseHub() {
                         flexDirection: "column", 
                         alignItems: "flex-end", 
                         marginLeft: "1.75rem", 
+                        maxWidth: "28.125rem",
                         flexGrow: 2, 
-                        paddingRight: "1rem"
+                        marginRight: "1rem",
+                        overflowX: "hidden"
                       }}
                     >
                         <Tabs 
                             sx={{
                                 borderBottom: "0.063rem solid #D1E4ED", 
+                                width: "100%",
                                 "& .MuiTabs-indicator": {
                                     backgroundColor: "orange.main"
                                 },
