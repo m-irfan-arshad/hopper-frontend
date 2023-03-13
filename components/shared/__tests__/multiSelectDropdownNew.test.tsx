@@ -20,7 +20,7 @@ describe("MultiSelectDropdownNew", () => {
     });
 
     test("renders the dropdown with chips calls onDelete", async() => {
-        const { getByTestId, getByRole } = render(
+        const { getByTestId } = render(
             <MultiSelectDropdownNew  {...props}/>
         ); 
        

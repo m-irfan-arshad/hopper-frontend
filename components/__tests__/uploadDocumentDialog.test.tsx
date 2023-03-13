@@ -8,6 +8,10 @@ describe("UploadDocumentDialog", () => {
         open: true
     };
 
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+        type: 'image/png',
+    });
+
     test("renders the UploadDocumentDialog and clicks back button", async() => {
         const { getByRole, getByText, getByLabelText } = render(
             <UploadDocumentDialog {...props}  />
@@ -17,10 +21,6 @@ describe("UploadDocumentDialog", () => {
 
         expect(getByRole("button", {name: "< Back"})).toBeInTheDocument();
         expect(getByRole("button", {name: "Select File"})).toBeInTheDocument();
-
-        const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-          type: 'image/png',
-        })
       
         Object.defineProperty(hiddenFileInput, 'files', {
           value: [file]
@@ -49,10 +49,6 @@ describe("UploadDocumentDialog", () => {
         expect(getByRole("button", {name: "< Back"})).toBeInTheDocument();
         expect(getByRole("button", {name: "Select File"})).toBeInTheDocument();
 
-        const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-          type: 'image/png',
-        })
-      
         Object.defineProperty(hiddenFileInput, 'files', {
           value: [file]
         })

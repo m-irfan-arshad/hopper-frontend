@@ -1,46 +1,29 @@
-import React, {ChangeEvent, useState, useEffect} from "react";
+import React, {useState} from "react";
 import { 
     Button, 
     TextField, 
     Dialog, 
     DialogActions, 
     DialogContent, 
-    DialogTitle,
-    styled,
     Box,
     Typography
 } from '@mui/material';
-import { DatePicker, PickersDay } from '@mui/x-date-pickers';
-import Image from 'next/image';
-import logo from '../medtelLogo.svg';
-import { defaultTheme } from "../theme";
+import { DatePicker } from '@mui/x-date-pickers';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { fontWeight } from "@mui/system";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from "moment";
 import MultiSelectDropdownNew from "./shared/multiSelectDropdownNew";
-
-/* TODO:
-    1. Write tests
-    2. Make PR/review code and cleanup
-*/
-
 
 interface Props {
     onBackClick: () => void,
     open: boolean
 }
 
-interface Chip {
+interface DocTypeOptions {
     id: string,
     value: string
 }
-
-export interface caseFilterInterface {
-    value: string,
-    id: string
-  } 
 
 export default function UploadDocumentDialog(props: Props) {
 
@@ -59,7 +42,7 @@ export default function UploadDocumentDialog(props: Props) {
 
   const [file, setFile] = useState<File | null>(null);
   const [date, setDate] = useState(moment());
-  const [selectedDocTypes, setSelectedDocTypes] = useState<Chip[]>([]);
+  const [selectedDocTypes, setSelectedDocTypes] = useState<DocTypeOptions[]>([]);
   const [docTypeOptions, setDocTypeOptions] = useState(docTypeDropdownOptions);
 
   const shouldShowSignatureDate = selectedDocTypes.some(item => item.id === 'h&p');
@@ -81,12 +64,12 @@ export default function UploadDocumentDialog(props: Props) {
     setDocTypeOptions(docTypeDropdownOptions);
   }
 
-  function handleDocTypeChange(values: any) {
-    setSelectedDocTypes(values);
+  function handleDocTypeChange(documentTypes: any) {
+    setSelectedDocTypes(documentTypes);
    
-    values.map((value: any) => {
-        if (docTypeOptions.includes(value)) {
-            setDocTypeOptions(docTypeOptions.filter((option) => option.id !== value.id))
+    documentTypes.map((documentType: DocTypeOptions) => {
+        if (docTypeOptions.includes(documentType)) {
+            setDocTypeOptions(docTypeOptions.filter((option) => option.id !== documentType.id))
         }
     });
   }
@@ -100,7 +83,7 @@ export default function UploadDocumentDialog(props: Props) {
       <Dialog fullWidth open={open} maxWidth="sm" sx={{"& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <Box sx={{display: "flex", flexDirection: "column"}}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DialogContent sx={{ paddingX: 0, marginX: "15px",  borderBottom: "0.063rem solid", borderColor: "gray.main"}} >
+                <DialogContent sx={{ paddingX: 0, marginX: "1rem",  borderBottom: "0.063rem solid", borderColor: "gray.main"}} >
                     <Button 
                         onClick={handleBackClick}
                         sx={{
@@ -116,7 +99,7 @@ export default function UploadDocumentDialog(props: Props) {
                             {'< Back'}
                         </Typography>
                     </Button>
-                    <Typography variant="h5" sx={{marginBottom: "20px", marginTop: "30px", color: "gray.dark"}}>
+                    <Typography variant="h5" sx={{marginBottom: "1.25rem", marginTop: "1.875rem", color: "gray.dark"}}>
                         Upload Document
                     </Typography>
             
@@ -124,8 +107,8 @@ export default function UploadDocumentDialog(props: Props) {
                     && <Button 
                         component="label"
                         sx={{
-                            boxShadow: "0px 2px 2px 0px #00000024, 0px 1px 5px 0px #0000001F, 0px 3px 1px -2px #00000033",
-                            fontSize: "10px",
+                            boxShadow: "0 0.125rem 0.125rem 0 #00000024, 0 0.063rem 0.313rem 0 #0000001F, 0 0.188rem 0.063rem -0.125rem #00000033",
+                            fontSize: "0.625rem",
                             backgroundColor: "blue.dark",
                             "&:hover": {
                                 backgroundColor: "blue.dark"
@@ -133,8 +116,8 @@ export default function UploadDocumentDialog(props: Props) {
                         }}
                     >
                         <input hidden accept="image/*" type="file" onChange={handleDocumentChange} />
-                        <FileUploadIcon sx={{color: "white.main", height: "18px", width: "18px"}} />
-                        <Typography variant="smallButton" sx={{color: "white.main", marginLeft: "5px"}} >
+                        <FileUploadIcon sx={{color: "white.main", height: "1.125rem", width: "1.125rem"}} />
+                        <Typography variant="smallButton" sx={{color: "white.main", marginLeft: "0.313rem"}} >
                             Select File
                         </Typography>
                     </Button>
@@ -143,12 +126,12 @@ export default function UploadDocumentDialog(props: Props) {
                     && <React.Fragment>
                         <Box>
                             <Typography variant="smallButton">
-                            {file.name}
+                                {file.name}
                             </Typography>
                             <Button 
                                 component="label"
                                 sx={{
-                                    fontSize: "10px",
+                                    fontSize: "0.625rem",
                                     backgroundColor: "transparent",
                                     minWidth: 0,
                                     padding: 0,
@@ -158,7 +141,7 @@ export default function UploadDocumentDialog(props: Props) {
                                 }}
                             >
                                 <input hidden accept="image/*" type="file" onChange={handleDocumentChange} />
-                                <Typography variant="smallButton" sx={{color: "blue.dark", marginLeft: "20px",}} >
+                                <Typography variant="smallButton" sx={{color: "blue.dark", marginLeft: "1.25rem"}} >
                                     Choose File
                                 </Typography>
                             </Button>
@@ -169,10 +152,10 @@ export default function UploadDocumentDialog(props: Props) {
                             selectId="doc-types"
                             onChange={(value) => handleDocTypeChange(value)}
                             onDelete={(chipToDelete) => handleChipOnDelete(chipToDelete)}
-                            additionalStyles={{marginTop: "40px"}}
+                            additionalStyles={{marginTop: "2.5rem"}}
                             selectedOptions={selectedDocTypes}
                         />
-                        <Typography variant="caption" sx={{marginLeft: "14px", color: "black.light"}}>
+                        <Typography variant="caption" sx={{marginLeft: "0.875ren", color: "black.light"}}>
                                 Select multiple document types if the file contains more than one
                         </Typography>
                         <TextField  
@@ -187,7 +170,7 @@ export default function UploadDocumentDialog(props: Props) {
                             variant="outlined"
                             multiline
                             minRows={5.5}
-                            sx={{ width: "100%", marginTop: "40px" }} 
+                            sx={{ width: "100%", marginTop: "2.5rem" }} 
                         />
                         {
                            shouldShowSignatureDate
@@ -201,8 +184,8 @@ export default function UploadDocumentDialog(props: Props) {
                                     label="Signature Date"
                                     renderInput={(params: any) => <TextField {...params} sx={{
                                         width: "100%",
-                                        marginTop: "40px",
-                                        marginBottom: "30px"
+                                        marginTop: "2.5rem",
+                                        marginBottom: "1.875rem"
                                     }} 
                                     />}
                                 />
@@ -217,16 +200,16 @@ export default function UploadDocumentDialog(props: Props) {
                         display: "flex",
                         alignItems: "flex-start",
                         paddingX: 0,
-                        marginX: "15px",
+                        marginX: "0.938rem",
                         minHeight: "5rem",
-                        paddingY: "10px"
+                        paddingY: "0.625rem"
                     }}>
                         <Button 
                             variant="contained" 
                             disabled={selectedDocTypes.length === 0}
                             sx={{
-                                boxShadow: "0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 1px 5px rgba(0, 0, 0, 0.12)",
-                                borderRadius: "4px",
+                                boxShadow: "0 0.188rem 0.063rem -0.125rem rgba(0, 0, 0, 0.2), 0 0.125rem 0.125rem rgba(0, 0, 0, 0.14), 0 0.063rem 0.313rem rgba(0, 0, 0, 0.12)",
+                                borderRadius: "0.25rem",
                                 backgroundColor: "success.light",
                             }}
                         >
