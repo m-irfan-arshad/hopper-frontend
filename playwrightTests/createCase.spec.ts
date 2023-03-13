@@ -8,10 +8,10 @@ test.describe('Landing Page', () => {
         await page.goto(dashboard.url);
     });
 
-    test.only('Submitting a Created Case', async ({ page }) => {
+    test('Submitting a Created Case', async ({ page }) => {
         const dashboard = new DashboardPage(page);
         const { firstName, lastName, birthDay, procedureDate } = createPatientCase();
-        
+
         await dashboard.createCaseButton.click();
         await expect(dashboard.patientInformation).toBeVisible();
         await page.locator("[id='patient.firstName']").fill(firstName);
@@ -32,12 +32,23 @@ test.describe('Landing Page', () => {
         const [res] = await Promise.all([
             page.waitForResponse(res => res.url().includes('/getCases') && res.url().includes('searchValue') && res.status() === 200),
             page.locator("[placeholder$='Search Name or Case ID']").fill(`${firstName} ${lastName}`)
-           ]);
-    
+        ]);
+
         await res.finished()
         const patientName = `${lastName}, ${firstName}`;
         const caseCardName = await dashboard.caseCardName();
-
         await expect(caseCardName).toEqual(patientName);
+        await dashboard.openFirstPatientDropDown();
+        const caseIdNumber = await dashboard.caseIdNumber();
+        await page.reload();
+        const [res2] = await Promise.all([
+            page.waitForResponse(res2 => res2.url().includes('/getCases') && res2.url().includes('searchValue') && res2.status() === 200),
+            page.locator("[placeholder$='Search Name or Case ID']").fill(`${caseIdNumber}`)
+        ]);
+
+        await res2.finished()
+        const caseCardName2 = await dashboard.caseCardName();
+        await expect(caseCardName2).toEqual(patientName);
+
     });
 });

@@ -14,7 +14,8 @@ export class DashboardPage {
     readonly createCaseButton: Locator;
     readonly patientInformation: Locator;
     readonly submitCreateCaseButton: Locator;
-    readonly url: string ;
+    readonly caseId: Locator;
+    readonly url: string;
 
     /**
      * @param {import('@playwright/test').Page} page
@@ -31,6 +32,7 @@ export class DashboardPage {
         this.createCaseButton = page.locator('button', { hasText: 'Create Case' });
         this.patientInformation = page.locator("text='Patient Information'");
         this.submitCreateCaseButton = page.locator("text='Create Case' >> nth=2");
+        this.caseId = page.locator('data-testid=caseId');
         this.url = process.env.PLAYWRIGHT_HOPPER_HOME!;
     }
 
@@ -48,6 +50,10 @@ export class DashboardPage {
 
     async procedureDateContent() {
         return await this.procedureDate.textContent();
+    }
+
+    async caseIdNumber() {
+        return await this.caseId.textContent();
     }
 
     async login() {
