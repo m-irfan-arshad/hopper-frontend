@@ -10,15 +10,15 @@ import { DateController, DropDownSearchController} from '../../../utils/formCont
 import { ConfigObject } from '../../../utils/helpers';
 import { admissionTypeData } from '../../../reference';
 import * as R from 'ramda';
+import { useFormContext } from "react-hook-form";
 
 interface Props {
-    form: any,
     config: ConfigObject,
 }
 
 export default function SchedulingTab(props: Props) {
-    const {form, config} = props;
-    const { control, watch, resetField, getValues, formState: { isValid, dirtyFields } } = form;
+    const {config} = props;
+    const { watch, resetField, getValues, formState: { dirtyFields } } = useFormContext();
 
     const locationDropDownValue = watch('scheduling.location');
     const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
@@ -45,23 +45,19 @@ export default function SchedulingTab(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Surgical Location"
-                            control={control}
                             id="scheduling.location" 
                             queryKey="getLocations"
                             labelProperties={["locationName"]}
                             placeholder="Surgical Location"
-                            getValues={getValues}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Procedure Unit"
-                            control={control}
                             id="scheduling.procedureUnit" 
                             queryKey="getProcedureUnits"
                             labelProperties={["procedureUnitName"]}
                             placeholder="Procedure Unit"
-                            getValues={getValues}
                             dependency="scheduling.location.locationId"
                             params={[{field: "locationId", value: "scheduling.location.locationId"}]}
                         />
@@ -69,12 +65,10 @@ export default function SchedulingTab(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Service Line"
-                            control={control}
                             id="scheduling.serviceLine" 
                             queryKey="getServiceLines"
                             labelProperties={["serviceLineName"]}
                             placeholder="Service Line"
-                            getValues={getValues}
                             dependency="scheduling.procedureUnit.procedureUnitId"
                             params={[{field: "procedureUnitId", value: "scheduling.procedureUnit.procedureUnitId"}]}
                         />
@@ -82,23 +76,20 @@ export default function SchedulingTab(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Primary Surgeon"
-                            control={control}
                             id="scheduling.provider" 
                             queryKey="getProviders"
                             labelProperties={["firstName", "lastName"]}
                             placeholder="Primary Surgeon"
-                            getValues={getValues}
                             dependency="scheduling.serviceLine.serviceLineId"
                             params={[{field: "serviceLineId", value: "scheduling.serviceLine.serviceLineId"}]}
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController withTime control={control} id={'scheduling.procedureDate'} title="Procedure Date" placeholder="Procedure Date" />
+                        <DateController withTime id={'scheduling.procedureDate'} title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Admission Type"
-                            control={control}
                             id="scheduling.admissionType"
                             options={admissionTypeData} 
                             labelProperties={["admissionType"]}

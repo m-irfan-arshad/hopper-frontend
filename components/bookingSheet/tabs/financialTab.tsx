@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { 
     Typography, 
     Grid, 
@@ -10,23 +10,19 @@ import {
 import { Add } from "@mui/icons-material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Control, UseFieldArrayReturn } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { ConfigObject } from '../../../utils/helpers';
-import { priorAuthorizationData } from '../../../reference';
+import { defaultInsuranceValue, priorAuthorizationData } from '../../../reference';
 
 
 interface Props {
-    control: Control<any, any>,
     config: ConfigObject,
-    methods: UseFieldArrayReturn<any, any>,
-    defaultValue: object,
-    getValues: any
 }
 
 export default function FinancialTab(props: Props) {
-    const {control, config, methods, defaultValue, getValues} = props;
-    const { append, remove, fields } = methods;
+    const { control } = useFormContext();
+    const { append, remove, fields } = useFieldArray({control, name: "financial"});
 
     return (
         <Box>
@@ -38,25 +34,22 @@ export default function FinancialTab(props: Props) {
                             <DropDownSearchController 
                                 {...item}
                                 title="Insurance"
-                                control={control}
                                 id={`financial.${index}.insurance`}
                                 labelProperties={["insuranceName"]}
                                 placeholder="Insurance" 
                                 queryKey="getInsurances"
-                                getValues={getValues}
                             />
                         </Grid>
                         <Grid item xs={6}>
-                            <InputController control={control} id={`financial.${index}.insuranceGroupName`} title="Insurance Group Name" placeholder="Insurance Group Name"/>
+                            <InputController id={`financial.${index}.insuranceGroupName`} title="Insurance Group Name" placeholder="Insurance Group Name"/>
                         </Grid>
                         <Grid item xs={6}>
-                            <InputController control={control} id={`financial.${index}.insuranceGroupNumber`} title="Insurance Group Number" placeholder="Insurance Group Number"/>
+                            <InputController id={`financial.${index}.insuranceGroupNumber`} title="Insurance Group Number" placeholder="Insurance Group Number"/>
                         </Grid>
                         <Grid item xs={4}>
                             <DropDownSearchController 
                                 {...item}
                                 title="Prior Auth Approved"
-                                control={control}
                                 id={`financial.${index}.priorAuthorization`}
                                 options={priorAuthorizationData} 
                                 labelProperties={["priorAuthorization"]}
@@ -64,10 +57,10 @@ export default function FinancialTab(props: Props) {
                             />
                         </Grid>
                         <Grid item xs={4}>
-                            <InputController control={control} id={`financial.${index}.priorAuthId`} title="Prior Auth Id" placeholder="Prior Auth Id"/>
+                            <InputController id={`financial.${index}.priorAuthId`} title="Prior Auth Id" placeholder="Prior Auth Id"/>
                         </Grid>
                         <Grid item xs={4}>
-                            <DateController control={control} id={`financial.${index}.priorAuthDate`} title="Prior Auth Date" placeholder="Prior Auth Date" />
+                            <DateController id={`financial.${index}.priorAuthDate`} title="Prior Auth Date" placeholder="Prior Auth Date" />
                         </Grid>
                     </Grid>
                     {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "3rem", marginBottom: "3rem"}}/>}
@@ -75,7 +68,7 @@ export default function FinancialTab(props: Props) {
                 <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "4rem" }}>
                     <Button 
                         variant="contained" 
-                        onClick={()=>append(defaultValue)}
+                        onClick={()=>append(defaultInsuranceValue)}
                         startIcon={<Add />}
                         disabled={false}
                         size="small"

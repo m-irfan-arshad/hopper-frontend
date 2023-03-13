@@ -15,13 +15,9 @@ import {
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { 
-    useCreateCaseHook, 
-    useGetLocationsHook, 
-    useGetProcedureUnitsHook,
-    useGetServiceLinesHook, 
-    useGetProvidersHook 
+    useCreateCaseHook
 } from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -82,7 +78,7 @@ export default function CreateCaseDialog(props: Props) {
     })
   });
 
-  const { handleSubmit, control, reset, resetField, watch, formState: { isValid, dirtyFields } } = useForm({ 
+  const form = useForm({ 
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
@@ -101,14 +97,11 @@ export default function CreateCaseDialog(props: Props) {
     }
   });
 
+  const { handleSubmit, control, reset, resetField, watch, formState: { isValid, dirtyFields } } = form;
+
   const locationDropDownValue = watch('scheduling.location');
   const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
   const serviceLineDropDownValue = watch('scheduling.serviceLine');
-
-  const { data: locationData = [] } = useGetLocationsHook();
-  const { data: procedureUnitData = [] } = useGetProcedureUnitsHook(locationDropDownValue ? locationDropDownValue['locationId'] : NaN); 
-  const { data: serviceLineData = [] } = useGetServiceLinesHook(procedureUnitDropDownValue ? procedureUnitDropDownValue['procedureUnitId'] : NaN);
-  const { data: providerData = [] } = useGetProvidersHook(serviceLineDropDownValue ? serviceLineDropDownValue['serviceLineId'] : NaN);
 
   useEffect(() => {
     resetField('scheduling.procedureUnit');
@@ -128,70 +121,70 @@ export default function CreateCaseDialog(props: Props) {
             <Typography sx={{fontSize: "1.5rem"}} color="white.main"> Create Case </Typography>
         </DialogTitle>
         <DialogContent>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Typography variant="subtitle1" sx={{marginTop: "1.5rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
-                <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
-                    <Grid item xs={6}>
-                        <InputController control={control} id="patient.firstName" title="First Name" placeholder="First Name"/>
+            <FormProvider {...form} >
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <Typography variant="subtitle1" sx={{marginTop: "1.5rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
+                    <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
+                        <Grid item xs={6}>
+                            <InputController id="patient.firstName" title="First Name" placeholder="First Name"/>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <InputController id="patient.lastName" title="Last Name" placeholder="Last Name" />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <DateController id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <InputController control={control} id="patient.lastName" title="Last Name" placeholder="Last Name" />
+                    <Typography variant="subtitle1" sx={{marginTop: "2.5rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
+                    <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
+                        <Grid item xs={12}>
+                            <DropDownSearchController
+                                title="Surgical Location"
+                                id="scheduling.location" 
+                                queryKey="getLocations"
+                                labelProperties={["locationName"]}
+                                placeholder="Surgical Location"
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <DropDownSearchController 
+                                title="Procedure Unit"
+                                id="scheduling.procedureUnit" 
+                                queryKey="getProcedureUnits"
+                                labelProperties={["procedureUnitName"]}
+                                placeholder="Procedure Unit"
+                                dependency="scheduling.location.locationId"
+                                params={[{field: "locationId", value: "scheduling.location.locationId"}]}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <DropDownSearchController 
+                                title="Service Line"
+                                id="scheduling.serviceLine" 
+                                queryKey="getServiceLines"
+                                labelProperties={["serviceLineName"]}
+                                placeholder="Service Line"
+                                dependency="scheduling.procedureUnit.procedureUnitId"
+                                params={[{field: "procedureUnitId", value: "scheduling.procedureUnit.procedureUnitId"}]}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <DropDownSearchController 
+                                title="Primary Surgeon"
+                                id="scheduling.provider" 
+                                queryKey="getProviders"
+                                labelProperties={["firstName", "lastName"]}
+                                placeholder="Primary Surgeon"
+                                dependency="scheduling.serviceLine.serviceLineId"
+                                params={[{field: "serviceLineId", value: "scheduling.serviceLine.serviceLineId"}]}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <DateController id="scheduling.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <DateController control={control} id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" />
-                    </Grid>
-                </Grid>
-                <Typography variant="subtitle1" sx={{marginTop: "2.5rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
-                <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
-                    <Grid item xs={12}>
-                        <DropDownSearchController
-                            control={control}
-                            id="scheduling.location" 
-                            options={locationData} 
-                            labelProperties={["locationName"]} 
-                            title="Surgical Location"
-                            placeholder="Surgical Location" 
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <DropDownSearchController 
-                            control={control}
-                            id="scheduling.procedureUnit"
-                            options={procedureUnitData} 
-                            labelProperties={["procedureUnitName"]}
-                            title="Procedure Unit" 
-                            placeholder="Procedure Unit" 
-                            disabled={!dirtyFields.scheduling?.location}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <DropDownSearchController 
-                            control={control}
-                            id="scheduling.serviceLine" 
-                            options={serviceLineData} 
-                            labelProperties={["serviceLineName"]}
-                            title="Service Line" 
-                            placeholder="Service Line" 
-                            disabled={!dirtyFields.scheduling?.procedureUnit} 
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <DropDownSearchController 
-                            control={control}
-                            id="scheduling.provider" 
-                            options={providerData} 
-                            labelProperties={["firstName", "lastName"]}
-                            title="Primary Surgeon" 
-                            placeholder="Primary Surgeon" 
-                            disabled={!dirtyFields.scheduling?.serviceLine} 
-                            additionalStyles={{ marginBottom: "50px"}} 
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <DateController control={control} id="scheduling.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
-                    </Grid>
-                </Grid>
-            </LocalizationProvider>
+                </LocalizationProvider>
+            </FormProvider>
         </DialogContent>
         <DialogActions sx={{display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "0.063rem solid", padding: "0.625rem", borderColor: "gray.main"}}>
           <Button 

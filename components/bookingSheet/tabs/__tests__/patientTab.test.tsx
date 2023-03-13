@@ -1,7 +1,7 @@
 import { render, renderHook, fireEvent } from '@testing-library/react'        
 import PatientTab from "../patientTab";
 import moment from "moment";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { mockSingleCase } from "../../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
@@ -9,7 +9,17 @@ jest.mock('@tanstack/react-query', () => ({
     useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
     QueryClient: jest.fn(),
     useQuery: jest.fn().mockReturnValue({ data: [] })
-}));   
+}));  
+
+const FormWrapper = (props: any) => {
+    const formMethods = useForm();
+
+    return (
+      <FormProvider {...formMethods}>
+        {props.children}
+      </FormProvider>
+    );
+  };
 
 describe("PatientTab", () => {
     const { result } = renderHook(() => useForm())
@@ -37,7 +47,9 @@ describe("PatientTab", () => {
 
     test("renders the patient tab", () => {
         const { getByPlaceholderText, getByLabelText, getByRole } = render(
+            <FormWrapper>
             <PatientTab {...props}  />
+            </FormWrapper>
         );  
         expect(getByRole('textbox', {name: 'First Name'})).toBeInTheDocument();
         expect(getByPlaceholderText("First Name")).toBeInTheDocument();
@@ -51,7 +63,8 @@ describe("PatientTab", () => {
 
     test("does not render fields marked non visible in the patient tab", () => {
         const { getByPlaceholderText, getByLabelText, getByRole, queryByRole } = render(
-            <PatientTab control={result.current.control} config={{
+            <FormWrapper>
+            <PatientTab config={{
                 organization: "...",
                 tabs: [
                     {
@@ -65,7 +78,8 @@ describe("PatientTab", () => {
                         ]
                     }  
                 ]
-            }} getValues={jest.fn()}  />
+            }}  />
+            </FormWrapper>
         );  
         expect(queryByRole('textbox', {name: 'First Name'})).not.toBeInTheDocument();
 
@@ -75,7 +89,9 @@ describe("PatientTab", () => {
 
     test("can update fields in patient tab", () => {
         const { getByPlaceholderText, getByLabelText, getByRole } = render(
+            <FormWrapper>
             <PatientTab {...props}  />
+            </FormWrapper>
         );  
 
         expect(getByRole('textbox', {name: 'Middle Name'})).toBeInTheDocument();

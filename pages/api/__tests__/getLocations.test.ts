@@ -51,7 +51,7 @@
         const data = res._getJSONData();
         expect(data[0].locationId).toEqual(1)
         expect(data[0].locationName).toEqual('locationName')
-        expect(data[0].procedureUnits).toEqual(['first'])
+        expect(data[0].procedureUnit).toEqual(['first'])
         expect(prismaMock.location.findMany).toBeCalledTimes(1);
     })
 });

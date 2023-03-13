@@ -13,7 +13,7 @@ import {
     Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { getDirtyValues } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject, defaultInsuranceValue } from '../../reference';
@@ -108,7 +108,6 @@ export default function BookingSheetDialog(props: Props) {
         }
     });
     const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
-    const financialMethods = useFieldArray({control, name: "financial"});
 
     const onSubmit = async (formData: any) => {
         const query = prepareFormForSubmission(data.caseId, formData, dirtyFields)
@@ -160,9 +159,11 @@ export default function BookingSheetDialog(props: Props) {
                 </Box>
             </DialogTitle>
             <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
-                {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control} getValues={getValues}/>}
-                {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue} getValues={getValues}/>}
-                {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} form={form}/>}
+                <FormProvider {...form} >
+                    {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject}/>}
+                    {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject}/>}
+                    {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} />}
+                </FormProvider>
             </DialogContent>
             <DialogActions 
                 sx={{
