@@ -4,6 +4,7 @@ import { useGetCaseByIdHook } from '../../utils/hooks';
 import { Button, Box, Typography, Tabs, Tab, styled, useMediaQuery } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
+import UploadDocumentDialog from "../../components/uploadDocumentDialog";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
 import DocumentTabItem from "../../components/documentTabItem";
@@ -53,14 +54,15 @@ export default function CaseHub() {
   ];
 
   const { data } = useGetCaseByIdHook(router.query.caseId as string);
-  const [isDialogOpen, setDialogState] = useState(false);
+  const [isBookingSheetDialogOpen, setBookingSheetDialogState] = useState(false);
   const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
   const [caseTab, selectCaseTab] = useState('Activity');
+  const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
 
   const count = documentData.length;
 
   function handleselectBookingSheetTab(selectedTab: string) {
-    setDialogState(true);
+    setBookingSheetDialogState(true);
     selectBookingSheetTab(selectedTab)
   }
 
@@ -125,6 +127,7 @@ export default function CaseHub() {
     <React.Fragment>
         <Box sx={{backgroundColor: "gray.light", minHeight: "100vh" }}>
             <TopNavBar />
+            <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
             <Box sx={{display: "flex", justifyContent: "center", paddingLeft: "1rem"}}>
                 <Box 
                     sx={{ 
@@ -138,8 +141,8 @@ export default function CaseHub() {
                         <BookingSheetDialog 
                             initiallySelectedTab={bookingSheetTab} 
                             data={data} 
-                            open={isDialogOpen} 
-                            closeDialog={() => setDialogState(false)} 
+                            open={isBookingSheetDialogOpen} 
+                            closeDialog={() => setBookingSheetDialogState(false)} 
                         />
                         <Link href={`/`} passHref>
                             <BookingSheetButton
@@ -228,6 +231,7 @@ export default function CaseHub() {
                                       backgroundColor: 'transparent'
                                     }
                                   }}
+                                  onClick={() => setUploadDocumentDialogState(true)}
                                 >
                                     + Upload Document
                                 </Button>
