@@ -15,7 +15,7 @@ export class DashboardPage {
     readonly patientInformation: Locator;
     readonly submitCreateCaseButton: Locator;
     readonly caseId: Locator;
-    readonly url: string ;
+    readonly url: string;
 
     /**
      * @param {import('@playwright/test').Page} page
