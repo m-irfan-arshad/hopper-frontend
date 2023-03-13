@@ -176,3 +176,21 @@ export const PagesTestWrapper = ({ children }: any) => (
         </ThemeProvider>
     </UserProvider>
 );
+
+export const mockUseGenericQueryHook = ({queryKey}: any): {isLoading?: boolean, data: any} => {
+    switch (queryKey) {
+        case "getLocations": {
+            return {isLoading: false, data: mockLocationData}
+        }
+        case "getProcedureUnits": {
+            return {isLoading: false, data: mockProcedureUnitData}
+        }
+        case "getServiceLines": {
+            return {isLoading: false, data: mockServiceLineData}
+        }
+        case "getProviders": {
+            return {isLoading: false, data: mockProviderData}
+        }
+        default: return { data: []}
+    }
+}

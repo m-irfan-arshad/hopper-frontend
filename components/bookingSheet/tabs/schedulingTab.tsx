@@ -37,6 +37,9 @@ export default function SchedulingTab(props: Props) {
         isDirty && resetField('scheduling.provider');
     }, [serviceLineDropDownValue]);
 
+    console.log("getValues: ", getValues())
+
+
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>

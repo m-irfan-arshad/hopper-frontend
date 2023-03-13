@@ -1,7 +1,8 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import CreateCaseDialog from "../createCaseDialog";
 import moment from "moment";
-import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData } from "../../testReference";
+import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData, mockUseGenericQueryHook } from "../../testReference";
+import { FormProvider, useForm } from "react-hook-form";
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -10,11 +11,27 @@ jest.mock('@tanstack/react-query', () => ({
 
 jest.mock("../../utils/hooks", () => ({
   useCreateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-  useGetLocationsHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockLocationData })),
-  useGetProcedureUnitsHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProcedureUnitData })),
-  useGetServiceLinesHook: jest.fn().mockImplementation(() =>  ({ isLoading: false, data: mockServiceLineData })),
-  useGetProvidersHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProviderData }))
+  useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
 }));
+
+const FormWrapper = (props: any) => {
+  const formMethods = useForm({
+      defaultValues: {
+          scheduling: {
+              location: {
+                  locationId: 1,
+                  locationName: "Medtel Hospital"
+              }
+          }
+      }
+  });
+
+  return (
+    <FormProvider {...formMethods}>
+      {props.children}
+    </FormProvider>
+  );
+};
 
 describe("CreateCaseDialog", () => {
   const props = {
@@ -31,7 +48,9 @@ describe("CreateCaseDialog", () => {
 
   test("renders the createCaseDialog", () => {
     const { getByLabelText } = render(
+      <FormWrapper>
       <CreateCaseDialog {...props} />
+      </FormWrapper>
     );
 
     expect(getByLabelText("First Name")).toBeInTheDocument();
@@ -46,7 +65,9 @@ describe("CreateCaseDialog", () => {
 
   test("handles closing of createCaseDialog", () => {
     const { getByRole } = render(
+      <FormWrapper>
       <CreateCaseDialog {...props} />
+      </FormWrapper>
     );
 
     expect(getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
@@ -58,7 +79,9 @@ describe("CreateCaseDialog", () => {
 
   test("changes calendar date", () => {
     const { getByPlaceholderText } = render(
+      <FormWrapper>
       <CreateCaseDialog {...props} />
+      </FormWrapper>
     );
 
     expect(getByPlaceholderText("Procedure Date")).toBeInTheDocument();
@@ -75,7 +98,9 @@ describe("CreateCaseDialog", () => {
     jest.setTimeout(10000);
     
     const { getByPlaceholderText, getByRole, getByText } = render(
+      <FormWrapper>
       <CreateCaseDialog {...props} />
+      </FormWrapper>
     );
     
     expect(getByRole('textbox', {name: 'First Name'})).toBeInTheDocument();

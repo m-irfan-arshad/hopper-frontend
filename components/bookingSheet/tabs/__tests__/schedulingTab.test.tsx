@@ -1,7 +1,7 @@
 import { render, renderHook, fireEvent, waitFor } from '@testing-library/react'        
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { mockLocationData, mockProcedureUnitData, mockProviderData, mockServiceLineData } from '../../../../testReference';
+import { mockLocationData, mockProcedureUnitData, mockProviderData, mockServiceLineData, mockSingleCase, mockSingleLocation, mockSingleProcedureUnit, mockSingleProvider, mockSingleServiceLine, mockUseGenericQueryHook } from '../../../../testReference';
 import SchedulingTab from '../schedulingTab';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -12,35 +12,14 @@ jest.mock('@tanstack/react-query', () => ({
 }));
 
 jest.mock("../../../../utils/hooks", () => ({
-    useGenericQueryHook: jest.fn().mockImplementation(({queryKey}) => {
-        console.log("queryKey: ", queryKey)
-        switch (queryKey) {
-            case "getLocations": {
-                console.log("got here")
-                return {isLoading: false, data: mockLocationData}
-            }
-            case "getProcedureUnits": {
-                return {isLoading: false, data: mockProcedureUnitData}
-            }
-            case "getServiceLines": {
-                return {isLoading: false, data: mockServiceLineData}
-            }
-            case "getProviders": {
-                return {isLoading: false, data: mockProviderData}
-            }
-            default: return { data: []}
-        }
-    })
+    useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
 }));
 
 const FormWrapper = (props: any) => {
     const formMethods = useForm({
         defaultValues: {
             scheduling: {
-                location: {
-                    locationId: 1,
-                    locationName: "Medtel Hospital"
-                }
+                procedureDate: moment('1990-02-01').toDate()
             }
         }
     });
@@ -52,7 +31,26 @@ const FormWrapper = (props: any) => {
     );
   };
 
-describe("SchedulingTab", () => {
+  const PrepopulatedFormWrapper = (props: any) => {
+    const formMethods = useForm({
+        defaultValues: {
+            scheduling: {
+                location: mockSingleLocation,
+                procedureUnit: mockSingleProcedureUnit,
+                serviceLine: mockSingleServiceLine,
+                provider: mockSingleProvider
+            }
+        }
+    });
+
+    return (
+      <FormProvider {...formMethods}>
+        {props.children}
+      </FormProvider>
+    );
+  };
+
+describe.only("SchedulingTab", () => {
     const props = {
         config: {
             organization: "...",
@@ -61,9 +59,9 @@ describe("SchedulingTab", () => {
     };
 
     test("renders the scheduling tab", () => {
-        const { getByPlaceholderText, getByLabelText, getByRole } = render(
+        const { getByPlaceholderText, getByRole } = render(
             <FormWrapper>
-                <SchedulingTab {...props}  />
+                <SchedulingTab {...props} />
             </FormWrapper>
         );  
         expect(getByRole('combobox', {name: 'Surgical Location'})).toBeInTheDocument();
@@ -79,25 +77,68 @@ describe("SchedulingTab", () => {
         expect(getByPlaceholderText("Primary Surgeon")).toBeInTheDocument();
 
         expect(getByPlaceholderText("Procedure Date")).toBeInTheDocument()
-        expect(getByPlaceholderText("Procedure Date")).toHaveValue('02/01/1990');
+        expect(getByPlaceholderText("Procedure Date")).toHaveValue('02/01/1990 12:00 AM');
 
         expect(getByRole('combobox', {name: 'Admission Type'})).toBeInTheDocument();
         expect(getByPlaceholderText("Admission Type")).toBeInTheDocument();
+
+        expect(getByRole('combobox', {name: 'Surgical Location'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Procedure Unit'})).toBeDisabled();
+        expect(getByRole('combobox', {name: 'Service Line'})).toBeDisabled();
+        expect(getByRole('combobox', {name: 'Primary Surgeon'})).toBeDisabled();
+        
     });
 
-    test("can select location from dropdown", async () => {
-        const { getByText, getByPlaceholderText, getByLabelText, getByRole } = render(
+    test("Selecting filter from dropdown enables it's dependency", async () => {
+        const { getByText, getByRole } = render(
             <FormWrapper>
-                <SchedulingTab {...props}  />
+                <SchedulingTab {...props} />
             </FormWrapper>
         );  
 
+        expect(getByRole('combobox', {name: 'Surgical Location'})).toBeInTheDocument();
+        fireEvent.change(getByRole("combobox", {name: 'Surgical Location'}), {target: {value: "M"}})
         await waitFor(() => {
-            expect(getByText("Medtel Hospital")).toBeInTheDocument();
+            expect(getByText(mockLocationData[0].locationName)).toBeInTheDocument();
         })
+
         fireEvent.click(getByText(mockLocationData[0].locationName));
-        expect(getByRole('combobox', {name: 'Procedure Unit'})).toBeDisabled();
+        expect(getByRole('combobox', {name: 'Procedure Unit'})).toBeEnabled();
         expect(getByRole('combobox', {name: 'Service Line'})).toBeDisabled();
+        expect(getByRole('combobox', {name: 'Primary Surgeon'})).toBeDisabled();
+
+        fireEvent.change(getByRole("combobox", {name: 'Procedure Unit'}), {target: {value: "p"}})
+        await waitFor(() => {
+            expect(getByText(mockProcedureUnitData[0].procedureUnitName)).toBeInTheDocument();
+        })
+
+        fireEvent.click(getByText(mockProcedureUnitData[0].procedureUnitName));
+        expect(getByRole('combobox', {name: 'Surgical Location'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Service Line'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Primary Surgeon'})).toBeDisabled();
+
+        fireEvent.change(getByRole("combobox", {name: 'Service Line'}), {target: {value: "s"}})
+        await waitFor(() => {
+            expect(getByText(mockServiceLineData[0].serviceLineName)).toBeInTheDocument();
+        })
+
+        fireEvent.click(getByText(mockServiceLineData[0].serviceLineName));
+        expect(getByRole('combobox', {name: 'Surgical Location'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Service Line'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Primary Surgeon'})).toBeEnabled();
+    });
+
+    test("Enables all filters if prepopulated", async () => {
+        const { getByRole } = render(
+            <PrepopulatedFormWrapper>
+                <SchedulingTab {...props} />
+            </PrepopulatedFormWrapper>
+        );  
+
+        expect(getByRole('combobox', {name: 'Surgical Location'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Procedure Unit'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Service Line'})).toBeEnabled();
+        expect(getByRole('combobox', {name: 'Primary Surgeon'})).toBeEnabled();
     });
 });
 
