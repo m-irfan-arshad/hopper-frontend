@@ -5,6 +5,7 @@
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
  import createCaseHander from '../createCase.page'
+import { mockSingleCase, mockSinglePatient } from '../../../testReference';
 
  jest.mock('@auth0/nextjs-auth0', () => ({
     withApiAuthRequired: jest.fn((args) => args),
@@ -12,49 +13,14 @@
 }));
 
  describe("createCase API", () => {
-
-    const testCase = {
-        caseId: 1,
-        fhirResourceId: "testId",
-        patientId: 1,
-        procedureDate: new Date(),
-        providerId: 123,
-        locationId: 456,
-        createTime: new Date(),
-        updateTime: new Date(),
-        priorAuthorization: "incomplete",
-        vendorConfirmation: "incomplete",
-        procedureUnit: "testProcedureUnit",
-        serviceLine: "testServiceLine"
-    }
-    const testPatient = {
-        firstName: "Test",
-        middleName: "J",
-        lastName: "Patient",
-        patientId: 1,
-        fhirResourceId: "11223344",
-        address: "112 Drive Drive",
-        city: "New York",
-        state: "New York",
-        sex: "M",
-        mobilePhone: "1234567",
-        homePhone: "1234567",
-        mrn: "1234567",
-        zip: "10000",
-        dateOfBirth: new Date(),
-        createTime: new Date(),
-        updateTime: new Date(),
-    }
-
     let req: NextApiRequest = httpMock.createRequest({
         url: "/api/createCase",
-        body: {case: testCase, patient: testPatient}
+        body: {case: mockSingleCase}
     });
     let res: any = httpMock.createResponse({});
 
     test('should create case', async () => {
-        prismaMock.cases.create.mockResolvedValue(testCase)
-        prismaMock.patients.create.mockResolvedValue(testPatient)
+        prismaMock.cases.create.mockResolvedValue(mockSingleCase)
 
         await createCaseHander(req, res)
         const data = res._getJSONData()

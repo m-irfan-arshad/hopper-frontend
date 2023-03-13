@@ -1,4 +1,4 @@
-import { Prisma, cases, patients } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import moment from "moment";
 
 export const caseCardProcedureInformation = [
@@ -9,12 +9,12 @@ export const caseCardProcedureInformation = [
   {
     label: "Procedure Location",
     id: "locationName",
-    fromTable: "locations"
+    fromTable: "location"
   },
   {
     label: "Provider",
     id: "providerName",
-    fromTable: "providers"
+    fromTable: "provider"
   }
 ];
 
@@ -26,7 +26,7 @@ export const caseCardCaseIdentifiers = [
   {
     label: "MRN",
     id: "mrn",
-    fromTable: 'patients'
+    fromTable: 'patient'
   },
   {
     label: "Quick Actions",
@@ -123,23 +123,22 @@ export const bookingSheetConfigObject = {
   ]
 }
 
-export const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
-export const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
-export const insuranceData = [{insurance: 'insurance1'}, {insurance: 'insurance2'}, {insurance: 'insurance3'}]; 
-export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthApproved: 'No'}];
+
+export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
+
 export const admissionTypeData = [{admissionType: 'Admission 1'}, {admissionType: 'Admission 2'}];
 
-export type FullCase = Prisma.casesGetPayload<{
-  include: { patients?: true, locations?: true, providers?: true, serviceLines?: true, procedureUnits?: true, financial?: true }
-}>
-
-export type FormattedFullCase = FullCase & {
-  steps: {
-    [key: string]: string
-    priorAuthorization: string,
-    vendorConfirmation: string
-  }
+export const includeReferencesObject = { 
+  patient: true, 
+  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true} }, 
+  financial: true
 }
+
+export type FullCase = Prisma.casesGetPayload<{ include: { 
+  patient: true, 
+  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true} }, 
+  financial: true
+} }>
 
 export const defaultInsuranceValue = {
   insurance: null,

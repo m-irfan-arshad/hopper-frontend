@@ -22,8 +22,9 @@ interface Props {
 
 export default function CaseSummaryContent(props: Props) {
     const {row} = props;
-    const {patients, providers, locations} = row;
-
+    const {patient, scheduling} = row;
+    const {provider, location, procedureDate} = scheduling;
+    
     const SectionHeader = (props: SectionHeaderProps) => {
         const {title, icon} = props;
         return (
@@ -48,20 +49,20 @@ return (
             <Grid container spacing={"1rem"}>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Name</Typography>
-                    <Typography variant="body2">{`${patients?.firstName} ${row.patients?.lastName}`}</Typography>
+                    <Typography variant="body2">{`${patient?.firstName} ${row.patient?.lastName}`}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">DOB</Typography>
-                    <Typography variant="body2">{formatDate(patients?.dateOfBirth) || 'N/A'}</Typography>
+                    <Typography variant="body2">{formatDate(patient?.dateOfBirth) || 'N/A'}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Address</Typography>
-                    <Typography variant="body2">{row.patients?.address || 'N/A'}</Typography>
+                    <Typography variant="body2">{row.patient?.address || 'N/A'}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Phone</Typography>
-                    <Typography variant="body2">{`Mobile: ${patients?.mobilePhone || 'N/A'}`}</Typography>
-                    <Typography variant="body2">{`Home: ${patients?.homePhone || 'N/A'}`}</Typography>
+                    <Typography variant="body2">{`Mobile: ${patient?.mobilePhone || 'N/A'}`}</Typography>
+                    <Typography variant="body2">{`Home: ${patient?.homePhone || 'N/A'}`}</Typography>
                 </Grid>
             </Grid>
         <DottedDivider />
@@ -69,7 +70,7 @@ return (
             <Grid container spacing={"1rem"}>
                 <Grid item xs={6}>
                     <Typography variant="caption">Procedure Date and Time</Typography>
-                    <Typography variant="body2">{formatDate(row.procedureDate) || 'N/A'}</Typography>
+                    <Typography variant="body2">{formatDate(procedureDate) || 'N/A'}</Typography>
                 </Grid>
             </Grid>
         <DottedDivider />
@@ -77,11 +78,11 @@ return (
             <Grid container spacing={"1rem"}>
                 <Grid item xs={6}>
                     <Typography variant="caption">Site</Typography>
-                    <Typography variant="body2">{locations?.locationName || 'N/A'}</Typography>
+                    <Typography variant="body2">{location?.locationName || 'N/A'}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Surgeon Name</Typography>
-                    <Typography variant="body2">{providers ? (providers.lastName+", "+providers.firstName) : 'N/A'}</Typography>
+                    <Typography variant="body2">{provider ? (provider.lastName+", "+provider.firstName) : 'N/A'}</Typography>
                 </Grid>
             </Grid> 
     </LocalizationProvider>

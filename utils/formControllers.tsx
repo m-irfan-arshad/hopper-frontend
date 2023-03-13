@@ -111,7 +111,7 @@ export function DateController(props: DateControllerProps) {
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
     const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control, queryKey, params, dependency, getValues} = props;
-    const paramString = '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&')
+    const paramString = params ?  '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
     const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGenericQueryHook({queryKey: queryKey, paramString: paramString, dependency: getValues(dependency)}) : {data: options}

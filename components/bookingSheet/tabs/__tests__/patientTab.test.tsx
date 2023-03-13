@@ -4,7 +4,12 @@ import moment from "moment";
 import { useForm } from "react-hook-form";
 import { mockSingleCase } from "../../../../testReference";
 
-
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+    QueryClient: jest.fn(),
+    useQuery: jest.fn().mockReturnValue({ data: [] })
+}));   
 
 describe("PatientTab", () => {
     const { result } = renderHook(() => useForm())
@@ -26,7 +31,8 @@ describe("PatientTab", () => {
                     ]
                 }  
             ]
-        }
+        },
+        getValues: jest.fn()
     };
 
     test("renders the patient tab", () => {
@@ -59,7 +65,7 @@ describe("PatientTab", () => {
                         ]
                     }  
                 ]
-            }}  />
+            }} getValues={jest.fn()}  />
         );  
         expect(queryByRole('textbox', {name: 'First Name'})).not.toBeInTheDocument();
 

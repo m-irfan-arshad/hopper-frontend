@@ -5,17 +5,17 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['procedureUnitId'];
 
-export default withValidation(requiredParams, async function getServiceLinesHandler(req: NextApiRequest, res: NextApiResponse) {
+export default withApiAuthRequired( withValidation(requiredParams, async function getServiceLinesHandler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const serviceLines = await prisma.serviceLines.findMany({
+        const serviceLines = await prisma.serviceLine.findMany({
             where: {
                 procedureUnitId: parseInt(req.query["procedureUnitId"] as string)
-            }
+            },
+            orderBy: { serviceLineName: 'asc' }
         })
-        serviceLines.sort((unit1, unit2) => unit1.serviceLineName.toLowerCase() > unit2.serviceLineName.toLowerCase() ? 1 : -1);
 
         res.json(serviceLines)
     } catch(err) {
         res.status(500).json({ message: err });
     }
-})
+}))

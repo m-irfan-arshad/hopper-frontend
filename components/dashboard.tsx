@@ -3,7 +3,7 @@ import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
 import { Logout, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
-import { FormattedFullCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
+import { FullCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
 import DropDownComponent from "./shared/dropdown";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
@@ -13,7 +13,7 @@ import * as R from 'ramda';
 import { CaseFilterContext } from "../pages/_app.page";
 
 interface CaseGroup {
-    [key: string]: FormattedFullCase[]
+    [key: string]: FullCase[]
 }
 
 export default function Dashboard() {  
@@ -54,8 +54,8 @@ export default function Dashboard() {
 
     const caseGroups:CaseGroup = {};
 
-    data.cases.forEach(function(singleCase: FormattedFullCase) {
-        const date = formatDate(singleCase.procedureDate) || "";
+    data.cases.forEach(function(singleCase: FullCase) {
+        const date = formatDate(singleCase.scheduling?.procedureDate) || "";
         if (date in caseGroups) {
             caseGroups[date].push(singleCase);
         } else {

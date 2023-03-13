@@ -6,21 +6,19 @@ import {
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Control, useForm } from "react-hook-form";
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Control } from "react-hook-form";
 import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
-import { patientSexData, stateData } from '../../../reference';
 
 
 interface Props {
     control: Control<any, any>,
     config: ConfigObject,
+    getValues: any
 }
 
 export default function PatientTab(props: Props) {
-    const {control, config} = props;
+    const {control, config, getValues} = props;
 
     return (
         <Box>
@@ -44,9 +42,10 @@ export default function PatientTab(props: Props) {
                             title="Sex"
                             control={control}
                             id="patient.sex"
-                            options={patientSexData} 
-                            labelProperties={["sex"]}
+                            labelProperties={["sexName"]}
                             placeholder="Sex" 
+                            queryKey="getSex"
+                            getValues={getValues}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -60,9 +59,10 @@ export default function PatientTab(props: Props) {
                             title="State"
                             control={control}
                             id="patient.state"
-                            options={stateData} 
-                            labelProperties={["state"]}
+                            labelProperties={["stateName"]}
                             placeholder="State" 
+                            queryKey="getState"
+                            getValues={getValues}
                         />
                     </Grid>
                     <Grid item xs={4}>

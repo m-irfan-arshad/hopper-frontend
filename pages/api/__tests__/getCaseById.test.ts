@@ -26,12 +26,9 @@ describe("getCaseById API", () => {
                 caseId: 123
             },
             include: {
-                insurances: true,
-                locations: true,
-                patients: true,
-                procedureUnits: true,
-                providers: true,
-                serviceLines: true
+                patient: {include: {sex: true, state: true}},
+                financial: {include: {insurance: true}, orderBy: {createTime: "asc"}},
+                scheduling: {include: {location: true, procedureUnit: true, serviceLine: true, provider: true}}
             }
         };
 
@@ -40,8 +37,8 @@ describe("getCaseById API", () => {
        await getCaseById(req, res)
        const data = res._getJSONData()
        expect(data.caseId).toEqual(1)
-       expect(data.providers.firstName).toEqual('Robert')
-       expect(data.providers.locationName).toEqual('NYU Langone')
+       expect(data.scheduling.provider.firstName).toEqual('Robert')
+       expect(data.scheduling.location.locationName).toEqual('Medtel Hospital')
        expect(prismaMock.cases.findUnique).toBeCalledTimes(1)
        expect(prismaMock.cases.findUnique).toBeCalledWith(params)
    })

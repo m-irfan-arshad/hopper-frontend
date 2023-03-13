@@ -5,7 +5,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { mockSingleCase } from "../../../../testReference";
 import FinancialTab from '../financialTab';
 
-
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+    QueryClient: jest.fn(),
+    useQuery: jest.fn().mockReturnValue({ data: [] })
+}));   
 
 describe("FinancialTab", () => {
     const defaultInsuranceValue = {
@@ -39,7 +44,8 @@ describe("FinancialTab", () => {
                     ]
                 }  
             ]
-        }
+        },
+        getValues: jest.fn()
     };
 
     test("renders the financial tab", () => {

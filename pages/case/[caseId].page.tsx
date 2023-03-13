@@ -35,7 +35,7 @@ export default function CaseHub() {
   const [isDialogOpen, setDialogState] = useState(false);
   const [tab, selectTab] = useState('Patient');
 
-  const mrnString = data?.patients?.mrn ? `- ${data.patients.mrn}` : '';
+  const mrnString = data?.patient?.mrn ? `- ${data.patient.mrn}` : '';
   const headerIconStyles = {marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"};
 
   function handleSelectTab(selectedTab: string) {
@@ -152,10 +152,10 @@ export default function CaseHub() {
                             </BookingSheetButton>
                         </Link>
                         <Typography variant="h4" >
-                            {data?.patients ? `${data?.patients?.lastName}, ${data?.patients?.firstName}` : 'N/A'}
+                            {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
                         </Typography>
                         <Typography variant="caption" >
-                            {data?.patients ? `${formatDate(data?.patients?.dateOfBirth)} ${mrnString}` : 'N/A'}
+                            {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} ${mrnString}` : 'N/A'}
                         </Typography>
                         <BookingSheetButton
                             onClick={() => handleSelectTab('Patient')}

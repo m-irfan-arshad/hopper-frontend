@@ -25,7 +25,6 @@ import {
 } from '../utils/hooks';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { formatCreateCaseParams } from '../utils/helpers';
 import {InputController, DateController, DropDownSearchController} from '../utils/formControllers'
 
 interface Props {
@@ -38,8 +37,7 @@ export default function CreateCaseDialog(props: Props) {
   const {mutate} = useCreateCaseHook();
 
   const onSubmit = async (data: any) => {
-    const submissionData = formatCreateCaseParams(data);
-    await mutate(submissionData);
+    await mutate(data);
     handleClose();
   };
 
@@ -54,7 +52,7 @@ export default function CreateCaseDialog(props: Props) {
         lastName: yup.string().required(),
         dateOfBirth: yup.date().required(),
     }),
-    case: yup.object().shape({
+    scheduling: yup.object().shape({
         provider: yup.object().shape({
             providerId: yup.number().required(),
             fhirResourceId: yup.string().required(),
@@ -93,7 +91,7 @@ export default function CreateCaseDialog(props: Props) {
         lastName: "",
         dateOfBirth: null,
       },
-      case: {
+      scheduling: {
         provider: null,
         location: null,
         procedureUnit: null,
@@ -103,9 +101,9 @@ export default function CreateCaseDialog(props: Props) {
     }
   });
 
-  const locationDropDownValue = watch('case.location');
-  const procedureUnitDropDownValue = watch('case.procedureUnit');
-  const serviceLineDropDownValue = watch('case.serviceLine');
+  const locationDropDownValue = watch('scheduling.location');
+  const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
+  const serviceLineDropDownValue = watch('scheduling.serviceLine');
 
   const { data: locationData = [] } = useGetLocationsHook();
   const { data: procedureUnitData = [] } = useGetProcedureUnitsHook(locationDropDownValue ? locationDropDownValue['locationId'] : NaN); 
@@ -113,15 +111,15 @@ export default function CreateCaseDialog(props: Props) {
   const { data: providerData = [] } = useGetProvidersHook(serviceLineDropDownValue ? serviceLineDropDownValue['serviceLineId'] : NaN);
 
   useEffect(() => {
-    resetField('case.procedureUnit');
+    resetField('scheduling.procedureUnit');
   }, [locationDropDownValue, resetField]);
 
   useEffect(() => {
-    resetField('case.serviceLine');
+    resetField('scheduling.serviceLine');
   }, [procedureUnitDropDownValue, resetField]);
 
   useEffect(() => {
-    resetField('case.provider');
+    resetField('scheduling.provider');
   }, [serviceLineDropDownValue, resetField]);
 
   return (
@@ -148,7 +146,7 @@ export default function CreateCaseDialog(props: Props) {
                     <Grid item xs={12}>
                         <DropDownSearchController
                             control={control}
-                            id="case.location" 
+                            id="scheduling.location" 
                             options={locationData} 
                             labelProperties={["locationName"]} 
                             title="Surgical Location"
@@ -158,39 +156,39 @@ export default function CreateCaseDialog(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             control={control}
-                            id="case.procedureUnit"
+                            id="scheduling.procedureUnit"
                             options={procedureUnitData} 
                             labelProperties={["procedureUnitName"]}
                             title="Procedure Unit" 
                             placeholder="Procedure Unit" 
-                            disabled={!dirtyFields.case?.location}
+                            disabled={!dirtyFields.scheduling?.location}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             control={control}
-                            id="case.serviceLine" 
+                            id="scheduling.serviceLine" 
                             options={serviceLineData} 
                             labelProperties={["serviceLineName"]}
                             title="Service Line" 
                             placeholder="Service Line" 
-                            disabled={!dirtyFields.case?.procedureUnit} 
+                            disabled={!dirtyFields.scheduling?.procedureUnit} 
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             control={control}
-                            id="case.provider" 
+                            id="scheduling.provider" 
                             options={providerData} 
                             labelProperties={["firstName", "lastName"]}
                             title="Primary Surgeon" 
                             placeholder="Primary Surgeon" 
-                            disabled={!dirtyFields.case?.serviceLine} 
+                            disabled={!dirtyFields.scheduling?.serviceLine} 
                             additionalStyles={{ marginBottom: "50px"}} 
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController control={control} id="case.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
+                        <DateController control={control} id="scheduling.procedureDate" title="Procedure Date" placeholder="Procedure Date" />
                     </Grid>
                 </Grid>
             </LocalizationProvider>

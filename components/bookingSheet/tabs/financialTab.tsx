@@ -10,30 +10,29 @@ import {
 import { Add } from "@mui/icons-material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Control, useFieldArray, UseFieldArrayReturn } from "react-hook-form";
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { Control, UseFieldArrayReturn } from "react-hook-form";
 import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
-import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
-import { insuranceData, priorAuthApprovedData } from '../../../reference';
+import { ConfigObject } from '../../../utils/helpers';
+import { priorAuthorizationData } from '../../../reference';
 
 
 interface Props {
     control: Control<any, any>,
     config: ConfigObject,
-    methods: UseFieldArrayReturn<any, any>
-    defaultValue: object
+    methods: UseFieldArrayReturn<any, any>,
+    defaultValue: object,
+    getValues: any
 }
 
 export default function FinancialTab(props: Props) {
-    const {control, config, methods, defaultValue} = props;
+    const {control, config, methods, defaultValue, getValues} = props;
     const { append, remove, fields } = methods;
 
     return (
         <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark" }}>Financial</Typography>
-                {fields.map((item, index, itemList)=>(<React.Fragment key={'' + item.id + index}>
+                {fields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
                     <Grid container justifyContent={"left"} spacing={"1.25rem"} rowSpacing={"2.25rem"}>
                         <Grid item xs={12}>
                             <DropDownSearchController 
@@ -41,9 +40,10 @@ export default function FinancialTab(props: Props) {
                                 title="Insurance"
                                 control={control}
                                 id={`financial.${index}.insurance`}
-                                options={insuranceData} 
-                                labelProperties={["insurance"]}
+                                labelProperties={["insuranceName"]}
                                 placeholder="Insurance" 
+                                queryKey="getInsurances"
+                                getValues={getValues}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -57,9 +57,9 @@ export default function FinancialTab(props: Props) {
                                 {...item}
                                 title="Prior Auth Approved"
                                 control={control}
-                                id={`financial.${index}.priorAuthApproved`}
-                                options={priorAuthApprovedData} 
-                                labelProperties={["priorAuthApproved"]}
+                                id={`financial.${index}.priorAuthorization`}
+                                options={priorAuthorizationData} 
+                                labelProperties={["priorAuthorization"]}
                                 placeholder="Prior Auth Approved" 
                             />
                         </Grid>

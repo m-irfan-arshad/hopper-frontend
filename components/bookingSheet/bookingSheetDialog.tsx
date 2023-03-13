@@ -37,29 +37,7 @@ const StyledTab = styled(Tab)({
 });
 
 function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
-    let query: any = {caseId: caseId};
-    console.log("formData: ", formData)
-    if (dirtyFields.scheduling) {
-        const scheduling = formData.scheduling
-        query = {
-            ...query,
-            locationId: scheduling.location.locationId,
-            procedureUnitId: scheduling.procedureUnit.procedureUnitId,
-            serviceLineId: scheduling.serviceLine.serviceLineId,
-            providerId: scheduling.provider.providerId,
-            procedureDate: scheduling.procedureDate,
-            admissionType: scheduling.admissionType.admissionType,
-        }
-    }
-    if (dirtyFields.patient) {
-        query.patients = { update: {
-            ...getDirtyValues(dirtyFields.patient, formData.patient),
-            ...(dirtyFields.patient.sex && {sex: formData.patient.sex?.sex}),
-            ...(dirtyFields.patient.state && {state: formData.patient.state?.state}),
-            updateTime: moment()
-        }}
-        delete query.patients?.update.patientId
-    }
+    let query: any = {caseId: caseId, ...getDirtyValues(dirtyFields, formData)};
     
     if (dirtyFields.financial) {
         let newInsurances: object[] = [];
@@ -68,52 +46,32 @@ function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: an
             const updatedFields = dirtyFields.financial[index]
             if (R.isNil(updatedFields)) return; // check if any fields in this insurance was updated
 
-            let formattedFinancials = {
-                ...getDirtyValues(updatedFields, insObj),
-                ...(updatedFields.insurance && {insurance: insObj.insurance?.insurance}),
-                ...(updatedFields.priorAuthApproved && {priorAuthApproved: insObj.priorAuthApproved?.priorAuthApproved}),
-                updateTime: moment()
-            };
+            let formattedFinancials: any = getDirtyValues(updatedFields, insObj);
+            formattedFinancials.priorAuthorization && (formattedFinancials.priorAuthorization = formattedFinancials.priorAuthorization.priorAuthorization);
+            formattedFinancials.insurance && (formattedFinancials.insuranceId = formattedFinancials.insurance.insuranceId);
+            delete formattedFinancials.insurance;
 
-            if (insObj.insuranceId) { //if there is insuranceId present, update. Otherwise create
-                delete formattedFinancials.insuranceId;
+            if (insObj.financialId) { //if there is financialId present, update. Otherwise create
+                delete formattedFinancials.financialId;
                 delete formattedFinancials.caseId;
-                updateInsurances.push({data: formattedFinancials, where: {insuranceId: insObj.insuranceId}})
+                updateInsurances.push({data: formattedFinancials, where: {financialId: insObj.financialId}})
             } else {
                 newInsurances.push(formattedFinancials)
             } 
         })
-        query.insurances = {create: newInsurances, update: updateInsurances}
+        query.financial = {create: newInsurances, update: updateInsurances}
     }
 
     return query
 }
 
 function prepareFormForRender(data: any) {
-    const parsedCase: any = {};
-    parsedCase.patient = {
-        ...data?.patients,
-        ...(data?.patients.sex && {sex: {sex: data?.patients.sex}}),
-        ...(data?.patients.state && {state: {state: data?.patients.state}})
-    }
+    const parsedCase: any = data;
 
-    if (!R.isEmpty(data.insurances)) {
-        parsedCase.financial = [...data?.insurances]?.map((elem: any) => ({
-            ...elem,
-            ...(elem.insurance && {insurance: {insurance: elem.insurance}}),
-            ...(elem.priorAuthApproved && {priorAuthApproved: {priorAuthApproved: elem.priorAuthApproved}})
-        }))
-    } else {
+    if (R.isEmpty(data.financial)) {
         parsedCase.financial = [defaultInsuranceValue]
-    }
-
-    parsedCase.scheduling = {
-        location: data?.locations,
-        procedureUnit: data?.procedureUnits,
-        serviceLine: data?.serviceLines,
-        provider: data?.providers,
-        procedureDate: data?.procedureDate,
-        admissionType: data?.admissionType
+    } else {
+        parsedCase.financial = parsedCase.financial.map((insurance: any) => ({...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}))
     }
 
     return parsedCase;
@@ -154,15 +112,15 @@ export default function BookingSheetDialog(props: Props) {
 
     const onSubmit = async (formData: any) => {
         const query = prepareFormForSubmission(data.caseId, formData, dirtyFields)
+        reset({}, { keepValues: true }) // resets dirty fields
         await mutate(query)
         closeDialog()
+        selectTab(initiallySelectedTab)
     };
-
-    console.log("errors: ", errors)
         
     //populate form with data from API
     useEffect(() => {
-        if(data) reset(prepareFormForRender(data), {keepDefaultValues: true, keepDirty: true});
+        if(data) reset(prepareFormForRender(data), {keepDirty: true});
     }, [data]);
 
     useEffect(() => {
@@ -184,7 +142,7 @@ export default function BookingSheetDialog(props: Props) {
                 }}> 
                 <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "2rem"}}>
                     <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
-                        {`${data?.patients?.firstName} ${data?.patients?.lastName}`}
+                        {`${data?.patient?.firstName} ${data?.patient?.lastName}`}
                     </Typography>
                     <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={closeDialog}>
                         <CloseIcon />
@@ -202,8 +160,8 @@ export default function BookingSheetDialog(props: Props) {
                 </Box>
             </DialogTitle>
             <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
-                {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control}/>}
-                {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue}/>}
+                {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject} control={control} getValues={getValues}/>}
+                {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject} control={control} methods={financialMethods} defaultValue={defaultInsuranceValue} getValues={getValues}/>}
                 {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} form={form}/>}
             </DialogContent>
             <DialogActions 
