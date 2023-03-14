@@ -7,7 +7,6 @@
  import getCasesHandler from '../getCases.page'
  import moment from 'moment'
  import {mockCaseData} from "../../../testReference";
-import { includeReferencesObject } from '../../../reference';
 
  jest.mock('@auth0/nextjs-auth0', () => ({
         withApiAuthRequired: jest.fn((args) => args),

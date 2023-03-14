@@ -96,13 +96,16 @@ export default function CaseSummaryDialog(props: Props) {
             >
                 Cancel
             </Button>
-            {row?.vendorConfirmation === "Complete" ? <StepCompletedButton title={"Vendor Confirmed"}/> : <Button 
-            variant="contained"
-            size="small"
-            onClick={() => mutate({caseId: row.caseId, vendorConfirmation: "Complete"})}
-            >
-                Confirm Vendor
-        </Button>}
+            {
+                row?.vendorConfirmation === "Complete" ? <StepCompletedButton title={"Vendor Confirmed"}/> : (
+                <Button 
+                variant="contained"
+                size="small"
+                onClick={() => mutate({caseId: row.caseId, vendorConfirmation: "Complete"})}
+                >
+                    Confirm Vendor
+                </Button>)
+            }
         </DialogActions>
       </Dialog>
   );

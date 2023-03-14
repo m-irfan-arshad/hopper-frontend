@@ -17,12 +17,11 @@ interface Props {
 
 export default function SchedulingTab(props: Props) {
     const {config} = props;
-    const { watch, resetField, setValue, formState: { dirtyFields } } = useFormContext();
+    const { watch, resetField, setValue, formState: { isDirty } } = useFormContext();
 
     const locationDropDownValue = watch('scheduling.location');
     const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
     const serviceLineDropDownValue = watch('scheduling.serviceLine');
-    const isDirty = !R.isEmpty(dirtyFields)
 
     useEffect(() => {
         isDirty && setValue('scheduling.procedureUnit', {procedureUnitId: null}, {shouldDirty: true});

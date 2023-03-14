@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { formatDashboardQueryParams, casesFormatter, withValidation } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
-import { includeReferencesObject, paginationCount } from '../../reference';
+import { paginationCount } from '../../reference';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
