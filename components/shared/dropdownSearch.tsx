@@ -25,7 +25,8 @@ export default function DropDownSearchComponent(props: Props) {
         const labelArray = labelProperties.map((p) => {
             return option[p]
         });
-        
+        if (labelArray.toString().replace(',', '') === '') return ''; //if empty list, set to placeholder
+
         return (labelArray.toString().split(',')).join(' ');
     }
     

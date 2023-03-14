@@ -25,15 +25,15 @@ export default function SchedulingTab(props: Props) {
     const isDirty = !R.isEmpty(dirtyFields)
 
     useEffect(() => {
-        isDirty && setValue('scheduling.procedureUnit', null);
+        isDirty && setValue('scheduling.procedureUnit', {procedureUnitId: null}, {shouldDirty: true});
     }, [locationDropDownValue]);
 
     useEffect(() => {
-        isDirty && setValue('scheduling.serviceLine', null);
+        isDirty && setValue('scheduling.serviceLine', {serviceLineId: null}, {shouldDirty: true});
     }, [procedureUnitDropDownValue]);
 
     useEffect(() => {
-        isDirty && setValue('scheduling.provider', null);
+        isDirty && setValue('scheduling.provider', {providerId: null}, {shouldDirty: true});
     }, [serviceLineDropDownValue]);
 
     return (
