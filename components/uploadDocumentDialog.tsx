@@ -80,10 +80,6 @@ export default function UploadDocumentDialog(props: Props) {
     setDocTypeOptions(currentDocOptions => [...currentDocOptions, chipToDelete]);
   }
 
-  const BoxShadowButton = styled(Button)({
-    boxShadow: "0 .125rem .125rem 0 #00000024, 0 .063rem .313rem 0 #0000001F, 0 .188rem .063rem -.125rem #00000033",
-  }) as typeof Button;
-
   return (
       <Dialog fullWidth open={open} maxWidth="sm" sx={{"& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
         <Box sx={{display: "flex", flexDirection: "column"}}>
@@ -109,11 +105,12 @@ export default function UploadDocumentDialog(props: Props) {
                     </Typography>
             
                     { !file 
-                    && <BoxShadowButton 
+                    && <Button 
                         component="label"
                         sx={{
                             fontSize: "0.625rem",
                             backgroundColor: "blue.dark",
+                            boxShadow: "0 .063rem .125rem #00000080",
                             "&:hover": {
                                 backgroundColor: "blue.dark"
                             }
@@ -124,7 +121,7 @@ export default function UploadDocumentDialog(props: Props) {
                         <Typography variant="smallButton" sx={{color: "white.main", marginLeft: "0.313rem"}} >
                             Select File
                         </Typography>
-                    </BoxShadowButton>
+                    </Button>
                     }
                     { file 
                     && <React.Fragment>
@@ -208,18 +205,19 @@ export default function UploadDocumentDialog(props: Props) {
                         minHeight: "5rem",
                         paddingY: "0.625rem"
                     }}>
-                        <BoxShadowButton 
+                        <Button 
                             variant="contained" 
                             disabled={selectedDocTypes.length === 0}
                             sx={{
                                 borderRadius: "0.25rem",
                                 backgroundColor: "success.light",
+                                boxShadow: "0 .063rem .125rem #00000080"
                             }}
                         >
                             <Typography variant="largeButton">
                                 Save
                             </Typography>
-                        </BoxShadowButton>
+                        </Button>
                 </DialogActions>
                 }
             </LocalizationProvider>

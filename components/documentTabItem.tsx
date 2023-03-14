@@ -10,6 +10,10 @@ interface Props {
 
 export default function DocumentTabItem(props: Props) {
 
+    const StyledMenuItem = styled(MenuItem)({
+        fontSize: ".75rem" 
+    });
+
     return (
         <Box sx={{width: "100%"}}>
             <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem"}}> 
@@ -34,9 +38,9 @@ export default function DocumentTabItem(props: Props) {
                     }}
                     IconComponent={(props) =>  <MoreVert {...props} /> }
                 >
-                    <MenuItem> View </MenuItem>
-                    <MenuItem> Download </MenuItem>
-                    <MenuItem> Delete </MenuItem>       
+                    <StyledMenuItem> View </StyledMenuItem>
+                    <StyledMenuItem> Download </StyledMenuItem>
+                    <StyledMenuItem> Delete </StyledMenuItem>       
                 </Select>  
             </Box>
             <DottedDivider />

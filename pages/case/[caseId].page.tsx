@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { useGetCaseByIdHook } from '../../utils/hooks';
-import { Button, Box, Typography, Tabs, Tab, styled, useMediaQuery } from '@mui/material';
+import { Button, Box, Typography, Tabs, styled, useMediaQuery } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import UploadDocumentDialog from "../../components/uploadDocumentDialog";
@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { defaultTheme } from "../../theme";
 import moment from "moment";
 import { formatDate } from "../../utils/helpers";
+import Tab, { TabProps } from "@mui/material/Tab";
 
 interface BookingSheetTabProps {
     label: string
@@ -24,15 +25,14 @@ interface BookingSheetButtonProps {
     additionalStyles?: React.CSSProperties
 }
 
-interface SectionHeaderProps {
-    title: string;
-    icon: React.ReactNode;
-    canViewAll?: boolean
+interface StyledCaseTabProps extends TabProps {
+    count: number
 }
 
 export default function CaseHub() {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  const router = useRouter()
+  const areTabsScrollable = useMediaQuery(defaultTheme.breakpoints.down('lg'));
+  const router = useRouter();
   
   const documentData = [
     {
@@ -53,13 +53,13 @@ export default function CaseHub() {
     },
   ];
 
+  const count = documentData.length;
+
   const { data } = useGetCaseByIdHook(router.query.caseId as string);
   const [isBookingSheetDialogOpen, setBookingSheetDialogState] = useState(false);
   const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
   const [caseTab, selectCaseTab] = useState('Activity');
   const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
-
-  const count = documentData.length;
 
   function handleselectBookingSheetTab(selectedTab: string) {
     setBookingSheetDialogState(true);
@@ -81,15 +81,30 @@ export default function CaseHub() {
       color: complete? theme.palette.success.dark : theme.palette.blue.main
   }));
 
-  const StyledCaseTab = styled(Tab)({
+  const StyledCaseTab = styled((props: StyledCaseTabProps) => {
+    const { value, count, ...other } = props;
+    return <Tab
+            value={value}
+            label={
+                <Box sx={{display: "flex"}}>
+                    {value}   
+                    <span>({count})</span>
+                </Box>
+            }
+            {...other}
+        />
+  })(({}) => ({
     display: "flex",
     justifyContent: "flex-end",
     textTransform: "capitalize",
     fontSize: "0.75rem",
     paddingBottom: "0.5rem",
-    height: "fit-content",
-    fontWeight:  "600",
-  });
+    fontWeight:  "700",
+    "& span": {
+        fontWeight: "400",
+        marginLeft: "0.188rem"
+    }
+  }));
 
   const BookingSheetTab = (props: BookingSheetTabProps) => {
       const { label, complete } = props;
@@ -180,12 +195,14 @@ export default function CaseHub() {
                             borderRadius:"0.625rem", 
                             padding: "1.5rem", 
                             paddingTop: 0, 
+                            flexGrow: 1,
                             marginTop: "3rem", 
                             boxShadow: "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem",
                             marginRight: "1.75rem",
                             marginLeft:"1.75rem"
                         }}>
-                        <Box sx={{minWidth: isMobile ? 0 :  "34.375rem"}}>
+                            {/*  sx={{minWidth: isMobile ? 0 :  "34.375rem"}} */}
+                        <Box sx={{}}>
                             {data && <CaseSummaryContent row={data} /> }
                         </Box>
                     </Box>
@@ -196,7 +213,8 @@ export default function CaseHub() {
                         alignItems: "flex-end", 
                         marginLeft: "1.75rem", 
                         maxWidth: "28.125rem",
-                        flexGrow: 2, 
+                        //flexGrow: 2, 
+                        marginTop: "2rem",
                         marginRight: "1rem",
                         overflowX: "hidden"
                       }}
@@ -209,16 +227,18 @@ export default function CaseHub() {
                                     backgroundColor: "orange.main"
                                 },
                                 "& .MuiTab-root.Mui-selected": {
-                                    color: "orange.main"
+                                    color: "orange.main",
+                                    justifyContent: "flex-end"
                                 }
-                            }} 
+                            }}
+                            variant={areTabsScrollable ? "scrollable" : "standard"}
                             value={caseTab} 
                             onChange={(event, value) => selectCaseTab(value)}
                         >
-                            <StyledCaseTab label={`Activity (${count})`} value="Activity" /> 
-                            <StyledCaseTab label={`Amendments (${count})`} value="Amendments"   />
-                            <StyledCaseTab label={`Documents (${count})`} value="Documents"  />
-                            <StyledCaseTab label={`Comments (${count})`} value="Comments" />
+                            <StyledCaseTab value="Activity" count={count} /> 
+                            <StyledCaseTab value="Amendments" count={count} />
+                            <StyledCaseTab value="Documents" count={count} />
+                            <StyledCaseTab value="Comments" count={count} />
                         </Tabs>
                         {caseTab === "Documents" && 
                             <React.Fragment>
