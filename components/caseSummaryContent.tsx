@@ -65,7 +65,7 @@ return (
                     <Typography variant="body2">{`Home: ${patient?.homePhone || 'N/A'}`}</Typography>
                 </Grid>
             </Grid>
-        <DottedDivider />
+        <DottedDivider additionalStyles={{marginTop: "2rem"}} />
         <SectionHeader title={"Scheduling"} icon={<DateRangeIcon sx={{marginRight: "0.313rem"}}/>}/>               
             <Grid container spacing={"1rem"}>
                 <Grid item xs={6}>
@@ -73,7 +73,7 @@ return (
                     <Typography variant="body2">{formatDate(procedureDate) || 'N/A'}</Typography>
                 </Grid>
             </Grid>
-        <DottedDivider />
+        <DottedDivider additionalStyles={{marginTop: "2rem"}} />
         <SectionHeader title={"Procedure Details"} icon={<AssignmentIcon sx={{marginRight: "0.313rem"}}/>}/>               
             <Grid container spacing={"1rem"}>
                 <Grid item xs={6}>

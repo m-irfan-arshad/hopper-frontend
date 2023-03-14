@@ -6,8 +6,10 @@ import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog
 import TopNavBar from "../../components/topNavBar";
 import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
+import DocumentTabItem from "../../components/documentTabItem";
 import Link from 'next/link';
 import { defaultTheme } from "../../theme";
+import moment from "moment";
 import { formatDate } from "../../utils/helpers";
 
 interface BookingSheetTabProps {
@@ -31,74 +33,71 @@ export default function CaseHub() {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const router = useRouter()
   
+  const documentData = [
+    {
+        createTime: moment().subtract(1, 'days'),
+        updateTime: moment(),
+        description: 'Lorem ipsum sdgsdgdasgasg',
+        firstName: 'Daphney',
+        lastName: 'Johnson',
+        fileTypes: ['Other']
+    },
+    {
+        createTime: moment().subtract(2, 'days'),
+        updateTime: moment(),
+        description: 'Lorem ipsum sdgsdgdasgasg',
+        firstName: 'Daphney',
+        lastName: 'Johnson',
+        fileTypes: ['H&P', 'License']
+    },
+  ];
+
   const { data } = useGetCaseByIdHook(router.query.caseId as string);
   const [isDialogOpen, setDialogState] = useState(false);
-  const [tab, selectTab] = useState('Patient');
+  const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
+  const [caseTab, selectCaseTab] = useState('Activity');
 
-  const mrnString = data?.patient?.mrn ? `- ${data.patient.mrn}` : '';
-  const headerIconStyles = {marginRight: "0.5rem", color: "orange.main", height: '1rem', width: "1rem"};
+  const count = documentData.length;
 
-  function handleSelectTab(selectedTab: string) {
+  function handleselectBookingSheetTab(selectedTab: string) {
     setDialogState(true);
-    selectTab(selectedTab)
+    selectBookingSheetTab(selectedTab)
   }
 
-  const StyledTab = styled((props: any) => {
-        const { complete, ...other } = props;
-        return <Tab {...other} />;      
-    })(({ theme, complete }) => ({
-        display: "flex",
-        justifyContent: "flex-start",
-        paddingLeft: 0,
-        textTransform: "capitalize",
-        minHeight: "2.5rem",
-        width: "fit-content",
-        fontWeight:  complete? "400" : "500",
-        fontStyle: complete ? "italic" : "normal",
-        color: complete? theme.palette.success.dark : theme.palette.blue.main
+  const StyledBookingSheetTab = styled((props: any) => {
+      const { complete, ...other } = props;
+      return <Tab {...other} />;      
+  })(({ theme, complete }) => ({
+      display: "flex",
+      justifyContent: "flex-start",
+      paddingLeft: 0,
+      textTransform: "capitalize",
+      minHeight: "2.5rem",
+      width: "fit-content",
+      fontWeight:  complete? "400" : "500",
+      fontStyle: complete ? "italic" : "normal",
+      color: complete? theme.palette.success.dark : theme.palette.blue.main
   }));
 
-  const SectionHeader = (props: SectionHeaderProps) => {
-    const {title, icon, canViewAll} = props;
-    return (
-        <Box 
-            sx={{ 
-                display: "flex", 
-                justifyContent: "space-between", 
-                borderBottom: "0.063rem solid", 
-                borderColor: "gray.main",  
-                marginTop: "3.5rem",
-                marginRight: isMobile ? "1.75rem" : 0
-            }}
-        >
-            <Typography 
-                variant="subtitle2" 
-                sx={{
-                    display: "flex", 
-                    alignItems: "center"
-                }}>                
-                {icon}
-                {title} 
-            </Typography> 
-            {
-            canViewAll 
-                && <Button sx={{color: "blue.main", fontSize: "0.625rem"}}>
-                    View All
-                </Button>
-            }
-        </Box>
-    )
-  }
+  const StyledCaseTab = styled(Tab)({
+    display: "flex",
+    justifyContent: "flex-end",
+    textTransform: "capitalize",
+    fontSize: "0.75rem",
+    paddingBottom: "0.5rem",
+    height: "fit-content",
+    fontWeight:  "600",
+  });
 
   const BookingSheetTab = (props: BookingSheetTabProps) => {
       const { label, complete } = props;
-      return <StyledTab
+      return <StyledBookingSheetTab
                 complete={complete} 
                 label={label}
                 value={label}
                 icon={complete? <Check sx={{height: "1rem"}} /> : <CircleOutlined sx={{height: "1rem"}} /> }
                 iconPosition="start"
-                onClick={() => handleSelectTab(label)}
+                onClick={() => handleselectBookingSheetTab(label)}
             />
   }
 
@@ -137,7 +136,7 @@ export default function CaseHub() {
                     }}>
                     <Box sx={{display: "flex", flexDirection: "column", marginTop: "1rem", flexGrow: 1,  marginLeft: isMobile ? "1.75rem" : 0}}>
                         <BookingSheetDialog 
-                            initiallySelectedTab={tab} 
+                            initiallySelectedTab={bookingSheetTab} 
                             data={data} 
                             open={isDialogOpen} 
                             closeDialog={() => setDialogState(false)} 
@@ -155,10 +154,10 @@ export default function CaseHub() {
                             {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
                         </Typography>
                         <Typography variant="caption" >
-                            {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} ${mrnString}` : 'N/A'}
+                            {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} - ${data?.patient?.mrn}` : 'N/A'}
                         </Typography>
                         <BookingSheetButton
-                            onClick={() => handleSelectTab('Patient')}
+                            onClick={() => handleselectBookingSheetTab('Patient')}
                             additionalStyles={{ marginTop:"1rem", color:"black.main" }}
                         >
                             Booking Sheet
@@ -187,25 +186,60 @@ export default function CaseHub() {
                             {data && <CaseSummaryContent row={data} /> }
                         </Box>
                     </Box>
-                    <Box sx={{marginLeft: "1.75rem", flexGrow: 2, paddingRight: "1rem"}}>
-                        <SectionHeader 
-                            canViewAll 
-                            title="Activity" 
-                            icon={< Bolt sx={headerIconStyles} />} 
-                        />
-                        <SectionHeader 
-                            title="Case Amendments" 
-                            icon={< Assignment sx={headerIconStyles} />} 
-                        />
-                        <SectionHeader 
-                            title="Documents" 
-                            icon={< ContentCopy sx={headerIconStyles} />} 
-                        />
-                        <SectionHeader 
-                            canViewAll 
-                            title="Comments" 
-                            icon={< ChatBubbleOutline sx={headerIconStyles} />} 
-                        />
+                    <Box 
+                      sx={{
+                        display: "flex", 
+                        flexDirection: "column", 
+                        alignItems: "flex-end", 
+                        marginLeft: "1.75rem", 
+                        flexGrow: 2, 
+                        paddingRight: "1rem"
+                      }}
+                    >
+                        <Tabs 
+                            sx={{
+                                borderBottom: "0.063rem solid #D1E4ED", 
+                                "& .MuiTabs-indicator": {
+                                    backgroundColor: "orange.main"
+                                },
+                                "& .MuiTab-root.Mui-selected": {
+                                    color: "orange.main"
+                                }
+                            }} 
+                            value={caseTab} 
+                            onChange={(event, value) => selectCaseTab(value)}
+                        >
+                            <StyledCaseTab label={`Activity (${count})`} value="Activity" /> 
+                            <StyledCaseTab label={`Amendments (${count})`} value="Amendments"   />
+                            <StyledCaseTab label={`Documents (${count})`} value="Documents"  />
+                            <StyledCaseTab label={`Comments (${count})`} value="Comments" />
+                        </Tabs>
+                        {caseTab === "Documents" && 
+                            <React.Fragment>
+                                <Button 
+                                  sx={{
+                                    color: "blue.dark", 
+                                    fontSize: "0.625rem", 
+                                    fontWeight: "700", 
+                                    marginTop: "1rem", 
+                                    marginBottom: "1rem", 
+                                    padding: 0, 
+                                    '&:hover': {
+                                      backgroundColor: 'transparent'
+                                    }
+                                  }}
+                                >
+                                    + Upload Document
+                                </Button>
+                                {
+                                    documentData.map((data, index) => (
+                                        <React.Fragment key={index}> 
+                                            <DocumentTabItem data={data} /> 
+                                        </React.Fragment> 
+                                    ))
+                                }
+                            </React.Fragment>
+                        }
                     </Box>
                 </Box>
             </Box>

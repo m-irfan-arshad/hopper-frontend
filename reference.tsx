@@ -126,17 +126,15 @@ export const bookingSheetConfigObject = {
 
 export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
 
-export const admissionTypeData = [{admissionType: 'Admission 1'}, {admissionType: 'Admission 2'}];
-
 export const includeReferencesObject = { 
   patient: true, 
-  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true} }, 
+  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }, 
   financial: true
 }
 
 export type FullCase = Prisma.casesGetPayload<{ include: { 
   patient: true, 
-  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true} }, 
+  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }, 
   financial: true
 } }>
 

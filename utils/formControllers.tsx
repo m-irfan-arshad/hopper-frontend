@@ -13,8 +13,6 @@ import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
 import { useFormContext } from "react-hook-form";
 
-
-
 interface InputControllerProps {
     id: any,
     title?: string,

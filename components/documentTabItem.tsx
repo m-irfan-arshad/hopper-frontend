@@ -1,0 +1,45 @@
+import React from "react";
+import { Box, styled, IconButton, Select, MenuItem, Typography} from "@mui/material";
+import { MoreVert } from '@mui/icons-material';
+import DottedDivider from "./shared/dottedDivider";
+import moment from "moment";
+
+interface Props {
+    data: any;
+}
+
+export default function DocumentTabItem(props: Props) {
+
+    return (
+        <Box>
+            <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem", width: "450px"}}> 
+                <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
+                    <Typography sx={{fontSize: "0.75rem", fontWeight: "500", textTransform: 'capitalize'}}>
+                        {props.data.fileTypes.join(", ")} 
+                    </Typography>
+                    <Typography sx={{fontSize: "0.625rem"}}>
+                        {props.data.description}
+                    </Typography>
+                    <Typography sx={{ marginTop: "0.5rem", fontSize: "0.75rem", fontStyle: "italic" }}>
+                        {`${props.data.firstName} ${props.data.lastName} - ${moment(props.data.createTime).format('hh:mma, MM/DD/YYYY')}`}
+                    </Typography>
+                </Box>
+                <Select    
+                    sx={{ 
+                        height:'1.5rem', 
+                        width: '1.5rem',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                        }
+                    }}
+                    IconComponent={(props) =>  <MoreVert {...props} /> }
+                >
+                    <MenuItem> View </MenuItem>
+                    <MenuItem> Download </MenuItem>
+                    <MenuItem> Delete </MenuItem>       
+                </Select>  
+            </Box>
+            <DottedDivider />
+        </Box>
+      );
+}

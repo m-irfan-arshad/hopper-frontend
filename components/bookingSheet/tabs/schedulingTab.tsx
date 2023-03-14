@@ -8,7 +8,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { ConfigObject } from '../../../utils/helpers';
-import { admissionTypeData } from '../../../reference';
 import * as R from 'ramda';
 import { useFormContext } from "react-hook-form";
 

@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 import { FullCase } from "./reference";
 import { useForm, FormProvider } from "react-hook-form";
-import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit } from "@prisma/client";
+import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType } from "@prisma/client";
 
 const sampleDate = moment('2023-01-09').toDate();
 
@@ -74,7 +74,12 @@ export const mockSinglePatient: patient = {
     updateTime: sampleDate,
 }
 
-export const mockSingleScheduling: Prisma.schedulingGetPayload<{ include: {provider: true, location: true, procedureUnit: true, serviceLine: true} }> = {
+export const mockSingleAdmissionType: admissionType = {
+    admissionTypeId: 1,
+    admissionTypeName: "Admission Type 1"
+}
+
+export const mockSingleScheduling: Prisma.schedulingGetPayload<{ include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }> = {
     schedulingId: 1,
     locationId: 1,
     providerId: 1,
@@ -85,6 +90,7 @@ export const mockSingleScheduling: Prisma.schedulingGetPayload<{ include: {provi
     procedureUnit: mockSingleProcedureUnit,
     provider: mockSingleProvider,
     serviceLine: mockSingleServiceLine,
+    admissionType: mockSingleAdmissionType,
     procedureDate: moment('2022-10-10').toDate(),
 }
 
