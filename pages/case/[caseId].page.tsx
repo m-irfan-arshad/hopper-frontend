@@ -201,8 +201,7 @@ export default function CaseHub() {
                             marginRight: "1.75rem",
                             marginLeft:"1.75rem"
                         }}>
-                            {/*  sx={{minWidth: isMobile ? 0 :  "34.375rem"}} */}
-                        <Box sx={{}}>
+                        <Box>
                             {data && <CaseSummaryContent row={data} /> }
                         </Box>
                     </Box>
@@ -213,7 +212,6 @@ export default function CaseHub() {
                         alignItems: "flex-end", 
                         marginLeft: "1.75rem", 
                         maxWidth: "28.125rem",
-                        //flexGrow: 2, 
                         marginTop: "2rem",
                         marginRight: "1rem",
                         overflowX: "hidden"
