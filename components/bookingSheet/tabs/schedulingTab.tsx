@@ -94,9 +94,9 @@ export default function SchedulingTab(props: Props) {
                         <DropDownSearchController 
                             title="Admission Type"
                             id="scheduling.admissionType"
-                            options={admissionTypeData} 
-                            labelProperties={["admissionType"]}
+                            labelProperties={["admissionTypeName"]}
                             placeholder="Admission Type" 
+                            queryKey="getAdmissionTypes"
                         />
                     </Grid>
                 </Grid>
