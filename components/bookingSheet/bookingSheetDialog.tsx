@@ -158,7 +158,7 @@ export default function BookingSheetDialog(props: Props) {
                 </Box>
             </DialogTitle>
             <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
-                <FormProvider {...form} >
+                <FormProvider {...form}>
                     {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject}/>}
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject}/>}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} />}

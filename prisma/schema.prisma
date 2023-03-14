@@ -31,9 +31,9 @@ model patient {
   mrn            String?
   address        String?
   city           String?
-  stateId        Int?
+  stateId        Int?      @map("state_id")
   zip            String?
-  sexId          Int?
+  sexId          Int?      @map("sex_id")
   mobilePhone    String?   @map("mobile_phone")
   homePhone      String?   @map("home_phone")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Timestamp(6)
@@ -43,7 +43,6 @@ model patient {
   sex            sex? @relation(fields: [sexId], references: [sexId], onDelete: NoAction, onUpdate: NoAction)
   state          state? @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction)
 }
-
 
 model sex {
   sexId         Int @id @default(autoincrement()) @map("sex_id")
@@ -56,7 +55,6 @@ model state {
   stateName     String
   patients      patient[]
 }
-
 
 
 model scheduling {

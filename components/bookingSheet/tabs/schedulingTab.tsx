@@ -17,7 +17,7 @@ interface Props {
 
 export default function SchedulingTab(props: Props) {
     const {config} = props;
-    const { watch, resetField, getValues, formState: { dirtyFields } } = useFormContext();
+    const { watch, resetField, setValue, formState: { dirtyFields } } = useFormContext();
 
     const locationDropDownValue = watch('scheduling.location');
     const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
@@ -25,19 +25,16 @@ export default function SchedulingTab(props: Props) {
     const isDirty = !R.isEmpty(dirtyFields)
 
     useEffect(() => {
-        isDirty && resetField('scheduling.procedureUnit');
+        isDirty && setValue('scheduling.procedureUnit', null);
     }, [locationDropDownValue]);
 
     useEffect(() => {
-        isDirty && resetField('scheduling.serviceLine');
+        isDirty && setValue('scheduling.serviceLine', null);
     }, [procedureUnitDropDownValue]);
 
     useEffect(() => {
-        isDirty && resetField('scheduling.provider');
+        isDirty && setValue('scheduling.provider', null);
     }, [serviceLineDropDownValue]);
-
-    console.log("getValues: ", getValues())
-
 
     return (
         <Box>

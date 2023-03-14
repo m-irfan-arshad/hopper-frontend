@@ -164,7 +164,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
   function calculateInfoCellValue(props: InfoCellProps): any {
     const { name } = props;
-    const elemValue = row[name.id as keyof FullCase];
     if (name.id === 'providerName') {
       return R.path(name.path, row) ? 
       `${R.path([...name.path, 'firstName'], row)} ${R.path([...name.path, 'lastName'], row)}`

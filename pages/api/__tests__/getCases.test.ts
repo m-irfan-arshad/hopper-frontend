@@ -72,7 +72,11 @@ import { includeReferencesObject } from '../../../reference';
                     }
                 }
             ],
-            include: includeReferencesObject
+            include: { 
+                patient: true,
+                scheduling: { include: {provider: true, location: true} }, 
+                financial: true
+              }
         }
 
         prismaMock.cases.findMany.mockResolvedValueOnce(cases as any)

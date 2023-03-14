@@ -32,6 +32,34 @@ async function createCases() {
     }
 }
 
+async function createStateOptions() {
+    for (let i = 0; i < 10; i++) {
+        await prisma.state.create({ 
+            data: {
+                stateName: chance.state()
+            }
+        })
+    }
+}
+
+async function createInsuranceOptions() {
+    await prisma.insurance.createMany({ 
+        data: [{insuranceName: "Aetna"}, {insuranceName: "United Health"}]
+    })
+}
+
+async function createSexOptions() {
+    await prisma.sex.createMany({ 
+        data: [{sexName: "M"}, {sexName: "F"}, {sexName: "O"}]
+    })
+}
+
+async function createAdmissionTypeOptions() {
+    await prisma.admissionType.createMany({ 
+        data: [{admissionTypeName: "admissionType1"}, {admissionTypeName: "admissionType2"}, {admissionTypeName: "admissionType3"}]
+    })
+}
+
 async function createLocations() {
     for (let i = 0; i < 4; i++) {
         await prisma.location.create({   //create location
@@ -68,8 +96,14 @@ async function createLocations() {
 }
 
 async function main() {
-    await createCases();
-    await createLocations();
+    await Promise.all([
+        createCases(),
+        createLocations(),
+        createStateOptions(),
+        createInsuranceOptions(),
+        createAdmissionTypeOptions(),
+        createSexOptions()
+    ])
 }
 
 main()
