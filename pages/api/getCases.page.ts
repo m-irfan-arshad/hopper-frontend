@@ -35,7 +35,11 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
             }
           }
         ],
-        include: includeReferencesObject
+        include: { 
+          patient: true,
+          scheduling: { include: {provider: true, location: true} }, 
+          financial: true
+        }
     })
 
     res.json({

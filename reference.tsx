@@ -5,16 +5,18 @@ export const caseCardProcedureInformation = [
   {
     label: "Date",
     id: "procedureDate",
+    path: ["scheduling", "procedureDate"],
+    type: "date"
   },
   {
     label: "Procedure Location",
     id: "locationName",
-    fromTable: "location"
+    path: ["scheduling", "location", "locationName"]
   },
   {
     label: "Provider",
     id: "providerName",
-    fromTable: "provider"
+    path: ["scheduling", "provider"]
   }
 ];
 
@@ -22,15 +24,17 @@ export const caseCardCaseIdentifiers = [
   {
     label: "Case ID",
     id: "caseId",
+    path: ["caseId"]
   },
   {
     label: "MRN",
     id: "mrn",
-    fromTable: 'patient'
+    path: ["patient", "mrn"]
   },
   {
     label: "Quick Actions",
     id: "quickActions",
+    path: ["quickActions"],
   }
 ];
 
@@ -134,7 +138,7 @@ export const includeReferencesObject = {
 
 export type FullCase = Prisma.casesGetPayload<{ include: { 
   patient: true, 
-  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }, 
+  scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
   financial: true
 } }>
 

@@ -50,7 +50,8 @@ interface InfoCellProps {
   name: {
     label: string;
     id: string;
-    fromTable?: string
+    path: string[];
+    type?: string;
   }
 }
 
@@ -163,24 +164,18 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
   function calculateInfoCellValue(props: InfoCellProps): any {
     const { name } = props;
-    //@ts-ignore
-    const scheduling = row.scheduling
-    if (!scheduling) return 'N/A';
-
-    const elemValue = scheduling[name.id as keyof scheduling];
-    if (elemValue) {
-      if (name.id === 'procedureDate') {
-        return formatDate(elemValue as Date)
+    const elemValue = row[name.id as keyof FullCase];
+    if (name.id === 'providerName') {
+      return R.path(name.path, row) ? 
+      `${R.path([...name.path, 'firstName'], row)} ${R.path([...name.path, 'lastName'], row)}`
+      : 'N/A'
+    } else if(R.path(name.path, row)) {
+      if (name.type === "date") {
+          return formatDate(R.path(name.path, row) as Date)
       }
-      return elemValue;
-    } else if (name.fromTable) {
-      if (name.id === 'providerName') {
-        return R.path([name.fromTable, 'firstName'], scheduling) ? 
-        `${R.path([name.fromTable, 'firstName'], scheduling)} ${R.path([name.fromTable, 'lastName'], row)}`
-        : 'N/A'
-      }
-      return R.path([name.fromTable, name.id], row) || 'N/A';
-    } else {
+      return R.path(name.path, row)
+    }
+    else {
       return 'N/A'
     }
   }
