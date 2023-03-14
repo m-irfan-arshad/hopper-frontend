@@ -43,6 +43,7 @@ declare module '@mui/material/styles' {
         },
         black?: {
             main?: string;
+            light?: string;
         },
         red?: {
             main?: string;
@@ -65,15 +66,14 @@ declare module '@mui/material/styles' {
         }
     }
     interface TypographyVariantsOptions {
-        title1?: {
+        smallButton?: {
             fontSize?: string;
             fontWeight?: string;
             fontFamily?: string;
-        },
-        title2?: {
+        }
+        largeButton?: {
             fontSize?: string;
             fontWeight?: string;
-            fontStyle?: string;
             fontFamily?: string;
         }
       }
@@ -81,8 +81,8 @@ declare module '@mui/material/styles' {
 
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
-      title1: true;
-      title2: true;
+        smallButton: true;
+        largeButton: true;
     }
 }
 
@@ -97,6 +97,7 @@ export const defaultTheme = createTheme({
             main: "#FFFFFF"
         },
         black: {
+            light: "#00000099",
             main: "#37474F"
         },
         red: {
@@ -119,6 +120,7 @@ export const defaultTheme = createTheme({
             main: "#EF6C00"
         },
         success: {
+            light: "#2E7D32",
             main: "#4CAF50",
             dark: "#43A047"
         }
@@ -161,6 +163,26 @@ export const defaultTheme = createTheme({
                         fontSize: "0.75rem",
                         fontWeight: "400",
                         color: "#37474F"
+                    }
+                }
+            ]
+        },
+        MuiTypography: {
+            variants: [
+                {
+                    props: { variant: 'smallButton' },
+                    style: {
+                        fontSize: "0.8125rem",
+                        fontWeight: "500",
+                        fontFamily: "Roboto, Helvetica, Arial, sans-serif"
+                    }
+                },
+                {
+                    props: { variant: 'largeButton' },
+                    style: {
+                        fontSize: "0.9375rem",
+                        fontWeight: "500",
+                        fontFamily: "Roboto, Helvetica, Arial, sans-serif"
                     }
                 }
             ]
