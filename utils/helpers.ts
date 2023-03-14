@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { APIParameters, FullCase } from '../reference';
-import { Prisma, cases, patients, locations, providers, insurances } from '@prisma/client';
+import { Prisma, insurance } from '@prisma/client';
 import moment from "moment";
+import * as R from 'ramda'
 
 interface DashboardQueryParams { 
     searchValue?: string
@@ -11,42 +12,10 @@ interface DashboardQueryParams {
     vendorConfirmation?: string;
 }
 
-interface PatientTableParams {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: moment.Moment;
-}
-
-interface CaseTableParams {
-    providerId: number
-    locationId: number
-    procedureUnitId: number
-    serviceLineId: number
-    procedureDate: moment.Moment;
-}
-
-interface CaseFormParams {
-    provider: any
-    location: any
-    procedureUnit: any
-    serviceLine: any
-    procedureDate: moment.Moment;
-}
-
-interface CreateCaseFromFormObject {
-    patient: PatientTableParams
-    case: CaseFormParams 
-}
-
-interface CreateCaseObject {
-    patient: PatientTableParams
-    case: CaseTableParams 
-}
-
 interface FilterObject {
-    procedureDate: object;
+    scheduling: object;
     caseId?: object;
-    patients?: object;
+    patient?: object;
     priorAuthorization?: object;
     vendorConfirmation?: object;
   }
@@ -67,11 +36,13 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
     const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
     
     let filterObject: FilterObject = {
-        procedureDate: {
-            gte: moment(dateRangeStart).startOf("day").toDate(),
-            lte: moment(dateRangeEnd).endOf("day").toDate()
+        scheduling: {
+            procedureDate: {
+                gte: moment(dateRangeStart).startOf("day").toDate(),
+                lte: moment(dateRangeEnd).endOf("day").toDate()
+            },
         },
-        ...(priorAuthorization === "Incomplete") && {priorAuthorization: {equals: priorAuthorization}},
+        ...(priorAuthorization === "Incomplete") && {financial: { some: {priorAuthorization: {contains: "Incomplete"}}}},
         ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
     }
 
@@ -88,7 +59,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
                 equals: caseId
             }
     } else if (!nameTwo) {
-        filterObject.patients = {
+        filterObject.patient = {
             OR: [
                 {
                     firstName: {
@@ -106,7 +77,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
         }
     }
     else {
-        filterObject.patients = {
+        filterObject.patient = {
         AND: [
           {
             OR: [
@@ -131,21 +102,21 @@ export function formatDate(date: Date | null | undefined) : string | null {
     return moment(date).format('MM/DD/YYYY')
 }
 
-export function casesFormatter (cases: FullCase | null): FullCase & {steps: object} | null {
+export function casesFormatter (cases: FullCase | null): FullCase | null {
     if (cases) {
-        const formattedProviders = (cases.providers) ?  {
-            ...cases.providers, 
-            providerName: (cases.providers) ? `${cases.providers.firstName} ${cases.providers.lastName}` : ''
+        const scheduling = cases.scheduling;
+        const formattedProvider = (scheduling?.provider) ?  {
+            ...scheduling.provider, 
+            providerName: (scheduling.provider) ? `${scheduling.provider.firstName} ${scheduling.provider.lastName}` : ''
         } : null;
         
         let newCase = {
             ...cases,
             caseId: cases.caseId,
             fhirResourceId: cases.fhirResourceId,
-            providers: formattedProviders,
-            steps: {
-                priorAuthorization: cases.priorAuthorization,
-                vendorConfirmation: cases.vendorConfirmation,
+            scheduling: {
+                ...scheduling,
+                provider: formattedProvider,
             }
         }
         return newCase
@@ -185,20 +156,45 @@ export function withValidation(requiredParams: Array<string>, queryFunc: Functio
         return queryFunc(...args)
     }
 }
+export function excludeField(object: any, fieldName: string): any {
+    let newObject = R.clone(object)
+    delete newObject[fieldName]
+    return newObject
+  }
 
-export function formatCreateCaseParams(params: CreateCaseFromFormObject) {
-    const createCaseObject: CreateCaseObject = {
-        patient: params.patient,
-        case: {
-            procedureDate: params.case.procedureDate,
-            locationId: params.case.location.locationId,
-            procedureUnitId: params.case.procedureUnit.procedureUnitId,
-            providerId: params.case.provider.providerId,
-            serviceLineId: params.case.serviceLine.serviceLineId
-        }
-    }
-    return createCaseObject;
-}
+/**
+ * Formats an CRUD operation (default is update) for relationships
+ */
+export function getRelationshipCrudObject(obj: {[key: string]: any}, operation="update") {
+    let formattedObj = R.clone(obj);
+
+    //update relationships by updating the Id, not the object itself
+    Object.keys(obj).forEach(function(key){
+      if (typeof obj[key] === 'object') {
+        const id = key + 'Id'
+        formattedObj[id] = obj[key][id]
+        delete formattedObj[key]
+      }
+    })
+    return {[operation]: formattedObj}
+  }
+
+export function formatCreateCaseParams(data: FullCase) {
+    return Prisma.validator<Prisma.casesCreateInput>()({
+      patient: {
+        create: data.patient,
+      },
+      scheduling: {
+        create: {
+          procedureDate: data.scheduling.procedureDate,
+          locationId: data.scheduling.location?.locationId,
+          procedureUnitId: data.scheduling.procedureUnit?.procedureUnitId,
+          serviceLineId: data.scheduling.serviceLine?.serviceLineId,
+          providerId: data.scheduling.provider?.providerId,
+        },
+      },
+    })
+  }
 
 export function parseFieldConfig(configObject: ConfigObject, tabName: string, fieldName: string, checkingFor: "visible" | "required", defaultReturnValue?: boolean) {
     const tab = configObject.tabs.find(tab => tab.label === tabName)
@@ -213,7 +209,8 @@ export function parseFieldConfig(configObject: ConfigObject, tabName: string, fi
  * Similar to react-hook-form's getDirtyFields, however it also returns the value of the dirty field instead of a boolean.
  * Useful for building performative update queries.
  */
-export function getDirtyValues(dirtyFields: any, allValues: any): object {
+export function getDirtyValues(dirtyFields: any, allValues: any): object | undefined {
+    if (R.isEmpty(allValues)) return undefined;
     if (dirtyFields === true || Array.isArray(dirtyFields))
       return allValues;
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));

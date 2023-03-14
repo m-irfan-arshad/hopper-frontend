@@ -10,41 +10,73 @@ const providerOptions = [{firstName: 'Sauce', lastName: 'Gardner'}, {firstName: 
 
 async function createCases() {
     for (let i = 0; i < 50; i++) {
-        await prisma.patients.create({
+        await prisma.cases.create({
             data: {
-                firstName: chance.first({ nationality: 'en' }),
-                lastName: chance.last({ nationality: 'en' }),
-                mrn: chance.string({ length: 10, numeric: true }),
-                address: chance.address(),
-                mobilePhone: chance.phone({ country: 'us', formatted: true }),
-                dateOfBirth: chance.date({ year: 1970 }),
-                cases: {
+                patient: {
+                    create: {
+                        firstName: chance.first({ nationality: 'en' }),
+                        lastName: chance.last({ nationality: 'en' }),
+                        mrn: chance.string({ length: 10, numeric: true }),
+                        address: chance.address(),
+                        mobilePhone: chance.phone({ country: 'us', formatted: true }),
+                        dateOfBirth: chance.date({ year: 1970 }),
+                    }
+                },
+                scheduling: {
                     create: {
                         procedureDate: chance.date({ year: new Date().getFullYear(), month: new Date().getMonth() })
-                    } 
+                    }
                 }
             }
         })
     }
 }
 
+async function createStateOptions() {
+    for (let i = 0; i < 10; i++) {
+        await prisma.state.create({ 
+            data: {
+                stateName: chance.state()
+            }
+        })
+    }
+}
+
+async function createInsuranceOptions() {
+    await prisma.insurance.createMany({ 
+        data: [{insuranceName: "Aetna"}, {insuranceName: "United Health"}]
+    })
+}
+
+async function createSexOptions() {
+    await prisma.sex.createMany({ 
+        data: [{sexName: "M"}, {sexName: "F"}, {sexName: "O"}]
+    })
+}
+
+async function createAdmissionTypeOptions() {
+    await prisma.admissionType.createMany({ 
+        data: [{admissionTypeName: "admissionType1"}, {admissionTypeName: "admissionType2"}, {admissionTypeName: "admissionType3"}]
+    })
+}
+
 async function createLocations() {
     for (let i = 0; i < 4; i++) {
-        await prisma.locations.create({   //create locations
+        await prisma.location.create({   //create location
             data: {
                 locationName: locationOptions[i],
                 fhirResourceId: chance.string({ length: 10 }),
-                procedureUnits: {    // create PUs under each location
+                procedureUnit: {    // create PUs under each location
                     create: [...Array(4)].map((_, j)=>({ 
                         fhirResourceId: chance.string({ length: 10 }),
                         procedureUnitName: procedureUnitOptions[j],
-                        serviceLines: {    // create SLs under each PU
+                        serviceLine: {    // create SLs under each PU
                             create: [...Array(3)].map((_, k)=>({
                                 fhirResourceId: chance.string({ length: 10 }),
                                 serviceLineName: serviceLineOptions[k],
-                                providers: {    // create provider relationship for each SL
+                                provider: {    // create provider relationship for each SL
                                     create: [...Array(4)].map((_, l)=>({
-                                        provider: {    // create providers for each provider relationship
+                                        provider: {    // create provider for each provider relationship
                                             create: {
                                                 fhirResourceId: chance.string({ length: 10 }),
                                                 firstName: providerOptions[l].firstName,
@@ -64,8 +96,14 @@ async function createLocations() {
 }
 
 async function main() {
-    await createCases();
-    await createLocations();
+    await Promise.all([
+        createCases(),
+        createLocations(),
+        createStateOptions(),
+        createInsuranceOptions(),
+        createAdmissionTypeOptions(),
+        createSexOptions()
+    ])
 }
 
 main()

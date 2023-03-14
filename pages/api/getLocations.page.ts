@@ -6,11 +6,10 @@ import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 export default withApiAuthRequired(async function getLocationsHandler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const locations = await prisma.locations.findMany()
-        locations.sort((loc1, loc2) => loc1.locationName.toLowerCase() > loc2.locationName.toLowerCase() ? 1 : -1);
+        const locations = await prisma.location.findMany({orderBy: { locationName: 'asc' }})
 
         res.json(locations)
-    } catch(err) {
-        res.status(500).json({ message: err });
+    } catch(err: any) {
+        res.status(500).json({ message: err.message });
     }
 })

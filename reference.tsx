@@ -1,20 +1,22 @@
-import { Prisma, cases, patients } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import moment from "moment";
 
 export const caseCardProcedureInformation = [
   {
     label: "Date",
     id: "procedureDate",
+    path: ["scheduling", "procedureDate"],
+    type: "date"
   },
   {
     label: "Procedure Location",
     id: "locationName",
-    fromTable: "locations"
+    path: ["scheduling", "location", "locationName"]
   },
   {
     label: "Provider",
     id: "providerName",
-    fromTable: "providers"
+    path: ["scheduling", "provider"]
   }
 ];
 
@@ -22,15 +24,17 @@ export const caseCardCaseIdentifiers = [
   {
     label: "Case ID",
     id: "caseId",
+    path: ["caseId"]
   },
   {
     label: "MRN",
     id: "mrn",
-    fromTable: 'patients'
+    path: ["patient", "mrn"]
   },
   {
     label: "Quick Actions",
     id: "quickActions",
+    path: ["quickActions"],
   }
 ];
 
@@ -123,19 +127,26 @@ export const bookingSheetConfigObject = {
   ]
 }
 
-export const patientSexData = [{sex: 'M'}, {sex: 'F'}, {sex: 'O'}]; 
-export const stateData = [{state: 'New York'}, {state: 'New Jersey'}, {state: 'Oregon'}]; 
-export const insuranceData = [{insurance: 'insurance1'}, {insurance: 'insurance2'}, {insurance: 'insurance3'}]; 
-export const priorAuthApprovedData = [{priorAuthApproved: 'Yes'}, {priorAuthApproved: 'No'}]; 
 
-export type FullCase = Prisma.casesGetPayload<{
-  include: { patients?: true, locations?: true, providers?: true, serviceLines?: true, procedureUnits?: true, insurances?: true }
-}>
+export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
 
-export type FormattedFullCase = FullCase & {
-  steps: {
-    [key: string]: string
-    priorAuthorization: string,
-    vendorConfirmation: string
-  }
+export const includeReferencesObject = { 
+  patient: true, 
+  scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }, 
+  financial: true
+}
+
+export type FullCase = Prisma.casesGetPayload<{ include: { 
+  patient: true, 
+  scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
+  financial: true
+} }>
+
+export const defaultInsuranceValue = {
+  insurance: null,
+  insuranceGroupName: '',
+  insuranceGroupNumber: '',
+  priorAuthApproved: '',
+  priorAuthId: '',
+  priorAuthDate: null,
 }

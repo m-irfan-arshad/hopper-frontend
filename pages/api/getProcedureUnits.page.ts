@@ -7,12 +7,12 @@ const requiredParams = ['locationId'];
 
 export default withApiAuthRequired( withValidation(requiredParams, async function getProcedureUnitsHandler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const procedureUnits = await prisma.procedureUnits.findMany({
+        const procedureUnits = await prisma.procedureUnit.findMany({
             where: {
                 locationId: parseInt(req.query["locationId"] as string)
-            }
+            },
+            orderBy: { procedureUnitName: 'asc' }
         })
-        procedureUnits.sort((unit1, unit2) => unit1.procedureUnitName.toLowerCase() > unit2.procedureUnitName.toLowerCase() ? 1 : -1);
 
         res.json(procedureUnits)
     } catch(err) {

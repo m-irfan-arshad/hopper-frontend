@@ -151,10 +151,10 @@ export default function CaseHub() {
                             </BookingSheetButton>
                         </Link>
                         <Typography variant="h4" >
-                            {data?.patients ? `${data?.patients?.lastName}, ${data?.patients?.firstName}` : 'N/A'}
+                            {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
                         </Typography>
                         <Typography variant="caption" >
-                            {data?.patients ? `${formatDate(data?.patients?.dateOfBirth)} - ${data?.patients?.mrn}` : 'N/A'}
+                            {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} - ${data?.patient?.mrn}` : 'N/A'}
                         </Typography>
                         <BookingSheetButton
                             onClick={() => handleselectBookingSheetTab('Patient')}

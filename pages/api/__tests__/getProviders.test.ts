@@ -29,13 +29,13 @@
             updateTime: new Date()
         }]
 
-        prismaMock.providers.findMany.mockResolvedValue(providers)
+        prismaMock.provider.findMany.mockResolvedValue(providers)
 
         await getProvidersHandler(req, res)
         const data = res._getJSONData()
         expect(data[0].providerId).toEqual(1)
         expect(data[0].firstName).toEqual('firstName')
         expect(data[0].email).toEqual('fake@email.com')
-        expect(prismaMock.providers.findMany).toBeCalledTimes(1)
+        expect(prismaMock.provider.findMany).toBeCalledTimes(1)
     })
 });

@@ -11,20 +11,18 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
-
+import { useFormContext } from "react-hook-form";
 
 interface InputControllerProps {
     id: any,
     title?: string,
     placeholder: string
-    control: any
 }
 
 interface DateControllerProps {
     id: any,
     title?: string,
-    placeholder: string
-    control: any,
+    placeholder: string,
     withTime?: boolean
 }
 
@@ -36,21 +34,19 @@ interface DropDownSearchOption {
 interface DropDownSearchControllerProps {
     id: any,
     title?: string,
-    disabled?: boolean
-    placeholder: string
-    additionalStyles?: React.CSSProperties | object
-    options?: DropDownSearchOption[]
-    labelProperties: string[]
-    control: any,
+    disabled?: boolean,
+    placeholder: string,
+    additionalStyles?: React.CSSProperties | object,
+    options?: DropDownSearchOption[],
+    labelProperties: string[],
     queryKey?: string, 
     params?: Array<{field: string, value: string}>, 
-    dependency?: string,
-    getValues?: any
-
+    dependency?: string
 }
   
 export function InputController(props: InputControllerProps) {
-    const {id, title, placeholder, control} = props;
+    const { control } = useFormContext();
+    const {id, title, placeholder} = props;
     return <Controller
         name={id}
         control={control}
@@ -64,7 +60,8 @@ export function InputController(props: InputControllerProps) {
 }
 
 export function DateController(props: DateControllerProps) {
-    const {id, title, placeholder, control, withTime} = props;
+    const { control } = useFormContext();
+    const {id, title, placeholder, withTime} = props;
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
         <TextField 
             InputLabelProps={{ shrink: true }} 
@@ -110,11 +107,12 @@ export function DateController(props: DateControllerProps) {
 }
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, control, queryKey, params, dependency, getValues} = props;
-    const paramString = '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&')
+    const { control, getValues } = useFormContext();
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency} = props;
+    const paramString = params ?  '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
-    const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGenericQueryHook({queryKey: queryKey, paramString: paramString, dependency: getValues(dependency)}) : {data: options}
+    const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGenericQueryHook({queryKey: queryKey, paramString: paramString, dependency: dependency ? getValues(dependency) : undefined}) : {data: options}
 
     return <Controller
             name={id}
