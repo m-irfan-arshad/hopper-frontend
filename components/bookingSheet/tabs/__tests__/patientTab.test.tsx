@@ -2,7 +2,7 @@ import { render, renderHook, fireEvent } from '@testing-library/react'
 import PatientTab from "../patientTab";
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { mockSingleCase } from "../../../../testReference";
+import { FormWrapper } from "../../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -10,16 +10,6 @@ jest.mock('@tanstack/react-query', () => ({
     QueryClient: jest.fn(),
     useQuery: jest.fn().mockReturnValue({ data: [] })
 }));  
-
-const FormWrapper = (props: any) => {
-    const formMethods = useForm();
-
-    return (
-      <FormProvider {...formMethods}>
-        {props.children}
-      </FormProvider>
-    );
-  };
 
 describe("PatientTab", () => {
     const { result } = renderHook(() => useForm())

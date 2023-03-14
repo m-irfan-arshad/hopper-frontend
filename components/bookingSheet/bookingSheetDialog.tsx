@@ -20,7 +20,6 @@ import { bookingSheetConfigObject, defaultInsuranceValue } from '../../reference
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
 import * as R from 'ramda';
-import moment from "moment";
 import SchedulingTab from "./tabs/schedulingTab";
 
 interface Props {
@@ -83,7 +82,7 @@ export default function BookingSheetDialog(props: Props) {
     const {mutate} = useUpdateCaseHook()
 
     const form = useForm({ 
-        mode: 'onSubmit',
+        mode: 'onChange',
         defaultValues: {
             patient: {
                 firstName: '',

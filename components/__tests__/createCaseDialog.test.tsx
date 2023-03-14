@@ -1,8 +1,7 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import CreateCaseDialog from "../createCaseDialog";
 import moment from "moment";
-import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData, mockUseGenericQueryHook } from "../../testReference";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormWrapper, mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData, mockUseGenericQueryHook } from "../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -13,25 +12,6 @@ jest.mock("../../utils/hooks", () => ({
   useCreateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
   useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
 }));
-
-const FormWrapper = (props: any) => {
-  const formMethods = useForm({
-      defaultValues: {
-          scheduling: {
-              location: {
-                  locationId: 1,
-                  locationName: "Medtel Hospital"
-              }
-          }
-      }
-  });
-
-  return (
-    <FormProvider {...formMethods}>
-      {props.children}
-    </FormProvider>
-  );
-};
 
 describe("CreateCaseDialog", () => {
   const props = {

@@ -1,7 +1,7 @@
 import { render, renderHook, fireEvent, waitFor } from '@testing-library/react'        
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { mockLocationData, mockProcedureUnitData, mockProviderData, mockServiceLineData, mockSingleCase, mockSingleLocation, mockSingleProcedureUnit, mockSingleProvider, mockSingleServiceLine, mockUseGenericQueryHook } from '../../../../testReference';
+import { FormWrapper, mockLocationData, mockProcedureUnitData, mockProviderData, mockServiceLineData, mockSingleCase, mockSingleLocation, mockSingleProcedureUnit, mockSingleProvider, mockSingleServiceLine, mockUseGenericQueryHook } from '../../../../testReference';
 import SchedulingTab from '../schedulingTab';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -14,22 +14,6 @@ jest.mock('@tanstack/react-query', () => ({
 jest.mock("../../../../utils/hooks", () => ({
     useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
 }));
-
-const FormWrapper = (props: any) => {
-    const formMethods = useForm({
-        defaultValues: {
-            scheduling: {
-                procedureDate: moment('1990-02-01').toDate()
-            }
-        }
-    });
-
-    return (
-      <FormProvider {...formMethods}>
-        {props.children}
-      </FormProvider>
-    );
-  };
 
   const PrepopulatedFormWrapper = (props: any) => {
     const formMethods = useForm({

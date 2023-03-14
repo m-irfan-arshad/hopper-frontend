@@ -28,7 +28,7 @@ describe("getCaseById API", () => {
             include: {
                 patient: {include: {sex: true, state: true}},
                 financial: {include: {insurance: true}, orderBy: {createTime: "asc"}},
-                scheduling: {include: {location: true, procedureUnit: true, serviceLine: true, provider: true}}
+                scheduling: {include: {location: true, procedureUnit: true, serviceLine: true, provider: true, admissionType: true}}
             }
         };
 

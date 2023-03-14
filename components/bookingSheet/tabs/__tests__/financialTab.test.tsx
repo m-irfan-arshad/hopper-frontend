@@ -2,7 +2,6 @@ import { render, renderHook, fireEvent } from '@testing-library/react'
 import PatientTab from "../patientTab";
 import moment from "moment";
 import { FormProvider, useForm } from "react-hook-form";
-import { mockSingleCase } from "../../../../testReference";
 import FinancialTab from '../financialTab';
 import { defaultInsuranceValue } from '../../../../reference';
 
@@ -11,9 +10,9 @@ jest.mock('@tanstack/react-query', () => ({
     useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
     QueryClient: jest.fn(),
     useQuery: jest.fn().mockReturnValue({ data: [] })
-}));  
+})); 
 
-const FormWrapper = (props: any) => {
+const FinancialFormWrapper = (props: any) => {
     const formMethods = useForm({
         defaultValues: {
             financial: [defaultInsuranceValue]
@@ -38,9 +37,9 @@ describe("FinancialTab", () => {
 
     test("renders the financial tab", () => {
         const { getByPlaceholderText, getByRole } = render(
-            <FormWrapper>
-            <FinancialTab {...props}  />
-            </FormWrapper>
+            <FinancialFormWrapper>
+                <FinancialTab {...props}  />
+            </FinancialFormWrapper>
         );  
         expect(getByRole('combobox', {name: 'Insurance'})).toBeInTheDocument();
         expect(getByPlaceholderText("Insurance")).toBeInTheDocument();
@@ -56,9 +55,9 @@ describe("FinancialTab", () => {
 
     test("can add more insurances", () => {
         const { getAllByRole, getByRole } = render(
-            <FormWrapper>
+            <FinancialFormWrapper>
                 <FinancialTab {...props}  />
-            </FormWrapper>
+            </FinancialFormWrapper>
         );  
 
         expect(getByRole('button', {name: 'Add Insurance'})).toBeInTheDocument();
@@ -69,9 +68,9 @@ describe("FinancialTab", () => {
     test("can update fields in financial tab", () => {
         const priorAuthDate = moment('1990-02-01').format('MM/DD/YYYY');
         const { getByPlaceholderText, getByRole } = render(
-            <FormWrapper>
-            <FinancialTab {...props}  />
-            </FormWrapper>
+            <FinancialFormWrapper>
+                <FinancialTab {...props}  />
+            </FinancialFormWrapper>
         );  
 
         fireEvent.change(getByRole('textbox', {name: 'Insurance Group Name'}), {target: {value: 'testName'}});

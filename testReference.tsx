@@ -3,6 +3,7 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 import { FullCase } from "./reference";
+import { useForm, FormProvider } from "react-hook-form";
 import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit } from "@prisma/client";
 
 const sampleDate = moment('2023-01-09').toDate();
@@ -194,3 +195,19 @@ export const mockUseGenericQueryHook = ({queryKey}: any): {isLoading?: boolean, 
         default: return { data: []}
     }
 }
+
+export const FormWrapper = (props: any) => {
+    const formMethods = useForm({
+        defaultValues: {
+            scheduling: {
+                procedureDate: moment('1990-02-01').toDate()
+            }
+        }
+    });
+
+    return (
+      <FormProvider {...formMethods}>
+        {props.children}
+      </FormProvider>
+    );
+  };
