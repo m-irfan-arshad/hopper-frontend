@@ -1,50 +1,45 @@
 import { render, renderHook, fireEvent } from '@testing-library/react'        
 import PatientTab from "../patientTab";
 import moment from "moment";
-import { useFieldArray, useForm } from "react-hook-form";
-import { mockSingleCase } from "../../../../testReference";
+import { FormProvider, useForm } from "react-hook-form";
 import FinancialTab from '../financialTab';
+import { defaultInsuranceValue } from '../../../../reference';
 
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+    QueryClient: jest.fn(),
+    useQuery: jest.fn().mockReturnValue({ data: [] })
+})); 
 
+const FinancialFormWrapper = (props: any) => {
+    const formMethods = useForm({
+        defaultValues: {
+            financial: [defaultInsuranceValue]
+        }
+    });
 
-describe("FinancialTab", () => {
-    const defaultInsuranceValue = {
-        insurance: null,
-        insuranceGroupName: '',
-        insuranceGroupNumber: '',
-        priorAuthApproved: '',
-        priorAuthId: '',
-        priorAuthDate: null,
-    }
+    return (
+      <FormProvider {...formMethods}>
+        {props.children}
+      </FormProvider>
+    );
+  };
 
-    const { result } = renderHook(() => useForm({defaultValues: {financial: [defaultInsuranceValue]}}))
-    const arrayMethods = renderHook(() => useFieldArray({control: result.current.control, name: "financial"}))
-    
+describe("FinancialTab", () => { 
 
     const props = {
-        control: result.current.control,
-        methods: {...arrayMethods.result.current, append: jest.fn()},
-        defaultValue: defaultInsuranceValue,
         config: {
-            organization: "...",
-            tabs: [
-                {
-                    label: "Patient",
-                    fields: [
-                        {
-                            id: "firstName",
-                            required: true,
-                            visible: true
-                        },
-                    ]
-                }  
-            ]
+            organization: "",
+            tabs: []
         }
     };
 
     test("renders the financial tab", () => {
-        const { getByPlaceholderText, getByLabelText, getByRole } = render(
-            <FinancialTab {...props}  />
+        const { getByPlaceholderText, getByRole } = render(
+            <FinancialFormWrapper>
+                <FinancialTab {...props}  />
+            </FinancialFormWrapper>
         );  
         expect(getByRole('combobox', {name: 'Insurance'})).toBeInTheDocument();
         expect(getByPlaceholderText("Insurance")).toBeInTheDocument();
@@ -59,19 +54,23 @@ describe("FinancialTab", () => {
     });
 
     test("can add more insurances", () => {
-        const { getByRole, getAllByPlaceholderText } = render(
-            <FinancialTab {...props}  />
+        const { getAllByRole, getByRole } = render(
+            <FinancialFormWrapper>
+                <FinancialTab {...props}  />
+            </FinancialFormWrapper>
         );  
 
         expect(getByRole('button', {name: 'Add Insurance'})).toBeInTheDocument();
         fireEvent.click(getByRole('button', {name: 'Add Insurance'}));
-        expect(props.methods.append).toBeCalledTimes(1)
+        expect(getAllByRole('combobox', {name: 'Insurance'}).length).toEqual(2);
     });
 
     test("can update fields in financial tab", () => {
         const priorAuthDate = moment('1990-02-01').format('MM/DD/YYYY');
         const { getByPlaceholderText, getByRole } = render(
-            <FinancialTab {...props}  />
+            <FinancialFormWrapper>
+                <FinancialTab {...props}  />
+            </FinancialFormWrapper>
         );  
 
         fireEvent.change(getByRole('textbox', {name: 'Insurance Group Name'}), {target: {value: 'testName'}});

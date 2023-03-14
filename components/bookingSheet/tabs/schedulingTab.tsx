@@ -8,31 +8,32 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DateController, DropDownSearchController} from '../../../utils/formControllers'
 import { ConfigObject } from '../../../utils/helpers';
+import * as R from 'ramda';
+import { useFormContext } from "react-hook-form";
 
 interface Props {
-    form: any,
     config: ConfigObject,
 }
 
 export default function SchedulingTab(props: Props) {
-    const {form, config} = props;
-    const { control, watch, resetField, getValues } = form;
+    const {config} = props;
+    const { watch, resetField, setValue, formState: { isDirty } } = useFormContext();
 
     const locationDropDownValue = watch('scheduling.location');
     const procedureUnitDropDownValue = watch('scheduling.procedureUnit');
     const serviceLineDropDownValue = watch('scheduling.serviceLine');
 
     useEffect(() => {
-        resetField('scheduling.procedureUnit');
-    }, [locationDropDownValue, resetField]);
+        isDirty && setValue('scheduling.procedureUnit', {procedureUnitId: null}, {shouldDirty: true});
+    }, [locationDropDownValue]);
 
     useEffect(() => {
-        resetField('scheduling.serviceLine');
-    }, [procedureUnitDropDownValue, resetField]);
+        isDirty && setValue('scheduling.serviceLine', {serviceLineId: null}, {shouldDirty: true});
+    }, [procedureUnitDropDownValue]);
 
     useEffect(() => {
-        resetField('scheduling.provider');
-    }, [serviceLineDropDownValue, resetField]);
+        isDirty && setValue('scheduling.provider', {providerId: null}, {shouldDirty: true});
+    }, [serviceLineDropDownValue]);
 
     return (
         <Box>
@@ -42,23 +43,19 @@ export default function SchedulingTab(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Surgical Location"
-                            control={control}
                             id="scheduling.location" 
                             queryKey="getLocations"
                             labelProperties={["locationName"]}
                             placeholder="Surgical Location"
-                            getValues={getValues}
                         />
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Procedure Unit"
-                            control={control}
                             id="scheduling.procedureUnit" 
                             queryKey="getProcedureUnits"
                             labelProperties={["procedureUnitName"]}
                             placeholder="Procedure Unit"
-                            getValues={getValues}
                             dependency="scheduling.location.locationId"
                             params={[{field: "locationId", value: "scheduling.location.locationId"}]}
                         />
@@ -66,12 +63,10 @@ export default function SchedulingTab(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Service Line"
-                            control={control}
                             id="scheduling.serviceLine" 
                             queryKey="getServiceLines"
                             labelProperties={["serviceLineName"]}
                             placeholder="Service Line"
-                            getValues={getValues}
                             dependency="scheduling.procedureUnit.procedureUnitId"
                             params={[{field: "procedureUnitId", value: "scheduling.procedureUnit.procedureUnitId"}]}
                         />
@@ -79,18 +74,25 @@ export default function SchedulingTab(props: Props) {
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="Primary Surgeon"
-                            control={control}
                             id="scheduling.provider" 
                             queryKey="getProviders"
                             labelProperties={["firstName", "lastName"]}
                             placeholder="Primary Surgeon"
-                            getValues={getValues}
                             dependency="scheduling.serviceLine.serviceLineId"
                             params={[{field: "serviceLineId", value: "scheduling.serviceLine.serviceLineId"}]}
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <DateController withTime control={control} id={'scheduling.procedureDate'} title="Procedure Date" placeholder="Procedure Date" />
+                        <DateController withTime id={'scheduling.procedureDate'} title="Procedure Date" placeholder="Procedure Date" />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <DropDownSearchController 
+                            title="Admission Type"
+                            id="scheduling.admissionType"
+                            labelProperties={["admissionTypeName"]}
+                            placeholder="Admission Type" 
+                            queryKey="getAdmissionTypes"
+                        />
                     </Grid>
                 </Grid>
             </LocalizationProvider>

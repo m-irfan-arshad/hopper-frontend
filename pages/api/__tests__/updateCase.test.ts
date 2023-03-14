@@ -5,6 +5,7 @@
  import type { NextApiRequest } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
 import updateCaseHandler from '../updateCase.page';
+import { mockSingleCase } from '../../../testReference';
 
 jest.mock('@auth0/nextjs-auth0', () => ({
     withApiAuthRequired: jest.fn((args) => args),
@@ -13,34 +14,20 @@ jest.mock('@auth0/nextjs-auth0', () => ({
 
  describe("updateCase API", () => {
 
-    const testCase = {
-        caseId: 1,
-        fhirResourceId: "testId",
-        patientId: 1,
-        procedureDate: new Date(),
-        providerName: "testProviderName",
-        locationName: "testLocationName",
-        createTime: new Date(),
-        updateTime: new Date(),
-        priorAuthorization: "incomplete",
-        vendorConfirmation: "incomplete",
-    }
-
 
     let req: NextApiRequest = httpMock.createRequest({
         url: "/api/updateCase?caseId=1",
-        body: testCase
+        body: mockSingleCase
     });
     let res: any = httpMock.createResponse({});
 
     test('should update a case', async () => {
-        prismaMock.cases.update.mockResolvedValue(testCase)
+        prismaMock.cases.update.mockResolvedValue(mockSingleCase)
 
         await updateCaseHandler(req, res)
         const data = res._getJSONData()
         expect(data.caseId).toEqual(1)
         expect(data.patientId).toEqual(1)
-        expect(data.providerName).toEqual("testProviderName")
         expect(prismaMock.cases.update).toBeCalledTimes(1)
     })
 

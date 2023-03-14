@@ -8,9 +8,9 @@ const requiredParams = ['serviceLineId'];
 
 export default withApiAuthRequired( withValidation(requiredParams, async function getProvidersHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const providers = await prisma.providers.findMany({
+    const providers = await prisma.provider.findMany({
       where: {
-        serviceLines: {
+        serviceLine: {
           some: {
             serviceLine: {
               serviceLineId: parseInt(req.query["serviceLineId"] as string)
@@ -18,8 +18,8 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
           },
         },
       },
+      orderBy: { firstName: 'asc' }
     });
-    providers.sort((unit1, unit2) => unit1.firstName.toLowerCase() > unit2.firstName.toLowerCase() ? 1 : -1);
 
     res.json(providers)
   } catch(err) {

@@ -245,7 +245,7 @@ export const defaultTheme = createTheme({
                 root: {
                     '& .MuiOutlinedInput-root': {
                         padding: "0px 2.438rem 0px 0.563rem",
-                        height: "2.938rem",
+                        height: "2.75rem",
                     },
                 }
             } 

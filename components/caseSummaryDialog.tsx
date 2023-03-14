@@ -16,10 +16,7 @@ import {
     Box,
 } from '@mui/material';
 import { Check } from "@mui/icons-material";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { FormattedFullCase } from "../reference";
-import DottedDivider from "./shared/dottedDivider";
+import { FullCase } from "../reference";
 import { useUpdateCaseHook } from '../utils/hooks';
 import CaseSummaryContent from './caseSummaryContent';
 
@@ -27,7 +24,7 @@ import CaseSummaryContent from './caseSummaryContent';
 interface Props {
     open: boolean
     closeDialog: () => void,
-    row: FormattedFullCase
+    row: FullCase
 }
 
 interface StepCompletedButtonProps {
@@ -65,12 +62,12 @@ export default function CaseSummaryDialog(props: Props) {
                 alignItems: "center"
             }}>
             <Box sx={{display: "flex", flexDirection: "column"}}>
-                <Typography variant="body1" color="white.main">{`${row.patients?.lastName}, ${row.patients?.firstName}`}</Typography>
+                <Typography variant="body1" color="white.main">{`${row.patient?.lastName}, ${row.patient?.firstName}`}</Typography>
                 <Typography
                     variant="caption"
                     color="white.main"
                 >
-                    {`${row.patients?.dateOfBirth} - ${row.patients?.mrn}`}
+                    {`${row.patient?.dateOfBirth} - ${row.patient?.mrn}`}
                 </Typography>
             </Box>
             <Button 
@@ -99,23 +96,36 @@ export default function CaseSummaryDialog(props: Props) {
             >
                 Cancel
             </Button>
-            <div style={{display: 'flex', gap: 15, marginRight: 10}}>
-            {row.steps.priorAuthorization === "Complete" ? <StepCompletedButton title={"Insurance Verified"}/> : <Button 
+            {
+                row?.vendorConfirmation === "Complete" ? <StepCompletedButton title={"Vendor Confirmed"}/> : (
+                <Button 
                 variant="contained"
                 size="small"
-                onClick={() => mutate({priorAuthorization: "Complete", caseId: row.caseId})}
-                >
-                    Verify Insurance
-            </Button>}
-            {row.steps.vendorConfirmation === "Complete" ? <StepCompletedButton title={"Vendor Confirmed"}/> : <Button 
-                variant="contained"
-                size="small"
-                onClick={() => mutate({vendorConfirmation: "Complete", caseId: row.caseId})}
+                onClick={() => mutate({caseId: row.caseId, vendorConfirmation: "Complete"})}
                 >
                     Confirm Vendor
-            </Button>}
-            </div>
+                </Button>)
+            }
         </DialogActions>
       </Dialog>
   );
 }
+
+/* Prior Auth button may be added back later
+    <div style={{display: 'flex', gap: 15, marginRight: 10}}>
+        {row.financial?.priorAuthorization === "Complete" ? <StepCompletedButton title={"Insurance Verified"}/> : <Button 
+            variant="contained"
+            size="small"
+            onClick={() => mutate({caseId: row.caseId, scheduling: {priorAuthorization: "Complete"}})}
+            >
+                Verify Insurance
+        </Button>}
+        {row.financial?.vendorConfirmation === "Complete" ? <StepCompletedButton title={"Vendor Confirmed"}/> : <Button 
+            variant="contained"
+            size="small"
+            onClick={() => mutate({caseId: row.caseId, scheduling: {vendorConfirmation: "Complete"}})}
+            >
+                Confirm Vendor
+        </Button>}
+    </div>
+*/

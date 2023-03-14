@@ -44,10 +44,8 @@ describe("CaseCard", () => {
     // expect(container.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #EF5350');
 
     const rowClone = R.clone(mockSingleCase);
-    rowClone.steps =  {
-      priorAuthorization: "Incomplete",
-      vendorConfirmation: "Complete"
-    };
+    rowClone.financial[0].priorAuthorization = "Incomplete"
+    rowClone.vendorConfirmation = "Complete"
 
     const {container: containerClone} = render(
       <ThemeProvider theme={defaultTheme}>
@@ -58,10 +56,8 @@ describe("CaseCard", () => {
    expect(containerClone.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #FFA726');
 
     const rowClone2 = R.clone(mockSingleCase);
-    rowClone2.steps =  {
-      priorAuthorization: "Complete",
-      vendorConfirmation: "Complete"
-    };
+    rowClone2.financial[0].priorAuthorization = "Complete"
+    rowClone2.vendorConfirmation = "Complete"
 
     const {container: containerClone2} = render(
       <ThemeProvider theme={defaultTheme}>
@@ -130,19 +126,19 @@ describe("CaseCard", () => {
   });
 
   test("renders threat of cancellation when appointment is 24 hours away or less and not all steps completed", async () => {
-    const rowClone = {...mockSingleCase, procedureDate: moment('2022-10-20').toDate(), steps: {
-      priorAuthorization: "Complete",
-      vendorConfirmation: "Incomplete",
-    }}
+    const rowClone3 = {...mockSingleCase, vendorConfirmation: "Incomplete"}
+    rowClone3.scheduling.procedureDate = moment('2022-10-20').toDate() 
+    rowClone3.financial[0].priorAuthorization = "Complete"
     const { getByTestId } = render(
-      <CaseCard row={rowClone} />
+      <CaseCard row={rowClone3} />
     );
 
     expect(getByTestId("NotificationImportantIcon")).toBeInTheDocument();
   });
 
   test("does not render threat of cancellation when appointment is more than 24 hours away", async () => {
-    const rowClone = {...mockSingleCase, procedureDate: moment('2022-10-22').toDate() }
+    const rowClone = {...mockSingleCase}
+    rowClone.scheduling.procedureDate = moment('2022-10-22').toDate() 
     const { queryByTestId } = render(
       <CaseCard row={rowClone} />
     );
@@ -151,12 +147,11 @@ describe("CaseCard", () => {
   });
 
   test("does not render threat of cancellation when all steps completed", async () => {
-    const rowClone = {...mockSingleCase, procedureDate: moment('2022-10-20').toDate(), steps: {
-      priorAuthorization: "Complete",
-      vendorConfirmation: "Complete",
-    }}
+    const rowClone4 = {...mockSingleCase, vendorConfirmation: "Complete"}
+    rowClone4.financial[0].priorAuthorization = "Complete"
+    rowClone4.scheduling.procedureDate = moment().toDate() 
     const { queryByTestId } = render(
-      <CaseCard row={rowClone} />
+      <CaseCard row={rowClone4} />
     );
 
     expect(queryByTestId("NotificationImportantIcon")).toBeNull();

@@ -55,7 +55,7 @@ describe("CaseSummaryDialog", () => {
   });
 
   test("renders the caseSummaryDialog with N/A for all applicable fields", () => {
-    const propsClone = {...testProps, row: {...testProps.row, providers: null}}
+    const propsClone = {...testProps, row: {...testProps.row, scheduling: {...testProps.row.scheduling, provider: null} }}
       
     const { getAllByText } = render(
       <CaseSummaryDialog {...propsClone} />
@@ -85,19 +85,7 @@ describe("CaseSummaryDialog", () => {
       <CaseSummaryDialog {...propsClone} />
     );
 
-    expect(getByRole('button', {name: 'Verify Insurance'})).toBeInTheDocument();
     expect(getByRole('button', {name: 'Confirm Vendor'})).toBeInTheDocument();
-  });
-
-  test("renders correct buttons when step completed", () => {
-    const propsClone = {...testProps, row: {...testProps.row, steps: {priorAuthorization: "Complete", vendorConfirmation: "Complete"}}}
-    
-    const { getByRole } = render(
-      <CaseSummaryDialog {...propsClone} />
-    );
-
-    expect(getByRole('button', {name: 'Insurance Verified'})).toBeInTheDocument();
-    expect(getByRole('button', {name: 'Vendor Confirmed'})).toBeInTheDocument();
   });
 
   test("triggers mutation when action button pressed", () => {
@@ -107,8 +95,19 @@ describe("CaseSummaryDialog", () => {
       <CaseSummaryDialog {...propsClone} />
     );
     
-    fireEvent.click(getByRole('button', {name: 'Verify Insurance'}))
+    fireEvent.click(getByRole('button', {name: 'Confirm Vendor'}))
     expect(mutateFunc).toHaveBeenCalledTimes(1);
+  });
+
+  test("renders correct buttons when step completed", () => {
+    const propsClone = {...testProps, row: testProps.row}
+    propsClone.row.vendorConfirmation = "Complete"
+    
+    const { getByRole } = render(
+      <CaseSummaryDialog {...propsClone} />
+    );
+
+    expect(getByRole('button', {name: 'Vendor Confirmed'})).toBeInTheDocument();
   });
 
 });

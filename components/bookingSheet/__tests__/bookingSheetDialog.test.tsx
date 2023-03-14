@@ -10,7 +10,8 @@ jest.mock('@tanstack/react-query', () => ({
 
 jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockSingleCase })),
-    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
+    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+    useGenericQueryHook: jest.fn().mockImplementation(() => ({ data: [] })),
 }));
 
 describe("BookingSheetDialog", () => {

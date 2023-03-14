@@ -2,6 +2,7 @@ import { render, fireEvent, waitFor } from "@testing-library/react";
 import CaseHub from '../[caseId].page';
 import { mockSingleCase } from "../../../testReference";
 import { PagesTestWrapper } from "../../../testReference";
+import { useGenericQueryHook } from "../../../utils/hooks";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -15,7 +16,8 @@ jest.mock('next/router', () => ({
 
 jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({data: mockSingleCase})),
-    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
+    useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+    useGenericQueryHook: jest.fn().mockImplementation(() => ({}))
 }));
 
 describe('[caseId]: Case Hub Page', () => {

@@ -30,14 +30,15 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         skip: paginationSkipAmount,
         orderBy: [
           {
-            procedureDate: <Prisma.SortOrder>req.query["orderBy"]
+            scheduling: {
+              procedureDate: <Prisma.SortOrder>req.query["orderBy"]
+            }
           }
         ],
-        include: {
-            patients: true,
-            locations: true,
-            providers: true,
-            insurances: true
+        include: { 
+          patient: true,
+          scheduling: { include: {provider: true, location: true} }, 
+          financial: true
         }
     })
 

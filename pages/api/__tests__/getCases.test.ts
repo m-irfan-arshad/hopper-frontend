@@ -34,18 +34,18 @@
 
         const params = {
             where: {
-                procedureDate: {
-                    // eventually this should take in a date range parameter from client instead
-                    gte: moment('10/13/2022', 'MM/DD/YYYY').startOf("day").toDate(),
-                    lte: moment('10/31/2022', 'MM/DD/YYYY').endOf("day").toDate()
+                scheduling: {
+                    procedureDate: {
+                        // eventually this should take in a date range parameter from client instead
+                        gte: moment('10/13/2022', 'MM/DD/YYYY').startOf("day").toDate(),
+                        lte: moment('10/31/2022', 'MM/DD/YYYY').endOf("day").toDate()
+                    },
                 },
-                priorAuthorization: {
-                    equals: 'Incomplete'
-                },
+                financial: { some: {priorAuthorization: {contains: "Incomplete"}}},
                 vendorConfirmation: {
                     equals: 'Incomplete'
                 },
-                patients: {
+                patient: {
                     OR: [
                         {
                             firstName: {
@@ -66,15 +66,16 @@
             skip: 0,
             orderBy: [
                 {
-                    procedureDate: "asc"
+                    scheduling: {
+                        procedureDate: "asc"
+                    }
                 }
             ],
-            include: {
-                insurances: true,
-                patients: true,
-                locations: true,
-                providers: true
-            }
+            include: { 
+                patient: true,
+                scheduling: { include: {provider: true, location: true} }, 
+                financial: true
+              }
         }
 
         prismaMock.cases.findMany.mockResolvedValueOnce(cases as any)
@@ -84,7 +85,7 @@
         const data = res._getJSONData()
         expect(data.cases[0].caseId).toEqual(1)
         expect(data.cases[0].patientId).toEqual(1)
-        expect(data.cases[0].providers.firstName).toEqual("Robert")
+        expect(data.cases[0].scheduling.provider.firstName).toEqual("Robert")
         expect(data.count).toEqual(1)
         expect(prismaMock.cases.findMany).toBeCalledTimes(1)
         expect(prismaMock.cases.findMany).toBeCalledWith(params)

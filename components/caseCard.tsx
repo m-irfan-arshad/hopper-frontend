@@ -26,18 +26,19 @@ import {
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 
 import { caseCardProcedureInformation, caseCardCaseIdentifiers, caseStepMappings } from "../reference";
-import { FormattedFullCase } from "../reference";
+import { FullCase } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 import moment from "moment";
 import { formatDate } from "../utils/helpers";
+import { scheduling } from "@prisma/client";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 
 interface CaseCardProps {
-  row: FormattedFullCase
+  row: FullCase
 }
 
 interface HeaderCellProps {
@@ -49,7 +50,8 @@ interface InfoCellProps {
   name: {
     label: string;
     id: string;
-    fromTable?: string
+    path: string[];
+    type?: string;
   }
 }
 
@@ -78,9 +80,13 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const [isDialogOpen, setDialogState] = useState(false);
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  const numberOfSteps = Object.keys(row.steps).length;
-  const numberOfCompletedSteps: number = Object.keys(row.steps).reduce((acc: any, key: string) => row.steps[key] === "Complete" ? 1 + acc : 0 + acc , 0);
-  const threatOfCancellation = moment(row.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24 && numberOfCompletedSteps < numberOfSteps;
+  const steps: {[key: string]: any} = {
+    "vendorConfirmation": row?.vendorConfirmation === "Complete",
+    "priorAuthorization": row.financial.length > 0 && row.financial.every(insuranceObj => insuranceObj.priorAuthorization === "Complete")
+  }
+  const numberOfSteps = Object.keys(steps).length;
+  const numberOfCompletedSteps: number = Object.keys(steps).reduce((acc: any, key: string) => steps[key] === true ? 1 + acc : 0 + acc , 0);
+  const threatOfCancellation = moment(row.scheduling?.procedureDate, 'MM/DD/YYYY').diff(moment(), 'hours') <= 24 && numberOfCompletedSteps < numberOfSteps;
 
   const cardStyle = {
     paddingLeft: "0.625rem",
@@ -156,23 +162,19 @@ export default function CaseCard ({ row }: CaseCardProps) {
     </Button>)
   }
 
-  function calculateInfoCellValue(props: InfoCellProps) {
+  function calculateInfoCellValue(props: InfoCellProps): any {
     const { name } = props;
-    //@ts-ignore
-    const elemValue = row[name.id];
-    if (elemValue) {
-      if (name.id === 'procedureDate') {
-        return formatDate(elemValue)
+    if (name.id === 'providerName') {
+      return R.path(name.path, row) ? 
+      `${R.path([...name.path, 'firstName'], row)} ${R.path([...name.path, 'lastName'], row)}`
+      : 'N/A'
+    } else if(R.path(name.path, row)) {
+      if (name.type === "date") {
+          return formatDate(R.path(name.path, row) as Date)
       }
-      return elemValue;
-    } else if (name.fromTable) {
-      if (name.id === 'providerName') {
-        return R.path([name.fromTable, 'firstName'], row) ? 
-        `${R.path([name.fromTable, 'firstName'], row)} ${R.path([name.fromTable, 'lastName'], row)}`
-        : 'N/A'
-      }
-      return R.path([name.fromTable, name.id], row) || 'N/A';
-    } else {
+      return R.path(name.path, row)
+    }
+    else {
       return 'N/A'
     }
   }
@@ -200,20 +202,20 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   variant="subtitle1"
                   data-testid="caseCardPatientName"
                 >            
-                  {`${row.patients?.lastName}, ${row.patients?.firstName}`}
+                  {`${row.patient?.lastName}, ${row.patient?.firstName}`}
                 </Typography>
               </Link>
               <Typography
                 variant="caption"
                 sx={{ marginLeft: "0.625rem", marginTop: "0.313rem" }}
               >
-                {formatDate(row.patients?.dateOfBirth)}
+                {formatDate(row.patient?.dateOfBirth)}
               </Typography>
               <Typography
                 variant="caption"
                 sx={{ marginTop: "0.313rem", marginLeft: "0.313rem" }}
               >
-                {`- ${row.patients?.mrn || 'N/A'}`}
+                {`- ${row.patient?.mrn || 'N/A'}`}
               </Typography>
 
               {threatOfCancellation && <NotificationImportantIcon color="error" fontSize="small" sx={{position: "relative", top: "0.313rem", left: "0.626rem"}}/>}
@@ -278,11 +280,11 @@ export default function CaseCard ({ row }: CaseCardProps) {
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
-                {Object.keys(row.steps).map((key, index) => (
+                {Object.keys(steps).map((key, index) => (
                   <ListItem
                     key={index}
                   >
-                    { row.steps[key] === "Complete" ?
+                    { steps[key] === "Complete" ?
                       <CheckCircleIcon
                         sx={{
                           height: "0.875rem",
@@ -301,7 +303,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography variant={row.steps[key] === "Complete"  ? "subtitle2" : "body2"} sx={{color: row.steps[key] === "Complete"  ? "green.main" : "inherit"}}>
+                    <Typography variant={steps[key] === "Complete"  ? "subtitle2" : "body2"} sx={{color: steps[key] === "Complete"  ? "green.main" : "inherit"}}>
                       {caseStepMappings[key as keyof typeof caseStepMappings]}
                     </Typography>
                   </ListItem>

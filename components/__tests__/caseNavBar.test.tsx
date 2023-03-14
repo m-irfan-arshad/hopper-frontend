@@ -1,7 +1,7 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import moment from "moment";
 import CaseNavBar from "../caseNavBar";
-import { mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData } from "../../testReference";
+import { FormWrapper, mockUseGenericQueryHook } from "../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -10,10 +10,7 @@ jest.mock('@tanstack/react-query', () => ({
     
 jest.mock("../../utils/hooks", () => ({
     useCreateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-    useGetLocationsHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockLocationData })),
-    useGetProcedureUnitsHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProcedureUnitData })),
-    useGetServiceLinesHook: jest.fn().mockImplementation(() =>  ({ isLoading: false, data: mockServiceLineData })),
-    useGetProvidersHook: jest.fn().mockImplementation(() => ({ isLoading: false, data: mockProviderData }))
+    useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
 }));
 
 describe("CaseNavBar", () => {
@@ -44,7 +41,9 @@ describe("CaseNavBar", () => {
 
     test("open create case dialog and close it", async () => {
         const { getByRole, queryByRole } = render(
+            <FormWrapper>
             <CaseNavBar  {...props}/>
+            </FormWrapper>
         );
 
         expect(getByRole("button", {name: "Create Case"})).toBeInTheDocument();

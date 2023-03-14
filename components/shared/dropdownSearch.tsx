@@ -25,7 +25,8 @@ export default function DropDownSearchComponent(props: Props) {
         const labelArray = labelProperties.map((p) => {
             return option[p]
         });
-        
+        if (labelArray.toString().replace(',', '') === '') return ''; //if empty list, set to placeholder
+
         return (labelArray.toString().split(',')).join(' ');
     }
     
@@ -35,7 +36,7 @@ export default function DropDownSearchComponent(props: Props) {
             data-testid='autocomplete'
             id={id}
             disableClearable
-            isOptionEqualToValue={(option, value) => option.fhirResourceId === value.fhirResourceId}
+            isOptionEqualToValue={(option, value) => getOptionLabel(option) === getOptionLabel(value)}
             getOptionLabel={(option: Option) => getOptionLabel(option)}
             onChange={(_, data) => onChange(data)}
             options={options}
