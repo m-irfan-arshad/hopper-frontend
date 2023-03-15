@@ -102,6 +102,7 @@ export default function BookingSheetDialog(props: Props) {
                 approach: null,
                 laterality: null,
                 anesthesia: null,
+                anesthesiaNotes: '',
                 cptCode: null,
                 icdCode: null
             },

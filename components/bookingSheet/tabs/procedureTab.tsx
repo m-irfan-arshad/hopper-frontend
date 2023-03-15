@@ -57,6 +57,13 @@ export default function ProcedureTab(props: Props) {
                             queryKey="getAnesthesia"
                         />
                     </Grid>
+                    <Grid item xs={12}>
+                        <InputController 
+                            title="Anesthesia Notes"
+                            id="procedureTab.anesthesiaNotes"
+                            placeholder="Anesthesia Notes" 
+                        />
+                    </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="CPT"

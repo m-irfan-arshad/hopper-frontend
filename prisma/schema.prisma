@@ -167,6 +167,7 @@ model procedureTab {
   cptCodeId         Int?      @map("cpt_code_id")
   icdCodeId         Int?      @map("icd_code_id")
   caseId            Int?      @map("case_id")
+  anesthesiaNotes   String?   @map("anesthesia_notes")
 
   cases             cases?
   procedure         procedure? @relation(fields: [procedureId], references: [procedureId], onDelete: NoAction, onUpdate: NoAction)
