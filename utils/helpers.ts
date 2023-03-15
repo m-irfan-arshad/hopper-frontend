@@ -193,6 +193,9 @@ export function formatCreateCaseParams(data: FullCase) {
           providerId: data.scheduling.provider?.providerId,
         },
       },
+      procedureTab: {
+        create: {}
+      }
     })
   }
 

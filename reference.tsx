@@ -139,7 +139,8 @@ export const includeReferencesObject = {
 export type FullCase = Prisma.casesGetPayload<{ include: { 
   patient: true, 
   scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
-  financial: true
+  financial: true,
+  procedureTab: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}}
 } }>
 
 export const defaultInsuranceValue = {

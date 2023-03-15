@@ -21,6 +21,7 @@ import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
 import * as R from 'ramda';
 import SchedulingTab from "./tabs/schedulingTab";
+import ProcedureTab from "./tabs/procedureTab";
 
 interface Props {
     open: boolean
@@ -96,6 +97,14 @@ export default function BookingSheetDialog(props: Props) {
                 zip: ''
             },
             financial: [{...defaultInsuranceValue}],
+            procedureTab: {
+                procedure: null,
+                approach: null,
+                laterality: null,
+                anesthesia: null,
+                cptCode: null,
+                icdCode: null
+            },
             scheduling: {
                 location: null,
                 procedureUnit: null,
@@ -161,6 +170,7 @@ export default function BookingSheetDialog(props: Props) {
                 <FormProvider {...form}>
                     {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject}/>}
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject}/>}
+                    {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfigObject} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} />}
                 </FormProvider>
             </DialogContent>

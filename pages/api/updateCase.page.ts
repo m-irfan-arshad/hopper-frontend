@@ -10,6 +10,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     let caseNoId = excludeField(req.body, "caseId")
     caseNoId.scheduling && (caseNoId.scheduling = getRelationshipCrudObject(excludeField(caseNoId.scheduling, "schedulingId")))
     caseNoId.patient && (caseNoId.patient = getRelationshipCrudObject(excludeField(caseNoId.patient, "patientId")))
+    caseNoId.procedureTab && (caseNoId.procedureTab = getRelationshipCrudObject(excludeField(caseNoId.procedureTab, "procedureTabId")))
 
     const updatedCase = await prisma.cases.update({
       where: {
