@@ -18,7 +18,6 @@ export default function ProcedureTab(props: Props) {
     const {config} = props;
 
     return (
-        <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Procedure</Typography>
                 <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"2.25rem"}>
@@ -78,6 +77,5 @@ export default function ProcedureTab(props: Props) {
                     </Grid>
                 </Grid>
             </LocalizationProvider>
-        </Box>
     )
 }
