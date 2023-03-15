@@ -1,7 +1,7 @@
 import { render, renderHook, fireEvent, waitFor } from '@testing-library/react'        
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { FormWrapper, mockLocationData, mockSingleLocation, mockSingleProcedure, mockSingleProcedureUnit, mockSingleProvider, mockSingleServiceLine, mockUseGenericQueryHook } from '../../../../testReference';
+import { FormWrapper, mockSingleProcedure, mockUseGenericQueryHook } from '../../../../testReference';
 import ProcedureTab from '../procedureTab';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -15,7 +15,7 @@ jest.mock("../../../../utils/hooks", () => ({
     useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
 }));
 
-describe.only("SchedulingTab", () => {
+describe("ProcedureTab", () => {
     const props = {
         config: {
             organization: "...",
