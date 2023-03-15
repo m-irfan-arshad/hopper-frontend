@@ -43,6 +43,7 @@ export const mockSingleProcedureTab: Prisma.procedureTabGetPayload<{include: {pr
     cptCodeId: 1,
     icdCodeId: 1,
     caseId: 1,
+    anesthesiaNotes: '',
     procedure: mockSingleProcedure,
     approach: mockSingleApproach,
     laterality: mockSingleLaterality,
