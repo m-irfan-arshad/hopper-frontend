@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
+import {InputController, DropDownSearchController} from '../../../utils/formControllers'
 import { parseFieldConfig, ConfigObject } from '../../../utils/helpers';
 
 
@@ -57,13 +57,6 @@ export default function ProcedureTab(props: Props) {
                             queryKey="getAnesthesia"
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <InputController 
-                            title="Anesthesia Notes"
-                            id="procedureTab.anesthesiaNotes"
-                            placeholder="Anesthesia Notes" 
-                        />
-                    </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
                             title="CPT"
@@ -80,6 +73,15 @@ export default function ProcedureTab(props: Props) {
                             labelProperties={["icdCodeName"]}
                             placeholder="ICD" 
                             queryKey="getIcdCodes"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputController 
+                            title="Anesthesia Notes"
+                            id="procedureTab.anesthesiaNotes"
+                            placeholder="Anesthesia Notes" 
+                            multiline
+                            maxLength={300}
                         />
                     </Grid>
                 </Grid>

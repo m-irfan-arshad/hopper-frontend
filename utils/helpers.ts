@@ -213,8 +213,8 @@ export function parseFieldConfig(configObject: ConfigObject, tabName: string, fi
  * Useful for building performative update queries.
  */
 export function getDirtyValues(dirtyFields: any, allValues: any): object | undefined {
-    if (R.isEmpty(allValues)) return undefined;
     if (dirtyFields === true || Array.isArray(dirtyFields))
       return allValues;
+    if (R.isEmpty(allValues)) return undefined;
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
 }

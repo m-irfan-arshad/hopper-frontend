@@ -38,7 +38,6 @@ const StyledTab = styled(Tab)({
 
 function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
     let query: any = {caseId: caseId, ...getDirtyValues(dirtyFields, formData)};
-    
     if (dirtyFields.financial) {
         let newInsurances: object[] = [];
         let updateInsurances: object[] = [];
@@ -117,7 +116,6 @@ export default function BookingSheetDialog(props: Props) {
         }
     });
     const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
-
     const onSubmit = async (formData: any) => {
         const query = prepareFormForSubmission(data.caseId, formData, dirtyFields)
         reset({}, { keepValues: true }) // resets dirty fields
