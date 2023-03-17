@@ -11,9 +11,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
-import { useFormContext, useWatch, useFieldArray } from "react-hook-form";
-import MultiSelectDropdownNew from "../components/shared/multiSelectDropdownNew";
-
+import { useFormContext, useWatch } from "react-hook-form";
+import * as R from 'ramda';
 
 interface InputControllerProps {
     id: any,
@@ -151,7 +150,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         options={dropdownData}
                         onChange={field.onChange}
                         disabled={isDisabled} 
-                        placeholder={placeholder} 
+                        placeholder={(field.value !== null && !R.isEmpty(field.value)) ? "" : placeholder} 
                         additionalStyles={additionalStyles}
                     />
                 }}
