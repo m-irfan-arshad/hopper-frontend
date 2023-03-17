@@ -11,7 +11,9 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFormContext, useWatch, useFieldArray } from "react-hook-form";
+import MultiSelectDropdownNew from "../components/shared/multiSelectDropdownNew";
+
 
 interface InputControllerProps {
     id: any,
@@ -35,7 +37,7 @@ interface DropDownSearchOption {
 
 interface DropDownSearchControllerProps {
     id: any,
-    title?: string,
+    title: string,
     disabled?: boolean,
     placeholder: string,
     additionalStyles?: React.CSSProperties | object,
@@ -43,7 +45,8 @@ interface DropDownSearchControllerProps {
     labelProperties: string[],
     queryKey?: string, 
     params?: Array<{field: string, value: string}>, 
-    dependency?: string
+    dependency?: string,
+    multiple?: boolean
 }
   
 export function InputController(props: InputControllerProps) {
@@ -129,7 +132,7 @@ export function DateController(props: DateControllerProps) {
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
     const { control, getValues } = useFormContext();
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency} = props;
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple} = props;
     const paramString = params ?  '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
@@ -139,19 +142,18 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             name={id}
             control={control}
             render={({ field }) => {
-                return (<React.Fragment>
-                        <DropDownSearchComponent
-                            label={title}
-                            value={field.value}
-                            labelProperties={labelProperties}
-                            id={id}
-                            options={dropdownData}
-                            onChange={field.onChange}
-                            disabled={isDisabled} 
-                            placeholder={placeholder} 
-                            additionalStyles={{...additionalStyles}}
-                        />
-                    </React.Fragment>)
-            }}
+                return<DropDownSearchComponent
+                        label={title}
+                        value={field.value}
+                        labelProperties={labelProperties}
+                        id={id}
+                        multiple={multiple}
+                        options={dropdownData}
+                        onChange={field.onChange}
+                        disabled={isDisabled} 
+                        placeholder={placeholder} 
+                        additionalStyles={additionalStyles}
+                    />
+                }}
         />
 }

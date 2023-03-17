@@ -39,7 +39,6 @@ export const mockSingleProcedureTab: Prisma.procedureTabGetPayload<{include: {pr
     procedureId: 1,
     approachId: 1,
     lateralityId: 1,
-    anesthesiaId: 1,
     cptCodeId: 1,
     icdCodeId: 1,
     caseId: 1,
@@ -47,7 +46,7 @@ export const mockSingleProcedureTab: Prisma.procedureTabGetPayload<{include: {pr
     procedure: mockSingleProcedure,
     approach: mockSingleApproach,
     laterality: mockSingleLaterality,
-    anesthesia: mockSingleAnesthesia,
+    anesthesia: [mockSingleAnesthesia],
     cptCode: mockSingleCptCode,
     icdCode: mockSingleIcdCode
 }

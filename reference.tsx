@@ -147,7 +147,7 @@ export const defaultInsuranceValue = {
   insurance: null,
   insuranceGroupName: '',
   insuranceGroupNumber: '',
-  priorAuthApproved: '',
+  priorAuthorization: '',
   priorAuthId: '',
   priorAuthDate: null,
 }

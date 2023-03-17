@@ -163,7 +163,6 @@ model procedureTab {
   procedureId       Int?      @map("procedure_id")
   approachId        Int?      @map("approach_id")
   lateralityId      Int?      @map("laterality_id")
-  anesthesiaId      Int?      @map("anesthesia_id")
   cptCodeId         Int?      @map("cpt_code_id")
   icdCodeId         Int?      @map("icd_code_id")
   caseId            Int?      @map("case_id")
@@ -173,7 +172,7 @@ model procedureTab {
   procedure         procedure? @relation(fields: [procedureId], references: [procedureId], onDelete: NoAction, onUpdate: NoAction)
   approach          approach? @relation(fields: [approachId], references: [approachId], onDelete: NoAction, onUpdate: NoAction)
   laterality        laterality? @relation(fields: [lateralityId], references: [lateralityId], onDelete: NoAction, onUpdate: NoAction)
-  anesthesia        anesthesia? @relation(fields: [anesthesiaId], references: [anesthesiaId], onDelete: NoAction, onUpdate: NoAction)
+  anesthesia        anesthesia[]
   cptCode           cptCode? @relation(fields: [cptCodeId], references: [cptCodeId], onDelete: NoAction, onUpdate: NoAction)
   icdCode           icdCode? @relation(fields: [icdCodeId], references: [icdCodeId], onDelete: NoAction, onUpdate: NoAction)
 }

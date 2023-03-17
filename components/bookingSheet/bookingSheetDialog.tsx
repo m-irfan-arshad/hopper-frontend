@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
-import { getDirtyValues } from '../../utils/helpers';
+import { getDirtyValues, getRelationshipCrudObject, excludeField } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject, defaultInsuranceValue } from '../../reference';
 import PatientTab from './tabs/patientTab';
@@ -22,6 +22,7 @@ import FinancialTab from "./tabs/financialTab";
 import * as R from 'ramda';
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
+import { anesthesia } from "@prisma/client";
 
 interface Props {
     open: boolean
@@ -100,7 +101,7 @@ export default function BookingSheetDialog(props: Props) {
                 procedure: null,
                 approach: null,
                 laterality: null,
-                anesthesia: null,
+                anesthesia: [],
                 anesthesiaNotes: '',
                 cptCode: null,
                 icdCode: null

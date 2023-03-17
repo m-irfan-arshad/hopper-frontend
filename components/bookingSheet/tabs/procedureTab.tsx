@@ -50,15 +50,6 @@ export default function ProcedureTab(props: Props) {
                     </Grid>
                     <Grid item xs={6}>
                         <DropDownSearchController 
-                            title="Anesthesia"
-                            id="procedureTab.anesthesia"
-                            labelProperties={["anesthesiaName"]}
-                            placeholder="Anesthesia" 
-                            queryKey="getAnesthesia"
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <DropDownSearchController 
                             title="CPT"
                             id="procedureTab.cptCode"
                             labelProperties={["cptCodeName"]}
@@ -73,6 +64,16 @@ export default function ProcedureTab(props: Props) {
                             labelProperties={["icdCodeName"]}
                             placeholder="ICD" 
                             queryKey="getIcdCodes"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DropDownSearchController 
+                            title="Anesthesia"
+                            id="procedureTab.anesthesia"
+                            labelProperties={["anesthesiaName"]}
+                            placeholder="Anesthesia" 
+                            queryKey="getAnesthesia"
+                            multiple
                         />
                     </Grid>
                     <Grid item xs={12}>

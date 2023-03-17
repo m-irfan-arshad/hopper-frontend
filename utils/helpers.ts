@@ -164,19 +164,29 @@ export function excludeField(object: any, fieldName: string): any {
 
 /**
  * Formats an CRUD operation (default is update) for relationships
+ * Sample Input Obj: {sampleTab: { sampleField: {sampleFieldId: 1, sampleFieldName: "name"}}}
+ * Output: {sampleTab: { update: { sampleFieldId: 1}}}
  */
-export function getRelationshipCrudObject(obj: {[key: string]: any}, operation="update") {
+export function getRelationshipCrudObject(obj: {[key: string]: any}, key="", operation="update") {
     let formattedObj = R.clone(obj);
 
     //update relationships by updating the Id, not the object itself
-    Object.keys(obj).forEach(function(key){
-      if (typeof obj[key] === 'object') {
-        const id = key + 'Id'
-        formattedObj[id] = obj[key][id]
-        delete formattedObj[key]
-      }
-    })
-    return {[operation]: formattedObj}
+    if (typeof obj === 'object') {
+        const objNoId = excludeField(obj, key)
+        Object.keys(objNoId).forEach(function(key){
+            const id = key + 'Id'
+            if (Array.isArray(objNoId[key])) {
+                formattedObj[key] = {set: [], connect: objNoId[key].map((elem: any) => ({[id]: elem[id]}))};
+            } else if (typeof objNoId[key] === 'object') {
+                const id = key + 'Id'
+                formattedObj[id] = obj[key][id]
+                delete formattedObj[key]
+            }
+        })
+       return {[operation]: formattedObj}
+    } else {
+        return formattedObj
+    }
   }
 
 export function formatCreateCaseParams(data: FullCase) {
