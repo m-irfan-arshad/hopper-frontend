@@ -150,7 +150,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         options={dropdownData}
                         onChange={field.onChange}
                         disabled={isDisabled} 
-                        placeholder={(field.value !== null && !R.isEmpty(field.value)) ? "" : placeholder} 
+                        placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
                         additionalStyles={additionalStyles}
                     />
                 }}
