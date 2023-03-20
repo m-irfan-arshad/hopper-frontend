@@ -10,7 +10,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
-import { useGenericQueryHook } from "./hooks"
+import { useGetDropdownOptionsHook } from "./hooks"
 import { useFormContext, useWatch } from "react-hook-form";
 import * as R from 'ramda';
 
@@ -132,10 +132,10 @@ export function DateController(props: DateControllerProps) {
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
     const { control, getValues } = useFormContext();
     const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple} = props;
-    const paramString = params ?  '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
+    const paramString = params ?  '&' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
-    const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGenericQueryHook({queryKey: queryKey, paramString: paramString, dependency: dependency ? getValues(dependency) : undefined}) : {data: options}
+    const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGetDropdownOptionsHook({queryKey: queryKey, paramString: paramString, dependency: dependency ? getValues(dependency) : undefined}) : {data: options}
 
     return <Controller
             name={id}

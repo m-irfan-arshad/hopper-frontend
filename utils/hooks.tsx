@@ -132,7 +132,7 @@ interface CaseFieldHookProps {
     dependency: any
 }
 
-export function useGenericQueryHook(props: CaseFieldHookProps) {
+export function useGetDropdownOptionsHook(props: CaseFieldHookProps) {
     const {queryKey, paramString, dependency} = props
-    return useQuery([queryKey, dependency], async () => (await fetch(`/api/${queryKey}${paramString}`)).json());
+    return useQuery([queryKey, dependency], async () => (await fetch(`/api/getDropdownOptions?queryKey=${queryKey}${paramString}`)).json());
 }

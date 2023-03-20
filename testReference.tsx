@@ -63,10 +63,15 @@ export const mockSingleProvider: provider = {
     updateTime: sampleDate
 }
 
+export const mockSingleInsurance: insurance = {
+    insuranceId: 1,
+    insuranceName: "Icon"
+}
+
 export const mockSingleFinancial: Prisma.financialGetPayload<{include: {insurance: true}}> = {
     financialId: 1,
     insuranceId: 1,
-    insurance: {insuranceName: "Icon", insuranceId: 1},
+    insurance: mockSingleInsurance,
     insuranceGroupName: "Icon Group",
     insuranceGroupNumber: "33222",
     priorAuthorization: "Incomplete",
@@ -230,7 +235,7 @@ export const PagesTestWrapper = ({ children }: any) => (
     </UserProvider>
 );
 
-export const mockUseGenericQueryHook = ({queryKey}: any): {isLoading?: boolean, data: any} => {
+export const mockuseGetDropdownOptionsHook = ({queryKey}: any): {isLoading?: boolean, data: any} => {
     switch (queryKey) {
         case "getLocations": {
             return {isLoading: false, data: mockLocationData}

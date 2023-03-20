@@ -1,7 +1,7 @@
 import { render, renderHook, fireEvent, waitFor } from '@testing-library/react'        
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { FormWrapper, mockLocationData, mockProcedureUnitData, mockProviderData, mockServiceLineData, mockSingleCase, mockSingleLocation, mockSingleProcedureUnit, mockSingleProvider, mockSingleServiceLine, mockUseGenericQueryHook } from '../../../../testReference';
+import { FormWrapper, mockLocationData, mockProcedureUnitData, mockProviderData, mockServiceLineData, mockSingleCase, mockSingleLocation, mockSingleProcedureUnit, mockSingleProvider, mockSingleServiceLine, mockuseGetDropdownOptionsHook } from '../../../../testReference';
 import SchedulingTab from '../schedulingTab';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -12,7 +12,7 @@ jest.mock('@tanstack/react-query', () => ({
 }));
 
 jest.mock("../../../../utils/hooks", () => ({
-    useGenericQueryHook: jest.fn().mockImplementation((queryKey) => mockUseGenericQueryHook(queryKey))
+    useGetDropdownOptionsHook: jest.fn().mockImplementation((queryKey) => mockuseGetDropdownOptionsHook(queryKey))
 }));
 
   const PrepopulatedFormWrapper = (props: any) => {
