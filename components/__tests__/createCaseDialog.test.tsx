@@ -1,7 +1,7 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import CreateCaseDialog from "../createCaseDialog";
 import moment from "moment";
-import { FormWrapper, mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData, mockuseGetDropdownOptionsHook } from "../../testReference";
+import { FormWrapper, mockLocationData, mockProviderData, mockProcedureUnitData, mockServiceLineData, mockUseGetDropdownOptionsHook } from "../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
   useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -10,7 +10,7 @@ jest.mock('@tanstack/react-query', () => ({
 
 jest.mock("../../utils/hooks", () => ({
   useCreateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-  useGetDropdownOptionsHook: jest.fn().mockImplementation((queryKey) => mockuseGetDropdownOptionsHook(queryKey))
+  useGetDropdownOptionsHook: jest.fn().mockImplementation((queryKey) => mockUseGetDropdownOptionsHook(queryKey))
 }));
 
 describe("CreateCaseDialog", () => {

@@ -235,7 +235,7 @@ export const PagesTestWrapper = ({ children }: any) => (
     </UserProvider>
 );
 
-export const mockuseGetDropdownOptionsHook = ({queryKey}: any): {isLoading?: boolean, data: any} => {
+export const mockUseGetDropdownOptionsHook = ({queryKey}: any): {isLoading?: boolean, data: any} => {
     switch (queryKey) {
         case "getLocations": {
             return {isLoading: false, data: mockLocationData}

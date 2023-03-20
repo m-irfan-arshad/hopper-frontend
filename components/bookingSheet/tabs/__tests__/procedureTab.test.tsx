@@ -1,7 +1,7 @@
 import { render, renderHook, fireEvent, waitFor } from '@testing-library/react'        
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { FormWrapper, mockSingleProcedure, mockuseGetDropdownOptionsHook } from '../../../../testReference';
+import { FormWrapper, mockSingleProcedure, mockUseGetDropdownOptionsHook } from '../../../../testReference';
 import ProcedureTab from '../procedureTab';
 
 jest.mock('@tanstack/react-query', () => ({
@@ -12,7 +12,7 @@ jest.mock('@tanstack/react-query', () => ({
 }));
 
 jest.mock("../../../../utils/hooks", () => ({
-    useGetDropdownOptionsHook: jest.fn().mockImplementation((queryKey) => mockuseGetDropdownOptionsHook(queryKey))
+    useGetDropdownOptionsHook: jest.fn().mockImplementation((queryKey) => mockUseGetDropdownOptionsHook(queryKey))
 }));
 
 describe("ProcedureTab", () => {
