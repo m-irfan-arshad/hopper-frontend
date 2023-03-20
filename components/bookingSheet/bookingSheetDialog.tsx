@@ -22,7 +22,6 @@ import FinancialTab from "./tabs/financialTab";
 import * as R from 'ramda';
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
-import { anesthesia } from "@prisma/client";
 
 interface Props {
     open: boolean
