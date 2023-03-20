@@ -21,7 +21,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     })
 
     res.json(casesFormatter(resultPosts));
-  } catch(err) {
-    res.status(500).json({ message: err });
+  } catch(err: any) {
+    res.status(500).json({ message: err.message });
   }
 }))
