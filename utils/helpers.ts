@@ -164,19 +164,28 @@ export function excludeField(object: any, fieldName: string): any {
 
 /**
  * Formats an CRUD operation (default is update) for relationships
+ * Sample Input Obj: {sampleTab: { sampleField: {sampleFieldId: 1, sampleFieldName: "name"}}}
+ * Output: {sampleTab: { update: { sampleFieldId: 1}}}
  */
-export function getRelationshipCrudObject(obj: {[key: string]: any}, operation="update") {
+export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", operation="update") {
     let formattedObj = R.clone(obj);
 
     //update relationships by updating the Id, not the object itself
-    Object.keys(obj).forEach(function(key){
-      if (typeof obj[key] === 'object') {
-        const id = key + 'Id'
-        formattedObj[id] = obj[key][id]
-        delete formattedObj[key]
-      }
-    })
-    return {[operation]: formattedObj}
+    if (typeof obj === 'object') {
+        const objNoId = excludeField(obj, id) // remove Id
+        Object.keys(objNoId).forEach(function(fieldName){
+            const fieldId = fieldName + 'Id'
+            if (Array.isArray(objNoId[fieldName])) { // for arrays, disconnect all previous relationships and connect ids in array
+                formattedObj[fieldName] = {set: [], connect: objNoId[fieldName].map((elem: any) => ({[fieldId]: elem[fieldId]}))};
+            } else if (typeof objNoId[fieldName] === 'object') { // for objects, delete the Id
+                formattedObj[fieldId] = obj[fieldName][fieldId]
+                delete formattedObj[fieldName]
+            }
+        })
+       return {[operation]: formattedObj}
+    } else {
+        return formattedObj
+    }
   }
 
 export function formatCreateCaseParams(data: FullCase) {
@@ -193,6 +202,9 @@ export function formatCreateCaseParams(data: FullCase) {
           providerId: data.scheduling.provider?.providerId,
         },
       },
+      procedureTab: {
+        create: {}
+      }
     })
   }
 
@@ -210,8 +222,8 @@ export function parseFieldConfig(configObject: ConfigObject, tabName: string, fi
  * Useful for building performative update queries.
  */
 export function getDirtyValues(dirtyFields: any, allValues: any): object | undefined {
-    if (R.isEmpty(allValues)) return undefined;
     if (dirtyFields === true || Array.isArray(dirtyFields))
       return allValues;
+    if (R.isEmpty(allValues)) return undefined;
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
 }

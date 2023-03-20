@@ -4,9 +4,53 @@ import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 import { FullCase } from "./reference";
 import { useForm, FormProvider } from "react-hook-form";
-import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType } from "@prisma/client";
+import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab } from "@prisma/client";
 
 const sampleDate = moment('2023-01-09').toDate();
+
+export const mockSingleProcedure: procedure = {
+    procedureId: 1,
+    procedureName: "Brain Swap"
+}
+
+export const mockSingleApproach: approach = {
+    approachId: 1,
+    approachName: "Approach 1"
+}
+
+export const mockSingleLaterality: laterality = {
+    lateralityId: 1,
+    lateralityName: "Laterality 1"
+}
+export const mockSingleAnesthesia: anesthesia = {
+    anesthesiaId: 1,
+    anesthesiaName: "Regional Block"
+}
+export const mockSingleIcdCode: icdCode = {
+    icdCodeId: 1,
+    icdCodeName: "1111ICD"
+}
+export const mockSingleCptCode: cptCode = {
+    cptCodeId: 1,
+    cptCodeName: "1111CPT"
+}
+export const mockSingleProcedureTab: Prisma.procedureTabGetPayload<{include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}}> = {
+    procedureTabId: 1,
+    procedureId: 1,
+    approachId: 1,
+    lateralityId: 1,
+    cptCodeId: 1,
+    icdCodeId: 1,
+    caseId: 1,
+    anesthesiaNotes: '',
+    procedure: mockSingleProcedure,
+    approach: mockSingleApproach,
+    laterality: mockSingleLaterality,
+    anesthesia: [mockSingleAnesthesia],
+    cptCode: mockSingleCptCode,
+    icdCode: mockSingleIcdCode
+}
+
 
 export const mockSingleProvider: provider = {
     providerId: 1,
@@ -102,9 +146,11 @@ export const mockSingleCase: FullCase = {
     updateTime: sampleDate,
     patientId: 1,
     schedulingId: 1,
+    procedureTabId: 1,
     patient: mockSinglePatient,
     financial: [mockSingleFinancial],
-    scheduling: mockSingleScheduling
+    scheduling: mockSingleScheduling,
+    procedureTab: mockSingleProcedureTab
 }
 
 export const mockCaseData = [
@@ -197,6 +243,9 @@ export const mockUseGenericQueryHook = ({queryKey}: any): {isLoading?: boolean, 
         }
         case "getProviders": {
             return {isLoading: false, data: mockProviderData}
+        }
+        case "getProcedures": {
+            return {isLoading: false, data: [mockSingleProcedure]}
         }
         default: return { data: []}
     }

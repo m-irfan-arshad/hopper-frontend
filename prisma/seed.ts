@@ -26,7 +26,8 @@ async function createCases() {
                     create: {
                         procedureDate: chance.date({ year: new Date().getFullYear(), month: new Date().getMonth() })
                     }
-                }
+                },
+                procedureTab: {create: {}}
             }
         })
     }
@@ -57,6 +58,42 @@ async function createSexOptions() {
 async function createAdmissionTypeOptions() {
     await prisma.admissionType.createMany({ 
         data: [{admissionTypeName: "admissionType1"}, {admissionTypeName: "admissionType2"}, {admissionTypeName: "admissionType3"}]
+    })
+}
+
+async function createProcedureOptions() {
+    await prisma.procedure.createMany({ 
+        data: [{procedureName: "Spine Removal"}, {procedureName: "Brain Swap"}, {procedureName: "Back Massage"}]
+    })
+}
+
+async function createApproachOptions() {
+    await prisma.approach.createMany({ 
+        data: [{approachName: "Approach 1"}, {approachName: "Approach 2"}, {approachName: "Approach 3"}]
+    })
+}
+
+async function createLateralityOptions() {
+    await prisma.laterality.createMany({ 
+        data: [{lateralityName: "Laterality 1"}, {lateralityName: "Laterality 2"}, {lateralityName: "Laterality 3"}]
+    })
+}
+
+async function createAnesthesiaOptions() {
+    await prisma.anesthesia.createMany({ 
+        data: [{anesthesiaName: "General"}, {anesthesiaName: "General and Regional"}, {anesthesiaName: "Local / Minimal Anesthesia"}, {anesthesiaName: "Regional Block"}, {anesthesiaName: "Spinal"}]
+    })
+}
+
+async function createIcdCodeOptions() {
+    await prisma.icdCode.createMany({ 
+        data: [{icdCodeName: "1111ICD"}, {icdCodeName: "2222ICD"}, {icdCodeName: "3333ICD"}]
+    })
+}
+
+async function createCptCodeOptions() {
+    await prisma.cptCode.createMany({ 
+        data: [{cptCodeName: "1111CPT"}, {cptCodeName: "2222CPT"}, {cptCodeName: "3333CPT"}]
     })
 }
 
@@ -102,7 +139,13 @@ async function main() {
         createStateOptions(),
         createInsuranceOptions(),
         createAdmissionTypeOptions(),
-        createSexOptions()
+        createSexOptions(),
+        createProcedureOptions(),
+        createApproachOptions(),
+        createLateralityOptions(),
+        createAnesthesiaOptions(),
+        createCptCodeOptions(),
+        createIcdCodeOptions()
     ])
 }
 
