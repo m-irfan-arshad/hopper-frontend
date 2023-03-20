@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
-import { getRelationshipCrudObject, withValidation, excludeField } from '../../utils/helpers';
+import { convertObjectToPrismaFormat, withValidation, excludeField } from '../../utils/helpers';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['caseId'];
@@ -8,9 +8,9 @@ const requiredParams = ['caseId'];
 export default withApiAuthRequired( withValidation(requiredParams, async function updateCaseHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     let caseNoId = excludeField(req.body, "caseId")
-    caseNoId.scheduling && (caseNoId.scheduling = getRelationshipCrudObject(caseNoId.scheduling, "schedulingId"))
-    caseNoId.patient && (caseNoId.patient = getRelationshipCrudObject(caseNoId.patient, "patientId"))
-    caseNoId.procedureTab && (caseNoId.procedureTab = getRelationshipCrudObject(caseNoId.procedureTab, "procedureTabId"))
+    caseNoId.scheduling && (caseNoId.scheduling = convertObjectToPrismaFormat(caseNoId.scheduling, "schedulingId"))
+    caseNoId.patient && (caseNoId.patient = convertObjectToPrismaFormat(caseNoId.patient, "patientId"))
+    caseNoId.procedureTab && (caseNoId.procedureTab = convertObjectToPrismaFormat(caseNoId.procedureTab, "procedureTabId"))
     
     const updatedCase = await prisma.cases.update({
       where: {

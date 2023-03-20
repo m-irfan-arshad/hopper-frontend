@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
-import { getDirtyValues, getRelationshipCrudObject, excludeField } from '../../utils/helpers';
+import { getDirtyValues } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
 import { bookingSheetConfigObject, defaultInsuranceValue } from '../../reference';
 import PatientTab from './tabs/patientTab';
