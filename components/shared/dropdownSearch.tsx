@@ -16,10 +16,11 @@ interface Props {
     options: Option[]
     value?: any
     label?: string
+    multiple?: boolean
 }
 
 export default function DropDownSearchComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, ...restParams} = props;
+    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, multiple, ...restParams} = props;
 
     function getOptionLabel(option: Option) {
         const labelArray = labelProperties.map((p) => {
@@ -41,6 +42,7 @@ export default function DropDownSearchComponent(props: Props) {
             onChange={(_, data) => onChange(data)}
             options={options}
             disabled={disabled}
+            multiple={multiple}
             sx={{
                 ...additionalStyles,
                 '.MuiTextField-root': {

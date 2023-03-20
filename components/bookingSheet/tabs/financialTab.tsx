@@ -25,7 +25,6 @@ export default function FinancialTab(props: Props) {
     const { append, remove, fields } = useFieldArray({control, name: "financial"});
 
     return (
-        <Box>
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark" }}>Financial</Typography>
                 {fields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
@@ -80,6 +79,5 @@ export default function FinancialTab(props: Props) {
                     </Button>
                 </DialogActions>
             </LocalizationProvider>
-        </Box>
     )
 }

@@ -12,6 +12,7 @@ import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
 import { useFormContext, useWatch } from "react-hook-form";
+import * as R from 'ramda';
 
 interface InputControllerProps {
     id: any,
@@ -36,7 +37,7 @@ interface DropDownSearchOption {
 
 interface DropDownSearchControllerProps {
     id: any,
-    title?: string,
+    title: string,
     disabled?: boolean,
     placeholder: string,
     additionalStyles?: React.CSSProperties | object,
@@ -44,16 +45,16 @@ interface DropDownSearchControllerProps {
     labelProperties: string[],
     queryKey?: string, 
     params?: Array<{field: string, value: string}>, 
-    dependency?: string
+    dependency?: string,
+    multiple?: boolean
 }
   
 export function InputController(props: InputControllerProps) {
     const { control } = useFormContext();
     const {id, title, placeholder, multiline, maxLength, minRows} = props;
-
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
-
+    
     return <Controller
         name={id}
         control={control}
@@ -61,15 +62,15 @@ export function InputController(props: InputControllerProps) {
             <React.Fragment>
                 <TextField 
                     InputLabelProps={{ shrink: true }} 
-                    inputProps={{ maxLength: maxLength ? maxLength : null}}
+                    inputProps={{ maxLength: maxLength }}
                     helperText={maxLength ? `${numCharacters}/${maxLength}` : null}
                     {...field} 
-                    multiline={multiline}
                     id={id} 
                     variant="outlined" 
                     label={title} 
                     autoComplete='off' 
                     placeholder={placeholder}
+                    multiline={multiline} 
                     minRows={minRows} 
                     maxRows={6}
                     sx={{
@@ -113,7 +114,6 @@ export function DateController(props: DateControllerProps) {
     return <Controller
         name={id}
         control={control}
-        rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
                 {withTime ? <DateTimePicker
@@ -136,7 +136,7 @@ export function DateController(props: DateControllerProps) {
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
     const { control, getValues } = useFormContext();
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency} = props;
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple} = props;
     const paramString = params ?  '?' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
@@ -146,19 +146,18 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             name={id}
             control={control}
             render={({ field }) => {
-                return (<React.Fragment>
-                        <DropDownSearchComponent
-                            label={title}
-                            value={field.value}
-                            labelProperties={labelProperties}
-                            id={id}
-                            options={dropdownData}
-                            onChange={field.onChange}
-                            disabled={isDisabled} 
-                            placeholder={placeholder} 
-                            additionalStyles={{...additionalStyles}}
-                        />
-                    </React.Fragment>)
-            }}
+                return<DropDownSearchComponent
+                        label={title}
+                        value={field.value}
+                        labelProperties={labelProperties}
+                        id={id}
+                        multiple={multiple}
+                        options={dropdownData}
+                        onChange={field.onChange}
+                        disabled={isDisabled} 
+                        placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
+                        additionalStyles={additionalStyles}
+                    />
+                }}
         />
 }

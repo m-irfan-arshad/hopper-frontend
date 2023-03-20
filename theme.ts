@@ -241,9 +241,9 @@ export const defaultTheme = createTheme({
         MuiAutocomplete: {
             styleOverrides: {
                 root: {
-                    '& .MuiOutlinedInput-root': {
-                        padding: "0px 2.438rem 0px 0.563rem",
-                        height: "2.75rem",
+                    '& .MuiAutocomplete-input': {
+                        padding: "0px !important",
+                        minHeight: "1.625rem",
                     },
                 }
             } 

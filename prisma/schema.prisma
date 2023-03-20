@@ -12,13 +12,15 @@ model cases {
   fhirResourceId        String?   @unique @map("fhir_resource_id")
   createTime            DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime            DateTime? @map("update_time") @db.Timestamp(6) @default(now())
-  patientId             Int      @map("patient_id")
-  schedulingId          Int      @map("scheduling_id")
+  patientId             Int       @map("patient_id")
+  schedulingId          Int       @map("scheduling_id") @unique
+  procedureTabId        Int       @map("procedure_tab_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
   patient            patient @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
-  financial          financial[]  
-  scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId], onDelete: NoAction, onUpdate: NoAction) 
+  financial          financial[]
+  scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
+  procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
 }
 
 
@@ -71,7 +73,7 @@ model scheduling {
   procedureUnit      procedureUnit? @relation(fields: [procedureUnitId], references: [procedureUnitId], onDelete: NoAction, onUpdate: NoAction)
   serviceLine        serviceLine? @relation(fields: [serviceLineId], references: [serviceLineId], onDelete: NoAction, onUpdate: NoAction)
   provider           provider? @relation(fields: [providerId], references: [providerId], onDelete: NoAction, onUpdate: NoAction)
-  cases              cases[]
+  cases              cases?
 }
 
 model admissionType {
@@ -161,4 +163,59 @@ model comment {
   userName          String @map("user_name")
   createTime        DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime        DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+}
+
+model procedureTab {
+  procedureTabId    Int       @id @default(autoincrement()) @map("procedure_tab_id")
+  procedureId       Int?      @map("procedure_id")
+  approachId        Int?      @map("approach_id")
+  lateralityId      Int?      @map("laterality_id")
+  cptCodeId         Int?      @map("cpt_code_id")
+  icdCodeId         Int?      @map("icd_code_id")
+  caseId            Int?      @map("case_id")
+  anesthesiaNotes   String?   @map("anesthesia_notes")
+
+  cases             cases?
+  procedure         procedure? @relation(fields: [procedureId], references: [procedureId], onDelete: NoAction, onUpdate: NoAction)
+  approach          approach? @relation(fields: [approachId], references: [approachId], onDelete: NoAction, onUpdate: NoAction)
+  laterality        laterality? @relation(fields: [lateralityId], references: [lateralityId], onDelete: NoAction, onUpdate: NoAction)
+  anesthesia        anesthesia[]
+  cptCode           cptCode? @relation(fields: [cptCodeId], references: [cptCodeId], onDelete: NoAction, onUpdate: NoAction)
+  icdCode           icdCode? @relation(fields: [icdCodeId], references: [icdCodeId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model procedure {
+  procedureId    Int       @id @default(autoincrement()) @map("procedure_id")
+  procedureName  String @map("procedure_name")
+  procedureTab   procedureTab[]
+}
+
+model approach {
+  approachId    Int       @id @default(autoincrement()) @map("approach_id")
+  approachName  String @map("approach_name")
+  procedureTab   procedureTab[]
+}
+
+model laterality {
+  lateralityId    Int       @id @default(autoincrement()) @map("laterality_id")
+  lateralityName  String @map("laterality_name")
+  procedureTab   procedureTab[]
+}
+
+model anesthesia {
+  anesthesiaId    Int       @id @default(autoincrement()) @map("anesthesia_id")
+  anesthesiaName  String @map("anesthesia_name")
+  procedureTab   procedureTab[]
+}
+
+model cptCode {
+  cptCodeId    Int       @id @default(autoincrement()) @map("cpt_code_id")
+  cptCodeName  String @map("cpt_code_name")
+  procedureTab   procedureTab[]
+}
+
+model icdCode {
+  icdCodeId    Int       @id @default(autoincrement()) @map("icd_code_id")
+  icdCodeName  String @map("icd_code_name")
+  procedureTab   procedureTab[]
 }

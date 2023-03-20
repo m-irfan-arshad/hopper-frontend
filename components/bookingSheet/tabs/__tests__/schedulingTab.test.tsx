@@ -34,7 +34,7 @@ jest.mock("../../../../utils/hooks", () => ({
     );
   };
 
-describe.only("SchedulingTab", () => {
+describe("SchedulingTab", () => {
     const props = {
         config: {
             organization: "...",
