@@ -154,3 +154,11 @@ model insurance {
   insuranceName       String @map("insurance_name")
   financial           financial[]
 }
+
+model comment {
+  commentId         Int @id @default(autoincrement()) @map("comment_id")
+  commentText       String @map("comment_text")
+  userName          String @map("user_name")
+  createTime        DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime        DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+}

@@ -176,6 +176,16 @@ export const mockServiceLineData = [
     }
 ];
 
+export const mockCommentData = [
+    {
+        commentId: 1,
+        commentText: 'comment',
+        userName: 'user',
+        createTime: sampleDate,
+        updateTime: sampleDate
+    }
+];
+
 export const PagesTestWrapper = ({ children }: any) => (
     <UserProvider >
         <ThemeProvider theme={defaultTheme} >

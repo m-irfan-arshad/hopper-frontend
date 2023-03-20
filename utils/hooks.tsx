@@ -87,6 +87,29 @@ export function useUpdateCaseHook() {
     )
 }
 
+export function useCreateCommentHook() {
+    const queryClient = useQueryClient();
+    return useMutation((data: object) => fetch("/api/createComment",
+        {
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (res.ok) {
+              return res.json()
+            }      
+            throw new Error()
+          }),
+          {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['getComments'])
+            }
+        }
+    )
+}
+
 export function useGetCaseByIdHook(caseId: string) {
     return useQuery(["getCaseById", caseId], async () =>  
         (await fetch(`/api/getCaseById?caseId=${caseId}`)).json(), { enabled: caseId !== undefined }
@@ -128,11 +151,11 @@ function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: mome
 
 interface CaseFieldHookProps {
     queryKey: string,
-    paramString: string,
-    dependency: any
+    paramString?: string,
+    dependency?: any
 }
 
 export function useGenericQueryHook(props: CaseFieldHookProps) {
-    const {queryKey, paramString, dependency} = props
-    return useQuery([queryKey, dependency], async () => (await fetch(`/api/${queryKey}${paramString}`)).json());
+    const {queryKey, paramString, dependency} = props;
+    return useQuery([queryKey, dependency], async () => (await fetch(`/api/${queryKey}${paramString || ''}`)).json());
 }

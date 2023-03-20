@@ -174,7 +174,6 @@ export const defaultTheme = createTheme({
                     style: {
                         fontSize: "0.8125rem",
                         fontWeight: "500",
-                        fontFamily: "Roboto, Helvetica, Arial, sans-serif"
                     }
                 },
                 {
@@ -182,7 +181,6 @@ export const defaultTheme = createTheme({
                     style: {
                         fontSize: "0.9375rem",
                         fontWeight: "500",
-                        fontFamily: "Roboto, Helvetica, Arial, sans-serif"
                     }
                 }
             ]

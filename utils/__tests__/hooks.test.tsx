@@ -1,12 +1,21 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor, act } from "@testing-library/react";
 import { 
     useGetCasesHook, 
     useGetCaseByIdHook, 
-    useGenericQueryHook
+    useGenericQueryHook,
+    useCreateCommentHook
 } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
-import {mockCaseData, mockProviderData, mockLocationData, mockServiceLineData, mockProcedureUnitData} from '../../testReference'
+import {mockCaseData, mockCommentData, mockServiceLineData} from '../../testReference'
+
+/* TODO: 
+            1. Write proper test for createComment hook DONE
+            2. Talk to Tania about ideas for the comment/document section (tabs)... DONE WITH DESIGN JUST SHOW TO TANIA
+                -make sure you fix the button/tabs
+            3. mobile view on case hub seems to be broken... DONE
+            4. Refactor code into file structure? 
+*/
 
 interface Props {
     children: React.ReactNode
@@ -65,6 +74,24 @@ describe("Hooks", () => {
         
         expect(result.current.data).toEqual(mockCaseData[0]);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCaseById?caseId=1`);
+    });
+
+    test("call useCreateCommentHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockCommentData[0]),
+            ok: true,
+        }));
+        
+        const { result } = renderHook(() => useCreateCommentHook(), { wrapper });
+
+        act(() => { result.current.mutate(mockCommentData) });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+
+        expect(result.current.data).toEqual(mockCommentData[0]);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/createComment`, {"body": JSON.stringify(mockCommentData), "headers": {"Content-Type": "application/json"}, "method": "post"});
     });
 
     test("call useGenericQueryHook", async() => {

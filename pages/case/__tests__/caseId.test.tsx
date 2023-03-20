@@ -1,8 +1,7 @@
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import CaseHub from '../[caseId].page';
-import { mockSingleCase } from "../../../testReference";
+import { mockSingleCase, mockCommentData } from "../../../testReference";
 import { PagesTestWrapper } from "../../../testReference";
-import { useGenericQueryHook } from "../../../utils/hooks";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -17,7 +16,8 @@ jest.mock('next/router', () => ({
 jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({data: mockSingleCase})),
     useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-    useGenericQueryHook: jest.fn().mockImplementation(() => ({}))
+    useCreateCommentHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
+    useGenericQueryHook: jest.fn().mockImplementation(() => ({data: mockCommentData}))
 }));
 
 describe('[caseId]: Case Hub Page', () => {
@@ -46,7 +46,7 @@ describe('[caseId]: Case Hub Page', () => {
 
     expect(getByRole('tab', {name: 'Activity (2)'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Amendments (2)'})).toBeInTheDocument();
-    expect(getByRole('tab', {name: 'Comments (2)'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Comments (1)'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
 
   });
@@ -86,6 +86,20 @@ describe('[caseId]: Case Hub Page', () => {
 
     expect(getByRole('button', {name: '+ Upload Document'})).toBeInTheDocument();
 
+  });
+
+  test("click on the Comment tab to open the Comment section on the case hub page", async() => { 
+    const { getByRole } = render(
+        <PagesTestWrapper >
+          <CaseHub />
+        </PagesTestWrapper>
+    );
+
+    expect(getByRole('tab', {name: 'Comments (1)'})).toBeInTheDocument();
+
+    fireEvent.click(getByRole('tab', {name: 'Comments (1)'}));
+
+    expect(getByRole('button', {name: '+ New Comment'})).toBeInTheDocument();
   });
 
   test("click on a boooking sheet tab to open the booking sheet to the correct tab", async() => {

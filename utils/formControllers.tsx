@@ -11,12 +11,15 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Controller } from "react-hook-form";
 import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGenericQueryHook } from "./hooks"
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 interface InputControllerProps {
     id: any,
     title?: string,
-    placeholder: string
+    placeholder?: string
+    multiline?: boolean
+    maxLength? : number
+    minRows?: number
 }
 
 interface DateControllerProps {
@@ -46,14 +49,39 @@ interface DropDownSearchControllerProps {
   
 export function InputController(props: InputControllerProps) {
     const { control } = useFormContext();
-    const {id, title, placeholder} = props;
+    const {id, title, placeholder, multiline, maxLength, minRows} = props;
+
+    const currentValue = maxLength ? useWatch({name: id}) : null
+    const numCharacters = currentValue ? currentValue.length : 0
+
     return <Controller
         name={id}
         control={control}
-        rules={{ required: true }}
         render={({ field }) => (
             <React.Fragment>
-                <TextField InputLabelProps={{ shrink: true }} {...field} id={id} variant="outlined" label={title} autoComplete='off' placeholder={placeholder} sx={{width: '100%'}} />
+                <TextField 
+                    InputLabelProps={{ shrink: true }} 
+                    inputProps={{ maxLength: maxLength ? maxLength : null}}
+                    helperText={maxLength ? `${numCharacters}/${maxLength}` : null}
+                    {...field} 
+                    multiline={multiline}
+                    id={id} 
+                    variant="outlined" 
+                    label={title} 
+                    autoComplete='off' 
+                    placeholder={placeholder}
+                    minRows={minRows} 
+                    maxRows={6}
+                    sx={{
+                        width: '100%',
+                        ".MuiFormHelperText-root": {
+                            textAlign: "right",
+                            marginRight: 0,
+                            marginTop: "0.625rem",
+                            fontStyle: "italic"
+                          }
+                    }} 
+                    />
             </React.Fragment>
         )}
       />
