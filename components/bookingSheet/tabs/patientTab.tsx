@@ -19,7 +19,7 @@ export default function PatientTab(props: Props) {
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Patient</Typography>
-                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"2.25rem"}>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.95rem"}>
                     <InputController id="patient.firstName" title="First Name" placeholder="First Name" size={4} config={config}/>
                     <InputController id="patient.middleName" title="Middle Name" placeholder="Middle Name" size={4} config={config}/>
                     <InputController id="patient.lastName" title="Last Name" placeholder="Last Name" size={4} config={config} />

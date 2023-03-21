@@ -5,7 +5,8 @@ import {
     InputLabel,
     styled,
     TextFieldProps,
-    Grid
+    Grid,
+    Typography
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -15,7 +16,8 @@ import { useGetDropdownOptionsHook } from "./hooks"
 import { useFormContext, useWatch } from "react-hook-form";
 import * as R from 'ramda';
 import { BookingSheetConfig } from "../reference";
-import { isFieldVisible } from "./helpers";
+import { checkFieldForErrors, getPathFromId, isFieldVisible } from "./helpers";
+import { blue } from "@mui/material/colors";
 
 interface InputControllerProps {
     id: any,
@@ -64,6 +66,13 @@ interface ConfigWrapperProps {
     config?: BookingSheetConfig
 }
 
+const helperTextProps = {
+    style: { 
+        minHeight: "1.3rem",
+    },
+    component: 'div'
+};
+
 function ConfigWrapper(props: ConfigWrapperProps) {
     const {children, id, size, config} = props;
     const isVisible = isFieldVisible(config, id)
@@ -76,10 +85,15 @@ function ConfigWrapper(props: ConfigWrapperProps) {
 }
   
 export function InputController(props: InputControllerProps) {
-    const { control,  } = useFormContext();
+    const { control, trigger, formState: {errors} } = useFormContext();
     const {id, title, placeholder, multiline, maxLength, size, config} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
+    const hasError = checkFieldForErrors(id, errors);
+    const helperText = <div style={{display: "flex", justifyContent: "space-between"}}>
+        <div>{hasError ? "Required" : ""}</div>
+        <div>{maxLength ? `${numCharacters}/${maxLength}` : null}</div>
+    </div>
     
     return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
@@ -87,23 +101,21 @@ export function InputController(props: InputControllerProps) {
         render={({ field }) => (
             <React.Fragment>
                 <TextField 
+                    {...field} 
+                    onClick={()=>trigger(id, { shouldFocus: true })}
+                    error={hasError}
                     InputLabelProps={{ shrink: true }} 
                     inputProps={{ maxLength: maxLength }}
-                    helperText={maxLength ? `${numCharacters}/${maxLength}` : null}
-                    {...field} 
+                    helperText={helperText}
+                    FormHelperTextProps={helperTextProps}
                     id={id} 
                     variant="outlined" 
                     label={title} 
                     autoComplete='off' 
                     placeholder={placeholder} 
                     multiline={multiline} 
-                    maxRows={6} 
-                    sx={{
-                        width: '100%',
-                        ".MuiFormHelperText-root": {
-                            textAlign: "right"
-                          }
-                    }} 
+                    maxRows={6}
+                    sx={{width: "100%"}}
                 />
             </React.Fragment>
         )}
@@ -111,11 +123,16 @@ export function InputController(props: InputControllerProps) {
 }
 
 export function DateController(props: DateControllerProps) {
-    const { control } = useFormContext();
+    const { control, trigger, formState: {errors} } = useFormContext();
     const {id, title, placeholder, withTime, size, config} = props;
+    const hasError = checkFieldForErrors(id, errors);
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
         <TextField 
             InputLabelProps={{ shrink: true }} 
+            error={hasError}
+            onClick={()=>trigger(id, { shouldFocus: true })}
+            helperText={hasError ? "Required" : " "}
+            FormHelperTextProps={helperTextProps}
             id={id}
             autoComplete='off'
             inputProps={{
@@ -127,7 +144,7 @@ export function DateController(props: DateControllerProps) {
                     height: "1rem",
                     width: "1rem"
                 },
-                width: "100%"
+                width: "100%",
             }} 
             {...restParams} 
         />
@@ -157,7 +174,7 @@ export function DateController(props: DateControllerProps) {
 }
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const { control, getValues } = useFormContext();
+    const { control, getValues, trigger, formState: {errors} } = useFormContext();
     const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple, size, config} = props;
     const paramString = params ?  '&' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
@@ -168,7 +185,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             name={id}
             control={control}
             render={({ field }) => {
-                return<DropDownSearchComponent
+                return <DropDownSearchComponent
                         label={title}
                         value={field.value}
                         labelProperties={labelProperties}
@@ -179,6 +196,8 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         disabled={isDisabled} 
                         placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
                         additionalStyles={additionalStyles}
+                        error={checkFieldForErrors(id, errors)}
+                        onClick={()=>trigger(id, { shouldFocus: true })}
                     />
                 }}
         /></ConfigWrapper>

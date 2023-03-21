@@ -28,7 +28,7 @@ export default function FinancialTab(props: Props) {
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark" }}>Financial</Typography>
                 {fields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
-                    <Grid container justifyContent={"left"} spacing={"1.25rem"} rowSpacing={"2.25rem"}>
+                    <Grid container justifyContent={"left"} spacing={"1.25rem"} rowSpacing={"0.95rem"}>
                         <DropDownSearchController 
                             {...item}
                             title="Insurance"
@@ -54,9 +54,9 @@ export default function FinancialTab(props: Props) {
                         <InputController id={`financial.${index}.priorAuthId`} title="Prior Auth Id" placeholder="Prior Auth Id" size={4} config={config}/>
                         <DateController id={`financial.${index}.priorAuthDate`} title="Prior Auth Date" placeholder="Prior Auth Date" size={4} config={config}/>
                     </Grid>
-                    {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "3rem", marginBottom: "3rem"}}/>}
+                    {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "1.7rem", marginBottom: "3rem"}}/>}
                 </React.Fragment>))}
-                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "4rem" }}>
+                <DialogActions sx={{ minHeight: "5rem", justifyContent: "flex-start", marginTop: "2.7rem" }}>
                     <Button 
                         variant="contained" 
                         onClick={()=>append(defaultInsuranceValue)}

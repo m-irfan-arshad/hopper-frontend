@@ -17,10 +17,16 @@ interface Props {
     value?: any
     label?: string
     multiple?: boolean
+    error?: any
+    onClick?: any
 }
 
+const helperTextProps = {
+    style: { minHeight: "1.3rem" }
+};
+
 export default function DropDownSearchComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, multiple, ...restParams} = props;
+    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, multiple, error,  onClick, ...restParams} = props;
 
     function getOptionLabel(option: Option) {
         const labelArray = labelProperties.map((p) => {
@@ -54,7 +60,15 @@ export default function DropDownSearchComponent(props: Props) {
                     fontSize: ".875rem"
                 }
             }}
-            renderInput={(params) => <TextField {...params} label={label} InputLabelProps={{ shrink: true }} placeholder={placeholder}  />
+            renderInput={(params) => <TextField 
+                {...params} label={label} 
+                InputLabelProps={{ shrink: true }} 
+                placeholder={placeholder} 
+                error={error} 
+                helperText={error ? "Required" : " "} 
+                onClick={onClick}
+                FormHelperTextProps={helperTextProps}
+                />
         }
       />
     );    

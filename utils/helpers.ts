@@ -214,35 +214,59 @@ export function getDirtyValues(dirtyFields: any, allValues: any): object | undef
 }
 
 
-export function addConfigToValidationField(tabConfigObject: object, path: string[]) {
-    const config: {default: any, required?: boolean, visible?: boolean} | undefined = R.path(path, tabConfigObject);
-    if (!config) return;
-
-    if (!R.isNil(config.visible) && !config.visible) {
+export function addConfigToValidationField(tabConfigObject: IndexObject, fieldName: string) {
+    const config: {default: any, required?: boolean, visible?: boolean} | undefined = tabConfigObject[fieldName];
+    if (!config) {
+        console.warn("no config found for field: ", fieldName)
+        return yup.mixed();
+    }
+    const required = R.isNil(config.required) || config.required; //required by default
+    const visible =  R.isNil(config.visible) || config.visible; //visible by default
+    if (!visible) {
         return;
     }
-
-    return yup.mixed().when([], { is: config.required, then: yup.mixed().required() }).default(config.default)
+    
+    if(R.isNil(config.default) || Array.isArray(config.default)) {
+        return required ? yup.mixed().required().default(config.default) : yup.mixed().notRequired().default(config.default)
+    }
+    return required ? yup.string().required().default(config.default) : yup.string().notRequired().default(config.default)
 }
 
 export function createValidationObject(bookingSheetConfig: IndexObject) {
     const tabValidationObject: IndexObject = {};
 
     Object.keys(bookingSheetConfig).forEach(tabName=>{
-        const tab = bookingSheetConfig[tabName]
-        const validationTab: IndexObject = {}
+        let tab = bookingSheetConfig[tabName]
+        let isArray = false;
+        let validationTab: IndexObject = {}
+        if (Array.isArray(tab)) {
+            tab = tab[0];
+            isArray = true;
+        }
         Object.keys(tab).forEach(fieldName=>{
-            const fieldWithConfig = addConfigToValidationField(bookingSheetConfig, [tabName, fieldName])
+            const fieldWithConfig = addConfigToValidationField(tab, fieldName)
             fieldWithConfig && (validationTab[fieldName] = fieldWithConfig)
         })
-        tabValidationObject[tabName] = yup.object().shape(validationTab)
+        if (isArray) {
+            tabValidationObject[tabName] = yup.array().of(yup.object().shape(validationTab))
+        } else {
+            tabValidationObject[tabName] = yup.object().shape(validationTab)
+        }
     })
     return yup.object().shape(tabValidationObject)
 }
 
+export function getPathFromId(id: string) {
+    return id.split('.');
+}
+
 export function isFieldVisible(config: object | undefined, id: string) {
     if (!config) return true;
-    const path = id.replace('\([^()]*\)', '').split('.')
+    const path = getPathFromId(id);
     const visible: boolean | undefined = R.path([...path, "visible"], config);
     return R.isNil(visible) ? true : visible;
+}
+
+export function checkFieldForErrors(id: string, errors: any): boolean {
+    return R.isNil(R.path(getPathFromId(id), errors)) ? false : true
 }

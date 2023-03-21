@@ -142,21 +142,21 @@ export interface IndexObject {
 
 export const defaultBookingSheetConfig = {
   patient: {
-      firstName: { default: '' },
+      firstName: { default: '', required: true },
       middleName: { default: '' },
-      lastName: { required: false, default: '' },
-      dateOfBirth: { required: false, default: null },
-      sex: { required: false, default: null },
-      address: { required: false, default: '' },
-      city: { required: false, default: '' },
-      state: { required: false, default: null },
-      zip: { required: false, default: '' },
+      lastName: { default: '' },
+      dateOfBirth: { default: null },
+      sex: { default: null },
+      address: { default: '' },
+      city: { default: '' },
+      state: { default: null },
+      zip: { default: '' },
   },
   financial: [{
       insurance: { default: null },
       insuranceGroupName: { default: '' },
       insuranceGroupNumber: { default: '' },
-      priorAuthorization: { default: '' },
+      priorAuthorization: { default: null },
       priorAuthId: { default: '' },
       priorAuthDate: { default: null },
   }],
@@ -165,7 +165,7 @@ export const defaultBookingSheetConfig = {
       approach: { default: null },
       laterality: { default: null },
       anesthesia: { default: [] },
-      anesthesiaNotes: { default: '' },
+      anesthesiaNotes: { required: true, default: '' },
       cptCode: { default: null },
       icdCode: { default: null },
   },
@@ -183,9 +183,11 @@ export const userConfigObject = {
   organization: "...",
   tabs: {
     patient: {
-      firstName: { visible: true },
-      middleName: { visible: true },
-      state: { visible: true }
+      firstName: { visible: true, required: false },
+      middleName: { visible: true, required: false },
+      lastName: { visible: true, required: true },
+      state: { visible: true },
+      dateOfBirth: { required: false },
     },
   }
 }

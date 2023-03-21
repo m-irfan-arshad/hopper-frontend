@@ -81,9 +81,8 @@ export default function BookingSheetDialog(props: Props) {
     const {open, closeDialog, data, initiallySelectedTab} = props;
     const [selectedTab, selectTab] = useState(initiallySelectedTab);
     const {mutate} = useUpdateCaseHook()
-    const bookingSheetConfig = R.mergeRight(defaultBookingSheetConfig, userConfigObject.tabs);
+    const bookingSheetConfig = R.mergeDeepRight(defaultBookingSheetConfig, userConfigObject.tabs);
     const validationSchema = createValidationObject(bookingSheetConfig)
-    
 
     const form = useForm({ 
         mode: 'onChange',
@@ -91,8 +90,8 @@ export default function BookingSheetDialog(props: Props) {
         resolver: yupResolver(validationSchema, { stripUnknown: true, abortEarly: false }),
     });
     const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
-    const onSubmit = async (formData: any) => {
-        const query = prepareFormForSubmission(data.caseId, formData, dirtyFields)
+    const onSubmit = async () => {
+        const query = prepareFormForSubmission(data.caseId, getValues(), dirtyFields)
         reset({}, { keepValues: true }) // resets dirty fields
         await mutate(query)
         closeDialog()
@@ -157,7 +156,7 @@ export default function BookingSheetDialog(props: Props) {
                 }}>
                     <Button 
                 variant="contained" 
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleSubmit(onSubmit, onSubmit)}
                 disabled={false}
                 sx={{
                     backgroundColor: "blue.main",
