@@ -13,12 +13,6 @@ interface StyledCaseTabProps extends TabProps {
     count: number
 }
 
-/*
-TODO:
-        1. Refactor this file further (renderTabContent somehow dynamically at minimum)
-        2. Refactor tests from [caseId].page to caseHubTabs for the caseHubTab content
-        3. Merge newest code from PRs here
-*/
 export default function CaseHubTabs() {
     const areTabsScrollable = useMediaQuery(defaultTheme.breakpoints.down('lg'));
 

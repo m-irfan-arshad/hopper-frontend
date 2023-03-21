@@ -9,11 +9,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
 import {mockCaseData, mockCommentData, mockServiceLineData} from '../../testReference'
 
-/* TODO: 
-            1. Refactor code into file structure? 
-            2. Review code  (especially the usegenericqueryhook)
-*/
-
 interface Props {
     children: React.ReactNode
 } 

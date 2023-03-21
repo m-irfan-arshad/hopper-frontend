@@ -189,7 +189,7 @@ export default function CaseHub() {
                         flexDirection: "column", 
                         alignItems: "flex-end", 
                         marginLeft: "1.75rem", 
-                        maxWidth: "28.125rem",
+                        maxWidth: "28.75rem",
                         marginTop: "2rem",
                         marginRight: "1rem",
                         overflowX: "hidden",
