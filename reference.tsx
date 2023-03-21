@@ -193,8 +193,8 @@ export const userConfigObject = {
 }
 
 export interface BookingSheetConfig {
-  patient: object,
-  financial: object,
-  procedureTab: object,
-  scheduling: object
+  patient?: object,
+  financial?: object,
+  procedureTab?: object,
+  scheduling?: object
 }

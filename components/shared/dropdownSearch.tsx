@@ -22,7 +22,7 @@ interface Props {
 }
 
 const helperTextProps = {
-    style: { minHeight: "1.3rem", marginLeft: 0 }
+    style: { minHeight: "1.3rem", marginTop: "0.1rem", marginLeft: 0 }
 };
 
 export default function DropDownSearchComponent(props: Props) {

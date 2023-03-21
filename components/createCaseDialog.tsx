@@ -169,7 +169,7 @@ export default function CreateCaseDialog(props: Props) {
                             params={[{field: "serviceLineId", value: "scheduling.serviceLine.serviceLineId"}]}
                             size={6}
                         />
-                            <DateController id="scheduling.procedureDate" title="Procedure Date" placeholder="Procedure Date" size={6}/>
+                        <DateController id="scheduling.procedureDate" title="Procedure Date" placeholder="Procedure Date" size={6}/>
                     </Grid>
                 </LocalizationProvider>
             </FormProvider>

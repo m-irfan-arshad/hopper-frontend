@@ -6,7 +6,7 @@ import {
     styled,
     TextFieldProps,
     Grid,
-    Typography
+    Box
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -16,8 +16,7 @@ import { useGetDropdownOptionsHook } from "./hooks"
 import { useFormContext, useWatch } from "react-hook-form";
 import * as R from 'ramda';
 import { BookingSheetConfig } from "../reference";
-import { checkFieldForErrors, getPathFromId, isFieldVisible } from "./helpers";
-import { blue } from "@mui/material/colors";
+import { checkFieldForErrors, isFieldVisible } from "./helpers";
 
 interface InputControllerProps {
     id: any,
@@ -85,6 +84,18 @@ function ConfigWrapper(props: ConfigWrapperProps) {
         </Grid>
       )
 }
+
+const sharedProps = {
+    FormHelperTextProps: helperTextProps, 
+    InputLabelProps: { shrink: true },
+    sx: {
+        svg: { 
+            height: "1rem",
+            width: "1rem"
+        },
+        width: "100%",
+    }
+}
   
 export function InputController(props: InputControllerProps) {
     const { control, trigger, formState: {errors} } = useFormContext();
@@ -92,34 +103,31 @@ export function InputController(props: InputControllerProps) {
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
     const hasError = checkFieldForErrors(id, errors);
-    const helperText = <div style={{display: "flex", justifyContent: "space-between"}}>
-        <div>{hasError ? "Required" : ""}</div>
-        <div>{maxLength ? `${numCharacters}/${maxLength}` : null}</div>
-    </div>
+    const helperText = <Box sx={{display: "flex", justifyContent: "space-between"}}>
+        <Box>{hasError ? "Required" : ""}</Box>
+        <Box>{maxLength ? `${numCharacters}/${maxLength}` : null}</Box>
+    </Box>
     
     return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
         control={control}
         render={({ field }) => (
-            <React.Fragment>
-                <TextField 
-                    {...field} 
-                    onClick={()=>trigger(id, { shouldFocus: true })}
-                    error={hasError}
-                    InputLabelProps={{ shrink: true }} 
-                    inputProps={{ maxLength: maxLength }}
-                    helperText={helperText}
-                    FormHelperTextProps={helperTextProps}
-                    id={id} 
-                    variant="outlined" 
-                    label={title} 
-                    autoComplete='off' 
-                    placeholder={placeholder} 
-                    multiline={multiline} 
-                    maxRows={6}
-                    sx={{width: "100%"}}
-                />
-            </React.Fragment>
+            <TextField 
+                {...field}
+                {...sharedProps} 
+                onClick={()=>trigger(id, { shouldFocus: true })}
+                error={hasError}
+                inputProps={{ maxLength: maxLength }}
+                helperText={helperText}
+                id={id} 
+                variant="outlined" 
+                label={title} 
+                autoComplete='off' 
+                placeholder={placeholder} 
+                multiline={multiline} 
+                maxRows={6}
+                sx={{width: "100%"}}
+            />
         )}
       /></ConfigWrapper>
 }
@@ -130,6 +138,7 @@ export function DateController(props: DateControllerProps) {
     const hasError = checkFieldForErrors(id, errors);
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
         <TextField 
+            {...sharedProps}
             InputLabelProps={{ shrink: true }} 
             error={hasError}
             onClick={()=>trigger(id, { shouldFocus: true })}
@@ -140,14 +149,7 @@ export function DateController(props: DateControllerProps) {
             inputProps={{
                 ...inputProps, 
                 placeholder: placeholder,
-            }} 
-            sx={{
-                svg: { 
-                    height: "1rem",
-                    width: "1rem"
-                },
-                width: "100%",
-            }} 
+            }}  
             {...restParams} 
         />
     )
@@ -158,12 +160,14 @@ export function DateController(props: DateControllerProps) {
         render={({ field }) => (
             <React.Fragment>
                 {withTime ? <DateTimePicker
+                    {...field}
                     label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}
                     renderInput={renderInput}
                 /> :  <DesktopDatePicker
+                    {...field}
                     label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
