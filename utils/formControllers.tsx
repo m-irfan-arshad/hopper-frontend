@@ -69,6 +69,8 @@ interface ConfigWrapperProps {
 const helperTextProps = {
     style: { 
         minHeight: "1.3rem",
+        marginTop: "0.1rem",
+        marginLeft: 0
     },
     component: 'div'
 };

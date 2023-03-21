@@ -22,7 +22,7 @@ export default function ProcedureTab(props: Props) {
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Procedure</Typography>
-                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.95rem"}>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}>
                     <DropDownSearchController 
                         title="Procedure"
                         id="procedureTab.procedure"
