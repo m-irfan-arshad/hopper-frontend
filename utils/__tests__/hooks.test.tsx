@@ -2,7 +2,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { 
     useGetCasesHook, 
     useGetCaseByIdHook, 
-    useGenericQueryHook
+    useGetDropdownOptionsHook
 } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
@@ -67,15 +67,15 @@ describe("Hooks", () => {
         expect(global.fetch).toHaveBeenCalledWith(`/api/getCaseById?caseId=1`);
     });
 
-    test("call useGenericQueryHook", async() => {
+    test("call useGetDropdownOptionsHook", async() => {
         global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
             json: () => Promise.resolve(mockServiceLineData),
         }));
         
-        const { result } = renderHook(() => useGenericQueryHook({
+        const { result } = renderHook(() => useGetDropdownOptionsHook({
             queryKey: "getServiceLines",
             dependency: "scheduling.procedureUnit.procedureUnitId",
-            paramString: "?procedureUnitId=1"
+            paramString: "&procedureUnitId=1"
         }), { wrapper });
 
         await waitFor(() => {
@@ -83,6 +83,6 @@ describe("Hooks", () => {
         });
         
         expect(result.current.data).toEqual(mockServiceLineData);
-        expect(global.fetch).toHaveBeenCalledWith(`/api/getServiceLines?procedureUnitId=1`);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getDropdownOptions?queryKey=getServiceLines&procedureUnitId=1`);
     });
 });

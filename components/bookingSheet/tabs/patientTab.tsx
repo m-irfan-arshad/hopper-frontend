@@ -54,7 +54,7 @@ export default function PatientTab(props: Props) {
                             id="patient.state"
                             labelProperties={["stateName"]}
                             placeholder="State" 
-                            queryKey="getState"
+                            queryKey="getStates"
                         />
                     </Grid>
                     <Grid item xs={4}>
