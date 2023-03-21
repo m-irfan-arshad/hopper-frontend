@@ -4,7 +4,8 @@ import {
     TextField, 
     InputLabel,
     styled,
-    TextFieldProps
+    TextFieldProps,
+    Grid
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -13,20 +14,26 @@ import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGetDropdownOptionsHook } from "./hooks"
 import { useFormContext, useWatch } from "react-hook-form";
 import * as R from 'ramda';
+import { BookingSheetConfig } from "../reference";
+import { isFieldVisible } from "./helpers";
 
 interface InputControllerProps {
     id: any,
     title?: string,
     placeholder: string,
     multiline?: boolean,
-    maxLength?: number
+    maxLength?: number,
+    size: number,
+    config?: BookingSheetConfig
 }
 
 interface DateControllerProps {
     id: any,
     title?: string,
     placeholder: string,
-    withTime?: boolean
+    withTime?: boolean,
+    size: number,
+    config?: BookingSheetConfig
 }
 
 interface DropDownSearchOption {
@@ -45,16 +52,36 @@ interface DropDownSearchControllerProps {
     queryKey?: string, 
     params?: Array<{field: string, value: string}>, 
     dependency?: string,
-    multiple?: boolean
+    multiple?: boolean,
+    size: number,
+    config?: BookingSheetConfig
+}
+
+interface ConfigWrapperProps {
+    children: any, 
+    id: string, 
+    size: number,
+    config?: BookingSheetConfig
+}
+
+function ConfigWrapper(props: ConfigWrapperProps) {
+    const {children, id, size, config} = props;
+    const isVisible = isFieldVisible(config, id)
+    if (!isVisible) return <></>;
+    return(
+        <Grid item xs={size}>
+            {children}
+        </Grid>
+      )
 }
   
 export function InputController(props: InputControllerProps) {
-    const { control } = useFormContext();
-    const {id, title, placeholder, multiline, maxLength} = props;
+    const { control,  } = useFormContext();
+    const {id, title, placeholder, multiline, maxLength, size, config} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
     
-    return <Controller
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
         control={control}
         render={({ field }) => (
@@ -80,12 +107,12 @@ export function InputController(props: InputControllerProps) {
                 />
             </React.Fragment>
         )}
-      />
+      /></ConfigWrapper>
 }
 
 export function DateController(props: DateControllerProps) {
     const { control } = useFormContext();
-    const {id, title, placeholder, withTime} = props;
+    const {id, title, placeholder, withTime, size, config} = props;
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
         <TextField 
             InputLabelProps={{ shrink: true }} 
@@ -106,7 +133,7 @@ export function DateController(props: DateControllerProps) {
         />
     )
 
-    return <Controller
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
         control={control}
         render={({ field }) => (
@@ -126,18 +153,18 @@ export function DateController(props: DateControllerProps) {
                 />}
             </React.Fragment>
         )}
-    />
+    /></ConfigWrapper>
 }
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
     const { control, getValues } = useFormContext();
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple} = props;
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple, size, config} = props;
     const paramString = params ?  '&' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
     const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGetDropdownOptionsHook({queryKey: queryKey, paramString: paramString, dependency: dependency ? getValues(dependency) : undefined}) : {data: options}
 
-    return <Controller
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
             name={id}
             control={control}
             render={({ field }) => {
@@ -154,5 +181,5 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         additionalStyles={additionalStyles}
                     />
                 }}
-        />
+        /></ConfigWrapper>
 }

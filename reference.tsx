@@ -111,23 +111,6 @@ export const defaultCaseFilterContext = {
   }
 };
 
-export const bookingSheetConfigObject = {
-  organization: "...",
-  tabs: [
-      {
-          label: "Patient",
-          fields: [
-              {
-                  id: "firstName",
-                  required: true,
-                  visible: true
-              },
-          ]
-      }
-  ]
-}
-
-
 export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
 
 export const includeReferencesObject = { 
@@ -150,4 +133,66 @@ export const defaultInsuranceValue = {
   priorAuthorization: '',
   priorAuthId: '',
   priorAuthDate: null,
+}
+
+// object type that allows indexing by keys
+export interface IndexObject {
+  [key: string]: any
+}
+
+export const defaultBookingSheetConfig = {
+  patient: {
+      firstName: { default: '' },
+      middleName: { default: '' },
+      lastName: { required: false, default: '' },
+      dateOfBirth: { required: false, default: null },
+      sex: { required: false, default: null },
+      address: { required: false, default: '' },
+      city: { required: false, default: '' },
+      state: { required: false, default: null },
+      zip: { required: false, default: '' },
+  },
+  financial: [{
+      insurance: { default: null },
+      insuranceGroupName: { default: '' },
+      insuranceGroupNumber: { default: '' },
+      priorAuthorization: { default: '' },
+      priorAuthId: { default: '' },
+      priorAuthDate: { default: null },
+  }],
+  procedureTab: {
+      procedure: { default: null },
+      approach: { default: null },
+      laterality: { default: null },
+      anesthesia: { default: [] },
+      anesthesiaNotes: { default: '' },
+      cptCode: { default: null },
+      icdCode: { default: null },
+  },
+  scheduling: {
+      location: { default: null },
+      procedureUnit: { default: null },
+      serviceLine: { default: null },
+      provider: { default: null },
+      procedureDate: { default: null },
+      admissionType: { default: null }
+  }
+}
+
+export const userConfigObject = {
+  organization: "...",
+  tabs: {
+    patient: {
+      firstName: { visible: true },
+      middleName: { visible: true },
+      state: { visible: true }
+    },
+  }
+}
+
+export interface BookingSheetConfig {
+  patient: object,
+  financial: object,
+  procedureTab: object,
+  scheduling: object
 }

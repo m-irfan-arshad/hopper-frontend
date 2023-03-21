@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { APIParameters, FullCase } from '../reference';
+import { APIParameters, FullCase, IndexObject } from '../reference';
 import { Prisma, insurance } from '@prisma/client';
 import moment from "moment";
-import * as R from 'ramda'
+import * as R from 'ramda';
+import * as yup from 'yup';
 
 interface DashboardQueryParams { 
     searchValue?: string
@@ -19,18 +20,6 @@ interface FilterObject {
     priorAuthorization?: object;
     vendorConfirmation?: object;
   }
-
-export interface ConfigObject {
-    organization: string,
-    tabs: Array<{
-        label: string,
-        fields: Array<{
-            id: string,
-            required: boolean,
-            visible: boolean
-        }>
-    }>
-}
 
 export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
@@ -208,13 +197,9 @@ export function formatCreateCaseParams(data: FullCase) {
     })
   }
 
-export function parseFieldConfig(configObject: ConfigObject, tabName: string, fieldName: string, checkingFor: "visible" | "required", defaultReturnValue?: boolean) {
-    const tab = configObject.tabs.find(tab => tab.label === tabName)
-    if (tab) {
-        const field = tab.fields.find(field => field.id === fieldName);
-        return field && field[checkingFor]
-    }
-    return defaultReturnValue ? defaultReturnValue : false
+export function parseFieldConfig(tabs: object, path: string[], defaultReturnValue=false): boolean {
+    const config: boolean | undefined = R.path(path, tabs);
+    return config ? config : defaultReturnValue;
 }
 
 /**
@@ -226,4 +211,38 @@ export function getDirtyValues(dirtyFields: any, allValues: any): object | undef
       return allValues;
     if (R.isEmpty(allValues)) return undefined;
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
+}
+
+
+export function addConfigToValidationField(tabConfigObject: object, path: string[]) {
+    const config: {default: any, required?: boolean, visible?: boolean} | undefined = R.path(path, tabConfigObject);
+    if (!config) return;
+
+    if (!R.isNil(config.visible) && !config.visible) {
+        return;
+    }
+
+    return yup.mixed().when([], { is: config.required, then: yup.mixed().required() }).default(config.default)
+}
+
+export function createValidationObject(bookingSheetConfig: IndexObject) {
+    const tabValidationObject: IndexObject = {};
+
+    Object.keys(bookingSheetConfig).forEach(tabName=>{
+        const tab = bookingSheetConfig[tabName]
+        const validationTab: IndexObject = {}
+        Object.keys(tab).forEach(fieldName=>{
+            const fieldWithConfig = addConfigToValidationField(bookingSheetConfig, [tabName, fieldName])
+            fieldWithConfig && (validationTab[fieldName] = fieldWithConfig)
+        })
+        tabValidationObject[tabName] = yup.object().shape(validationTab)
+    })
+    return yup.object().shape(tabValidationObject)
+}
+
+export function isFieldVisible(config: object | undefined, id: string) {
+    if (!config) return true;
+    const path = id.replace('\([^()]*\)', '').split('.')
+    const visible: boolean | undefined = R.path([...path, "visible"], config);
+    return R.isNil(visible) ? true : visible;
 }
