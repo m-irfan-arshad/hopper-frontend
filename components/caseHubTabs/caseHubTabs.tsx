@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useGetCaseByIdHook, useGenericQueryHook } from '../../utils/hooks';
-import { Button, Box, Typography, Tabs, styled, useMediaQuery } from '@mui/material';
+import { useGenericQueryHook } from '../../utils/hooks';
+import { Button, Box, Tabs, styled, useMediaQuery } from '@mui/material';
 import DocumentTabItem from "../../components/caseHubTabs/tabItems/documentTabItem";
 import CommentTabItem from "../../components/caseHubTabs/tabItems/commentTabItem";
 import { defaultTheme } from "../../theme";

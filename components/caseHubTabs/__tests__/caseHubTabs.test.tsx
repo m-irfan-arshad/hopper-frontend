@@ -1,6 +1,5 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import CaseHubTabs from '../caseHubTabs';
-import { mockSingleCase, mockCommentData } from "../../../testReference";
 import { PagesTestWrapper } from "../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
