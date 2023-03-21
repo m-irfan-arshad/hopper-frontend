@@ -197,11 +197,6 @@ export function formatCreateCaseParams(data: FullCase) {
     })
   }
 
-export function parseFieldConfig(tabs: object, path: string[], defaultReturnValue=false): boolean {
-    const config: boolean | undefined = R.path(path, tabs);
-    return config ? config : defaultReturnValue;
-}
-
 /**
  * Similar to react-hook-form's getDirtyFields, however it also returns the value of the dirty field instead of a boolean.
  * Useful for building performative update queries.
@@ -212,7 +207,6 @@ export function getDirtyValues(dirtyFields: any, allValues: any): object | undef
     if (R.isEmpty(allValues)) return undefined;
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
 }
-
 
 export function addConfigToValidationField(tabConfigObject: IndexObject, fieldName: string) {
     const config: {default: any, required?: boolean, visible?: boolean} | undefined = tabConfigObject[fieldName];
