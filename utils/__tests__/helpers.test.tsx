@@ -1,7 +1,8 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { formatDashboardQueryParams, formatDate, validateParameters } from "../helpers";
+import { checkFieldForErrors, createValidationObject, formatDashboardQueryParams, formatDate, isFieldVisible, validateParameters } from "../helpers";
 import httpMock from 'node-mocks-http';
+import { mockBookingSheetConfig, mockSingleCase } from "../../testReference";
 
 describe("Utils", () => {
     test("formatDashboardQueryParams with case id", async() => {
@@ -124,5 +125,37 @@ describe("Utils", () => {
         const result = validateParameters(['providerId'], req, res);
         
         expect(result).toEqual(null);    
+    });
+
+    test("createValidationObject function", async () => {
+        let schema = createValidationObject(mockBookingSheetConfig)
+        
+        await expect(schema.validateAt('patient.firstName', mockSingleCase)).resolves.toBeTruthy();
+        await expect(schema.validateAt('patient.firstName', {})).resolves.toBeFalsy();
+    });
+
+    test("isFieldVisible function", async () => {
+        let firstNameVisible = isFieldVisible(mockBookingSheetConfig, 'patient.firstName');
+        expect(firstNameVisible).toEqual(true);
+
+        let firstNameNotVisible = isFieldVisible({patient: {firstName: {visible: false}}}, 'patient.firstName');
+        expect(firstNameNotVisible).toEqual(false);
+
+        let insuranceNotVisible = isFieldVisible({financial: [{insurance: {visible: false}}]}, 'financial.0.insurance');
+        expect(insuranceNotVisible).toEqual(false);
+    });
+
+    test("checkFieldForErrors function", async () => {
+        let firstNameNoError = checkFieldForErrors('patient.firstName', {});
+        expect(firstNameNoError).toEqual(false);
+
+        let firstNameError = checkFieldForErrors('patient.firstName', {patient: {firstName: true}});
+        expect(firstNameError).toEqual(true);
+
+        let insuranceNoError = checkFieldForErrors('financial.0.insurance', {});
+        expect(insuranceNoError).toEqual(false);
+
+        let insuranceError = checkFieldForErrors('financial.0.insurance', {financial: [{insurance: true}]});
+        expect(insuranceError).toEqual(true);
     });
 });
