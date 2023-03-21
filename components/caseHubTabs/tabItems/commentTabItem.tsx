@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, styled, IconButton, Select, MenuItem, Typography} from "@mui/material";
 import { MoreVert } from '@mui/icons-material';
-import DottedDivider from "./shared/dottedDivider";
+import DottedDivider from "../../shared/dottedDivider";
 import moment from "moment";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 export default function CommentTabItem(props: Props) {
 
     return (
-        <Box sx={{width: "100%"}}>
+        <Box sx={{width: "100%", overflowWrap: "anywhere"}}>
             <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem"}}> 
                 <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
                     <Typography sx={{fontSize: "0.625rem", lineHeight: '1', whiteSpace: 'pre-line'}}>

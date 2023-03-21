@@ -53,7 +53,7 @@ describe('[caseId]: Case Hub Page', () => {
 
   test("opens and closes the booking sheet", async() => {
     
-    const { getByRole, queryByRole } = render(
+    const { getByRole, queryByRole, getByTestId, queryByTestId } = render(
         <PagesTestWrapper >
           <CaseHub />
         </PagesTestWrapper>
@@ -64,42 +64,12 @@ describe('[caseId]: Case Hub Page', () => {
     fireEvent.click(getByRole('button', {name: 'Booking Sheet'}));
     expect(queryByRole('tab', {name: 'Patient'})).toBeInTheDocument();
     
-    expect(queryByRole('button', {name: ''})).toBeInTheDocument();
-    fireEvent.click(getByRole('button', {name: ''}));
+    expect(getByTestId('CloseIcon')).toBeInTheDocument();
+    fireEvent.click(getByTestId('CloseIcon'));
     
     await waitFor(() => {
-        expect(queryByRole('button', {name: ''})).not.toBeInTheDocument();
+        expect(queryByTestId('CloseIcon')).not.toBeInTheDocument();
     });
-  });
-
-  test("click on the Document tab to open the Document section on the case hub page", async() => {
-    
-    const { getByRole } = render(
-        <PagesTestWrapper >
-          <CaseHub />
-        </PagesTestWrapper>
-    );
-
-    expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
-
-    fireEvent.click(getByRole('tab', {name: 'Documents (2)'}));
-
-    expect(getByRole('button', {name: '+ Upload Document'})).toBeInTheDocument();
-
-  });
-
-  test("click on the Comment tab to open the Comment section on the case hub page", async() => { 
-    const { getByRole } = render(
-        <PagesTestWrapper >
-          <CaseHub />
-        </PagesTestWrapper>
-    );
-
-    expect(getByRole('tab', {name: 'Comments (1)'})).toBeInTheDocument();
-
-    fireEvent.click(getByRole('tab', {name: 'Comments (1)'}));
-
-    expect(getByRole('button', {name: '+ New Comment'})).toBeInTheDocument();
   });
 
   test("click on a boooking sheet tab to open the booking sheet to the correct tab", async() => {

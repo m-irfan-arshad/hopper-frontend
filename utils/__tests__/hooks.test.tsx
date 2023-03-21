@@ -10,11 +10,8 @@ import moment from "moment";
 import {mockCaseData, mockCommentData, mockServiceLineData} from '../../testReference'
 
 /* TODO: 
-            1. Write proper test for createComment hook DONE
-            2. Talk to Tania about ideas for the comment/document section (tabs)... DONE WITH DESIGN JUST SHOW TO TANIA
-                -make sure you fix the button/tabs
-            3. mobile view on case hub seems to be broken... DONE
-            4. Refactor code into file structure? 
+            1. Refactor code into file structure? 
+            2. Review code  (especially the usegenericqueryhook)
 */
 
 interface Props {
