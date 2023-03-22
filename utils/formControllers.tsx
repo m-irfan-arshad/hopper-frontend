@@ -126,7 +126,6 @@ export function InputController(props: InputControllerProps) {
                 placeholder={placeholder} 
                 multiline={multiline} 
                 maxRows={6}
-                sx={{width: "100%"}}
             />
         )}
       /></ConfigWrapper>
@@ -143,7 +142,6 @@ export function DateController(props: DateControllerProps) {
             error={hasError}
             onClick={()=>trigger(id, { shouldFocus: true })}
             helperText={hasError ? "Required" : " "}
-            FormHelperTextProps={helperTextProps}
             id={id}
             autoComplete='off'
             inputProps={{
