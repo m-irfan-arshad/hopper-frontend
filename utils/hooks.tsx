@@ -104,7 +104,7 @@ export function useCreateCommentHook() {
           }),
           {
             onSuccess: () => {
-                queryClient.invalidateQueries(['getComments'])
+                queryClient.invalidateQueries(['getCaseById'])
             }
         }
     )

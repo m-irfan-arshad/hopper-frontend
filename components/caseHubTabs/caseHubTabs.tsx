@@ -13,16 +13,13 @@ interface StyledCaseTabProps extends TabProps {
     count: number
 }
 
-export default function CaseHubTabs() {
-    const areTabsScrollable = useMediaQuery(defaultTheme.breakpoints.down('lg'));
+interface Props {
+    data: any
+}
 
-    const [selectedTab, selectTab] = useState('Activity');
-    const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
-    const [isNewCommentDialogOpen, setNewCommentDialogState] = useState(false);  
-
-    const { data: comments = [] } = useGetCaseHubTabItemsHook({queryKey: 'getComments'});
-
-    const count = 2;
+export default function CaseHubTabs(props: Props) {
+    const { data } = props;
+    const { comment } = data;
 
     const documentData = [
         {
@@ -41,7 +38,14 @@ export default function CaseHubTabs() {
             lastName: 'Johnson',
             fileTypes: ['H&P', 'License']
         },
-      ];
+    ];
+    const count = 2;
+
+    const areTabsScrollable = useMediaQuery(defaultTheme.breakpoints.down('lg'));
+
+    const [selectedTab, selectTab] = useState('Activity');
+    const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
+    const [isNewCommentDialogOpen, setNewCommentDialogState] = useState(false);  
 
     const StyledCaseTab = styled((props: StyledCaseTabProps) => {
         const { value, count, ...other } = props;
@@ -80,7 +84,7 @@ export default function CaseHubTabs() {
         if (selectedTab === "Comments") {
             buttonName = "+ New Comment";
             onClick = () => setNewCommentDialogState(true);
-            data = comments;
+            data = comment;
         }
 
         return (
@@ -118,7 +122,7 @@ export default function CaseHubTabs() {
     return (
         <React.Fragment>
             <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <NewCommentDialog open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
+            <NewCommentDialog caseId={data?.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
             <Tabs 
                 sx={{
                     borderBottom: "0.063rem solid #D1E4ED",
@@ -140,7 +144,7 @@ export default function CaseHubTabs() {
                 <StyledCaseTab value="Activity" count={count} /> 
                 <StyledCaseTab value="Amendments" count={count} />
                 <StyledCaseTab value="Documents" count={count} />
-                <StyledCaseTab value="Comments" count={comments.length} />
+                <StyledCaseTab value="Comments" count={comment.length} />
             </Tabs>
             {renderTabContent()}
         </React.Fragment>

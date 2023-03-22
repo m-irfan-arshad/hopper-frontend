@@ -21,6 +21,7 @@ model cases {
   financial          financial[]
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
+  comment            comment[]
 }
 
 
@@ -161,8 +162,11 @@ model comment {
   commentId         Int @id @default(autoincrement()) @map("comment_id")
   commentText       String @map("comment_text")
   userName          String @map("user_name")
+  caseId            Int?      @map("case_id")
   createTime        DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime        DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+
+  cases             cases?  @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model procedureTab {

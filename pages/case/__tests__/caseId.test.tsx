@@ -47,7 +47,7 @@ describe('[caseId]: Case Hub Page', () => {
 
     expect(getByRole('tab', {name: 'Activity (2)'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Amendments (2)'})).toBeInTheDocument();
-    expect(getByRole('tab', {name: 'Comments (0)'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Comments (1)'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
 
   });

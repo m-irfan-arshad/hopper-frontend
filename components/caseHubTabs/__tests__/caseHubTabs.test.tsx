@@ -1,6 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import CaseHubTabs from '../caseHubTabs';
-import { PagesTestWrapper } from "../../../testReference";
+import { PagesTestWrapper, mockSingleCase } from "../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -15,7 +15,7 @@ describe('CaseHubTabs', () => {
         
         const { getByRole } = render(
             <PagesTestWrapper >
-                <CaseHubTabs />
+                <CaseHubTabs data={mockSingleCase} />
             </PagesTestWrapper>
         );
 
@@ -30,13 +30,13 @@ describe('CaseHubTabs', () => {
     test("click on the Comment tab to open the Comment section on the case hub page", async() => { 
         const { getByRole } = render(
             <PagesTestWrapper >
-                <CaseHubTabs />
+                <CaseHubTabs data={mockSingleCase} />
             </PagesTestWrapper>
         );
 
-        expect(getByRole('tab', {name: 'Comments (0)'})).toBeInTheDocument();
+        expect(getByRole('tab', {name: 'Comments (1)'})).toBeInTheDocument();
 
-        fireEvent.click(getByRole('tab', {name: 'Comments (0)'}));
+        fireEvent.click(getByRole('tab', {name: 'Comments (1)'}));
 
         expect(getByRole('button', {name: '+ New Comment'})).toBeInTheDocument();
     });

@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 import { FullCase } from "./reference";
 import { useForm, FormProvider } from "react-hook-form";
-import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab } from "@prisma/client";
+import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab, comment } from "@prisma/client";
 
 const sampleDate = moment('2023-01-09').toDate();
 
@@ -104,6 +104,15 @@ export const mockSingleLocation: location = {
     updateTime: moment('2023-01-09').toDate()
 }
 
+export const mockSingleComment: comment = {
+    commentId: 1,
+    caseId: 1,
+    commentText: 'Medtel Hospital',
+    userName: 'user',
+    createTime: sampleDate,
+    updateTime: sampleDate
+}
+
 export const mockSinglePatient: patient = {
     patientId: 1,
     fhirResourceId: 'patientFhirResourceId',
@@ -155,7 +164,8 @@ export const mockSingleCase: FullCase = {
     patient: mockSinglePatient,
     financial: [mockSingleFinancial],
     scheduling: mockSingleScheduling,
-    procedureTab: mockSingleProcedureTab
+    procedureTab: mockSingleProcedureTab,
+    comment: [mockSingleComment]
 }
 
 export const mockCaseData = [
@@ -230,6 +240,7 @@ export const mockServiceLineData = [
 export const mockCommentData = [
     {
         commentId: 1,
+        caseId: 1,
         commentText: 'comment',
         userName: 'user',
         createTime: sampleDate,

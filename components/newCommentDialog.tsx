@@ -15,19 +15,21 @@ import { useUser } from '@auth0/nextjs-auth0';
 interface Props {
     onBackClick: () => void,
     open: boolean
+    caseId: number
 }
 
 export default function NewCommentDialog(props: Props) {
 
     const {mutate} = useCreateCommentHook();
     const { user } = useUser();
-    const { open, onBackClick } = props;
+    const { open, onBackClick, caseId } = props;
 
     const form = useForm({
         mode: 'onChange',
         defaultValues: {
             commentText: '',
-            userName: ''
+            userName: '',
+            caseId: 0
         }
     });
     
@@ -36,6 +38,7 @@ export default function NewCommentDialog(props: Props) {
     const currentComment = watch('commentText');
 
     const onSubmit = async (data: any) => {
+        console.log('data',data);
         await mutate(data);
         onBackClick();
         resetField('commentText');
@@ -49,6 +52,10 @@ export default function NewCommentDialog(props: Props) {
     useEffect(() => {
         setValue('userName', user?.name as string, {shouldDirty: true});
     }, [user, setValue]);
+
+    useEffect(() => {
+        setValue('caseId', caseId, {shouldDirty: true});
+    }, [caseId, setValue]);
 
     return (
         <Dialog fullWidth open={open} maxWidth="sm" sx={{"& .MuiPaper-root": { borderRadius: "0.625rem" }}}>

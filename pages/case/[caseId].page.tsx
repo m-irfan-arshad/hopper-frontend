@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { useGetCaseByIdHook } from '../../utils/hooks';
-import { Button, Box, Typography, Tabs, styled, useMediaQuery, Tab } from '@mui/material';
+import { Button, Box, Typography, Tabs, styled, useMediaQuery, Tab, CircularProgress } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
 import { Check, CircleOutlined } from '@mui/icons-material';
@@ -26,7 +26,7 @@ export default function CaseHub() {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const router = useRouter();
 
-  const { data } = useGetCaseByIdHook(router.query.caseId as string);
+  const { data, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
   const [isBookingSheetDialogOpen, setBookingSheetDialogState] = useState(false);
   const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
 
@@ -86,87 +86,93 @@ export default function CaseHub() {
     <React.Fragment>
         <Box sx={{backgroundColor: "gray.light", height: "100vh" }}>
             <TopNavBar />
-            <Box sx={{display: "flex", justifyContent: "center", marginLeft: "1rem"}}>
-                <Box 
-                    sx={{ 
-                        display: "flex", 
-                        flexDirection: isMobile ? "column" : "row", 
-                        maxWidth: "90rem", 
-                        width: "100%", 
-                        justifyContent: "center"
-                    }}>
-                    <Box sx={{display: "flex", flexDirection: "column", marginTop: "1rem", flexGrow: 1,  marginLeft: isMobile ? "1.75rem" : 0}}>
-                        <BookingSheetDialog 
-                            initiallySelectedTab={bookingSheetTab} 
-                            data={data} 
-                            open={isBookingSheetDialogOpen} 
-                            closeDialog={() => setBookingSheetDialogState(false)} 
-                        />
-                        <Link href={`/`} passHref>
-                            <BookingSheetButton
-                                additionalStyles={{ color: "blue.main" }}
-                            >
-                                <Typography variant="overline" sx={{color: "blue.main"}}>
-                                    {`< Dashboard`}
-                                </Typography>
-                            </BookingSheetButton>
-                        </Link>
-                        <Typography variant="h4" >
-                            {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
-                        </Typography>
-                        <Typography variant="caption" >
-                            {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} - ${data?.patient?.mrn}` : 'N/A'}
-                        </Typography>
-                        <BookingSheetButton
-                            onClick={() => handleselectBookingSheetTab('Patient')}
-                            additionalStyles={{ marginTop:"1rem", color:"black.main" }}
-                        >
-                            Booking Sheet
-                        </BookingSheetButton> 
-                        <Tabs orientation="vertical" value={false} > 
-                            <BookingSheetTab complete label="Patient"  /> 
-                            <BookingSheetTab label="Financial" />
-                            <BookingSheetTab complete label="Procedure" />
-                            <BookingSheetTab label="Scheduling"  />
-                            <BookingSheetTab label="Implants & Products"  />
-                            <BookingSheetTab label="Clinical" />
-                        </Tabs>
-                    </Box>
+            { !isLoading
+            &&
+                <Box sx={{display: "flex", justifyContent: "center", marginLeft: "1rem"}}>
                     <Box 
-                        sx={{
-                            backgroundColor: "white.main", 
-                            borderRadius:"0.625rem", 
-                            padding: "1.5rem", 
-                            paddingTop: 0, 
-                            flexGrow: 2,
-                            height: "fit-content",
-                            marginTop: "3rem", 
-                            boxShadow: "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem",
-                            marginRight: "1.75rem",
-                            marginLeft:"1.75rem"
+                        sx={{ 
+                            display: "flex", 
+                            flexDirection: isMobile ? "column" : "row", 
+                            maxWidth: "90rem", 
+                            width: "100%", 
+                            justifyContent: "center"
                         }}>
-                        <Box>
-                            {data && <CaseSummaryContent row={data} /> }
+                        <Box sx={{display: "flex", flexDirection: "column", marginTop: "1rem", flexGrow: 1,  marginLeft: isMobile ? "1.75rem" : 0}}>
+                            <BookingSheetDialog 
+                                initiallySelectedTab={bookingSheetTab} 
+                                data={data} 
+                                open={isBookingSheetDialogOpen} 
+                                closeDialog={() => setBookingSheetDialogState(false)} 
+                            />
+                            <Link href={`/`} passHref>
+                                <BookingSheetButton
+                                    additionalStyles={{ color: "blue.main" }}
+                                >
+                                    <Typography variant="overline" sx={{color: "blue.main"}}>
+                                        {`< Dashboard`}
+                                    </Typography>
+                                </BookingSheetButton>
+                            </Link>
+                            <Typography variant="h4" >
+                                {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
+                            </Typography>
+                            <Typography variant="caption" >
+                                {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} - ${data?.patient?.mrn}` : 'N/A'}
+                            </Typography>
+                            <BookingSheetButton
+                                onClick={() => handleselectBookingSheetTab('Patient')}
+                                additionalStyles={{ marginTop:"1rem", color:"black.main" }}
+                            >
+                                Booking Sheet
+                            </BookingSheetButton> 
+                            <Tabs orientation="vertical" value={false} > 
+                                <BookingSheetTab complete label="Patient"  /> 
+                                <BookingSheetTab label="Financial" />
+                                <BookingSheetTab complete label="Procedure" />
+                                <BookingSheetTab label="Scheduling"  />
+                                <BookingSheetTab label="Implants & Products"  />
+                                <BookingSheetTab label="Clinical" />
+                            </Tabs>
+                        </Box>
+                        <Box 
+                            sx={{
+                                backgroundColor: "white.main", 
+                                borderRadius:"0.625rem", 
+                                padding: "1.5rem", 
+                                paddingTop: 0, 
+                                flexGrow: 2,
+                                height: "fit-content",
+                                marginTop: "3rem", 
+                                boxShadow: "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem",
+                                marginRight: "1.75rem",
+                                marginLeft:"1.75rem"
+                            }}>
+                            <Box>
+                                 <CaseSummaryContent row={data} />
+                            </Box>
+                        </Box>
+                        <Box 
+                        sx={{
+                            display: "flex", 
+                            flexDirection: "column", 
+                            alignItems: "flex-end", 
+                            marginLeft: "1.75rem", 
+                            maxWidth: "28.75rem",
+                            marginTop: "2rem",
+                            marginRight: "1rem",
+                            overflowX: "hidden",
+                            flexBasis: "100%"
+                        }}
+                        >
+                            <CaseHubTabs data={data} /> 
                         </Box>
                     </Box>
-                    <Box 
-                      sx={{
-                        display: "flex", 
-                        flexDirection: "column", 
-                        alignItems: "flex-end", 
-                        marginLeft: "1.75rem", 
-                        maxWidth: "28.75rem",
-                        marginTop: "2rem",
-                        marginRight: "1rem",
-                        overflowX: "hidden",
-                        flexBasis: "100%"
-                      }}
-                    >
-                        <CaseHubTabs />   
-                    </Box>
                 </Box>
-            </Box>
+            }
+            {isLoading && <Box sx={{display: "flex", justifyContent: "center", height: "100vh", alignItems: "center"}}><CircularProgress sx={{display: "flex", justifyContent: "center"}} /> </Box>}
         </Box>
     </React.Fragment>
     )
 }
+
+//TODO: fix up cirulcarporgress css
