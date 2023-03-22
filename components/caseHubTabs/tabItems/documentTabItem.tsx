@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, styled, IconButton, Select, MenuItem, Typography} from "@mui/material";
 import { MoreVert } from '@mui/icons-material';
-import DottedDivider from "./shared/dottedDivider";
+import DottedDivider from "../../shared/dottedDivider";
 import moment from "moment";
 
 interface Props {

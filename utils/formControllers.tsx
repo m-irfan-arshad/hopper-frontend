@@ -17,9 +17,10 @@ import * as R from 'ramda';
 interface InputControllerProps {
     id: any,
     title?: string,
-    placeholder: string,
-    multiline?: boolean,
-    maxLength?: number
+    placeholder?: string
+    multiline?: boolean
+    maxLength? : number
+    minRows?: number
 }
 
 interface DateControllerProps {
@@ -50,7 +51,7 @@ interface DropDownSearchControllerProps {
   
 export function InputController(props: InputControllerProps) {
     const { control } = useFormContext();
-    const {id, title, placeholder, multiline, maxLength} = props;
+    const {id, title, placeholder, multiline, maxLength, minRows} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
     
@@ -68,16 +69,20 @@ export function InputController(props: InputControllerProps) {
                     variant="outlined" 
                     label={title} 
                     autoComplete='off' 
-                    placeholder={placeholder} 
+                    placeholder={placeholder}
                     multiline={multiline} 
-                    maxRows={6} 
+                    minRows={minRows} 
+                    maxRows={6}
                     sx={{
                         width: '100%',
                         ".MuiFormHelperText-root": {
-                            textAlign: "right"
+                            textAlign: "right",
+                            marginRight: 0,
+                            marginTop: "0.625rem",
+                            fontStyle: "italic"
                           }
                     }} 
-                />
+                    />
             </React.Fragment>
         )}
       />

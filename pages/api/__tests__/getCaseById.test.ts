@@ -29,7 +29,8 @@ describe("getCaseById API", () => {
                 patient: {include: {sex: true, state: true}},
                 financial: {include: {insurance: true}, orderBy: {createTime: "asc"}},
                 scheduling: {include: {location: true, procedureUnit: true, serviceLine: true, provider: true, admissionType: true}},
-                procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}}
+                procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}},
+                comment: {orderBy: {createTime: 'desc'}}
             }
         };
 
