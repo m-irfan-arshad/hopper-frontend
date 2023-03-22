@@ -160,7 +160,11 @@ export function useGetDropdownOptionsHook(props: CaseFieldHookProps) {
     return useQuery([queryKey, dependency], async () => (await fetch(`/api/getDropdownOptions?queryKey=${queryKey}${paramString}`)).json());
 }
 
-export function useGetCaseHubTabItemsHook(props: CaseFieldHookProps) {
+interface CaseHubTabdHookProps {
+    queryKey: string
+}
+
+export function useGetCaseHubTabItemsHook(props: CaseHubTabdHookProps) {
     const {queryKey} = props
     return useQuery([queryKey], async () => (await fetch(`/api/${queryKey}`)).json());
 }
