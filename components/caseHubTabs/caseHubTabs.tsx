@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useGetCaseHubTabItemsHook } from '../../utils/hooks';
 import { Button, Box, Tabs, styled, useMediaQuery } from '@mui/material';
 import DocumentTabItem from "../../components/caseHubTabs/tabItems/documentTabItem";
 import CommentTabItem from "../../components/caseHubTabs/tabItems/commentTabItem";
