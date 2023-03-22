@@ -14,7 +14,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from "moment";
-import MultiSelectDropdownNew from "./shared/multiSelectDropdownNew";
+import MultiSelectDropdownNew from "../shared/multiSelectDropdownNew";
 
 interface Props {
     onBackClick: () => void,

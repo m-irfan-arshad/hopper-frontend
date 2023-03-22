@@ -25,7 +25,8 @@ interface InputControllerProps {
     multiline?: boolean,
     maxLength?: number,
     size: number,
-    config?: BookingSheetConfig
+    config?: BookingSheetConfig,
+    minRows?: number
 }
 
 interface DateControllerProps {
@@ -99,7 +100,7 @@ const sharedProps = {
   
 export function InputController(props: InputControllerProps) {
     const { control, trigger, formState: {errors} } = useFormContext();
-    const {id, title, placeholder, multiline, maxLength, size, config} = props;
+    const {id, title, placeholder, multiline, maxLength, size, config, minRows} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
     const hasError = checkFieldForErrors(id, errors);
@@ -125,6 +126,7 @@ export function InputController(props: InputControllerProps) {
                 autoComplete='off' 
                 placeholder={placeholder} 
                 multiline={multiline} 
+                minRows={minRows}
                 maxRows={6}
             />
         )}

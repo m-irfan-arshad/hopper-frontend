@@ -16,12 +16,13 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
             financial: { include: {insurance: true}, orderBy: {financialId: 'asc'} },
             patient: {include: {state: true, sex: true}},
             scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} },
-            procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}}
+            procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}},
+            comment: {orderBy: {createTime: 'desc'}}
         }
     })
 
     res.json(casesFormatter(resultPosts));
-  } catch(err) {
-    res.status(500).json({ message: err });
+  } catch(err: any) {
+    res.status(500).json({ message: err.message });
   }
 }))

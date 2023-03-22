@@ -87,6 +87,29 @@ export function useUpdateCaseHook() {
     )
 }
 
+export function useCreateCommentHook() {
+    const queryClient = useQueryClient();
+    return useMutation((data: object) => fetch("/api/createComment",
+        {
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (res.ok) {
+              return res.json()
+            }      
+            throw new Error()
+          }),
+          {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['getCaseById'])
+            }
+        }
+    )
+}
+
 export function useGetCaseByIdHook(caseId: string) {
     return useQuery(["getCaseById", caseId], async () =>  
         (await fetch(`/api/getCaseById?caseId=${caseId}`)).json(), { enabled: caseId !== undefined }

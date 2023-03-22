@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router'
 import { useGetCaseByIdHook } from '../../utils/hooks';
-import { Button, Box, Typography, Tabs, styled, useMediaQuery } from '@mui/material';
+import { Button, Box, Typography, Tabs, styled, useMediaQuery, Tab, CircularProgress } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
-import UploadDocumentDialog from "../../components/uploadDocumentDialog";
-import { Assignment, Check, CircleOutlined, Bolt, ContentCopy, ChatBubbleOutline } from '@mui/icons-material';
+import { Check, CircleOutlined } from '@mui/icons-material';
 import CaseSummaryContent from "../../components/caseSummaryContent";
-import DocumentTabItem from "../../components/documentTabItem";
+import CaseHubTabs from "../../components/caseHubTabs/caseHubTabs";
 import Link from 'next/link';
 import { defaultTheme } from "../../theme";
-import moment from "moment";
 import { formatDate } from "../../utils/helpers";
-import Tab, { TabProps } from "@mui/material/Tab";
 
 interface BookingSheetTabProps {
     label: string
@@ -25,41 +22,13 @@ interface BookingSheetButtonProps {
     additionalStyles?: React.CSSProperties
 }
 
-interface StyledCaseTabProps extends TabProps {
-    count: number
-}
-
 export default function CaseHub() {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-  const areTabsScrollable = useMediaQuery(defaultTheme.breakpoints.down('lg'));
   const router = useRouter();
-  
-  const documentData = [
-    {
-        createTime: moment().subtract(1, 'days'),
-        updateTime: moment(),
-        description: 'Lorem ipsum sdgsdgdasgasg',
-        firstName: 'Daphney',
-        lastName: 'Johnson',
-        fileTypes: ['Other']
-    },
-    {
-        createTime: moment().subtract(2, 'days'),
-        updateTime: moment(),
-        description: 'Lorem ipsum sdgsdgdasgasg',
-        firstName: 'Daphney',
-        lastName: 'Johnson',
-        fileTypes: ['H&P', 'License']
-    },
-  ];
 
-  const count = documentData.length;
-
-  const { data } = useGetCaseByIdHook(router.query.caseId as string);
+  const { data, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
   const [isBookingSheetDialogOpen, setBookingSheetDialogState] = useState(false);
   const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
-  const [caseTab, selectCaseTab] = useState('Activity');
-  const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
 
   function handleselectBookingSheetTab(selectedTab: string) {
     setBookingSheetDialogState(true);
@@ -79,31 +48,6 @@ export default function CaseHub() {
       fontWeight:  complete? "400" : "500",
       fontStyle: complete ? "italic" : "normal",
       color: complete? theme.palette.success.dark : theme.palette.blue.main
-  }));
-
-  const StyledCaseTab = styled((props: StyledCaseTabProps) => {
-    const { value, count, ...other } = props;
-    return <Tab
-            value={value}
-            label={
-                <Box sx={{display: "flex"}}>
-                    {value}   
-                    <span>({count})</span>
-                </Box>
-            }
-            {...other}
-        />
-  })(({}) => ({
-    display: "flex",
-    justifyContent: "flex-end",
-    textTransform: "capitalize",
-    fontSize: "0.75rem",
-    paddingBottom: "0.5rem",
-    fontWeight:  "700",
-    "& span": {
-        fontWeight: "400",
-        marginLeft: "0.188rem"
-    }
   }));
 
   const BookingSheetTab = (props: BookingSheetTabProps) => {
@@ -140,134 +84,96 @@ export default function CaseHub() {
 
   return (
     <React.Fragment>
-        <Box sx={{backgroundColor: "gray.light", minHeight: "100vh" }}>
+        <Box sx={{backgroundColor: "gray.light", height: "100vh" }}>
             <TopNavBar />
-            <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <Box sx={{display: "flex", justifyContent: "center", marginLeft: "1rem"}}>
-                <Box 
-                    sx={{ 
-                        display: "flex", 
-                        flexDirection: isMobile ? "column" : "row", 
-                        maxWidth: "90rem", 
-                        width: "100%", 
-                        justifyContent: "center"
-                    }}>
-                    <Box sx={{display: "flex", flexDirection: "column", marginTop: "1rem", flexGrow: 1,  marginLeft: isMobile ? "1.75rem" : 0}}>
-                        <BookingSheetDialog 
-                            initiallySelectedTab={bookingSheetTab} 
-                            data={data} 
-                            open={isBookingSheetDialogOpen} 
-                            closeDialog={() => setBookingSheetDialogState(false)} 
-                        />
-                        <Link href={`/`} passHref>
-                            <BookingSheetButton
-                                additionalStyles={{ color: "blue.main" }}
-                            >
-                                <Typography variant="overline" sx={{color: "blue.main"}}>
-                                    {`< Dashboard`}
-                                </Typography>
-                            </BookingSheetButton>
-                        </Link>
-                        <Typography variant="h4" >
-                            {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
-                        </Typography>
-                        <Typography variant="caption" >
-                            {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} - ${data?.patient?.mrn}` : 'N/A'}
-                        </Typography>
-                        <BookingSheetButton
-                            onClick={() => handleselectBookingSheetTab('Patient')}
-                            additionalStyles={{ marginTop:"1rem", color:"black.main" }}
-                        >
-                            Booking Sheet
-                        </BookingSheetButton> 
-                        <Tabs orientation="vertical" value={false} > 
-                            <BookingSheetTab complete label="Patient"  /> 
-                            <BookingSheetTab label="Financial" />
-                            <BookingSheetTab complete label="Procedure" />
-                            <BookingSheetTab label="Scheduling"  />
-                            <BookingSheetTab label="Implants & Products"  />
-                            <BookingSheetTab label="Clinical" />
-                        </Tabs>
-                    </Box>
+            { !isLoading
+            &&
+                <Box sx={{display: "flex", justifyContent: "center", marginLeft: "1rem"}}>
                     <Box 
-                        sx={{
-                            backgroundColor: "white.main", 
-                            borderRadius:"0.625rem", 
-                            padding: "1.5rem", 
-                            paddingTop: 0, 
-                            flexGrow: 1,
-                            marginTop: "3rem", 
-                            boxShadow: "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem",
-                            marginRight: "1.75rem",
-                            marginLeft:"1.75rem"
+                        sx={{ 
+                            display: "flex", 
+                            flexDirection: isMobile ? "column" : "row", 
+                            maxWidth: "90rem", 
+                            width: "100%", 
+                            justifyContent: "center"
                         }}>
-                        <Box>
-                            {data && <CaseSummaryContent row={data} /> }
+                        <Box sx={{display: "flex", flexDirection: "column", marginTop: "1rem", flexGrow: 1,  marginLeft: isMobile ? "1.75rem" : 0}}>
+                            <BookingSheetDialog 
+                                initiallySelectedTab={bookingSheetTab} 
+                                data={data} 
+                                open={isBookingSheetDialogOpen} 
+                                closeDialog={() => setBookingSheetDialogState(false)} 
+                            />
+                            <Link href={`/`} passHref>
+                                <BookingSheetButton
+                                    additionalStyles={{ color: "blue.main" }}
+                                >
+                                    <Typography variant="overline" sx={{color: "blue.main"}}>
+                                        {`< Dashboard`}
+                                    </Typography>
+                                </BookingSheetButton>
+                            </Link>
+                            <Typography variant="h4" >
+                                {data?.patient ? `${data?.patient?.lastName}, ${data?.patient?.firstName}` : 'N/A'}
+                            </Typography>
+                            <Typography variant="caption" >
+                                {data?.patient ? `${formatDate(data?.patient?.dateOfBirth)} - ${data?.patient?.mrn}` : 'N/A'}
+                            </Typography>
+                            <BookingSheetButton
+                                onClick={() => handleselectBookingSheetTab('Patient')}
+                                additionalStyles={{ marginTop:"1rem", color:"black.main" }}
+                            >
+                                Booking Sheet
+                            </BookingSheetButton> 
+                            <Tabs orientation="vertical" value={false} > 
+                                <BookingSheetTab complete label="Patient"  /> 
+                                <BookingSheetTab label="Financial" />
+                                <BookingSheetTab complete label="Procedure" />
+                                <BookingSheetTab label="Scheduling"  />
+                                <BookingSheetTab label="Implants & Products"  />
+                                <BookingSheetTab label="Clinical" />
+                            </Tabs>
+                        </Box>
+                        <Box 
+                            sx={{
+                                backgroundColor: "white.main", 
+                                borderRadius:"0.625rem", 
+                                padding: "1.5rem", 
+                                paddingTop: 0, 
+                                flexGrow: 2,
+                                height: "fit-content",
+                                marginTop: "3rem", 
+                                boxShadow: "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem",
+                                marginRight: "1.75rem",
+                                marginLeft:"1.75rem"
+                            }}>
+                            <Box>
+                                 <CaseSummaryContent row={data} />
+                            </Box>
+                        </Box>
+                        <Box 
+                        sx={{
+                            display: "flex", 
+                            flexDirection: "column", 
+                            alignItems: "flex-end", 
+                            marginLeft: "1.75rem", 
+                            maxWidth: "28.75rem",
+                            marginTop: "2rem",
+                            marginRight: "1rem",
+                            overflowX: "hidden",
+                            flexBasis: "100%"
+                        }}
+                        >
+                            <CaseHubTabs data={data} /> 
                         </Box>
                     </Box>
-                    <Box 
-                      sx={{
-                        display: "flex", 
-                        flexDirection: "column", 
-                        alignItems: "flex-end", 
-                        marginLeft: "1.75rem", 
-                        maxWidth: "28.125rem",
-                        marginTop: "2rem",
-                        marginRight: "1rem",
-                        overflowX: "hidden"
-                      }}
-                    >
-                        <Tabs 
-                            sx={{
-                                borderBottom: "0.063rem solid #D1E4ED", 
-                                width: "100%",
-                                "& .MuiTabs-indicator": {
-                                    backgroundColor: "orange.main"
-                                },
-                                "& .MuiTab-root.Mui-selected": {
-                                    color: "orange.main",
-                                    justifyContent: "flex-end"
-                                }
-                            }}
-                            variant={areTabsScrollable ? "scrollable" : "standard"}
-                            value={caseTab} 
-                            onChange={(event, value) => selectCaseTab(value)}
-                        >
-                            <StyledCaseTab value="Activity" count={count} /> 
-                            <StyledCaseTab value="Amendments" count={count} />
-                            <StyledCaseTab value="Documents" count={count} />
-                            <StyledCaseTab value="Comments" count={count} />
-                        </Tabs>
-                        {caseTab === "Documents" && 
-                            <React.Fragment>
-                                <Button 
-                                  sx={{
-                                    color: "blue.dark", 
-                                    fontSize: "0.625rem", 
-                                    fontWeight: "700", 
-                                    marginTop: "1rem", 
-                                    marginBottom: "1rem", 
-                                    padding: 0, 
-                                    '&:hover': {
-                                      backgroundColor: 'transparent'
-                                    }
-                                  }}
-                                  onClick={() => setUploadDocumentDialogState(true)}
-                                >
-                                    + Upload Document
-                                </Button>
-                                {
-                                    documentData.map((data, index) => (
-                                        <React.Fragment key={index}> 
-                                            <DocumentTabItem data={data} /> 
-                                        </React.Fragment> 
-                                    ))
-                                }
-                            </React.Fragment>
-                        }
-                    </Box>
                 </Box>
-            </Box>
+            }
+            { isLoading 
+            && <Box sx={{display: "flex", justifyContent: "center", height: "100vh", alignItems: "center"}}>
+                    <CircularProgress sx={{display: "flex", justifyContent: "center"}} /> 
+                </Box>
+            }
         </Box>
     </React.Fragment>
     )
