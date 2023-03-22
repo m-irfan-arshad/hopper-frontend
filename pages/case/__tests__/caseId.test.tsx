@@ -17,7 +17,8 @@ jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({data: mockSingleCase})),
     useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
     useCreateCommentHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
-    useGetDropdownOptionsHook: jest.fn().mockImplementation(() => ({}))
+    useGetDropdownOptionsHook: jest.fn().mockImplementation(() => ({})),
+    useGetCaseHubTabItemsHook: jest.fn().mockImplementation(() =>({}))
 }));
 
 describe('[caseId]: Case Hub Page', () => {
@@ -46,7 +47,7 @@ describe('[caseId]: Case Hub Page', () => {
 
     expect(getByRole('tab', {name: 'Activity (2)'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Amendments (2)'})).toBeInTheDocument();
-    expect(getByRole('tab', {name: 'Comments (1)'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Comments (0)'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
 
   });
