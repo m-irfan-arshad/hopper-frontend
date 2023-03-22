@@ -122,7 +122,7 @@ export default function CaseHubTabs(props: Props) {
     return (
         <React.Fragment>
             <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <NewCommentDialog caseId={data?.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
+            <NewCommentDialog caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
             <Tabs 
                 sx={{
                     borderBottom: "0.063rem solid #D1E4ED",

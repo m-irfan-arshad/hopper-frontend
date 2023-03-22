@@ -169,10 +169,12 @@ export default function CaseHub() {
                     </Box>
                 </Box>
             }
-            {isLoading && <Box sx={{display: "flex", justifyContent: "center", height: "100vh", alignItems: "center"}}><CircularProgress sx={{display: "flex", justifyContent: "center"}} /> </Box>}
+            { isLoading 
+            && <Box sx={{display: "flex", justifyContent: "center", height: "100vh", alignItems: "center"}}>
+                    <CircularProgress sx={{display: "flex", justifyContent: "center"}} /> 
+                </Box>
+            }
         </Box>
     </React.Fragment>
     )
 }
-
-//TODO: fix up cirulcarporgress css

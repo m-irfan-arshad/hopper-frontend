@@ -29,7 +29,7 @@ export default function NewCommentDialog(props: Props) {
         defaultValues: {
             commentText: '',
             userName: '',
-            caseId: 0
+            caseId: caseId
         }
     });
     
@@ -38,7 +38,6 @@ export default function NewCommentDialog(props: Props) {
     const currentComment = watch('commentText');
 
     const onSubmit = async (data: any) => {
-        console.log('data',data);
         await mutate(data);
         onBackClick();
         resetField('commentText');
@@ -53,9 +52,6 @@ export default function NewCommentDialog(props: Props) {
         setValue('userName', user?.name as string, {shouldDirty: true});
     }, [user, setValue]);
 
-    useEffect(() => {
-        setValue('caseId', caseId, {shouldDirty: true});
-    }, [caseId, setValue]);
 
     return (
         <Dialog fullWidth open={open} maxWidth="sm" sx={{"& .MuiPaper-root": { borderRadius: "0.625rem" }}}>
