@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGenericQueryHook } from '../../utils/hooks';
+import { useGetCaseHubTabItemsHook } from '../../utils/hooks';
 import { Button, Box, Tabs, styled, useMediaQuery } from '@mui/material';
 import DocumentTabItem from "../../components/caseHubTabs/tabItems/documentTabItem";
 import CommentTabItem from "../../components/caseHubTabs/tabItems/commentTabItem";
@@ -20,7 +20,7 @@ export default function CaseHubTabs() {
     const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
     const [isNewCommentDialogOpen, setNewCommentDialogState] = useState(false);  
 
-    const { data: comments = [] } = useGenericQueryHook({queryKey: 'getComments'});
+    const { data: comments = [] } = useGetCaseHubTabItemsHook({queryKey: 'getComments'});
 
     const count = 2;
 
