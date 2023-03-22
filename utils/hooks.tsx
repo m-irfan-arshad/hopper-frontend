@@ -151,8 +151,8 @@ function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: mome
 
 interface CaseFieldHookProps {
     queryKey: string,
-    paramString?: string,
-    dependency?: any
+    paramString: string,
+    dependency: any
 }
 
 export function useGetDropdownOptionsHook(props: CaseFieldHookProps) {

@@ -3,15 +3,6 @@ import CaseHub from '../[caseId].page';
 import { mockSingleCase, mockCommentData } from "../../../testReference";
 import { PagesTestWrapper } from "../../../testReference";
 
-/* 
-  TODO:
-
-  1. fix up merge conflicts in caseId.test.tsx, hooks.test.tsx, and hooks.tsx 
-  2. Figure out how to handle getDropdownOptions 
-    2a. Do I make it back to a more generic hook or do I separate my flow from this?
-        2aa. Probably somehow combine them sinec I will only add 4 additional cases (comments, documents, activity, amendments)
-  3. Go back and fix any of the new comment stuff I did where I use the genericqueryhook to use whatever I come
-*/
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
     QueryClient: jest.fn(),
