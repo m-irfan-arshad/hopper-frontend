@@ -89,7 +89,7 @@ export default function NewCommentDialog(props: Props) {
                     }}>
                         <Button 
                             variant="contained" 
-                            onClick={handleSubmit(async(data: any) => await handleOnSubmit(data))}
+                            onClick={handleSubmit(handleOnSubmit)}
                             disabled={currentComment.length === 0}
                             sx={{
                                 borderRadius: "0.25rem",

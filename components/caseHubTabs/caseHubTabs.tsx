@@ -107,7 +107,7 @@ export default function CaseHubTabs(props: Props) {
                         width: "100%" 
                     }}
                 >
-                    <CircularProgress sx={{display: "flex", justifyContent: "center"}} />
+                    <CircularProgress />
                 </Box>
                 :  data.map((item: any, index: number) => (
                         <React.Fragment key={index}>
