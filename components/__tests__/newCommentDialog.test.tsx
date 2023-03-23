@@ -11,7 +11,9 @@ jest.mock('@tanstack/react-query', () => ({
 describe("NewCommentDialog", () => {
     const props = {
         onBackClick: jest.fn(),
-        open: true
+        open: true,
+        caseId: 1,
+        onSubmit: jest.fn()
     };
 
     beforeEach(() => {

@@ -7,22 +7,21 @@ import {
     Box,
     Typography,
 } from '@mui/material';
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider} from "react-hook-form";
 import {InputController} from '../utils/formControllers'
-import { useCreateCommentHook } from '../utils/hooks';
 import { useUser } from '@auth0/nextjs-auth0';
 
 interface Props {
     onBackClick: () => void,
     open: boolean
     caseId: number
+    onSubmit: (data: any) => void
 }
 
 export default function NewCommentDialog(props: Props) {
 
-    const {mutate} = useCreateCommentHook();
     const { user } = useUser();
-    const { open, onBackClick, caseId } = props;
+    const { open, onBackClick, caseId, onSubmit } = props;
 
     const form = useForm({
         mode: 'onChange',
@@ -37,11 +36,11 @@ export default function NewCommentDialog(props: Props) {
     
     const currentComment = watch('commentText');
 
-    const onSubmit = async (data: any) => {
-        await mutate(data);
+    function handleOnSubmit(data: any) {
+        onSubmit(data);
         onBackClick();
         resetField('commentText');
-    };
+    }
 
     function handleBackClick() {
         resetField('commentText');
@@ -90,7 +89,7 @@ export default function NewCommentDialog(props: Props) {
                     }}>
                         <Button 
                             variant="contained" 
-                            onClick={handleSubmit(onSubmit)}
+                            onClick={handleSubmit(handleOnSubmit)}
                             disabled={currentComment.length === 0}
                             sx={{
                                 borderRadius: "0.25rem",

@@ -26,7 +26,7 @@ export default function CaseHub() {
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const router = useRouter();
 
-  const { data, isLoading } = useGetCaseByIdHook(router.query.caseId as string);
+  const { data, isLoading, isFetching } = useGetCaseByIdHook(router.query.caseId as string);
   const [isBookingSheetDialogOpen, setBookingSheetDialogState] = useState(false);
   const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
 
@@ -164,7 +164,7 @@ export default function CaseHub() {
                             flexBasis: "100%"
                         }}
                         >
-                            <CaseHubTabs data={data} /> 
+                            <CaseHubTabs data={data} isFetchingCase={isFetching} /> 
                         </Box>
                     </Box>
                 </Box>
