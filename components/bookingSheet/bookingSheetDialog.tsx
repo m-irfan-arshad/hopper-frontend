@@ -15,8 +15,8 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { getDirtyValues, createValidationObject } from '../../utils/helpers';
-import { useUpdateCaseHook } from '../../utils/hooks';
-import { userConfigObject, defaultBookingSheetConfig, defaultInsuranceValue } from '../../reference';
+import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
+import { defaultBookingSheetConfig, defaultInsuranceValue } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -80,9 +80,10 @@ function prepareFormForRender(data: any) {
 export default function BookingSheetDialog(props: Props) {
     const {open, closeDialog, data, initiallySelectedTab} = props;
     const [selectedTab, selectTab] = useState(initiallySelectedTab);
-    const {mutate} = useUpdateCaseHook()
-    const bookingSheetConfig = R.mergeDeepRight(defaultBookingSheetConfig, userConfigObject.tabs);
-    const validationSchema = createValidationObject(bookingSheetConfig)
+    const [bookingSheetConfig, setBookingSheetConfig] = useState(defaultBookingSheetConfig)
+    const {mutate} = useUpdateCaseHook();
+    const { data: orgConfigData = {} } = useGetBookingSheetConfigHook();
+    const validationSchema = createValidationObject(bookingSheetConfig);
 
     const form = useForm({ 
         mode: 'onChange',
@@ -102,6 +103,12 @@ export default function BookingSheetDialog(props: Props) {
     useEffect(() => {
         if(data) reset(prepareFormForRender(data), {keepDirty: true});
     }, [data]);
+
+    useEffect(() => {
+        if(!R.isEmpty(orgConfigData)){
+            setBookingSheetConfig(R.mergeDeepRight(defaultBookingSheetConfig, orgConfigData.tabs));
+        }
+    }, [orgConfigData]);
 
     useEffect(() => {
         selectTab(initiallySelectedTab)
