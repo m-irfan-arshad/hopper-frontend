@@ -2,7 +2,7 @@ import { render, renderHook, fireEvent } from '@testing-library/react'
 import PatientTab from "../patientTab";
 import moment from "moment";
 import { useForm, FormProvider } from "react-hook-form";
-import { FormWrapper } from "../../../../testReference";
+import { FormWrapper, mockBookingSheetConfig } from "../../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
     useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
@@ -17,21 +17,7 @@ describe("PatientTab", () => {
     
     const props = {
         control: result.current.control,
-        config: {
-            organization: "...",
-            tabs: [
-                {
-                    label: "Patient",
-                    fields: [
-                        {
-                            id: "firstName",
-                            required: true,
-                            visible: true
-                        },
-                    ]
-                }  
-            ]
-        },
+        config: mockBookingSheetConfig,
         getValues: jest.fn()
     };
 
@@ -54,21 +40,7 @@ describe("PatientTab", () => {
     test("does not render fields marked non visible in the patient tab", () => {
         const { getByPlaceholderText, getByLabelText, getByRole, queryByRole } = render(
             <FormWrapper>
-            <PatientTab config={{
-                organization: "...",
-                tabs: [
-                    {
-                        label: "Patient",
-                        fields: [
-                            {
-                                id: "firstName",
-                                required: true,
-                                visible: false
-                            },
-                        ]
-                    }  
-                ]
-            }}  />
+            <PatientTab config={{patient: {firstName: {visible: false}}}}  />
             </FormWrapper>
         );  
         expect(queryByRole('textbox', {name: 'First Name'})).not.toBeInTheDocument();

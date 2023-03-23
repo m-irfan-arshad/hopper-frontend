@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { APIParameters, FullCase } from '../reference';
+import { APIParameters, FullCase, IndexObject } from '../reference';
 import { Prisma, insurance } from '@prisma/client';
 import moment from "moment";
-import * as R from 'ramda'
+import * as R from 'ramda';
+import * as yup from 'yup';
 
 interface DashboardQueryParams { 
     searchValue?: string
@@ -19,18 +20,6 @@ interface FilterObject {
     priorAuthorization?: object;
     vendorConfirmation?: object;
   }
-
-export interface ConfigObject {
-    organization: string,
-    tabs: Array<{
-        label: string,
-        fields: Array<{
-            id: string,
-            required: boolean,
-            visible: boolean
-        }>
-    }>
-}
 
 export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
@@ -208,15 +197,6 @@ export function formatCreateCaseParams(data: FullCase) {
     })
   }
 
-export function parseFieldConfig(configObject: ConfigObject, tabName: string, fieldName: string, checkingFor: "visible" | "required", defaultReturnValue?: boolean) {
-    const tab = configObject.tabs.find(tab => tab.label === tabName)
-    if (tab) {
-        const field = tab.fields.find(field => field.id === fieldName);
-        return field && field[checkingFor]
-    }
-    return defaultReturnValue ? defaultReturnValue : false
-}
-
 /**
  * Similar to react-hook-form's getDirtyFields, however it also returns the value of the dirty field instead of a boolean.
  * Useful for building performative update queries.
@@ -226,4 +206,61 @@ export function getDirtyValues(dirtyFields: any, allValues: any): object | undef
       return allValues;
     if (R.isEmpty(allValues)) return undefined;
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
+}
+
+export function addConfigToValidationField(tabConfigObject: IndexObject, fieldName: string) {
+    const config: {default: any, required?: boolean, visible?: boolean} | undefined = tabConfigObject[fieldName];
+    if (!config) {
+        console.warn("no config found for field: ", fieldName)
+        return yup.mixed();
+    }
+    const required = R.isNil(config.required) || config.required; //required by default
+    const visible =  R.isNil(config.visible) || config.visible; //visible by default
+    if (!visible) {
+        return;
+    }
+    
+    if(R.isNil(config.default) || Array.isArray(config.default)) {
+        return required ? yup.mixed().required().default(config.default) : yup.mixed().notRequired().default(config.default)
+    }
+    return required ? yup.string().required().default(config.default) : yup.string().notRequired().default(config.default)
+}
+
+export function createValidationObject(bookingSheetConfig: IndexObject) {
+    const tabValidationObject: IndexObject = {};
+
+    Object.keys(bookingSheetConfig).forEach(tabName=>{
+        let tab = bookingSheetConfig[tabName]
+        let isArray = false;
+        let validationTab: IndexObject = {}
+        if (Array.isArray(tab)) {
+            tab = tab[0];
+            isArray = true;
+        }
+        Object.keys(tab).forEach(fieldName=>{
+            const fieldWithConfig = addConfigToValidationField(tab, fieldName)
+            fieldWithConfig && (validationTab[fieldName] = fieldWithConfig)
+        })
+        if (isArray) {
+            tabValidationObject[tabName] = yup.array().of(yup.object().shape(validationTab))
+        } else {
+            tabValidationObject[tabName] = yup.object().shape(validationTab)
+        }
+    })
+    return yup.object().shape(tabValidationObject)
+}
+
+export function getPathFromId(id: string) {
+    return id.split('.');
+}
+
+export function isFieldVisible(config: object | undefined, id: string) {
+    if (!config) return true;
+    const path = getPathFromId(id);
+    const visible: boolean | undefined = R.path([...path, "visible"], config);
+    return R.isNil(visible) ? true : visible;
+}
+
+export function checkFieldForErrors(id: string, errors: any): boolean {
+    return R.isNil(R.path(getPathFromId(id), errors)) ? false : true
 }

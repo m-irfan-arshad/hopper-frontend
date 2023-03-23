@@ -4,7 +4,9 @@ import {
     TextField, 
     InputLabel,
     styled,
-    TextFieldProps
+    TextFieldProps,
+    Grid,
+    Box
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -13,13 +15,17 @@ import DropDownSearchComponent from "../components/shared/dropdownSearch";
 import { useGetDropdownOptionsHook } from "./hooks"
 import { useFormContext, useWatch } from "react-hook-form";
 import * as R from 'ramda';
+import { BookingSheetConfig } from "../reference";
+import { checkFieldForErrors, isFieldVisible } from "./helpers";
 
 interface InputControllerProps {
     id: any,
     title?: string,
-    placeholder?: string
-    multiline?: boolean
-    maxLength? : number
+    placeholder: string,
+    multiline?: boolean,
+    maxLength?: number,
+    size: number,
+    config?: BookingSheetConfig,
     minRows?: number
 }
 
@@ -27,7 +33,9 @@ interface DateControllerProps {
     id: any,
     title?: string,
     placeholder: string,
-    withTime?: boolean
+    withTime?: boolean,
+    size: number,
+    config?: BookingSheetConfig
 }
 
 interface DropDownSearchOption {
@@ -46,83 +54,120 @@ interface DropDownSearchControllerProps {
     queryKey?: string, 
     params?: Array<{field: string, value: string}>, 
     dependency?: string,
-    multiple?: boolean
+    multiple?: boolean,
+    size: number,
+    config?: BookingSheetConfig
+}
+
+interface ConfigWrapperProps {
+    children: any, 
+    id: string, 
+    size: number,
+    config?: BookingSheetConfig
+}
+
+const helperTextProps = {
+    style: { 
+        minHeight: "1.3rem",
+        marginTop: "0.1rem",
+        marginLeft: 0
+    },
+    component: 'div'
+};
+
+function ConfigWrapper(props: ConfigWrapperProps) {
+    const {children, id, size, config} = props;
+    const isVisible = isFieldVisible(config, id)
+    if (!isVisible) return <></>;
+    return(
+        <Grid item xs={size}>
+            {children}
+        </Grid>
+      )
+}
+
+const sharedProps = {
+    FormHelperTextProps: helperTextProps, 
+    InputLabelProps: { shrink: true },
+    sx: {
+        svg: { 
+            height: "1rem",
+            width: "1rem"
+        },
+        width: "100%",
+    }
 }
   
 export function InputController(props: InputControllerProps) {
-    const { control } = useFormContext();
-    const {id, title, placeholder, multiline, maxLength, minRows} = props;
+    const { control, trigger, formState: {errors} } = useFormContext();
+    const {id, title, placeholder, multiline, maxLength, size, config, minRows} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
     const numCharacters = currentValue ? currentValue.length : 0
+    const hasError = checkFieldForErrors(id, errors);
+    const helperText = <Box sx={{display: "flex", justifyContent: "space-between"}}>
+        <Box>{hasError ? "Required" : ""}</Box>
+        <Box>{maxLength ? `${numCharacters}/${maxLength}` : null}</Box>
+    </Box>
     
-    return <Controller
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
         control={control}
         render={({ field }) => (
-            <React.Fragment>
-                <TextField 
-                    InputLabelProps={{ shrink: true }} 
-                    inputProps={{ maxLength: maxLength }}
-                    helperText={maxLength ? `${numCharacters}/${maxLength}` : null}
-                    {...field} 
-                    id={id} 
-                    variant="outlined" 
-                    label={title} 
-                    autoComplete='off' 
-                    placeholder={placeholder}
-                    multiline={multiline} 
-                    minRows={minRows} 
-                    maxRows={6}
-                    sx={{
-                        width: '100%',
-                        ".MuiFormHelperText-root": {
-                            textAlign: "right",
-                            marginRight: 0,
-                            marginTop: "0.625rem",
-                            fontStyle: "italic"
-                          }
-                    }} 
-                    />
-            </React.Fragment>
+            <TextField 
+                {...field}
+                {...sharedProps} 
+                onClick={()=>trigger(id, { shouldFocus: true })}
+                error={hasError}
+                inputProps={{ maxLength: maxLength }}
+                helperText={helperText}
+                id={id} 
+                variant="outlined" 
+                label={title} 
+                autoComplete='off' 
+                placeholder={placeholder} 
+                multiline={multiline} 
+                minRows={minRows}
+                maxRows={6}
+            />
         )}
-      />
+      /></ConfigWrapper>
 }
 
 export function DateController(props: DateControllerProps) {
-    const { control } = useFormContext();
-    const {id, title, placeholder, withTime} = props;
+    const { control, trigger, formState: {errors} } = useFormContext();
+    const {id, title, placeholder, withTime, size, config} = props;
+    const hasError = checkFieldForErrors(id, errors);
     const renderInput = ({inputProps, ...restParams}: TextFieldProps) => (
         <TextField 
+            {...sharedProps}
             InputLabelProps={{ shrink: true }} 
+            error={hasError}
+            onClick={()=>trigger(id, { shouldFocus: true })}
+            helperText={hasError ? "Required" : " "}
             id={id}
             autoComplete='off'
             inputProps={{
                 ...inputProps, 
                 placeholder: placeholder,
-            }} 
-            sx={{
-                svg: { 
-                    height: "1rem",
-                    width: "1rem"
-                },
-                width: "100%"
-            }} 
+            }}  
             {...restParams} 
         />
     )
 
-    return <Controller
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
         control={control}
         render={({ field }) => (
             <React.Fragment>
                 {withTime ? <DateTimePicker
+                    {...field}
                     label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
                     onChange={field.onChange}
                     renderInput={renderInput}
                 /> :  <DesktopDatePicker
+                    {...field}
                     label={title}
                     components={{ OpenPickerIcon: DateRangeIcon }}
                     value={field.value}
@@ -131,22 +176,22 @@ export function DateController(props: DateControllerProps) {
                 />}
             </React.Fragment>
         )}
-    />
+    /></ConfigWrapper>
 }
 
 export function DropDownSearchController(props: DropDownSearchControllerProps) {
-    const { control, getValues } = useFormContext();
-    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple} = props;
+    const { control, getValues, trigger, formState: {errors} } = useFormContext();
+    const {id, title, disabled, placeholder, options, labelProperties, additionalStyles, queryKey, params, dependency, multiple, size, config} = props;
     const paramString = params ?  '&' + params?.map(p => `${p.field}=${getValues(p.value)}`).join('&') : ''
     const isDisabled = dependency ? !getValues(dependency) : disabled;
     
     const { data: dropdownData = [] } = (queryKey && !isDisabled) ? useGetDropdownOptionsHook({queryKey: queryKey, paramString: paramString, dependency: dependency ? getValues(dependency) : undefined}) : {data: options}
 
-    return <Controller
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
             name={id}
             control={control}
             render={({ field }) => {
-                return<DropDownSearchComponent
+                return <DropDownSearchComponent
                         label={title}
                         value={field.value}
                         labelProperties={labelProperties}
@@ -157,7 +202,9 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         disabled={isDisabled} 
                         placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
                         additionalStyles={additionalStyles}
+                        error={checkFieldForErrors(id, errors)}
+                        onClick={()=>trigger(id, { shouldFocus: true })}
                     />
                 }}
-        />
+        /></ConfigWrapper>
 }

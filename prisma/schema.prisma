@@ -28,17 +28,17 @@ model cases {
 model patient {
   patientId      Int       @id @default(autoincrement()) @map("patient_id")
   fhirResourceId String?   @unique @map("fhir_resource_id")
-  firstName      String?   @map("first_name")
-  middleName     String?   @map("middle_name")
-  lastName       String?   @map("last_name")
-  mrn            String?
-  address        String?
-  city           String?
+  firstName      String?   @map("first_name") @default("")
+  middleName     String?   @map("middle_name") @default("")
+  lastName       String?   @map("last_name") @default("")
+  mrn            String?   @default("")
+  address        String?   @default("")
+  city           String?   @default("")
   stateId        Int?      @map("state_id")
-  zip            String?
+  zip            String?   @default("")
   sexId          Int?      @map("sex_id")
-  mobilePhone    String?   @map("mobile_phone")
-  homePhone      String?   @map("home_phone")
+  mobilePhone    String?   @map("mobile_phone") @default("")
+  homePhone      String?   @map("home_phone") @default("")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Timestamp(6)
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
@@ -139,10 +139,10 @@ model ServiceLineToProvider {
 model financial {
   financialId           Int       @id @default(autoincrement()) @map("financial_id")
   insuranceId           Int?      @map("insurance_id")
-  insuranceGroupName    String?   @map("insurance_group_name")
-  insuranceGroupNumber  String?   @map("insurance_group_number")
+  insuranceGroupName    String?   @map("insurance_group_name") @default("")
+  insuranceGroupNumber  String?   @map("insurance_group_number") @default("")
   priorAuthorization    String    @map("prior_authorization") @default("Incomplete")
-  priorAuthId           String?   @map("prior_auth_id")
+  priorAuthId           String?   @map("prior_auth_id") @default("")
   priorAuthDate         DateTime? @map("prior_auth_date") @db.Timestamp(6)
   createTime            DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime            DateTime? @map("update_time") @db.Timestamp(6) @default(now())
@@ -177,7 +177,7 @@ model procedureTab {
   cptCodeId         Int?      @map("cpt_code_id")
   icdCodeId         Int?      @map("icd_code_id")
   caseId            Int?      @map("case_id")
-  anesthesiaNotes   String?   @map("anesthesia_notes")
+  anesthesiaNotes   String?   @map("anesthesia_notes") @default("")
 
   cases             cases?
   procedure         procedure? @relation(fields: [procedureId], references: [procedureId], onDelete: NoAction, onUpdate: NoAction)

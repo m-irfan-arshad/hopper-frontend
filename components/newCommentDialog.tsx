@@ -76,7 +76,7 @@ export default function NewCommentDialog(props: Props) {
                     <Typography variant="h5" sx={{ marginTop: "1.875rem", color: "gray.dark", marginBottom: "0.313rem"}}>
                         Add Case Comment
                     </Typography>
-                    <InputController minRows={4} maxLength={300} multiline id="commentText"/>
+                    <InputController minRows={4} maxLength={300} size={12} placeholder="" multiline id="commentText"/>
                     </FormProvider>
                 </DialogContent>    
                 <DialogActions 

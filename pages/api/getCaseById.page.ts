@@ -13,7 +13,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
             caseId: parseInt(req.query["caseId"] as string)
           },
           include: {
-            financial: { include: {insurance: true}, orderBy: {createTime: 'asc'} },
+            financial: { include: {insurance: true}, orderBy: {financialId: 'asc'} },
             patient: {include: {state: true, sex: true}},
             scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} },
             procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}},

@@ -13,13 +13,14 @@ import {
     Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useForm, useFieldArray, FormProvider } from "react-hook-form";
-import { getDirtyValues } from '../../utils/helpers';
+import { useForm, FormProvider } from "react-hook-form";
+import { getDirtyValues, createValidationObject } from '../../utils/helpers';
 import { useUpdateCaseHook } from '../../utils/hooks';
-import { bookingSheetConfigObject, defaultInsuranceValue } from '../../reference';
+import { userConfigObject, defaultBookingSheetConfig, defaultInsuranceValue } from '../../reference';
+import * as R from 'ramda';
+import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
-import * as R from 'ramda';
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 
@@ -80,44 +81,17 @@ export default function BookingSheetDialog(props: Props) {
     const {open, closeDialog, data, initiallySelectedTab} = props;
     const [selectedTab, selectTab] = useState(initiallySelectedTab);
     const {mutate} = useUpdateCaseHook()
+    const bookingSheetConfig = R.mergeDeepRight(defaultBookingSheetConfig, userConfigObject.tabs);
+    const validationSchema = createValidationObject(bookingSheetConfig)
 
     const form = useForm({ 
         mode: 'onChange',
-        defaultValues: {
-            patient: {
-                firstName: '',
-                middleName: '',
-                lastName: '',
-                dateOfBirth: null,
-                sex: null,
-                address: '',
-                city: '',
-                state: null,
-                zip: ''
-            },
-            financial: [{...defaultInsuranceValue}],
-            procedureTab: {
-                procedure: null,
-                approach: null,
-                laterality: null,
-                anesthesia: [],
-                anesthesiaNotes: '',
-                cptCode: null,
-                icdCode: null
-            },
-            scheduling: {
-                location: null,
-                procedureUnit: null,
-                serviceLine: null,
-                provider: null,
-                procedureDate: null,
-                admissionType: null
-            }
-        }
+        defaultValues: validationSchema.cast({}),
+        resolver: yupResolver(validationSchema, { stripUnknown: true, abortEarly: false }),
     });
     const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
-    const onSubmit = async (formData: any) => {
-        const query = prepareFormForSubmission(data.caseId, formData, dirtyFields)
+    const onSubmit = async () => {
+        const query = prepareFormForSubmission(data.caseId, getValues(), dirtyFields)
         reset({}, { keepValues: true }) // resets dirty fields
         await mutate(query)
         closeDialog()
@@ -167,10 +141,10 @@ export default function BookingSheetDialog(props: Props) {
             </DialogTitle>
             <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
                 <FormProvider {...form}>
-                    {selectedTab === "Patient" && <PatientTab config={bookingSheetConfigObject}/>}
-                    {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfigObject}/>}
-                    {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfigObject} />}
-                    {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfigObject} />}
+                    {selectedTab === "Patient" && <PatientTab config={bookingSheetConfig}/>}
+                    {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
+                    {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
+                    {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>
             <DialogActions 
@@ -182,7 +156,7 @@ export default function BookingSheetDialog(props: Props) {
                 }}>
                     <Button 
                 variant="contained" 
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleSubmit(onSubmit, onSubmit)}
                 disabled={false}
                 sx={{
                     backgroundColor: "blue.main",
