@@ -16,13 +16,17 @@ interface StyledCaseTabProps extends TabProps {
 
 interface Props {
     data: any
+    isFetchingCase: boolean
 }
 
 export default function CaseHubTabs(props: Props) {
-    const { data } = props;
+    const { data, isFetchingCase } = props;
     const { comment } = data;
 
-    const {mutate, isLoading} = useCreateCommentHook();
+    const {mutate, isLoading: isCommentLoading} = useCreateCommentHook();
+
+    const isDocumentLoading = false;
+    const isActivityLoading = false;
 
     const documentData = [
         {
@@ -66,11 +70,6 @@ export default function CaseHubTabs(props: Props) {
     const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
     const [isNewCommentDialogOpen, setNewCommentDialogState] = useState(false);  
 
-    async function handleNewCommentSubmit(data: any) {
-        mutate(data);
-        setNewCommentDialogState(false);
-    }
-
     const StyledCaseTab = styled((props: StyledCaseTabProps) => {
         const { value, count, ...other } = props;
         return <Tab
@@ -95,6 +94,30 @@ export default function CaseHubTabs(props: Props) {
             marginLeft: "0.188rem"
         }
     }));
+
+    function renderTabItems(TabItem: (props: any) => React.ReactElement, isTabItemLoading: boolean, data: any[]) { 
+        return (
+            (isTabItemLoading || isFetchingCase)
+                ? <Box 
+                    sx={{
+                        display: "flex", 
+                        justifyContent: "center", 
+                        alignItems: "center", 
+                        minHeight: "40vh", 
+                        width: "100%" 
+                    }}
+                >
+                    <CircularProgress sx={{display: "flex", justifyContent: "center"}} />
+                </Box>
+                :  data.map((item: any, index: number) => (
+                        <React.Fragment key={index}>
+                            <TabItem data={item} />
+                        </React.Fragment>
+
+                    ))      
+        )
+    }
+
 
     function renderTabContent() {
         let buttonName, onClick, data = [];
@@ -135,33 +158,11 @@ export default function CaseHubTabs(props: Props) {
                         {buttonName}
                     </Button>
                 }
-                {
-                    !isLoading 
-                        &&  <Box sx={{maxHeight: "70vh", overflowY: "scroll", width: "100%" }}>
-                                {
-                                    data.map((item: any, index: number) => (
-                                        <React.Fragment key={index}>
-                                            {selectedTab === 'Comments' &&  <CommentTabItem data={item} /> }
-                                            {selectedTab === 'Documents' &&  <DocumentTabItem data={item}/> }
-                                            {selectedTab === 'Activity' &&  <ActivityTabItem data={item}/> }
-                                        </React.Fragment>
-                                    ))
-                                }
-                        </Box>
-                }
-                {isLoading && 
-                    <Box 
-                        sx={{
-                            display: "flex", 
-                            justifyContent: "center", 
-                            alignItems: "center", 
-                            minHeight: "40vh", 
-                            width: "100%" 
-                        }}
-                    >
-                        <CircularProgress sx={{display: "flex", justifyContent: "center"}} />
-                    </Box> 
-                }
+                <Box sx={{maxHeight: "70vh", overflowY: "scroll", width: "100%" }}>
+                    {selectedTab === 'Comments' && renderTabItems(CommentTabItem , isCommentLoading, data) }
+                    {selectedTab === 'Documents' && renderTabItems(DocumentTabItem, isDocumentLoading, data) }
+                    {selectedTab === 'Activity' && renderTabItems(ActivityTabItem , isActivityLoading, data) }
+                </Box>
         </React.Fragment>
         )
     }
@@ -169,7 +170,7 @@ export default function CaseHubTabs(props: Props) {
     return (
         <React.Fragment>
             <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <NewCommentDialog onSubmit={handleNewCommentSubmit} caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
+            <NewCommentDialog onSubmit={(data: any) => mutate(data)} caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
             <Tabs 
                 sx={{
                     borderBottom: "0.063rem solid #D1E4ED",

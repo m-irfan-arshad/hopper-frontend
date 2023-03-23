@@ -38,6 +38,7 @@ export default function NewCommentDialog(props: Props) {
 
     function handleOnSubmit(data: any) {
         onSubmit(data);
+        onBackClick();
         resetField('commentText');
     }
 
