@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Button, Box, Tabs, styled, useMediaQuery } from '@mui/material';
+import { Button, Box, Tabs, styled, useMediaQuery, CircularProgress } from '@mui/material';
 import DocumentTabItem from "../../components/caseHubTabs/tabItems/documentTabItem";
 import CommentTabItem from "../../components/caseHubTabs/tabItems/commentTabItem";
+import ActivityTabItem from "../../components/caseHubTabs/tabItems/activityTabItem";
 import { defaultTheme } from "../../theme";
 import moment from "moment";
 import Tab, { TabProps } from "@mui/material/Tab";
 import UploadDocumentDialog from "../../components/caseHubTabs/uploadDocumentDialog";
 import NewCommentDialog from "../../components/newCommentDialog";
+import { useCreateCommentHook } from '../../utils/hooks';
 
 interface StyledCaseTabProps extends TabProps {
     count: number
@@ -19,6 +21,8 @@ interface Props {
 export default function CaseHubTabs(props: Props) {
     const { data } = props;
     const { comment } = data;
+
+    const {mutate, isLoading} = useCreateCommentHook();
 
     const documentData = [
         {
@@ -38,6 +42,22 @@ export default function CaseHubTabs(props: Props) {
             fileTypes: ['H&P', 'License']
         },
     ];
+
+    const activityData = [
+        {
+            createTime: moment().subtract(1, 'days'),
+            updateTime: moment(),
+            activity: 'Viewed Case Details',
+            userName: 'Daphney Johnson'
+        },
+        {
+            createTime: moment().subtract(2, 'days'),
+            updateTime: moment(),
+            activity: 'Added a comment',
+            userName: 'Daphney Johnson'
+        },
+    ];
+
     const count = 2;
 
     const areTabsScrollable = useMediaQuery(defaultTheme.breakpoints.down('lg'));
@@ -45,6 +65,11 @@ export default function CaseHubTabs(props: Props) {
     const [selectedTab, selectTab] = useState('Activity');
     const [isUploadDocumentDialogOpen, setUploadDocumentDialogState] = useState(false);
     const [isNewCommentDialogOpen, setNewCommentDialogState] = useState(false);  
+
+    async function handleNewCommentSubmit(data: any) {
+        mutate(data);
+        setNewCommentDialogState(false);
+    }
 
     const StyledCaseTab = styled((props: StyledCaseTabProps) => {
         const { value, count, ...other } = props;
@@ -86,34 +111,57 @@ export default function CaseHubTabs(props: Props) {
             data = comment;
         }
 
+        if (selectedTab === "Activity") {
+            data = activityData;
+        }
+
         return (
             <React.Fragment>
-                <Button 
-                sx={{
-                    color: "blue.dark", 
-                    fontSize: "0.625rem", 
-                    fontWeight: "700", 
-                    marginTop: "1rem", 
-                    marginBottom: "1rem", 
-                    padding: 0, 
-                    '&:hover': {
-                        backgroundColor: 'transparent'
-                    }
-                }}
-                onClick={onClick}
-                >
-                    {buttonName}
-                </Button>
-                <Box sx={{maxHeight: "70vh", overflowY: "scroll", width: "100%" }}>
-                    {
-                        data.map((item: any, index: number) => (
-                            <React.Fragment key={index}>
-                                {selectedTab === 'Comments' &&  <CommentTabItem data={item} /> }
-                                {selectedTab === "Documents" &&  <DocumentTabItem data={item}/>}
-                            </React.Fragment>
-                        ))
-                    }
-                </Box>
+                { buttonName 
+                   && <Button 
+                    sx={{
+                        color: "blue.dark", 
+                        fontSize: "0.625rem", 
+                        fontWeight: "700", 
+                        marginTop: "1rem", 
+                        marginBottom: "1rem", 
+                        padding: 0, 
+                        '&:hover': {
+                            backgroundColor: 'transparent'
+                        }
+                    }}
+                    onClick={onClick}
+                    >
+                        {buttonName}
+                    </Button>
+                }
+                {
+                    !isLoading 
+                        &&  <Box sx={{maxHeight: "70vh", overflowY: "scroll", width: "100%" }}>
+                                {
+                                    data.map((item: any, index: number) => (
+                                        <React.Fragment key={index}>
+                                            {selectedTab === 'Comments' &&  <CommentTabItem data={item} /> }
+                                            {selectedTab === 'Documents' &&  <DocumentTabItem data={item}/> }
+                                            {selectedTab === 'Activity' &&  <ActivityTabItem data={item}/> }
+                                        </React.Fragment>
+                                    ))
+                                }
+                        </Box>
+                }
+                {isLoading && 
+                    <Box 
+                        sx={{
+                            display: "flex", 
+                            justifyContent: "center", 
+                            alignItems: "center", 
+                            minHeight: "40vh", 
+                            width: "100%" 
+                        }}
+                    >
+                        <CircularProgress sx={{display: "flex", justifyContent: "center"}} />
+                    </Box> 
+                }
         </React.Fragment>
         )
     }
@@ -121,7 +169,7 @@ export default function CaseHubTabs(props: Props) {
     return (
         <React.Fragment>
             <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <NewCommentDialog caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
+            <NewCommentDialog onSubmit={handleNewCommentSubmit} caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
             <Tabs 
                 sx={{
                     borderBottom: "0.063rem solid #D1E4ED",
