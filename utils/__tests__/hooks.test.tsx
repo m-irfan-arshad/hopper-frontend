@@ -3,11 +3,12 @@ import {
     useGetCasesHook, 
     useGetCaseByIdHook, 
     useGetDropdownOptionsHook,
-    useCreateCommentHook
+    useCreateCommentHook,
+    useGetBookingSheetConfigHook
 } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
-import {mockCaseData, mockCommentData, mockServiceLineData} from '../../testReference'
+import {mockBookingSheetConfig, mockCaseData, mockCommentData, mockServiceLineData} from '../../testReference'
 
 interface Props {
     children: React.ReactNode
@@ -103,5 +104,20 @@ describe("Hooks", () => {
         
         expect(result.current.data).toEqual(mockServiceLineData);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getDropdownOptions?queryKey=getServiceLines&procedureUnitId=1`);
+    });
+
+    test("call useGetBookingSheetConfigHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockBookingSheetConfig),
+        }));
+        
+        const { result } = renderHook(() => useGetBookingSheetConfigHook(), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockBookingSheetConfig);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/getBookingSheetConfig`);
     });
 });
