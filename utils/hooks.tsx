@@ -159,3 +159,7 @@ export function useGetDropdownOptionsHook(props: CaseFieldHookProps) {
     const {queryKey, paramString, dependency} = props
     return useQuery([queryKey, dependency], async () => (await fetch(`/api/getDropdownOptions?queryKey=${queryKey}${paramString}`)).json());
 }
+
+export function useGetBookingSheetConfigHook() {
+    return useQuery(["bookingSheetConfig"], async () => (await fetch(`/api/getBookingSheetConfig`)).json());
+}

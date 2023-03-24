@@ -180,19 +180,6 @@ export const defaultBookingSheetConfig = {
   }
 }
 
-export const userConfigObject = {
-  organization: "...",
-  tabs: {
-    patient: {
-      firstName: { visible: true, required: false },
-      middleName: { visible: true, required: false },
-      lastName: { visible: true, required: true },
-      state: { visible: true },
-      dateOfBirth: { required: false },
-    },
-  }
-}
-
 export interface BookingSheetConfig {
   patient?: object,
   financial?: object,

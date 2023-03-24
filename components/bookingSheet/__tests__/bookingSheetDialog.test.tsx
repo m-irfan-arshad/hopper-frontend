@@ -12,6 +12,7 @@ jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockSingleCase })),
     useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
     useGetDropdownOptionsHook: jest.fn().mockImplementation(() => ({ data: [] })),
+    useGetBookingSheetConfigHook: jest.fn().mockImplementation(() => ({}))
 }));
 
 describe("BookingSheetDialog", () => {
