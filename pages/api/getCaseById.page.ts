@@ -17,7 +17,8 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
             patient: {include: {state: true, sex: true}},
             scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} },
             procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}},
-            comment: {orderBy: {createTime: 'desc'}}
+            comment: {orderBy: {createTime: 'desc'}},
+            document: {orderBy: {createTime: 'desc'}},
         }
     })
 

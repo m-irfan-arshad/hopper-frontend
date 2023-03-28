@@ -114,7 +114,7 @@ export function casesFormatter (cases: FullCase | null): FullCase | null {
     }
 }
 
-export function validateParameters(requiredParams: Array<string>, req: NextApiRequest, res: NextApiResponse) {
+export function validateQueryOrBody(requiredParams: Array<string>, req: NextApiRequest, res: NextApiResponse) {
     const isPOST = Object.keys(req.body).length > 0; 
     return validateRequest(requiredParams, isPOST ? req.body : req.query, res)
 }
@@ -133,10 +133,9 @@ export function validateRequest(requiredParams: Array<string>, inputtedParams: A
     return null;
 }
 
-
 export function withValidation(requiredParams: Array<string>, queryFunc: Function) {
     return (...args: [NextApiRequest, NextApiResponse]) => {
-        const invalidParamsMessage = validateParameters(requiredParams, ...args);
+        const invalidParamsMessage = validateQueryOrBody(requiredParams, ...args);
 
         if (invalidParamsMessage) {
             return invalidParamsMessage
@@ -145,6 +144,7 @@ export function withValidation(requiredParams: Array<string>, queryFunc: Functio
         return queryFunc(...args)
     }
 }
+
 export function excludeField(object: any, fieldName: string): any {
     let newObject = R.clone(object)
     delete newObject[fieldName]

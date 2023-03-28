@@ -1,18 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
-import { validateRequest } from '../../utils/helpers';
+import { withValidation } from '../../utils/helpers';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 
 const requiredParams = ['commentText', 'userName', 'caseId'];
 
-export default withApiAuthRequired(async function createCommentHandler(req: NextApiRequest, res: NextApiResponse) {
-    const invalidCommentParams = validateRequest(requiredParams, req.body || {}, res);
-
-    if (invalidCommentParams) {
-        return invalidCommentParams
-    }
-
+export default withApiAuthRequired( withValidation(requiredParams, async function createCommentHandler(req: NextApiRequest, res: NextApiResponse) {
     try {
         const comments = await prisma.comment.create({
             data: {
@@ -25,4 +19,4 @@ export default withApiAuthRequired(async function createCommentHandler(req: Next
     } catch(err: any) {
         res.status(500).json({ message: err.message });
     }
-})
+}))

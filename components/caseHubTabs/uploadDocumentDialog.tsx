@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import { 
     Button, 
     TextField, 
@@ -15,6 +15,8 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from "moment";
 import MultiSelectDropdownNew from "../shared/multiSelectDropdownNew";
+import { useCreateDocumentHook } from "../../utils/hooks";
+import { useUser } from '@auth0/nextjs-auth0';
 
 interface Props {
     onBackClick: () => void,
@@ -27,6 +29,8 @@ interface DocTypeOptions {
 }
 
 export default function UploadDocumentDialog(props: Props) {
+  const {mutate} = useCreateDocumentHook()
+  const { user } = useUser();
 
   const docTypeDropdownOptions = [
     {
@@ -42,7 +46,8 @@ export default function UploadDocumentDialog(props: Props) {
   const { open, onBackClick } = props;
 
   const [file, setFile] = useState<File | null>(null);
-  const [date, setDate] = useState(moment());
+  const [signitureDate, setSignitureDate] = useState(moment());
+  const [notes, setNotes] = useState("");
   const [selectedDocTypes, setSelectedDocTypes] = useState<DocTypeOptions[]>([]);
   const [docTypeOptions, setDocTypeOptions] = useState(docTypeDropdownOptions);
 
@@ -51,8 +56,7 @@ export default function UploadDocumentDialog(props: Props) {
   function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
         setFile(event.target.files[0]);
-        setDate(moment());
-        setSelectedDocTypes([]);
+        setSignitureDate(moment());
         setDocTypeOptions(docTypeDropdownOptions);
     }
   }
@@ -60,7 +64,7 @@ export default function UploadDocumentDialog(props: Props) {
   function handleBackClick() {
     onBackClick();
     setFile(null);
-    setDate(moment());
+    setSignitureDate(moment());
     setSelectedDocTypes([]);
     setDocTypeOptions(docTypeDropdownOptions);
   }
@@ -73,6 +77,28 @@ export default function UploadDocumentDialog(props: Props) {
             setDocTypeOptions(docTypeOptions.filter((option) => option.id !== documentType.id))
         }
     });
+  }
+
+  async function uploadDocument() {
+    let reader = new FileReader();
+    const caseId = parseInt(window.location.href.split('/').at(-1) as string);
+    if (file) {
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+            mutate({
+                content: reader.result,
+                fileName: file.name,
+                docTypes: selectedDocTypes.map(option => option.id),
+                user: user?.name,
+                caseId: caseId,
+                notes: notes,
+                ...(shouldShowSignatureDate && {signitureDate: signitureDate})
+            })
+        }
+    } else {
+        console.warn("No file selected")
+    }
+    handleBackClick()
   }
 
   function handleChipOnDelete(chipToDelete: any) {
@@ -172,14 +198,15 @@ export default function UploadDocumentDialog(props: Props) {
                             multiline
                             minRows={5.5}
                             sx={{ width: "100%", marginTop: "2.5rem" }} 
+                            onChange={(event) => setNotes(event.target.value)}
                         />
                         {
                            shouldShowSignatureDate
                             && <DatePicker
-                                    value={date}
+                                    value={signitureDate}
                                     onChange={(newValue: moment.Moment | null) => {
                                         if (newValue && newValue.isValid()) {
-                                            setDate(newValue);
+                                            setSignitureDate(newValue);
                                         }
                                     }}
                                     label="Signature Date"
@@ -213,6 +240,7 @@ export default function UploadDocumentDialog(props: Props) {
                                 backgroundColor: "success.light",
                                 boxShadow: "0 .063rem .125rem #00000080"
                             }}
+                            onClick={uploadDocument}
                         >
                             <Typography variant="largeButton">
                                 Save

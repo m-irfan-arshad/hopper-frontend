@@ -17,35 +17,17 @@ interface StyledCaseTabProps extends TabProps {
 interface Props {
     data: any
     isFetchingCase: boolean
+
 }
 
 export default function CaseHubTabs(props: Props) {
     const { data, isFetchingCase } = props;
-    const { comment } = data;
+    const { comment, document } = data;
 
     const {mutate, isLoading: isCommentLoading} = useCreateCommentHook();
 
     const isDocumentLoading = false;
     const isActivityLoading = false;
-
-    const documentData = [
-        {
-            createTime: moment().subtract(1, 'days'),
-            updateTime: moment(),
-            description: 'Lorem ipsum sdgsdgdasgasg',
-            firstName: 'Daphney',
-            lastName: 'Johnson',
-            fileTypes: ['Other']
-        },
-        {
-            createTime: moment().subtract(2, 'days'),
-            updateTime: moment(),
-            description: 'Lorem ipsum sdgsdgdasgasg',
-            firstName: 'Daphney',
-            lastName: 'Johnson',
-            fileTypes: ['H&P', 'License']
-        },
-    ];
 
     const activityData = [
         {
@@ -120,12 +102,12 @@ export default function CaseHubTabs(props: Props) {
 
 
     function renderTabContent() {
-        let buttonName, onClick, data = [];
+        let buttonName, onClick, data;
 
         if (selectedTab === "Documents") {
             buttonName = "+ Upload Document";
             onClick = () => setUploadDocumentDialogState(true);
-            data = documentData;
+            data = document;
         }
 
         if (selectedTab === "Comments") {

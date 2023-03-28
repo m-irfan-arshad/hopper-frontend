@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 import { convertObjectToPrismaFormat, withValidation, excludeField } from '../../utils/helpers';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+const {Storage} = require('@google-cloud/storage');
 
 const requiredParams = ['caseId'];
 
@@ -11,6 +12,11 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     caseNoId.scheduling && (caseNoId.scheduling = convertObjectToPrismaFormat(caseNoId.scheduling, "schedulingId"))
     caseNoId.patient && (caseNoId.patient = convertObjectToPrismaFormat(caseNoId.patient, "patientId"))
     caseNoId.procedureTab && (caseNoId.procedureTab = convertObjectToPrismaFormat(caseNoId.procedureTab, "procedureTabId"))
+    if(caseNoId.document) {
+      const storage = new Storage();
+      const contents = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
+      res.json(JSON.parse(contents.toString()));
+    }
     
     const updatedCase = await prisma.cases.update({
       where: {
