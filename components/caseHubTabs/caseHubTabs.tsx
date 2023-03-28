@@ -17,7 +17,6 @@ interface StyledCaseTabProps extends TabProps {
 interface Props {
     data: any
     isFetchingCase: boolean
-
 }
 
 export default function CaseHubTabs(props: Props) {
@@ -102,7 +101,7 @@ export default function CaseHubTabs(props: Props) {
 
 
     function renderTabContent() {
-        let buttonName, onClick, data;
+        let buttonName, onClick, data = [];
 
         if (selectedTab === "Documents") {
             buttonName = "+ Upload Document";

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useState} from "react";
 import { 
     Button, 
     TextField, 
@@ -56,6 +56,7 @@ export default function UploadDocumentDialog(props: Props) {
   function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
         setFile(event.target.files[0]);
+        setSelectedDocTypes([]);
         setSignitureDate(moment());
         setDocTypeOptions(docTypeDropdownOptions);
     }

@@ -12,11 +12,6 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     caseNoId.scheduling && (caseNoId.scheduling = convertObjectToPrismaFormat(caseNoId.scheduling, "schedulingId"))
     caseNoId.patient && (caseNoId.patient = convertObjectToPrismaFormat(caseNoId.patient, "patientId"))
     caseNoId.procedureTab && (caseNoId.procedureTab = convertObjectToPrismaFormat(caseNoId.procedureTab, "procedureTabId"))
-    if(caseNoId.document) {
-      const storage = new Storage();
-      const contents = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
-      res.json(JSON.parse(contents.toString()));
-    }
     
     const updatedCase = await prisma.cases.update({
       where: {
