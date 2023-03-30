@@ -43,7 +43,7 @@ model document {
   user               String
   caseId             Int?      @map("case_id")
   storagePath        String    @map("storage_path")
-  signitureDate      DateTime? @map("signiture_date")
+  signatureDate      DateTime? @map("signature_date")
   createTime         DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime         DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   cases              cases? @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
