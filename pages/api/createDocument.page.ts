@@ -20,7 +20,7 @@ export const config = {
 export default withApiAuthRequired( withValidation(requiredParams, async function createDocumentHandler(req: NextApiRequest, res: NextApiResponse) {
     const storage = new Storage();
     const chance = new Chance();
-    const {docTypes, user, caseId, content, fileName, notes, signitureDate} = req.body;
+    const {docTypes, user, caseId, content, fileName, notes, signatureDate} = req.body;
     const destFileName = chance.guid() + '_' + fileName;
     try {
         await Promise.resolve().then(() => {
@@ -38,7 +38,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
                     caseId: caseId,
                     notes: notes,
                     storagePath: destFileName,
-                    ...(signitureDate && {signitureDate: signitureDate})
+                    ...(signatureDate && {signatureDate: signatureDate})
                 }
             });
             res.json(document)

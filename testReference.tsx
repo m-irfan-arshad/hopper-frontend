@@ -15,7 +15,7 @@ export const mockSingleDocument: document = {
     user: "Test User",
     caseId: 1,
     storagePath: "testFolder/testDoc.png",
-    signitureDate: moment('1990-02-01').toDate(),
+    signatureDate: moment('1990-02-01').toDate(),
     createTime: moment('2023-03-29').toDate(),
     updateTime: moment('2023-03-29').toDate(),
 }

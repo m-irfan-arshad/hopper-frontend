@@ -46,7 +46,7 @@ export default function UploadDocumentDialog(props: Props) {
   const { open, onBackClick } = props;
 
   const [file, setFile] = useState<File | null>(null);
-  const [signitureDate, setSignitureDate] = useState(moment());
+  const [signatureDate, setSignatureDate] = useState(moment());
   const [notes, setNotes] = useState("");
   const [selectedDocTypes, setSelectedDocTypes] = useState<DocTypeOptions[]>([]);
   const [docTypeOptions, setDocTypeOptions] = useState(docTypeDropdownOptions);
@@ -57,7 +57,7 @@ export default function UploadDocumentDialog(props: Props) {
     if (event.target.files && event.target.files.length > 0) {
         setFile(event.target.files[0]);
         setSelectedDocTypes([]);
-        setSignitureDate(moment());
+        setSignatureDate(moment());
         setDocTypeOptions(docTypeDropdownOptions);
     }
   }
@@ -65,7 +65,7 @@ export default function UploadDocumentDialog(props: Props) {
   function handleBackClick() {
     onBackClick();
     setFile(null);
-    setSignitureDate(moment());
+    setSignatureDate(moment());
     setSelectedDocTypes([]);
     setDocTypeOptions(docTypeDropdownOptions);
   }
@@ -93,7 +93,7 @@ export default function UploadDocumentDialog(props: Props) {
                 user: user?.name,
                 caseId: caseId,
                 notes: notes,
-                ...(shouldShowSignatureDate && {signitureDate: signitureDate})
+                ...(shouldShowSignatureDate && {signatureDate: signatureDate})
             })
         }
     } else {
@@ -204,10 +204,10 @@ export default function UploadDocumentDialog(props: Props) {
                         {
                            shouldShowSignatureDate
                             && <DatePicker
-                                    value={signitureDate}
+                                    value={signatureDate}
                                     onChange={(newValue: moment.Moment | null) => {
                                         if (newValue && newValue.isValid()) {
-                                            setSignitureDate(newValue);
+                                            setSignatureDate(newValue);
                                         }
                                     }}
                                     label="Signature Date"
