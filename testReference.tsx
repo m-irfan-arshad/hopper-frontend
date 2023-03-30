@@ -4,9 +4,21 @@ import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 import { FullCase } from "./reference";
 import { useForm, FormProvider } from "react-hook-form";
-import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab, comment } from "@prisma/client";
+import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab, comment, document } from "@prisma/client";
 
 const sampleDate = moment('2023-01-09').toDate();
+
+export const mockSingleDocument: document = {
+    documentId: 1,
+    docTypes: ["H & P"],
+    notes: "Test Note",
+    user: "Test User",
+    caseId: 1,
+    storagePath: "testFolder/testDoc.png",
+    signitureDate: moment('1990-02-01').toDate(),
+    createTime: moment('2023-03-29').toDate(),
+    updateTime: moment('2023-03-29').toDate(),
+}
 
 export const mockSingleProcedure: procedure = {
     procedureId: 1,
@@ -165,7 +177,8 @@ export const mockSingleCase: FullCase = {
     financial: [mockSingleFinancial],
     scheduling: mockSingleScheduling,
     procedureTab: mockSingleProcedureTab,
-    comment: [mockSingleComment]
+    comment: [mockSingleComment],
+    document: [mockSingleDocument]
 }
 
 export const mockCaseData = [

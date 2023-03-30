@@ -24,7 +24,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     const destFileName = chance.guid() + '_' + fileName;
     try {
         await Promise.resolve().then(() => {
-            const myBucket = storage.bucket("hopper_booking_sheet_documents");
+            const myBucket = storage.bucket("hopper-case-hub-documents");
             const fileRef = myBucket.file(destFileName);
             const passthroughStream = new stream.PassThrough();
             passthroughStream.write(content);

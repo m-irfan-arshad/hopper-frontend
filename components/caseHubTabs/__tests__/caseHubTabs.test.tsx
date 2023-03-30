@@ -15,7 +15,7 @@ describe('CaseHubTabs', () => {
         
         const { getByRole } = render(
             <PagesTestWrapper >
-                <CaseHubTabs data={mockSingleCase} />
+                <CaseHubTabs data={mockSingleCase} isFetchingCase={false}/>
             </PagesTestWrapper>
         );
 
@@ -30,7 +30,7 @@ describe('CaseHubTabs', () => {
     test("click on the Comment tab to open the Comment section on the case hub page", async() => { 
         const { getByRole } = render(
             <PagesTestWrapper >
-                <CaseHubTabs data={mockSingleCase} />
+                <CaseHubTabs data={mockSingleCase} isFetchingCase={false}/>
             </PagesTestWrapper>
         );
 

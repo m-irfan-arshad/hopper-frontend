@@ -1,6 +1,12 @@
 import { render, fireEvent, waitFor, getByPlaceholderText, getByLabelText } from "@testing-library/react";
-
+import { PagesTestWrapper } from "../../../testReference";
 import UploadDocumentDialog from "../uploadDocumentDialog";
+
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    useMutation: jest.fn().mockReturnValue({ mutate: jest.fn() }),
+    QueryClient: jest.fn()
+}));
 
 describe("UploadDocumentDialog", () => {
     const props = {
@@ -14,7 +20,9 @@ describe("UploadDocumentDialog", () => {
 
     test("renders the UploadDocumentDialog and clicks back button", async() => {
         const { getByRole, getByText, getByLabelText } = render(
-            <UploadDocumentDialog {...props}  />
+            <PagesTestWrapper>
+                <UploadDocumentDialog {...props}  />
+            </PagesTestWrapper>
         );  
         
         const hiddenFileInput = document.querySelector('input[type="file"]') as Element;
@@ -41,7 +49,9 @@ describe("UploadDocumentDialog", () => {
 
     test("interacts with doc type dropdown and renders Signature Date", async () => {
         const { getByRole, getByText, getByLabelText } = render(
-            <UploadDocumentDialog {...props}  />
+            <PagesTestWrapper>
+                <UploadDocumentDialog {...props}  />
+            </PagesTestWrapper>
         );  
         
         const hiddenFileInput = document.querySelector('input[type="file"]') as Element;

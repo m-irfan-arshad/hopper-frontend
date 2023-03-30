@@ -8,7 +8,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useForm, FormProvider} from "react-hook-form";
-import {InputController} from '../utils/formControllers'
+import {InputController} from '../../utils/formControllers'
 import { useUser } from '@auth0/nextjs-auth0';
 
 interface Props {

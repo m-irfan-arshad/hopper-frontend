@@ -21,13 +21,13 @@ export default function DocumentTabItem(props: Props) {
             <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem"}}> 
                 <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
                     <Typography sx={{fontSize: "0.75rem", fontWeight: "500", textTransform: 'capitalize'}}>
-                        {data.docTypes.join(", ")} 
+                        {data.docTypes?.join(", ")} 
                     </Typography>
                     <Typography sx={{fontSize: "0.625rem"}}>
                         {data.notes}
                     </Typography>
                     <Typography sx={{ marginTop: "0.5rem", fontSize: "0.75rem", fontStyle: "italic" }}>
-                        {`${props.data.user} - ${moment(props.data.createTime).format('hh:mma, MM/DD/YYYY')}`}
+                        {`${data.user} - ${moment(data.createTime).format('hh:mma, MM/DD/YYYY')}`}
                     </Typography>
                 </Box>
                 <Select    

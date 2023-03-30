@@ -7,7 +7,7 @@ import { defaultTheme } from "../../theme";
 import moment from "moment";
 import Tab, { TabProps } from "@mui/material/Tab";
 import UploadDocumentDialog from "../../components/caseHubTabs/uploadDocumentDialog";
-import NewCommentDialog from "../../components/newCommentDialog";
+import NewCommentDialog from "./newCommentDialog";
 import { useCreateCommentHook } from '../../utils/hooks';
 
 interface StyledCaseTabProps extends TabProps {
