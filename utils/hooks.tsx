@@ -182,7 +182,6 @@ export function useCreateDocumentHook() {
           }),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries(['getCases'])
                 queryClient.invalidateQueries(['getCaseById'])
                 setAlertState({open: true, title: "Document Uploaded", status: "success"})
             },
