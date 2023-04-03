@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
-const {Storage} = require('@google-cloud/storage');
-
+import { Storage } from "@google-cloud/storage";
 
 export default withApiAuthRequired(async function getBookingSheetConfig(req: NextApiRequest, res: NextApiResponse) {
     const storage = new Storage();

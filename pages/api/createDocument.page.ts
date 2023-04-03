@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import prisma from '../../prisma/clientInstantiation';
-const {Storage} = require('@google-cloud/storage');
+import { Storage } from "@google-cloud/storage";
 import { withValidation } from '../../utils/helpers';
 import Chance from 'chance';
-import stream from 'stream';
-
 
 const requiredParams = ['docTypes', 'user', 'caseId', 'content', 'fileName'];
 
@@ -21,15 +19,11 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     const storage = new Storage();
     const chance = new Chance();
     const {docTypes, user, caseId, content, fileName, notes, signatureDate} = req.body;
-    const destFileName = chance.guid() + '_' + fileName;
+    const destFileName = chance.guid() + '-' + fileName;
+    var buf = Buffer.from(content, 'utf8');
     try {
-        await Promise.resolve().then(() => {
-            const myBucket = storage.bucket("hopper-case-hub-documents");
-            const fileRef = myBucket.file(destFileName);
-            const passthroughStream = new stream.PassThrough();
-            passthroughStream.write(content);
-            passthroughStream.end();
-            return passthroughStream.pipe(fileRef.createWriteStream())
+        await Promise.resolve().then(async () => {
+            await storage.bucket("hopper-case-hub-documents").file(destFileName).save(buf);
         }).then(async () => {
             const document = await prisma.document.create({
                 data: {
