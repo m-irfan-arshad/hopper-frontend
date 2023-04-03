@@ -163,3 +163,31 @@ export function useGetDropdownOptionsHook(props: CaseFieldHookProps) {
 export function useGetBookingSheetConfigHook() {
     return useQuery(["bookingSheetConfig"], async () => (await fetch(`/api/getBookingSheetConfig`)).json());
 }
+
+export function useCreateDocumentHook() {
+    const queryClient = useQueryClient()
+    const [_, setAlertState] = useContext(AlertContext);
+    return useMutation((data: object) => fetch("/api/createDocument",
+        {
+            method: "post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(res => {
+            if (res.ok) {
+              return res.json()
+            }      
+            throw new Error()
+          }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(['getCaseById'])
+                setAlertState({open: true, title: "Document Uploaded", status: "success"})
+            },
+            onError: () => {
+                setAlertState({open: true, title: "Error Uploading Document", status: "error"})
+            }
+        }
+    )
+}

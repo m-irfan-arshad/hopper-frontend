@@ -18,7 +18,8 @@ jest.mock("../../../utils/hooks", () => ({
     useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
     useCreateCommentHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
     useGetDropdownOptionsHook: jest.fn().mockImplementation(() => ({})),
-    useGetBookingSheetConfigHook: jest.fn().mockImplementation(() => ({}))
+    useGetBookingSheetConfigHook: jest.fn().mockImplementation(() => ({})),
+    useCreateDocumentHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
 }));
 
 describe('[caseId]: Case Hub Page', () => {

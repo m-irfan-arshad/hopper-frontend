@@ -17,11 +17,36 @@ model cases {
   procedureTabId        Int       @map("procedure_tab_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
+  comment            comment[]
+  document           document[]
   patient            patient @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
   financial          financial[]
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
-  comment            comment[]
+}
+
+model comment {
+  commentId         Int @id @default(autoincrement()) @map("comment_id")
+  commentText       String @map("comment_text")
+  userName          String @map("user_name")
+  caseId            Int?      @map("case_id")
+  createTime        DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime        DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+  cases             cases?  @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+
+model document {
+  documentId         Int @id @default(autoincrement()) @map("document_id")
+  docTypes           String[] @map("document_types")
+  notes              String? @default("")
+  user               String
+  caseId             Int?      @map("case_id")
+  storagePath        String    @map("storage_path")
+  signatureDate      DateTime? @map("signature_date")
+  createTime         DateTime? @map("create_time") @db.Timestamp(6) @default(now())
+  updateTime         DateTime? @map("update_time") @db.Timestamp(6) @default(now())
+  cases              cases? @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
 }
 
 
@@ -158,16 +183,6 @@ model insurance {
   financial           financial[]
 }
 
-model comment {
-  commentId         Int @id @default(autoincrement()) @map("comment_id")
-  commentText       String @map("comment_text")
-  userName          String @map("user_name")
-  caseId            Int?      @map("case_id")
-  createTime        DateTime? @map("create_time") @db.Timestamp(6) @default(now())
-  updateTime        DateTime? @map("update_time") @db.Timestamp(6) @default(now())
-
-  cases             cases?  @relation(fields: [caseId], references: [caseId], onDelete: NoAction, onUpdate: NoAction)
-}
 
 model procedureTab {
   procedureTabId    Int       @id @default(autoincrement()) @map("procedure_tab_id")

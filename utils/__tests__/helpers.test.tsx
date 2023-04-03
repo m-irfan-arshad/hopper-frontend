@@ -1,6 +1,6 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { checkFieldForErrors, createValidationObject, formatDashboardQueryParams, formatDate, isFieldVisible, validateParameters } from "../helpers";
+import { checkFieldForErrors, createValidationObject, formatDashboardQueryParams, formatDate, isFieldVisible, validateQueryOrBody } from "../helpers";
 import httpMock from 'node-mocks-http';
 import { mockBookingSheetConfig, mockSingleCase } from "../../testReference";
 
@@ -105,24 +105,24 @@ describe("Utils", () => {
         expect(result).toEqual("10/05/1990");    
     });
 
-    test("validateParameters return invalid parameters", () => {
+    test("validateQueryOrBody return invalid parameters", () => {
         let req = httpMock.createRequest({
             url: `/api/test?providerId=value`
         });
         const res = httpMock.createResponse({});
 
-        const result = validateParameters(['providerId', 'caseId'], req, res);
+        const result = validateQueryOrBody(['providerId', 'caseId'], req, res);
         
         expect(result).toEqual(res.status(400).json({ message: 'The following required parameters are missing:' }));    
     });
 
-    test("validateParameters return nothing wrong", () => {
+    test("validateQueryOrBody return nothing wrong", () => {
         let req = httpMock.createRequest({
             url: `/api/test?providerId=value`
         });
         const res = httpMock.createResponse({});
 
-        const result = validateParameters(['providerId'], req, res);
+        const result = validateQueryOrBody(['providerId'], req, res);
         
         expect(result).toEqual(null);    
     });

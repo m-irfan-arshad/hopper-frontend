@@ -15,6 +15,8 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from "moment";
 import MultiSelectDropdownNew from "../shared/multiSelectDropdownNew";
+import { useCreateDocumentHook } from "../../utils/hooks";
+import { useUser } from '@auth0/nextjs-auth0';
 
 interface Props {
     onBackClick: () => void,
@@ -27,6 +29,8 @@ interface DocTypeOptions {
 }
 
 export default function UploadDocumentDialog(props: Props) {
+  const {mutate} = useCreateDocumentHook()
+  const { user } = useUser();
 
   const docTypeDropdownOptions = [
     {
@@ -41,8 +45,10 @@ export default function UploadDocumentDialog(props: Props) {
 
   const { open, onBackClick } = props;
 
-  const [file, setFile] = useState<File | null>(null);
-  const [date, setDate] = useState(moment());
+  const [fileContent, setFileContent] = useState<any>(null);
+  const [fileName, setFileName] = useState<string | null>(null)
+  const [signatureDate, setSignatureDate] = useState(moment());
+  const [notes, setNotes] = useState("");
   const [selectedDocTypes, setSelectedDocTypes] = useState<DocTypeOptions[]>([]);
   const [docTypeOptions, setDocTypeOptions] = useState(docTypeDropdownOptions);
 
@@ -50,17 +56,24 @@ export default function UploadDocumentDialog(props: Props) {
 
   function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
-        setFile(event.target.files[0]);
-        setDate(moment());
+        const file = event.target.files[0];
+        let reader = new FileReader();
+        reader.onload = function(){
+            setFileContent(reader.result)
+        };
+        reader.readAsDataURL(file)
+        setFileName(file.name)
         setSelectedDocTypes([]);
+        setSignatureDate(moment());
         setDocTypeOptions(docTypeDropdownOptions);
     }
   }
 
   function handleBackClick() {
     onBackClick();
-    setFile(null);
-    setDate(moment());
+    setFileContent(null);
+    setFileName(null);
+    setSignatureDate(moment());
     setSelectedDocTypes([]);
     setDocTypeOptions(docTypeDropdownOptions);
   }
@@ -73,6 +86,21 @@ export default function UploadDocumentDialog(props: Props) {
             setDocTypeOptions(docTypeOptions.filter((option) => option.id !== documentType.id))
         }
     });
+  }
+
+  async function uploadDocument() {
+    const caseId = parseInt(window.location.href.split('/').at(-1) as string);
+    mutate({
+        content: fileContent,
+        fileName: fileName,
+        docTypes: selectedDocTypes.map(option => option.id),
+        user: user?.name,
+        caseId: caseId,
+        notes: notes,
+        ...(shouldShowSignatureDate && {signatureDate: signatureDate})
+    })
+        
+    handleBackClick()
   }
 
   function handleChipOnDelete(chipToDelete: any) {
@@ -104,7 +132,7 @@ export default function UploadDocumentDialog(props: Props) {
                         Upload Document
                     </Typography>
             
-                    { !file 
+                    { !fileName 
                     && <Button 
                         component="label"
                         sx={{
@@ -123,11 +151,11 @@ export default function UploadDocumentDialog(props: Props) {
                         </Typography>
                     </Button>
                     }
-                    { file 
+                    { fileName
                     && <React.Fragment>
                         <Box>
                             <Typography variant="smallButton">
-                                {file.name}
+                                {fileName}
                             </Typography>
                             <Button 
                                 component="label"
@@ -172,14 +200,15 @@ export default function UploadDocumentDialog(props: Props) {
                             multiline
                             minRows={5.5}
                             sx={{ width: "100%", marginTop: "2.5rem" }} 
+                            onChange={(event) => setNotes(event.target.value)}
                         />
                         {
                            shouldShowSignatureDate
                             && <DatePicker
-                                    value={date}
+                                    value={signatureDate}
                                     onChange={(newValue: moment.Moment | null) => {
                                         if (newValue && newValue.isValid()) {
-                                            setDate(newValue);
+                                            setSignatureDate(newValue);
                                         }
                                     }}
                                     label="Signature Date"
@@ -195,7 +224,7 @@ export default function UploadDocumentDialog(props: Props) {
                     }
                 </DialogContent>
                 
-                { file
+                { fileName
                 && <DialogActions 
                     sx={{
                         display: "flex",
@@ -213,6 +242,7 @@ export default function UploadDocumentDialog(props: Props) {
                                 backgroundColor: "success.light",
                                 boxShadow: "0 .063rem .125rem #00000080"
                             }}
+                            onClick={uploadDocument}
                         >
                             <Typography variant="largeButton">
                                 Save

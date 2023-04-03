@@ -7,7 +7,7 @@ import { defaultTheme } from "../../theme";
 import moment from "moment";
 import Tab, { TabProps } from "@mui/material/Tab";
 import UploadDocumentDialog from "../../components/caseHubTabs/uploadDocumentDialog";
-import NewCommentDialog from "../../components/newCommentDialog";
+import NewCommentDialog from "./newCommentDialog";
 import { useCreateCommentHook } from '../../utils/hooks';
 
 interface StyledCaseTabProps extends TabProps {
@@ -21,31 +21,12 @@ interface Props {
 
 export default function CaseHubTabs(props: Props) {
     const { data, isFetchingCase } = props;
-    const { comment } = data;
+    const { comment, document } = data;
 
     const {mutate, isLoading: isCommentLoading} = useCreateCommentHook();
 
     const isDocumentLoading = false;
     const isActivityLoading = false;
-
-    const documentData = [
-        {
-            createTime: moment().subtract(1, 'days'),
-            updateTime: moment(),
-            description: 'Lorem ipsum sdgsdgdasgasg',
-            firstName: 'Daphney',
-            lastName: 'Johnson',
-            fileTypes: ['Other']
-        },
-        {
-            createTime: moment().subtract(2, 'days'),
-            updateTime: moment(),
-            description: 'Lorem ipsum sdgsdgdasgasg',
-            firstName: 'Daphney',
-            lastName: 'Johnson',
-            fileTypes: ['H&P', 'License']
-        },
-    ];
 
     const activityData = [
         {
@@ -125,7 +106,7 @@ export default function CaseHubTabs(props: Props) {
         if (selectedTab === "Documents") {
             buttonName = "+ Upload Document";
             onClick = () => setUploadDocumentDialogState(true);
-            data = documentData;
+            data = document;
         }
 
         if (selectedTab === "Comments") {

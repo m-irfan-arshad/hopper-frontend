@@ -1,5 +1,5 @@
 import { render, fireEvent, waitFor, getByPlaceholderText, getByLabelText } from "@testing-library/react";
-import { PagesTestWrapper } from "../../testReference";
+import { PagesTestWrapper } from "../../../testReference";
 import NewCommentDialog from "../newCommentDialog";
 
 jest.mock('@tanstack/react-query', () => ({
