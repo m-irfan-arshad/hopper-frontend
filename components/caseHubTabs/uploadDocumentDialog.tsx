@@ -45,7 +45,8 @@ export default function UploadDocumentDialog(props: Props) {
 
   const { open, onBackClick } = props;
 
-  const [file, setFile] = useState<File | null>(null);
+  const [fileContent, setFileContent] = useState<any>(null);
+  const [fileName, setFileName] = useState<string | null>(null)
   const [signatureDate, setSignatureDate] = useState(moment());
   const [notes, setNotes] = useState("");
   const [selectedDocTypes, setSelectedDocTypes] = useState<DocTypeOptions[]>([]);
@@ -55,7 +56,13 @@ export default function UploadDocumentDialog(props: Props) {
 
   function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files.length > 0) {
-        setFile(event.target.files[0]);
+        const file = event.target.files[0];
+        let reader = new FileReader();
+        reader.onload = function(){
+            setFileContent(reader.result)
+        };
+        reader.readAsDataURL(file)
+        setFileName(file.name)
         setSelectedDocTypes([]);
         setSignatureDate(moment());
         setDocTypeOptions(docTypeDropdownOptions);
@@ -64,7 +71,8 @@ export default function UploadDocumentDialog(props: Props) {
 
   function handleBackClick() {
     onBackClick();
-    setFile(null);
+    setFileContent(null);
+    setFileName(null);
     setSignatureDate(moment());
     setSelectedDocTypes([]);
     setDocTypeOptions(docTypeDropdownOptions);
@@ -81,24 +89,17 @@ export default function UploadDocumentDialog(props: Props) {
   }
 
   async function uploadDocument() {
-    let reader = new FileReader();
     const caseId = parseInt(window.location.href.split('/').at(-1) as string);
-    if (file) {
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-            mutate({
-                content: reader.result,
-                fileName: file.name,
-                docTypes: selectedDocTypes.map(option => option.id),
-                user: user?.name,
-                caseId: caseId,
-                notes: notes,
-                ...(shouldShowSignatureDate && {signatureDate: signatureDate})
-            })
-        }
-    } else {
-        console.warn("No file selected")
-    }
+    mutate({
+        content: fileContent,
+        fileName: fileName,
+        docTypes: selectedDocTypes.map(option => option.id),
+        user: user?.name,
+        caseId: caseId,
+        notes: notes,
+        ...(shouldShowSignatureDate && {signatureDate: signatureDate})
+    })
+        
     handleBackClick()
   }
 
@@ -131,7 +132,7 @@ export default function UploadDocumentDialog(props: Props) {
                         Upload Document
                     </Typography>
             
-                    { !file 
+                    { !fileName 
                     && <Button 
                         component="label"
                         sx={{
@@ -150,11 +151,11 @@ export default function UploadDocumentDialog(props: Props) {
                         </Typography>
                     </Button>
                     }
-                    { file 
+                    { fileName
                     && <React.Fragment>
                         <Box>
                             <Typography variant="smallButton">
-                                {file.name}
+                                {fileName}
                             </Typography>
                             <Button 
                                 component="label"
@@ -223,7 +224,7 @@ export default function UploadDocumentDialog(props: Props) {
                     }
                 </DialogContent>
                 
-                { file
+                { fileName
                 && <DialogActions 
                     sx={{
                         display: "flex",
