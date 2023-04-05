@@ -15,12 +15,12 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from "moment";
 import MultiSelectDropdownNew from "../shared/multiSelectDropdownNew";
-import { useCreateDocumentHook } from "../../utils/hooks";
 import { useUser } from '@auth0/nextjs-auth0';
 
 interface Props {
     onBackClick: () => void,
     open: boolean
+    onSubmit: (data: any) => void
 }
 
 interface DocTypeOptions {
@@ -29,7 +29,6 @@ interface DocTypeOptions {
 }
 
 export default function UploadDocumentDialog(props: Props) {
-  const {mutate} = useCreateDocumentHook()
   const { user } = useUser();
 
   const docTypeDropdownOptions = [
@@ -43,7 +42,7 @@ export default function UploadDocumentDialog(props: Props) {
     },
   ];
 
-  const { open, onBackClick } = props;
+  const { open, onBackClick, onSubmit } = props;
 
   const [fileContent, setFileContent] = useState<any>(null);
   const [fileName, setFileName] = useState<string | null>(null)
@@ -90,7 +89,7 @@ export default function UploadDocumentDialog(props: Props) {
 
   async function uploadDocument() {
     const caseId = parseInt(window.location.href.split('/').at(-1) as string);
-    mutate({
+    onSubmit({
         content: fileContent,
         fileName: fileName,
         docTypes: selectedDocTypes.map(option => option.id),
@@ -144,7 +143,7 @@ export default function UploadDocumentDialog(props: Props) {
                             }
                         }}
                     >
-                        <input hidden accept="image/*" type="file" onChange={handleDocumentChange} />
+                        <input hidden type="file" onChange={handleDocumentChange} />
                         <FileUploadIcon sx={{color: "white.main", height: "1.125rem", width: "1.125rem"}} />
                         <Typography variant="smallButton" sx={{color: "white.main", marginLeft: "0.313rem"}} >
                             Select File

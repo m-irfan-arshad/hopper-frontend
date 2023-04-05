@@ -8,7 +8,7 @@ import moment from "moment";
 import Tab, { TabProps } from "@mui/material/Tab";
 import UploadDocumentDialog from "../../components/caseHubTabs/uploadDocumentDialog";
 import NewCommentDialog from "./newCommentDialog";
-import { useCreateCommentHook } from '../../utils/hooks';
+import { useCreateCommentHook, useCreateDocumentHook } from '../../utils/hooks';
 
 interface StyledCaseTabProps extends TabProps {
     count: number
@@ -23,9 +23,9 @@ export default function CaseHubTabs(props: Props) {
     const { data, isFetchingCase } = props;
     const { comment, document } = data;
 
-    const {mutate, isLoading: isCommentLoading} = useCreateCommentHook();
+    const {mutate: mutateComment, isLoading: isCommentLoading} = useCreateCommentHook();
+    const {mutate: mutateDocument, isLoading: isDocumentLoading} = useCreateDocumentHook();
 
-    const isDocumentLoading = false;
     const isActivityLoading = false;
 
     const activityData = [
@@ -150,8 +150,8 @@ export default function CaseHubTabs(props: Props) {
 
     return (
         <React.Fragment>
-            <UploadDocumentDialog open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
-            <NewCommentDialog onSubmit={(data: any) => mutate(data)} caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
+            <UploadDocumentDialog onSubmit={(data: any) => mutateDocument(data)} open={isUploadDocumentDialogOpen} onBackClick={() => setUploadDocumentDialogState(false)} />
+            <NewCommentDialog onSubmit={(data: any) => mutateComment(data)} caseId={data.caseId} open={isNewCommentDialogOpen} onBackClick={() => setNewCommentDialogState(false)} />
             <Tabs 
                 sx={{
                     borderBottom: "0.063rem solid #D1E4ED",
@@ -172,7 +172,7 @@ export default function CaseHubTabs(props: Props) {
             >
                 <StyledCaseTab value="Activity" count={count} /> 
                 <StyledCaseTab value="Amendments" count={count} />
-                <StyledCaseTab value="Documents" count={count} />
+                <StyledCaseTab value="Documents" count={document.length} />
                 <StyledCaseTab value="Comments" count={comment.length} />
             </Tabs>
             {renderTabContent()}

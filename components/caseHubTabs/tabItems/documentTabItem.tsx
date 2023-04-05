@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, styled, IconButton, Select, MenuItem, Typography} from "@mui/material";
-import { MoreVert } from '@mui/icons-material';
+import { AttachEmail, MoreVert } from '@mui/icons-material';
 import DottedDivider from "../../shared/dottedDivider";
 import moment from "moment";
 import { document } from "@prisma/client";
+import { useDownloadDocumentHook } from '../../../utils/hooks';
 
 interface Props {
     data: document;
@@ -13,8 +14,20 @@ export default function DocumentTabItem(props: Props) {
     const {data} = props;
 
     const StyledMenuItem = styled(MenuItem)({
-        fontSize: ".75rem" 
+        fontSize: ".75rem"
     });
+
+    const StyledAnchorTag = styled('a')({
+        textDecoration: 'none',
+        color: 'inherit'
+    });
+
+    /* TODO: 
+        1. Only call download hook when you actually try to download the object instead of when you go to documents page and download all documents
+        2. unit tests
+    */
+
+    const { data: documentAttachment } = useDownloadDocumentHook(data.storagePath);
 
     return (
         <Box sx={{width: "100%"}}>
@@ -41,7 +54,11 @@ export default function DocumentTabItem(props: Props) {
                     IconComponent={(props) =>  <MoreVert {...props} /> }
                 >
                     <StyledMenuItem> View </StyledMenuItem>
-                    <StyledMenuItem> Download </StyledMenuItem>
+                    <StyledMenuItem> 
+                        <StyledAnchorTag href={documentAttachment} download={data.storagePath.slice(37)}>
+                            Download
+                        </StyledAnchorTag> 
+                    </StyledMenuItem>
                     <StyledMenuItem> Delete </StyledMenuItem>       
                 </Select>  
             </Box>

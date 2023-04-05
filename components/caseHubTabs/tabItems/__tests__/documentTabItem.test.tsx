@@ -1,7 +1,13 @@
-import { render, fireEvent, within } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import DocumentTabItem from "../documentTabItem";
 import moment from "moment";
 import { mockSingleDocument } from "../../../../testReference";
+
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    QueryClient: jest.fn(),
+    useQuery: jest.fn().mockReturnValue({ data: [] })
+}));
 
 describe("DocumentTabItem", () => {
 

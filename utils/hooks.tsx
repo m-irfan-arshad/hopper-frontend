@@ -191,3 +191,8 @@ export function useCreateDocumentHook() {
         }
     )
 }
+
+export function useDownloadDocumentHook(storagePath: string) {
+    //, { enabled: caseId !== undefined }
+    return useQuery([storagePath], async () => (await fetch(`/api/downloadDocument?storagePath=${storagePath}`)).json());
+}
