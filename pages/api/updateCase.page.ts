@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
 import { convertObjectToPrismaFormat, withValidation, excludeField } from '../../utils/helpers';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
-const {Storage} = require('@google-cloud/storage');
 
 const requiredParams = ['caseId'];
 

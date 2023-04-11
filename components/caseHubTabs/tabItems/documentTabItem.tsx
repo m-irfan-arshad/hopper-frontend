@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { Box, styled, IconButton, Select, MenuItem, Typography} from "@mui/material";
-import { AttachEmail, MoreVert } from '@mui/icons-material';
+import React, { useEffect, useRef } from "react";
+import { Box, styled, Select, MenuItem, Typography, CircularProgress} from "@mui/material";
+import { MoreVert } from '@mui/icons-material';
 import DottedDivider from "../../shared/dottedDivider";
 import moment from "moment";
 import { document } from "@prisma/client";
@@ -12,6 +12,7 @@ interface Props {
 
 export default function DocumentTabItem(props: Props) {
     const {data} = props;
+    const anchorTagRef = useRef<HTMLAnchorElement>(null);
 
     const StyledMenuItem = styled(MenuItem)({
         fontSize: ".75rem"
@@ -22,12 +23,11 @@ export default function DocumentTabItem(props: Props) {
         color: 'inherit'
     });
 
-    /* TODO: 
-        1. Only call download hook when you actually try to download the object instead of when you go to documents page and download all documents
-        2. unit tests
-    */
+    const { data: documentAttachment, isFetching, refetch } = useDownloadDocumentHook(data.storagePath);
 
-    const { data: documentAttachment } = useDownloadDocumentHook(data.storagePath);
+    useEffect(() => {
+        anchorTagRef.current?.click();
+    }, [documentAttachment])
 
     return (
         <Box sx={{width: "100%"}}>
@@ -54,10 +54,13 @@ export default function DocumentTabItem(props: Props) {
                     IconComponent={(props) =>  <MoreVert {...props} /> }
                 >
                     <StyledMenuItem> View </StyledMenuItem>
-                    <StyledMenuItem> 
-                        <StyledAnchorTag href={documentAttachment} download={data.storagePath.slice(37)}>
-                            Download
-                        </StyledAnchorTag> 
+                    <StyledMenuItem onClick={() => !documentAttachment && refetch()} sx={{ display: "flex", justifyContent:"center"}}>  
+                        { isFetching 
+                            ?   <CircularProgress size={"1rem"}/>
+                            :   <StyledAnchorTag ref={anchorTagRef} href={documentAttachment} download={data.storagePath.slice(37)}> 
+                                    Download
+                                </StyledAnchorTag> 
+                        }
                     </StyledMenuItem>
                     <StyledMenuItem> Delete </StyledMenuItem>       
                 </Select>  

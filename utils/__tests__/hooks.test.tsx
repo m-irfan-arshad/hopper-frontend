@@ -4,11 +4,12 @@ import {
     useGetCaseByIdHook, 
     useGetDropdownOptionsHook,
     useCreateCommentHook,
-    useGetBookingSheetConfigHook
+    useGetBookingSheetConfigHook,
+    useDownloadDocumentHook
 } from "../hooks";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from "moment";
-import {mockBookingSheetConfig, mockCaseData, mockCommentData, mockServiceLineData} from '../../testReference'
+import {mockBookingSheetConfig, mockCaseData, mockCommentData, mockServiceLineData, mockSingleDocument} from '../../testReference'
 
 interface Props {
     children: React.ReactNode
@@ -119,5 +120,20 @@ describe("Hooks", () => {
         
         expect(result.current.data).toEqual(mockBookingSheetConfig);
         expect(global.fetch).toHaveBeenCalledWith(`/api/getBookingSheetConfig`);
+    });
+
+    test("call useDownloadDocumentHook", async() => {
+        global.fetch = jest.fn().mockImplementationOnce(() => Promise.resolve({
+            json: () => Promise.resolve(mockSingleDocument),
+        }));
+        
+        const { result } = renderHook(() => useDownloadDocumentHook("storagePath"), { wrapper });
+
+        await waitFor(() => {
+            expect(result.current.isSuccess).toEqual(true);
+        });
+        
+        expect(result.current.data).toEqual(mockSingleDocument);
+        expect(global.fetch).toHaveBeenCalledWith(`/api/downloadDocument?storagePath=storagePath`);
     });
 });

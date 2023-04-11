@@ -29,6 +29,25 @@ describe("DocumentTabItem", () => {
         expect(getByRole("option", {name: "Download"})).toBeInTheDocument();
         expect(getByRole("option", {name: "View"})).toBeInTheDocument();
         expect(getByRole("option", {name: "Delete"})).toBeInTheDocument();
+        expect(getByRole("link", {name: "Download"})).toBeInTheDocument();
+
+    });
+
+    test("Downloads the document tab item attachment", async() => {
+        const { getByRole, queryByRole } = render(
+            <DocumentTabItem  {...props}/>
+        ); 
+       
+        expect(queryByRole("link", {name: "Download"})).not.toBeInTheDocument();
+
+        fireEvent.mouseDown(getByRole("button"));
+
+        expect(getByRole("link", {name: "Download"})).toBeInTheDocument();
+        expect(getByRole("link", { name: "Download" })).toHaveAttribute("href", "")
+
+        fireEvent.click(getByRole("option", {name: "Download"}));
+
+        expect(getByRole("link", { name: "Download" })).toHaveAttribute("href", "document")
 
     });
 });
