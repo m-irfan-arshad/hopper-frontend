@@ -16,13 +16,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { getDirtyValues, createValidationObject } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultInsuranceValue } from '../../reference';
+import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
+import ClinicalTab from "./tabs/clinicalTab";
 
 interface Props {
     open: boolean
@@ -72,6 +73,14 @@ function prepareFormForRender(data: any) {
         parsedCase.financial = [defaultInsuranceValue]
     } else {
         parsedCase.financial = parsedCase.financial.map((insurance: any) => ({...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}))
+    }
+
+    if (R.isEmpty(data.clinicalTab.diagnosticTests)) {
+        parsedCase.diagnosticTests = [defaultDiagnosticTest]
+    }
+
+    if (R.isEmpty(data.clinicalTab.clearances)) {
+        parsedCase.clearances = [defaultClearance]
     }
 
     return parsedCase;
@@ -152,6 +161,7 @@ export default function BookingSheetDialog(props: Props) {
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
                     {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
+                    {selectedTab === "Clinical" &&  <ClinicalTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>
             <DialogActions 

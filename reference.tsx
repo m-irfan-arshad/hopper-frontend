@@ -1,6 +1,47 @@
 import { Prisma } from '@prisma/client';
 import moment from "moment";
 
+
+//INTERFACES AND TYPES
+
+export interface BookingSheetConfig {
+  patient?: object,
+  financial?: object,
+  procedureTab?: object,
+  scheduling?: object
+}
+
+export interface caseFilterInterface {
+  value: string,
+  id: string
+} 
+
+export interface Step {
+  text: string,
+  status: boolean
+}
+
+export interface APIParameters {
+  [key: string]: string | string[]
+}
+
+// object type that allows indexing by keys
+export interface IndexObject {
+  [key: string]: any
+}
+
+export type FullCase = Prisma.casesGetPayload<{ include: { 
+  patient: true, 
+  scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
+  financial: true,
+  procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
+  comment?: {orderBy: {createTime: 'desc'}},
+  document?: {orderBy: {createTime: 'desc'}},
+} }>
+
+
+// REFERENCE OBJECTS
+
 export const caseCardProcedureInformation = [
   {
     label: "Date",
@@ -53,11 +94,6 @@ export const dashboardDateRangeDropDownValues = [
     }
 ];
 
-export interface caseFilterInterface {
-  value: string,
-  id: string
-} 
-
 export const dashboardStepDropDownValues = [
     {
         value: "All Steps",
@@ -84,15 +120,6 @@ export const dashboardSortDropDownValues = [
     }
 ];
 
-export interface Step {
-  text: string,
-  status: boolean
-}
-
-export interface APIParameters {
-  [key: string]: string | string[]
-}
-
 export const caseStepMappings = {
   priorAuthorization: "Prior Authorization",
   vendorConfirmation: "Vendor Confirmation"
@@ -111,22 +138,14 @@ export const defaultCaseFilterContext = {
   }
 };
 
-export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
-
 export const includeReferencesObject = { 
   patient: true, 
   scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }, 
   financial: true
 }
 
-export type FullCase = Prisma.casesGetPayload<{ include: { 
-  patient: true, 
-  scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
-  financial: true,
-  procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
-  comment?: {orderBy: {createTime: 'desc'}},
-  document?: {orderBy: {createTime: 'desc'}},
-} }>
+
+// BOOKING SHEET REFERENCE
 
 export const defaultInsuranceValue = {
   insurance: null,
@@ -137,9 +156,26 @@ export const defaultInsuranceValue = {
   priorAuthDate: null,
 }
 
-// object type that allows indexing by keys
-export interface IndexObject {
-  [key: string]: any
+export const defaultDiagnosticTest = {
+  testName: null,
+  testNameOther: '',
+  testDateTime: null,
+  sameAsProcedureLocation: null,
+  testFacilityName: '',
+  testPhone: '',
+  testAddressOne: '',
+  testAddressTwo: '',
+  testCity: '',
+  testState: '',
+  testZip: '',
+}
+
+export const defaultClearance = {
+    testName: null,
+    testNameOther: '',
+    testDateTime: null,
+    sameAsProcedureLocation: null,
+    facility: null
 }
 
 export const defaultBookingSheetConfig = {
@@ -178,12 +214,71 @@ export const defaultBookingSheetConfig = {
       provider: { default: null },
       procedureDate: { default: null },
       admissionType: { default: null }
+  },
+  clinical: {
+    physicianFirstName: {default: ''},
+    physicianLastName: {default: ''},
+    physicianPhone: {default: ''},
+    preOpRequired: {default: null},
+    preOpDateTime: {default: null},
+    showPreOpLocation: {default: null},
+    preOpFacility: {default: null},
+    diagnosticTestsRequired: {default: null},
+    diagnosticTests: [{
+      testName: {default: null},
+      testNameOther: {default: ''},
+      testDateTime: {default: null},
+      sameAsProcedureLocation: {default: null},
+      facility: {default: null}
+    }],
+    clearances: [{
+      testName: {default: null},
+      testNameOther: {default: ''},
+      testDateTime: {default: null},
+      sameAsProcedureLocation: {default: null},
+      facility: {default: null}
+    }],
   }
 }
 
-export interface BookingSheetConfig {
-  patient?: object,
-  financial?: object,
-  procedureTab?: object,
-  scheduling?: object
-}
+export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
+
+export const diagnosticTestOptions = [
+  {testName: 'A1C'},
+  {testName: 'Basic Metabolic Panel (BMP)'},
+  {testName: 'Chem 12'},
+  {testName: 'Chem 7'},
+  {testName: 'Chest X-ray'},
+  {testName: 'Colonoscopy'},
+  {testName: 'Complete Blood Count (CBC)'},
+  {testName: 'Complete Blood Count (CBC) With Differential'},
+  {testName: 'Complete Metabolic Panel (CMP)'},
+  {testName: 'COVID'},
+  {testName: 'Computerized tomography (CT) scan'},
+  {testName: 'Electrocardiogram (ECG or EKG)'},
+  {testName: 'Glucose'},
+  {testName: 'International Normalized Ratio (INR)'},
+  {testName: 'Lung Function Tests'},
+  {testName: 'Magnetic resonance imaging (MRI)'},
+  {testName: 'Methicillin-resistant Staphylococcus Aureus (MRSA)'},
+  {testName: 'Pacemaker or Defibrillator Placement Report'},
+  {testName: 'Partial thromboplastin time (PTT)'},
+  {testName: 'Prothrombin time test (PT)'},
+  {testName: 'Sickle Cell'},
+  {testName: 'Stress Test'},
+  {testName: 'Urinalysis (UA)'},
+  {testName: 'Ultrasound'},
+  {testName: 'Upper Endoscopy'},
+  {testName: 'X-Ray'},
+  {testName: 'Other'}
+]
+
+export const clearanceOptions = [
+  {clearanceName: 'Medical'},
+  {clearanceName: 'Cardiac'},
+  {clearanceName: 'Dental'},
+  {clearanceName: 'Pulmonary'},
+  {clearanceName: 'Endocrine'},
+  {clearanceName: 'Oncology/Hematology'},
+  {clearanceName: 'Other'},
+]

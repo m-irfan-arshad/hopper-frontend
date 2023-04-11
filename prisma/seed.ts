@@ -1,8 +1,8 @@
 import { prisma } from './clientInstantiation';
 import Chance from 'chance';
+import { diagnosticTestOptions, clearanceOptions } from '../reference';
 
 const chance = new Chance();
-
 const locationOptions = ['Healthy Heart Hospital', 'Senior Day Care', 'Burger King', 'Medtel Hospital']
 const procedureUnitOptions = ['OR', 'CATH LAB', 'PU1', 'PU2']
 const serviceLineOptions = ['Orthopedics', 'Cardiology', 'Oncology']
@@ -27,7 +27,8 @@ async function createCases() {
                         procedureDate: chance.date({ year: new Date().getFullYear(), month: new Date().getMonth() })
                     }
                 },
-                procedureTab: {create: {}}
+                procedureTab: {create: {}},
+                clinicalTab: {create: {}},
             }
         })
     }
@@ -97,6 +98,18 @@ async function createCptCodeOptions() {
     })
 }
 
+async function createDiagnosticTestOptions() {
+    await prisma.diagnosticTest.createMany({ 
+        data: diagnosticTestOptions
+    })
+}
+
+async function createClearanceOptions() {
+    await prisma.clearance.createMany({ 
+        data: clearanceOptions
+    })
+}
+
 async function createLocations() {
     for (let i = 0; i < 4; i++) {
         await prisma.location.create({   //create location
@@ -145,7 +158,9 @@ async function main() {
         createLateralityOptions(),
         createAnesthesiaOptions(),
         createCptCodeOptions(),
-        createIcdCodeOptions()
+        createIcdCodeOptions(),
+        createDiagnosticTestOptions(),
+        createClearanceOptions()
     ])
 }
 
