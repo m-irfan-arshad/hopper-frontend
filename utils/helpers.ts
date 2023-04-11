@@ -193,6 +193,9 @@ export function formatCreateCaseParams(data: FullCase) {
       },
       procedureTab: {
         create: {}
+      },
+      clinicalTab: {
+        create: {}
       }
     })
   }
@@ -208,46 +211,39 @@ export function getDirtyValues(dirtyFields: any, allValues: any): object | undef
     return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
 }
 
-export function addConfigToValidationField(tabConfigObject: IndexObject, fieldName: string) {
-    const config: {default: any, required?: boolean, visible?: boolean} | undefined = tabConfigObject[fieldName];
-    if (!config) {
-        console.warn("no config found for field: ", fieldName)
+/**
+ * Recursive function that converts a booking sheet config into a yup validation object.
+ * Iterates over config until it reaches a field config object, which is an object containing a 'default', 'required', or 'visible' field
+ * 
+ * @returns yup validation schema
+ */
+export function createValidationObject(configObject: IndexObject | Array<IndexObject>): any {
+    let validationTab: IndexObject = {}
+    if (Array.isArray(configObject)) {
+        Object.keys(configObject[0]).forEach(key => {
+            const yupObject = createValidationObject(configObject[0][key])
+            yupObject && (validationTab[key] = yupObject)  
+        })
+        return yup.array().of(yup.object().shape(validationTab))
+    } else if (typeof configObject === 'object' && !Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
+        Object.keys(configObject).forEach(key => {
+            const yupObject = createValidationObject(configObject[key])
+            yupObject && (validationTab[key] = yupObject)
+        })
+        return yup.object().shape(validationTab)
+    }
+
+    // configObject is a field config
+    const isRequired = R.isNil(configObject.required) || configObject.required; //required by default
+    const isVisible =  R.isNil(configObject.visible) || configObject.visible; //visible by default
+    if (!isVisible) {
         return yup.mixed();
     }
-    const required = R.isNil(config.required) || config.required; //required by default
-    const visible =  R.isNil(config.visible) || config.visible; //visible by default
-    if (!visible) {
-        return;
-    }
     
-    if(R.isNil(config.default) || Array.isArray(config.default)) {
-        return required ? yup.mixed().required().default(config.default) : yup.mixed().notRequired().default(config.default)
+    if(R.isNil(configObject.default) || Array.isArray(configObject.default)) {
+        return isRequired ? yup.mixed().required().default(configObject.default) : yup.mixed().notRequired().default(configObject.default)
     }
-    return required ? yup.string().required().default(config.default) : yup.string().notRequired().default(config.default)
-}
-
-export function createValidationObject(bookingSheetConfig: IndexObject) {
-    const tabValidationObject: IndexObject = {};
-
-    Object.keys(bookingSheetConfig).forEach(tabName=>{
-        let tab = bookingSheetConfig[tabName]
-        let isArray = false;
-        let validationTab: IndexObject = {}
-        if (Array.isArray(tab)) {
-            tab = tab[0];
-            isArray = true;
-        }
-        Object.keys(tab).forEach(fieldName=>{
-            const fieldWithConfig = addConfigToValidationField(tab, fieldName)
-            fieldWithConfig && (validationTab[fieldName] = fieldWithConfig)
-        })
-        if (isArray) {
-            tabValidationObject[tabName] = yup.array().of(yup.object().shape(validationTab))
-        } else {
-            tabValidationObject[tabName] = yup.object().shape(validationTab)
-        }
-    })
-    return yup.object().shape(tabValidationObject)
+    return isRequired ? yup.string().required().default(configObject.default) : yup.string().notRequired().default(configObject.default)
 }
 
 export function getPathFromId(id: string) {

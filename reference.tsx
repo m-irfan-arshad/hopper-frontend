@@ -178,6 +178,16 @@ export const defaultClearance = {
     facility: null
 }
 
+const facilityConfig = {
+  facilityName: {default: ''},
+  phone: {default: ''},
+  addressOne: {default: ''},
+  addressTwo: {default: ''},
+  city: {default: ''},
+  state: {default: ''},
+  zip: {default: ''}
+}
+
 export const defaultBookingSheetConfig = {
   patient: {
       firstName: { default: '', required: true },
@@ -221,22 +231,23 @@ export const defaultBookingSheetConfig = {
     physicianPhone: {default: ''},
     preOpRequired: {default: null},
     preOpDateTime: {default: null},
+    postOpDateTime: {default: null},
     showPreOpLocation: {default: null},
-    preOpFacility: {default: null},
+    preOpFacility: facilityConfig,
     diagnosticTestsRequired: {default: null},
     diagnosticTests: [{
-      testName: {default: null},
+      diagnosticTest: {default: null},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       sameAsProcedureLocation: {default: null},
-      facility: {default: null}
+      facility: facilityConfig
     }],
     clearances: [{
-      testName: {default: null},
+      clearance: {default: null},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       sameAsProcedureLocation: {default: null},
-      facility: {default: null}
+      facility: facilityConfig
     }],
   }
 }

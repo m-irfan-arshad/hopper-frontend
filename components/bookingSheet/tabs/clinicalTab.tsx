@@ -25,7 +25,7 @@ const headerStyles = {marginTop: "2.25rem", marginBottom: "2.25rem", color: "gra
 export default function ClinicalTab(props: Props) {
     const {config} = props;
     const preOpRequired = useWatch({ name: 'clinical.preOpRequired' })
-    const showPreOpLocation = useWatch({ name: 'clinical.showPreOpLocation' })
+    const showPreOpLocation = useWatch({ name: 'clinical.atProcedureLocation' }) !== true
     const diagnosticTestsRequired = useWatch({ name: 'clinical.diagnosticTestsRequired' })
     const clearanceRequired = useWatch({ name: 'clinical.clearanceRequired' })
     const preOpRequiredOptions = [{title: "Yes", value: "true"}, {title: "No", value: "false"}];
@@ -41,9 +41,9 @@ export default function ClinicalTab(props: Props) {
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h6" sx={headerStyles}>Primary Care Physician</Typography>
                 <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}>
-                    <InputController id="clinical.physicianFirstName" title="First Name" placeholder="First Name" size={6} config={config}/>
-                    <InputController id="clinical.physicianLastName" title="Last Name" placeholder="Last Name" size={6} config={config}/>
-                    <InputController id="clinical.physicianPhone" title="Phone Number" placeholder="Phone Number" size={6} config={config}/>
+                    <InputController id="clinical.physicianFirstName" title="Primary Care First Name" placeholder="Primary Care First Name" size={6} config={config}/>
+                    <InputController id="clinical.physicianLastName" title="Primary Care Last Name" placeholder="Primary Care Last Name" size={6} config={config}/>
+                    <InputController id="clinical.physicianPhone" title="Primary Care Phone Number" placeholder="Primary Care Phone Number" size={6} config={config}/>
                 </Grid>
                 <Typography variant="h6" sx={headerStyles}>Pre-Admission Assessment</Typography>
                 <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}>
@@ -51,7 +51,8 @@ export default function ClinicalTab(props: Props) {
                     {preOpRequired==="true" && (
                         <React.Fragment>
                             <DateController withTime id={'clinical.preOpDateTime'} title="Pre-Op Date" placeholder="Pre-Op Date" size={12} config={config}/>
-                            <CheckboxController id={'clinical.showPreOpLocation'} title="At Procedure Location?" size={12} config={config}/>
+                            <CheckboxController id={'clinical.atProcedureLocation'} title="At Procedure Location?" size={6} config={config}/>
+                            <Box width="100%"/>
                             {showPreOpLocation && (
                                 <React.Fragment>
                                     <InputController id="clinical.preOpFacility.facilityName" title="Facility Name" placeholder="Facility Name" size={6} config={config}/>
@@ -88,7 +89,7 @@ export default function ClinicalTab(props: Props) {
                                     />
                                     {testNameIsOther && <InputController id={`clinical.diagnosticTests.${index}.testNameOther`} title="" placeholder="Test Name" size={6} config={config}/>}
                                     <Box width="100%"/>
-                                    <DateController withTime id={`clinical.diagnosticTests.${index}.testDateTime`} title="Pre-Op Date" placeholder="Pre-Op Date" size={6} config={config}/>
+                                    <DateController withTime id={`clinical.diagnosticTests.${index}.testDateTime`} title="Pre-Op Testing Date" placeholder="Pre-Op Testing Date" size={6} config={config}/>
                                     <CheckboxController id={`clinical.diagnosticTests.${index}.sameAsProcedureLocation`} title="At Procedure Location?" size={12} config={config}/>
                                     {showTestLocation && (
                                         <React.Fragment>
@@ -143,7 +144,10 @@ export default function ClinicalTab(props: Props) {
                                     />
                                     {clearanceNameIsOther && <InputController id={`clinical.clearances.${index}.clearanceNameOther`} title="" placeholder="Clearance Name" size={6} config={config}/>}
                                     <Box width="100%"/>
-                                    <DateController withTime id={`clinical.clearances.${index}.testDateTime`} title="Pre-Op Date" placeholder="Pre-Op Date" size={6} config={config}/>
+                                    <DateController withTime id={`clinical.clearances.${index}.testDateTime`} title="Clearance Date" placeholder="Clearance Date" size={6} config={config}/>
+                                    <InputController id={`clinical.clearances.${index}.physicianFirstName`} title="Provider First Name" placeholder="Provider First Name" size={6} config={config}/>
+                                    <InputController id={`clinical.clearances.${index}.physicianLastName`} title="Provider Last Name" placeholder="Provider Last Name" size={6} config={config}/>
+                                    <InputController id={`clinical.clearances.${index}.physicianPhone`} title="Provider Phone Number" placeholder="Provider Phone Number" size={6} config={config}/>
                                     <CheckboxController id={`clinical.clearances.${index}.sameAsProcedureLocation`} title="At Procedure Location?" size={12} config={config}/>
                                     {showTestLocation && (
                                         <React.Fragment>
@@ -176,6 +180,9 @@ export default function ClinicalTab(props: Props) {
                     </DialogActions>
                     </Grid>
                     )}
+
+                <Typography variant="h6" sx={headerStyles}>Post-Operative Care</Typography>
+                <DateController withTime id={'clinical.postOpDateTime'} title="Post-Op Date" placeholder="Post-Op Date" size={6} config={config}/>
             </LocalizationProvider>
     )
 }

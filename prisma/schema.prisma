@@ -248,10 +248,11 @@ model clinicalTab {
   physicianPhone          String?    @map("physician_phone") @default("")
   preOpRequired           Boolean?   @map("pre_op_required") @default(false)
   preOpDateTime           DateTime?  @map("pre_op_date_time") @db.Timestamp(6)
-  showPreOpLocation       Boolean?   @map("show_pre_op_location") @default(false)
+  atProcedureLocation     Boolean?   @map("show_pre_op_location")
   preOpFacilityId         Int?       @map("pre_op_facility_id")
   diagnosticTestsRequired Boolean?   @map("diagnostic_tests_required") @default(false)
   clearanceRequired       Boolean?   @map("clearance_required") @default(false)
+  postOpDateTime          DateTime?  @map("post_op_date_time") @db.Timestamp(6)
   diagnosticTests         diagnosticTestForm[]
   clearances              clearanceForm[]
   preOpFacility           facility?  @relation(fields: [preOpFacilityId], references: [facilityId])
@@ -275,7 +276,7 @@ model facility {
 model diagnosticTestForm {
     diagnosticTestFormId        Int       @id @default(autoincrement()) @map("diagnostic_test_form_id")
     diagnosticTestId            Int?      @map("diagnostic_test_id")
-    testNameOther               String?   @map("test_name_other")
+    testNameOther               String?   @map("test_name_other") @default("")
     testDateTime                DateTime  @map("test_date_time") @db.Timestamp(6)
     sameAsProcedureLocation     Boolean   @map("same_as_procedure_location") @default(false)
     facilityId                  Int?      @map("facility_id")
@@ -292,9 +293,12 @@ model diagnosticTest {
 
 model clearanceForm {
   clearanceFormId           Int       @id @default(autoincrement()) @map("clearance_form_id")
-  clearanceId               Int? @map("clearance_id")
-  clearanceNameOther        String?   @map("clearance_name_other")
+  clearanceId               Int?      @map("clearance_id")
+  clearanceNameOther        String?   @map("clearance_name_other") @default("")
   clearanceDateTime         DateTime  @map("clearance_date_time") @db.Timestamp(6)
+  physicianFirstName        String?   @map("physician_first_name") @default("")
+  physicianLastName         String?   @map("physician_last_name") @default("")
+  physicianPhone            String?   @map("physician_phone") @default("")
   sameAsProcedureLocation   Boolean   @map("same_as_procedure_location") @default(false)
   facilityId                Int?      @map("facility_id")
   facility                  facility?  @relation(fields: [facilityId], references: [facilityId])

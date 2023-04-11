@@ -136,7 +136,7 @@ export default function BookingSheetDialog(props: Props) {
                     paddingRight: 0,
                     paddingLeft: 0
                 }}> 
-                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "2rem"}}>
+                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                     <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
                         {`${data?.patient?.firstName} ${data?.patient?.lastName}`}
                     </Typography>
@@ -145,7 +145,7 @@ export default function BookingSheetDialog(props: Props) {
                     </IconButton>
                 </Box>
                 <Box>
-                    <Tabs value={selectedTab} onChange={(event, value) => selectTab(value)}> 
+                    <Tabs variant="fullWidth" value={selectedTab} onChange={(event, value) => selectTab(value)}> 
                         <StyledTab label="Patient" value="Patient" /> 
                         <StyledTab label="Financial" value="Financial"   />
                         <StyledTab label="Procedure" value="Procedure"  />
