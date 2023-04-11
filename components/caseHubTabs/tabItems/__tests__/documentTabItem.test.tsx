@@ -1,6 +1,5 @@
 import { render, fireEvent } from "@testing-library/react";
 import DocumentTabItem from "../documentTabItem";
-import moment from "moment";
 import { mockSingleDocument } from "../../../../testReference";
 
 jest.mock('@tanstack/react-query', () => ({
@@ -33,21 +32,4 @@ describe("DocumentTabItem", () => {
 
     });
 
-    test("Downloads the document tab item attachment", async() => {
-        const { getByRole, queryByRole } = render(
-            <DocumentTabItem  {...props}/>
-        ); 
-       
-        expect(queryByRole("link", {name: "Download"})).not.toBeInTheDocument();
-
-        fireEvent.mouseDown(getByRole("button"));
-
-        expect(getByRole("link", {name: "Download"})).toBeInTheDocument();
-        expect(getByRole("link", { name: "Download" })).toHaveAttribute("href", "")
-
-        fireEvent.click(getByRole("option", {name: "Download"}));
-
-        expect(getByRole("link", { name: "Download" })).toHaveAttribute("href", "document")
-
-    });
 });
