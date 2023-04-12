@@ -19,9 +19,9 @@ describe('CaseHubTabs', () => {
             </PagesTestWrapper>
         );
 
-        expect(getByRole('tab', {name: 'Documents (2)'})).toBeInTheDocument();
+        expect(getByRole('tab', {name: 'Documents (1)'})).toBeInTheDocument();
 
-        fireEvent.click(getByRole('tab', {name: 'Documents (2)'}));
+        fireEvent.click(getByRole('tab', {name: 'Documents (1)'}));
 
         expect(getByRole('button', {name: '+ Upload Document'})).toBeInTheDocument();
 

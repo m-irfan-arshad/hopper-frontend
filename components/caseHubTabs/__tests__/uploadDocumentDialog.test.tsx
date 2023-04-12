@@ -11,7 +11,8 @@ jest.mock('@tanstack/react-query', () => ({
 describe("UploadDocumentDialog", () => {
     const props = {
         onBackClick: jest.fn(),
-        open: true
+        open: true,
+        onSubmit: jest.fn()
     };
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -48,7 +49,7 @@ describe("UploadDocumentDialog", () => {
     });
 
     test("interacts with doc type dropdown and renders Signature Date", async () => {
-        const { getByRole, getByText, getByLabelText } = render(
+        const { getByRole, getByLabelText } = render(
             <PagesTestWrapper>
                 <UploadDocumentDialog {...props}  />
             </PagesTestWrapper>

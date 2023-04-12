@@ -1,9 +1,11 @@
-import React from "react";
-import { Box, styled, IconButton, Select, MenuItem, Typography} from "@mui/material";
+import React, { useEffect, useRef } from "react";
+import { Box, styled, Select, MenuItem, Typography, CircularProgress} from "@mui/material";
 import { MoreVert } from '@mui/icons-material';
 import DottedDivider from "../../shared/dottedDivider";
 import moment from "moment";
 import { document } from "@prisma/client";
+import { useDownloadDocumentHook } from '../../../utils/hooks';
+import { docTypeDropdownOptions } from '../../../reference' ;
 
 interface Props {
     data: document;
@@ -11,17 +13,35 @@ interface Props {
 
 export default function DocumentTabItem(props: Props) {
     const {data} = props;
+    const anchorTagRef = useRef<HTMLAnchorElement>(null);
 
     const StyledMenuItem = styled(MenuItem)({
-        fontSize: ".75rem" 
+        fontSize: ".75rem"
     });
+
+    const StyledAnchorTag = styled('a')({
+        textDecoration: 'none',
+        color: 'inherit'
+    });
+
+    const mappedDocTypes = data.docTypes.map((docType: any) => {
+        const option = docTypeDropdownOptions.find(option => option.id === docType);
+
+        return option?.value;
+    });
+
+    const { data: documentAttachment, isFetching, refetch } = useDownloadDocumentHook(data.storagePath);
+
+    useEffect(() => {
+        anchorTagRef.current?.click();
+    }, [documentAttachment])
 
     return (
         <Box sx={{width: "100%"}}>
             <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem"}}> 
                 <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
                     <Typography sx={{fontSize: "0.75rem", fontWeight: "500", textTransform: 'capitalize'}}>
-                        {data.docTypes?.join(", ")} 
+                        {mappedDocTypes.join(", ")} 
                     </Typography>
                     <Typography sx={{fontSize: "0.625rem"}}>
                         {data.notes}
@@ -41,7 +61,14 @@ export default function DocumentTabItem(props: Props) {
                     IconComponent={(props) =>  <MoreVert {...props} /> }
                 >
                     <StyledMenuItem> View </StyledMenuItem>
-                    <StyledMenuItem> Download </StyledMenuItem>
+                    <StyledMenuItem onClick={() => !documentAttachment && refetch()} sx={{ display: "flex", justifyContent:"center"}}>  
+                        { isFetching 
+                            ?   <CircularProgress size={"1rem"}/>
+                            :   <StyledAnchorTag ref={anchorTagRef} href={documentAttachment} download={data.storagePath.slice(37)}> 
+                                    Download
+                                </StyledAnchorTag> 
+                        }
+                    </StyledMenuItem>
                     <StyledMenuItem> Delete </StyledMenuItem>       
                 </Select>  
             </Box>

@@ -84,6 +84,77 @@ export const dashboardSortDropDownValues = [
     }
 ];
 
+export const docTypeDropdownOptions = [
+  {
+      value: "Cardiology Clearance",
+      id: "cardiologyClearance"
+  },
+  {
+      value: "Chest X-Ray",
+      id: "chestXRay"
+  },
+  {
+      value: "Consent",
+      id: "consent"
+  },
+  {
+      value: "Driver’s License",
+      id: "license"
+  },
+  {
+      value: "EKG",
+      id: "ekg"
+  },
+  {
+      value: "H & P",
+      id: "h&p"
+  },
+  {
+      value: "Insurance Authorization Form",
+      id: "insuranceAuth"
+  },
+  {
+      value: "Insurance Card",
+      id: "insuranceCard"
+  },
+  {
+      value: "Labs",
+      id: "labs"
+  },
+  {
+      value: "Last Note",
+      id: "lastNote"
+  },
+  {
+      value: "Legal Guardianship Form",
+      id: "guardianShipForm"
+  },
+  {
+      value: "Orders",
+      id: "orders"
+  },
+  {
+      value: "Other",
+      id: "other"
+  },
+  {
+      value: "PAT Order Form",
+      id: "orderForm"
+  },
+  {
+      value: "Pharmacy Orders",
+      id: "pharmacyOrders"
+  },
+  {
+      value: "Pre-Op Clearance Packet",
+      id: "clearancePacket"
+  },
+  {
+      value: "Surgical Risk Form ",
+      id: "surgicalRiskForm"
+  }
+];
+
 export interface Step {
   text: string,
   status: boolean
