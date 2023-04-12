@@ -110,30 +110,6 @@ export const docTypeDropdownOptions = [
       id: "h&p"
   },
   {
-      value: "Cardiology Clearance",
-      id: "cardiologyClearance"
-  },
-  {
-      value: "Chest X-Ray",
-      id: "chestXRay"
-  },
-  {
-      value: "Consent",
-      id: "consent"
-  },
-  {
-      value: "Driver’s License",
-      id: "license"
-  },
-  {
-      value: "EKG",
-      id: "ekg"
-  },
-  {
-      value: "H & P",
-      id: "h&p"
-  },
-  {
       value: "Insurance Authorization Form",
       id: "insuranceAuth"
   },

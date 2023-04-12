@@ -15,8 +15,6 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from "moment";
 import MultiSelectDropdownNew from "../shared/multiSelectDropdownNew";
-import {DropDownSearchController} from '../../utils/formControllers'
-
 import { useUser } from '@auth0/nextjs-auth0';
 import { docTypeDropdownOptions } from "../../reference";
 

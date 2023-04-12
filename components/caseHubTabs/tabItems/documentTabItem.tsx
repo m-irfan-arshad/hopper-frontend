@@ -5,6 +5,7 @@ import DottedDivider from "../../shared/dottedDivider";
 import moment from "moment";
 import { document } from "@prisma/client";
 import { useDownloadDocumentHook } from '../../../utils/hooks';
+import { docTypeDropdownOptions } from '../../../reference' ;
 
 interface Props {
     data: document;
@@ -23,6 +24,12 @@ export default function DocumentTabItem(props: Props) {
         color: 'inherit'
     });
 
+    const mappedDocTypes = data.docTypes.map((docType: any) => {
+        const option = docTypeDropdownOptions.find(option => option.id === docType);
+
+        return option?.value;
+    });
+
     const { data: documentAttachment, isFetching, refetch } = useDownloadDocumentHook(data.storagePath);
 
     useEffect(() => {
@@ -34,7 +41,7 @@ export default function DocumentTabItem(props: Props) {
             <Box sx={{display: "flex", justifyContent: "space-between", paddingBottom: "1rem", paddingTop: "1rem"}}> 
                 <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
                     <Typography sx={{fontSize: "0.75rem", fontWeight: "500", textTransform: 'capitalize'}}>
-                        {data.docTypes?.join(", ")} 
+                        {mappedDocTypes.join(", ")} 
                     </Typography>
                     <Typography sx={{fontSize: "0.625rem"}}>
                         {data.notes}
