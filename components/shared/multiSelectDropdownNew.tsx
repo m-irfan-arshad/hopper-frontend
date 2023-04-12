@@ -1,6 +1,7 @@
 import React from "react";
 import {
     MenuItem, 
+    Menu,
     Select, 
     SelectChangeEvent, 
     Chip, 
@@ -49,6 +50,11 @@ export default function MultiSelectDropDown(props: Props) {
                 label={label}
                 data-testid={selectId}
                 multiple
+                MenuProps={{
+                    style: {
+                        maxHeight: '16rem'
+                    }
+                }}
                 renderValue={() => (
                     <Paper
                         sx={{
@@ -79,7 +85,7 @@ export default function MultiSelectDropDown(props: Props) {
                 )}
                 onChange={(event: SelectChangeEvent) => onChange(event.target.value)}
             >
-                {
+                {      
                     menuItems.map((item, index) => (
                         //@ts-ignore - necessary to load object into value
                         <MenuItem key={index} value={item} sx={{fontSize: "0.825rem"}}>{item.value}</MenuItem>
