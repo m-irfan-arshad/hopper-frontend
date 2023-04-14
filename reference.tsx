@@ -230,11 +230,13 @@ export const defaultBookingSheetConfig = {
     physicianLastName: {default: ''},
     physicianPhone: {default: ''},
     preOpRequired: {default: null},
-    preOpDateTime: {default: null},
     postOpDateTime: {default: null},
-    showPreOpLocation: {default: null},
-    preOpFacility: facilityConfig,
     diagnosticTestsRequired: {default: null},
+    preOpForm: {
+      preOpDateTime: {default: null},
+      atProcedureLocation: {default: null},
+      facility: facilityConfig,
+    },
     diagnosticTests: [{
       diagnosticTest: {default: null},
       testNameOther: {default: ''},

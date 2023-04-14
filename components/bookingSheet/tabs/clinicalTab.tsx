@@ -27,7 +27,7 @@ export default function ClinicalTab(props: Props) {
     const {config} = props;
     const { control, resetField, setValue } = useFormContext();
     const preOpRequired = useWatch({ name: 'clinical.preOpRequired' })
-    const showPreOpLocation = useWatch({ name: 'clinical.atProcedureLocation' }) !== true
+    const showPreOpLocation = useWatch({ name: 'clinical.preOpForm.atProcedureLocation' }) !== true
     const diagnosticTestsRequired = useWatch({ name: 'clinical.diagnosticTestsRequired' })
     const clearanceRequired = useWatch({ name: 'clinical.clearanceRequired' })
     const preOpRequiredOptions = [{title: "Yes", value: "true"}, {title: "No", value: "false"}];
@@ -60,6 +60,22 @@ export default function ClinicalTab(props: Props) {
         setValue(`clinical.clearances.${index}.sameAsProcedureLocation`, e.target.checked)
     }
 
+    useEffect(() => {
+        resetField(`clinical.clearances`);
+      }, [clearanceRequired]);
+
+    useEffect(() => {
+        resetField(`clinical.diagnosticTests`);
+      }, [diagnosticTestsRequired]);
+
+    useEffect(() => {
+        resetField(`clinical.preOpForm`);
+      }, [preOpRequired]);
+
+    useEffect(() => {
+        resetField(`clinical.preOpForm.facility`);
+      }, [showPreOpLocation]);
+      
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h6" sx={headerStyles}>Primary Care Physician</Typography>
@@ -73,18 +89,18 @@ export default function ClinicalTab(props: Props) {
                     <RadioGroupController id="clinical.preOpRequired" size={12} title="Is pre-admission assessment required for this patient?" options={preOpRequiredOptions} config={config}/>
                     {preOpRequired==="true" && (
                         <React.Fragment>
-                            <DateController withTime id={'clinical.preOpDateTime'} title="Pre-Op Date" placeholder="Pre-Op Date" size={12} config={config}/>
-                            <CheckboxController id={'clinical.atProcedureLocation'} title="At Procedure Location?" size={6} config={config}/>
+                            <DateController withTime id={'clinical.preOpForm.preOpDateTime'} title="Pre-Op Date" placeholder="Pre-Op Date" size={12} config={config}/>
+                            <CheckboxController id={'clinical.preOpForm.atProcedureLocation'} title="At Procedure Location?" size={6} config={config}/>
                             <Box width="100%"/>
                             {showPreOpLocation && (
                                 <React.Fragment>
-                                    <InputController id="clinical.preOpFacility.facilityName" title="Facility Name" placeholder="Facility Name" size={6} config={config}/>
-                                    <InputController id="clinical.preOpFacility.phone" title="Facility Phone Number" placeholder="Facility Phone Number" size={6} config={config}/>
-                                    <InputController id="clinical.preOpFacility.addressOne" title="Facility Address 1" placeholder="Facility Address 1" size={6} config={config}/>
-                                    <InputController id="clinical.preOpFacility.addressTwo" title="Facility Address 2" placeholder="Facility Address 2" size={6} config={config}/>
-                                    <InputController id="clinical.preOpFacility.city" title="City" placeholder="City" size={6} config={config}/>
-                                    <InputController id="clinical.preOpFacility.state" title="State" placeholder="State" size={6} config={config}/>
-                                    <InputController id="clinical.preOpFacility.zip" title="Zip" placeholder="Zip" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.facilityName" title="Facility Name" placeholder="Facility Name" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.phone" title="Facility Phone Number" placeholder="Facility Phone Number" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.addressOne" title="Facility Address 1" placeholder="Facility Address 1" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.addressTwo" title="Facility Address 2" placeholder="Facility Address 2" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.city" title="City" placeholder="City" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.state" title="State" placeholder="State" size={6} config={config}/>
+                                    <InputController id="clinical.preOpForm.facility.zip" title="Zip" placeholder="Zip" size={6} config={config}/>
                                 </React.Fragment>
                             )}
                         </React.Fragment>
