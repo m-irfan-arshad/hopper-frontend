@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { 
     Typography, 
     Grid, 
@@ -14,6 +14,7 @@ import { BookingSheetConfig, defaultClearance, defaultDiagnosticTest } from "../
 import * as R from 'ramda'
 import { useWatch, useFieldArray, useFormContext } from "react-hook-form";
 import { Add, RemoveCircle } from "@mui/icons-material";
+import { clearance, clearanceForm, diagnosticTest, diagnosticTestForm } from "@prisma/client";
 
 
 interface Props {
@@ -24,6 +25,7 @@ const headerStyles = {marginTop: "2.25rem", marginBottom: "2.25rem", color: "gra
 
 export default function ClinicalTab(props: Props) {
     const {config} = props;
+    const { control, resetField, setValue } = useFormContext();
     const preOpRequired = useWatch({ name: 'clinical.preOpRequired' })
     const showPreOpLocation = useWatch({ name: 'clinical.atProcedureLocation' }) !== true
     const diagnosticTestsRequired = useWatch({ name: 'clinical.diagnosticTestsRequired' })
@@ -31,11 +33,32 @@ export default function ClinicalTab(props: Props) {
     const preOpRequiredOptions = [{title: "Yes", value: "true"}, {title: "No", value: "false"}];
     const diagnosticTestsRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
     const clearanceRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
-    const { control } = useFormContext();
+
     const { append: appendDiagnosticTest, remove: removeDiagnosticTest, fields: diagnosticTestFields } = useFieldArray({control, name: "diagnosticTests"});
-    const diagnosticTests = useWatch({ name: 'clinical.diagnosticTests' })
     const { append: appendClearance, remove: removeClearance, fields: clearanceFields } = useFieldArray({control, name: "clearances"});
+    const diagnosticTests = useWatch({ name: 'clinical.diagnosticTests' })
     const clearances = useWatch({ name: 'clinical.clearances' })
+
+    // reset "other" input and facility details when they are hidden
+    const onTestNameChange = (index: number) => (e: diagnosticTest) => {
+        resetField(`clinical.diagnosticTests.${index}.testNameOther`);
+        setValue(`clinical.diagnosticTests.${index}.diagnosticTest`, e)
+    }
+
+    const onShowTestFacilityChange = (index: number) => (e: any) => {
+        resetField(`clinical.diagnosticTests.${index}.facility`);
+        setValue(`clinical.diagnosticTests.${index}.sameAsProcedureLocation`, e.target.checked)
+    }
+
+    const onClearanceNameChange = (index: number) => (e: diagnosticTest) => {
+        resetField(`clinical.clearances.${index}.clearanceNameOther`);
+        setValue(`clinical.clearances.${index}.clearance`, e)
+    }
+
+    const onShowClearanceFacilityChange = (index: number) => (e: any) => {
+        resetField(`clinical.clearances.${index}.facility`);
+        setValue(`clinical.clearances.${index}.sameAsProcedureLocation`, e.target.checked)
+    }
 
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -86,11 +109,18 @@ export default function ClinicalTab(props: Props) {
                                         queryKey="getDiagnosticTests"
                                         size={6} 
                                         config={config}
+                                        onChange={onTestNameChange(index)}
                                     />
                                     {testNameIsOther && <InputController id={`clinical.diagnosticTests.${index}.testNameOther`} title="" placeholder="Test Name" size={6} config={config}/>}
                                     <Box width="100%"/>
                                     <DateController withTime id={`clinical.diagnosticTests.${index}.testDateTime`} title="Pre-Op Testing Date" placeholder="Pre-Op Testing Date" size={6} config={config}/>
-                                    <CheckboxController id={`clinical.diagnosticTests.${index}.sameAsProcedureLocation`} title="At Procedure Location?" size={12} config={config}/>
+                                    <CheckboxController 
+                                        onChange={onShowTestFacilityChange(index)}
+                                        id={`clinical.diagnosticTests.${index}.sameAsProcedureLocation`} 
+                                        title="At Procedure Location?" 
+                                        size={12} 
+                                        config={config}
+                                    />
                                     {showTestLocation && (
                                         <React.Fragment>
                                             <InputController id={`clinical.diagnosticTests.${index}.facility.facilityName`} title="Facility Name" placeholder="Facility Name" size={6} config={config}/>
@@ -102,7 +132,7 @@ export default function ClinicalTab(props: Props) {
                                             <InputController id={`clinical.diagnosticTests.${index}.facility.zip`} title="Zip" placeholder="Zip" size={6} config={config}/>
                                         </React.Fragment>
                                     )}
-                                    <Grid item xs={12}><Divider light sx={{marginBottom: "1rem"}}/></Grid>
+                                    <Grid item xs={12}>{(index+1 !== itemList.length) && <Divider light sx={{marginTop: "1.6rem", marginBottom: "3rem"}}/>}</Grid>
                                     </React.Fragment>
                            )
                         })}
@@ -141,6 +171,7 @@ export default function ClinicalTab(props: Props) {
                                         queryKey="getClearances"
                                         size={6} 
                                         config={config}
+                                        onChange={onClearanceNameChange(index)}
                                     />
                                     {clearanceNameIsOther && <InputController id={`clinical.clearances.${index}.clearanceNameOther`} title="" placeholder="Clearance Name" size={6} config={config}/>}
                                     <Box width="100%"/>
@@ -148,7 +179,13 @@ export default function ClinicalTab(props: Props) {
                                     <InputController id={`clinical.clearances.${index}.physicianFirstName`} title="Provider First Name" placeholder="Provider First Name" size={6} config={config}/>
                                     <InputController id={`clinical.clearances.${index}.physicianLastName`} title="Provider Last Name" placeholder="Provider Last Name" size={6} config={config}/>
                                     <InputController id={`clinical.clearances.${index}.physicianPhone`} title="Provider Phone Number" placeholder="Provider Phone Number" size={6} config={config}/>
-                                    <CheckboxController id={`clinical.clearances.${index}.sameAsProcedureLocation`} title="At Procedure Location?" size={12} config={config}/>
+                                    <CheckboxController 
+                                        onChange={onShowClearanceFacilityChange(index)}
+                                        id={`clinical.clearances.${index}.sameAsProcedureLocation`} 
+                                        title="At Procedure Location?" 
+                                        size={12} 
+                                        config={config}
+                                    />
                                     {showTestLocation && (
                                         <React.Fragment>
                                             <InputController id={`clinical.clearances.${index}.facility.facilityName`} title="Facility Name" placeholder="Facility Name" size={6} config={config}/>
@@ -160,7 +197,7 @@ export default function ClinicalTab(props: Props) {
                                             <InputController id={`clinical.clearances.${index}.facility.zip`} title="Zip" placeholder="Zip" size={6} config={config}/>
                                         </React.Fragment>
                                     )}
-                                    <Grid item xs={12}><Divider light sx={{marginBottom: "1rem"}}/></Grid>
+                                    <Grid item xs={12}>{(index+1 !== itemList.length) && <Divider light sx={{marginTop: "1.6rem", marginBottom: "3rem"}}/>}</Grid>
                                     </React.Fragment>
                            )
                         })}

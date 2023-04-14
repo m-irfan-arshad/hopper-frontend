@@ -62,7 +62,8 @@ interface DropDownSearchControllerProps {
     dependency?: string,
     multiple?: boolean,
     size: number,
-    config?: BookingSheetConfig
+    config?: BookingSheetConfig,
+    onChange?: any
 }
 
 interface RadioControllerProps {
@@ -77,7 +78,8 @@ interface CheckboxControllerProps {
     id: any,
     title?: string,
     size: number,
-    config?: BookingSheetConfig
+    config?: BookingSheetConfig,
+    onChange?: any
 }
 
 interface ConfigWrapperProps {
@@ -118,6 +120,11 @@ const sharedProps = {
         },
         width: "100%",
     }
+}
+
+const wrappedOnChange = (e: any, onChange1: any, onChange2: any) => {
+    onChange1 && onChange1(e);
+    onChange2 && onChange2(e);
 }
   
 export function InputController(props: InputControllerProps) {
@@ -213,6 +220,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             name={id}
             control={control}
             render={({ field }) => {
+                const onChangeFunc = props.onChange ? props.onChange : field.onChange;
                 return <DropDownSearchComponent
                         label={title}
                         value={field.value}
@@ -220,7 +228,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         id={id}
                         multiple={multiple}
                         options={dropdownData}
-                        onChange={field.onChange}
+                        onChange={onChangeFunc}
                         disabled={isDisabled} 
                         placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
                         additionalStyles={additionalStyles}
@@ -257,16 +265,18 @@ export function CheckboxController(props: CheckboxControllerProps) {
         <ConfigWrapper id={id} size={size} config={config} styles={{marginBottom: '1.3rem'}}><Controller
         name={id}
         control={control}
-        render={({ field }) => (
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
+        render={({ field }) => {
+            const onChangeFunc = props.onChange ? props.onChange : field.onChange;
+            return (<Box sx={{display: 'flex', alignItems: 'center'}}>
                 <FormLabel>{title}</FormLabel>
                 <Checkbox
                     {...field}
                     id={id}
                     inputProps={{ 'aria-label': 'controlled' }}
+                    onChange={onChangeFunc}
                 />
             </Box>
-        )}
+        )}}
       /></ConfigWrapper>
     )
 }
