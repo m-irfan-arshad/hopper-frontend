@@ -95,6 +95,11 @@ export default function DateRangePicker(props: Props) {
                       paddingBottom: 0,
                       height: "2.5rem"
                     },
+                    "& .MuiInputBase-root": {
+                      '& fieldset': {
+                          borderColor: 'gray.main',
+                      },
+                    },
                     "& .MuiInputLabel-root:not(.MuiInputLabel-shrink)": {
                       fontSize: "0.875rem",
                       top: "-0.375rem",
@@ -124,6 +129,11 @@ export default function DateRangePicker(props: Props) {
                       paddingTop: 0,
                       paddingBottom: 0,
                       height: "2.5rem"
+                    },
+                    "& .MuiInputBase-root": {
+                      '& fieldset': {
+                          borderColor: 'gray.main',
+                      },
                     },
                     "& .MuiInputLabel-root:not(& .MuiInputLabel-shrink)": {
                       fontSize: "0.875rem",

@@ -4,6 +4,7 @@ import { Prisma, insurance } from '@prisma/client';
 import moment from "moment";
 import * as R from 'ramda';
 import * as yup from 'yup';
+import PatientTab from '../components/bookingSheet/tabs/patientTab';
 
 interface DashboardQueryParams { 
     searchValue?: string
@@ -39,15 +40,19 @@ export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma
         return filterObject
     }
 
+    //TODO: separate caseId and name logic
     const nameOne = searchValue.split(' ')[0];
     const nameTwo = searchValue.split(' ')[1];
     const caseId = parseInt(searchValue);
-    const isStringNumeric = /^[0-9]+$/gi.test(searchValue);
-    if (isStringNumeric) {
+    // const isStringNumeric = /^[0-9]+$/gi.test(searchValue);
+    /*
+        if (isStringNumeric) {
         filterObject.caseId = {
                 equals: caseId
             }
-    } else if (!nameTwo) {
+    } else
+    */
+     if (!nameTwo) {
         filterObject.patient = {
             OR: [
                 {
@@ -94,6 +99,7 @@ export function formatDate(date: Date | null | undefined) : string | null {
 export function casesFormatter (cases: FullCase | null): FullCase | null {
     if (cases) {
         const scheduling = cases.scheduling;
+        // const patient = cases.patient;
         const formattedProvider = (scheduling?.provider) ?  {
             ...scheduling.provider, 
             providerName: (scheduling.provider) ? `${scheduling.provider.firstName} ${scheduling.provider.lastName}` : ''
@@ -106,7 +112,11 @@ export function casesFormatter (cases: FullCase | null): FullCase | null {
             scheduling: {
                 ...scheduling,
                 provider: formattedProvider,
-            }
+            },
+            // patient: {
+            //     ...patient,
+            //     isComplete: (patient.firstName && patient.lastName && patient.mrn) ? true : false
+            // }
         }
         return newCase
     } else {

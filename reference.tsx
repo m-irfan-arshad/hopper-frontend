@@ -155,6 +155,29 @@ export const docTypeDropdownOptions = [
   }
 ];
 
+export const dashboardWorkQueueDropDownValues = [
+  {
+      value: "Booking Sheet Request",
+      id: "bookingSheetRequest"
+  },
+  {
+      value: "Pending Scheduling Confirmation",
+      id: "pendingSchedulingConfirmation"
+  }, 
+  {
+      value: "Insurance Authorization",
+      id: "insuranceAuth"
+  },
+  {
+    value: "Preadmission Testing At Hospital",
+    id: "preadmissionTestingAtHospital"
+  },
+  {
+    value: "Case Amendments",
+    id: "caseAmendments"
+  }
+];
+
 export interface Step {
   text: string,
   status: boolean

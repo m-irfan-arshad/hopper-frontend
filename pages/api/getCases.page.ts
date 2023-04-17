@@ -51,4 +51,42 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
   } catch(err: any) {
     res.status(500).json({ message: err.message });
 }
+  
 }))
+
+
+/* TODO: HPR-425
+
+
+    1. isComplete is not part of the object itself... its added as an extension, need each tab to have this 
+        and then use all of these combined to make a full case
+    2. use prisma $extends to solve 
+
+      [12:44 PM] Isaac Blinder
+
+
+
+      TODO: 
+      use AND/OR logic of native prisma to try and create relational logic for prisma (in clinical Tab, if this checkbox is clicked, then all of these fields are required)
+
+      example below is saying on the clinicalTab grab it if clearanceRequired is false or clearances is filled out (not working just an idea)
+
+      const getUser = prisma.cases.findMany({
+  where: {
+    clinicalTab: {
+      OR: [
+        {clearanceRequired: false},
+        {clearances: {
+          clearanceDateTime: {}
+        }}
+     ]
+    }
+  },
+  include: {
+    clinicalTab: true
+  }
+})
+
+has context menu
+
+*/

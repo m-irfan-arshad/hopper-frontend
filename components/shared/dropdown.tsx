@@ -8,38 +8,39 @@ interface MenuItem {
 
 interface Props {
     menuItems: MenuItem[]
-    title: string
     selectId: string
-    additionalStyles?: React.CSSProperties
+    additionalStyles?: React.CSSProperties | object
     onChange: (value: string) => void
     value: string
+    placeholder?: string
 }
 
 export default function DropDownComponent(props: Props) {
-    const {menuItems, title, selectId, additionalStyles, onChange, value} = props;
+    const {menuItems, selectId, additionalStyles, onChange, value, placeholder} = props;
 
     const defaultStyles = {
         color: "black.main",
         height: "2.5rem",
         borderRadius: "none",
+        ".MuiSelect-select": {
+            display: 'flex',
+            alignItems: 'center',
+        },
         "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "gray.main",
         },
         "&:hover .MuiOutlinedInput-notchedOutline": { 
             borderColor: "gray.main"
-        },
-        svg: {
-            color: "blue.main"
         }
     };
     
     return (
         <Select
-            value={value}
+            value={value ? value : placeholder}
             id={selectId}
-            renderValue={(value: string) => (
-                <Typography variant="body2">{title} {value}</Typography>
-            )}
+            renderValue={          
+                value !== "" ? undefined : () => <Typography variant="body2" sx={{color: "gray.dark"}}>{value !== '' ? value : placeholder}</Typography>
+            }
             sx={{
                 ...defaultStyles,
                 ...additionalStyles

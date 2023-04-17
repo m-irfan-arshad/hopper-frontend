@@ -113,35 +113,9 @@ export default function Dashboard() {
                         <Typography variant="h6">
                             {`${data.count || 0} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
-                        {!isMobile 
-                            && <Box sx={{ minWidth: 120 }}>
-                                    <DropDownComponent
-                                        menuItems={dashboardSortDropDownValues}
-                                        title="Sort:"
-                                        selectId="case-sort-select"
-                                        additionalStyles={{ marginLeft: "0.625rem" }}
-                                        onChange={(value) => handleStateUpdate('dateSortValue', value)}
-                                        value={context.dashboard.dateSortValue}
-                                    />
-                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
-                            </Box>
-                        }
                     </Box>
                     <Box sx={{display: "flex"}}>
-                        {isMobile 
-                            && <Box sx={{ marginRight: "0.313rem" }}>
-                                    <DropDownComponent
-                                        menuItems={dashboardSortDropDownValues}
-                                        title="Sort:"
-                                        selectId="case-sort-select"
-                                        onChange={(value) => handleStateUpdate('dateSortValue', value)}
-                                        value={context.dashboard.dateSortValue}
-                                    />
-                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="caption" color="black.main" >Show Completed Cases</Typography>
-                            </Box>
-                        }
+
                         <Button variant="contained" size="small">
                             <Logout sx={{
                                 transform: "rotate(270deg)", 
