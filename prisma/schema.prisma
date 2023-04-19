@@ -15,7 +15,7 @@ model cases {
   patientId             Int       @map("patient_id")
   schedulingId          Int       @map("scheduling_id") @unique
   procedureTabId        Int       @map("procedure_tab_id") @unique
-  clinicalTabId         Int       @map("clinical_tab_id") @unique
+  clinicalId         Int       @map("clinical_tab_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
   comment            comment[]
@@ -24,7 +24,7 @@ model cases {
   financial          financial[]
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
-  clinicalTab        clinicalTab @relation(fields: [clinicalTabId], references: [clinicalTabId])
+  clinical           clinical @relation(fields: [clinicalId], references: [clinicalId])
 }
 
 model comment {
@@ -241,14 +241,14 @@ model icdCode {
   procedureTab   procedureTab[]
 }
 
-model clinicalTab {
-  clinicalTabId           Int       @id @default(autoincrement()) @map("clinical_tab_id")
+model clinical {
+  clinicalId           Int       @id @default(autoincrement()) @map("clinical_id")
   physicianFirstName      String?    @map("physician_first_name") @default("")
   physicianLastName       String?    @map("physician_last_name") @default("")
   physicianPhone          String?    @map("physician_phone") @default("")
-  preOpRequired           Boolean?   @map("pre_op_required") @default(false)
-  diagnosticTestsRequired Boolean?   @map("diagnostic_tests_required") @default(false)
-  clearanceRequired       Boolean?   @map("clearance_required") @default(false)
+  preOpRequired           String?   @map("pre_op_required")
+  diagnosticTestsRequired String?   @map("diagnostic_tests_required")
+  clearanceRequired       String?   @map("clearance_required")
   postOpDateTime          DateTime?  @map("post_op_date_time") @db.Timestamp(6)
   preOpFormId             Int?        @map("pre_op_form_id")
   preOpForm               preOpForm?  @relation(fields: [preOpFormId], references: [preOpFormId])
@@ -259,12 +259,12 @@ model clinicalTab {
 
 model preOpForm {
   preOpFormId             Int       @id @default(autoincrement()) @map("pre_op_form_id")
-  clinicalTabId           Int?       @map("clinical_tab_id")
+  clinicalId           Int?       @map("clinical_id")
   preOpDateTime           DateTime?  @map("pre_op_date_time") @db.Timestamp(6)
-  atProcedureLocation     Boolean?   @map("show_pre_op_location")
+  atProcedureLocation     Boolean?   @map("at_procedure_location")
   facilityId              Int?       @map("facility_id")
   facility                facility?  @relation(fields: [facilityId], references: [facilityId])
-  clinicalTab             clinicalTab[]
+  clinical             clinical[]
 }
 
 model facility {
@@ -286,10 +286,10 @@ model diagnosticTestForm {
     diagnosticTestId            Int?      @map("diagnostic_test_id")
     testNameOther               String?   @map("test_name_other") @default("")
     testDateTime                DateTime  @map("test_date_time") @db.Timestamp(6)
-    sameAsProcedureLocation     Boolean   @map("same_as_procedure_location") @default(false)
+    atProcedureLocation         Boolean?   @map("at_procedure_location")
     facilityId                  Int?      @map("facility_id")
     facility                    facility?  @relation(fields: [facilityId], references: [facilityId])
-    clinicalTab                 clinicalTab[]
+    clinical                    clinical[]
     diagnosticTest              diagnosticTest? @relation(fields: [diagnosticTestId], references: [diagnosticTestId])
 }
 
@@ -307,11 +307,11 @@ model clearanceForm {
   physicianFirstName        String?   @map("physician_first_name") @default("")
   physicianLastName         String?   @map("physician_last_name") @default("")
   physicianPhone            String?   @map("physician_phone") @default("")
-  sameAsProcedureLocation   Boolean   @map("same_as_procedure_location") @default(false)
+  atProcedureLocation       Boolean?   @map("at_procedure_location")
   facilityId                Int?      @map("facility_id")
   facility                  facility?  @relation(fields: [facilityId], references: [facilityId])
   clearance                 clearance? @relation(fields: [clearanceId], references: [clearanceId])
-  clinicalTab               clinicalTab[]
+  clinical                  clinical[]
 }
 
 model clearance {

@@ -28,7 +28,11 @@ async function createCases() {
                     }
                 },
                 procedureTab: {create: {}},
-                clinicalTab: {create: {}},
+                clinical: {create: {
+                    preOpForm: {create: { facility: {create: {}} }},
+                    clearances: {create: []},
+                    diagnosticTests: {create: []},
+                }},
             }
         })
     }

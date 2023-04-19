@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { getDirtyValues, createValidationObject } from '../../utils/helpers';
+import { getDirtyValues, createValidationObject, excludeField, convertObjectToPrismaFormat } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance } from '../../reference';
 import * as R from 'ramda';
@@ -40,7 +40,11 @@ const StyledTab = styled(Tab)({
 
 function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
     let query: any = {caseId: caseId, ...getDirtyValues(dirtyFields, formData)};
-    if (dirtyFields.financial) {
+    delete query['diagnosticTests']
+    delete query['clearances']
+    delete query['comment']
+    delete query['document']
+    if (query.financial) {
         let newInsurances: object[] = [];
         let updateInsurances: object[] = [];
         formData.financial.forEach((insObj: any, index: number) => {
@@ -61,7 +65,22 @@ function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: an
             } 
         })
         query.financial = {create: newInsurances, update: updateInsurances}
+    } if (query.clinical) {
+        const clinicalUpdates = query.clinical;
+        console.log("clinicalUpdates: ", clinicalUpdates)
+        let clinicalQuery = convertObjectToPrismaFormat(clinicalUpdates, 'clinicalId')
+        delete clinicalQuery['preOpFormId']
+        if(clinicalUpdates.preOpForm) {
+            clinicalQuery.update.preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId')
+            if (clinicalUpdates.preOpForm.facility) {
+                clinicalQuery.update.preOpForm.update.facility = convertObjectToPrismaFormat(clinicalUpdates.preOpForm.facility, 'facilityId')
+                delete clinicalQuery.update.preOpForm.update.facilityId
+            }
+        }
+        query.clinical = clinicalQuery
     }
+    console.log('dirty values: ', dirtyFields)
+    console.log('query: ', query)
 
     return query
 }
@@ -75,11 +94,11 @@ function prepareFormForRender(data: any) {
         parsedCase.financial = parsedCase.financial.map((insurance: any) => ({...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}))
     }
 
-    if (R.isEmpty(data.clinicalTab.diagnosticTests)) {
+    if (R.isEmpty(data.clinical.diagnosticTests)) {
         parsedCase.diagnosticTests = [defaultDiagnosticTest]
     }
 
-    if (R.isEmpty(data.clinicalTab.clearances)) {
+    if (R.isEmpty(data.clinical.clearances)) {
         parsedCase.clearances = [defaultClearance]
     }
 

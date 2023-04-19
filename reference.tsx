@@ -160,7 +160,7 @@ export const defaultDiagnosticTest = {
   testName: null,
   testNameOther: '',
   testDateTime: null,
-  sameAsProcedureLocation: null,
+  atProcedureLocation: null,
   testFacilityName: '',
   testPhone: '',
   testAddressOne: '',
@@ -174,8 +174,24 @@ export const defaultClearance = {
     testName: null,
     testNameOther: '',
     testDateTime: null,
-    sameAsProcedureLocation: null,
+    atProcedureLocation: null,
     facility: null
+}
+
+export const defaultFacility = {
+  facilityName: '',
+  phone: '',
+  addressOne: '',
+  addressTwo: '',
+  city: '',
+  state: '',
+  zip: ''
+}
+
+export const defaultPreOpForm = {
+  preOpDateTime: null,
+  atProcedureLocation: null,
+  facility: defaultFacility,
 }
 
 const facilityConfig = {
@@ -190,7 +206,7 @@ const facilityConfig = {
 
 export const defaultBookingSheetConfig = {
   patient: {
-      firstName: { default: '', required: true },
+      firstName: { default: '', required: true, visible: true },
       middleName: { default: '' },
       lastName: { default: '' },
       dateOfBirth: { default: null },
@@ -241,14 +257,14 @@ export const defaultBookingSheetConfig = {
       diagnosticTest: {default: null},
       testNameOther: {default: ''},
       testDateTime: {default: null},
-      sameAsProcedureLocation: {default: null},
+      atProcedureLocation: {default: null},
       facility: facilityConfig
     }],
     clearances: [{
       clearance: {default: null},
       testNameOther: {default: ''},
       testDateTime: {default: null},
-      sameAsProcedureLocation: {default: null},
+      atProcedureLocation: {default: null},
       facility: facilityConfig
     }],
   }

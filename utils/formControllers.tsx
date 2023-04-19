@@ -71,7 +71,8 @@ interface RadioControllerProps {
     title?: string,
     size: number,
     config?: BookingSheetConfig,
-    options: Array<{title: string, value: any}>
+    options: Array<{title: string, value: any}>,
+    onChange?: any
 }
 
 interface CheckboxControllerProps {
@@ -120,11 +121,6 @@ const sharedProps = {
         },
         width: "100%",
     }
-}
-
-const wrappedOnChange = (e: any, onChange1: any, onChange2: any) => {
-    onChange1 && onChange1(e);
-    onChange2 && onChange2(e);
 }
   
 export function InputController(props: InputControllerProps) {
@@ -246,14 +242,15 @@ export function RadioGroupController(props: RadioControllerProps) {
     return <ConfigWrapper id={id} size={size} config={config}><Controller
         name={id}
         control={control}
-        render={({ field }) => (
-            <FormControl>
+        render={({ field }) => {
+            const onChangeFunc = props.onChange ? props.onChange : field.onChange;
+            return <FormControl>
                 <FormLabel>{title}</FormLabel>
-                <RadioGroup row id={id} {...field}>
+                <RadioGroup row id={id} {...field} onChange={onChangeFunc}>
                     {options.map((option, index) => <FormControlLabel key={index} control={<Radio />} label={option.title} value={option.value} />)}
                 </RadioGroup>
             </FormControl>
-        )}
+        }}
       /></ConfigWrapper>
 }
 
@@ -271,6 +268,7 @@ export function CheckboxController(props: CheckboxControllerProps) {
                 <FormLabel>{title}</FormLabel>
                 <Checkbox
                     {...field}
+                    checked={field.value}
                     id={id}
                     inputProps={{ 'aria-label': 'controlled' }}
                     onChange={onChangeFunc}

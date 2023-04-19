@@ -166,7 +166,10 @@ export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", op
             const fieldId = fieldName + 'Id'
             if (Array.isArray(objNoId[fieldName])) { // for arrays, disconnect all previous relationships and connect ids in array
                 formattedObj[fieldName] = {set: [], connect: objNoId[fieldName].map((elem: any) => ({[fieldId]: elem[fieldId]}))};
-            } else if (typeof objNoId[fieldName] === 'object') { // for objects, delete the Id
+            } else if (objNoId[fieldName] instanceof Date || R.isNil(objNoId[fieldName])) {
+                formattedObj[fieldName] = objNoId[fieldName]
+            }
+            else if (typeof objNoId[fieldName] === 'object') { // for objects, delete the Id
                 formattedObj[fieldId] = obj[fieldName][fieldId]
                 delete formattedObj[fieldName]
             }
@@ -174,6 +177,21 @@ export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", op
        return {[operation]: formattedObj}
     } else {
         return formattedObj
+    }
+  }
+
+  export function convertObjectToPrismaFormatRecursive(data: any, id="", operation="update") {
+    if(Array.isArray(data)) {
+        return {set: [], connect: data.map((elem: any) => ({[id]: elem[id]}))};
+    } else if (typeof data === 'object' && !R.isEmpty(data)) {
+        console.log(id, " is object: ", data)
+        let newObj = excludeField(data, id)
+        Object.keys(data).forEach(key => (
+            newObj[key] = convertObjectToPrismaFormat(data[key], key+'Id')
+        ))
+        return {'update': newObj}
+    } else {
+        return data
     }
   }
 
@@ -194,7 +212,7 @@ export function formatCreateCaseParams(data: FullCase) {
       procedureTab: {
         create: {}
       },
-      clinicalTab: {
+      clinical: {
         create: {}
       }
     })

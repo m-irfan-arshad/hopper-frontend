@@ -10,7 +10,7 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import {InputController, DateController, DropDownSearchController, CheckboxController, RadioGroupController} from '../../../utils/formControllers'
-import { BookingSheetConfig, defaultClearance, defaultDiagnosticTest } from "../../../reference";
+import { BookingSheetConfig, defaultClearance, defaultDiagnosticTest, defaultFacility, defaultPreOpForm } from "../../../reference";
 import * as R from 'ramda'
 import { useWatch, useFieldArray, useFormContext } from "react-hook-form";
 import { Add, RemoveCircle } from "@mui/icons-material";
@@ -39,42 +39,50 @@ export default function ClinicalTab(props: Props) {
     const diagnosticTests = useWatch({ name: 'clinical.diagnosticTests' })
     const clearances = useWatch({ name: 'clinical.clearances' })
 
-    // reset "other" input and facility details when they are hidden
-    const onTestNameChange = (index: number) => (e: diagnosticTest) => {
-        resetField(`clinical.diagnosticTests.${index}.testNameOther`);
-        setValue(`clinical.diagnosticTests.${index}.diagnosticTest`, e)
+    // reset form and facility details when they are hidden
+    // form required change
+    const onPreOpRequiredChange = (e: any) => {
+        setValue('clinical.preOpForm', defaultPreOpForm, {shouldDirty: true});
+        setValue('clinical.preOpRequired', e.target.value, {shouldDirty: true})
     }
 
-    const onShowTestFacilityChange = (index: number) => (e: any) => {
-        resetField(`clinical.diagnosticTests.${index}.facility`);
-        setValue(`clinical.diagnosticTests.${index}.sameAsProcedureLocation`, e.target.checked)
+    const onDiagnosticTestsRequiredChange = (e: any) => {
+        setValue('clinical.diagnosticTests', [defaultDiagnosticTest], {shouldDirty: true});
+        setValue('clinical.diagnosticTestsRequired', e.target.value, {shouldDirty: true})
+    }
+
+    const onClearanceRequiredChange  = (e: any) => {
+        setValue('clinical.clearances', [defaultClearance], {shouldDirty: true});
+        setValue('clinical.clearanceRequired', e.target.value, {shouldDirty: true})
+    }
+    
+    // dropdown with other change
+    const onTestNameChange = (index: number) => (e: diagnosticTest) => {
+        setValue(`clinical.diagnosticTests.${index}.testNameOther`, '', {shouldDirty: true});
+        setValue(`clinical.diagnosticTests.${index}.diagnosticTest`, e, {shouldDirty: true})
     }
 
     const onClearanceNameChange = (index: number) => (e: diagnosticTest) => {
-        resetField(`clinical.clearances.${index}.clearanceNameOther`);
-        setValue(`clinical.clearances.${index}.clearance`, e)
+        setValue(`clinical.clearances.${index}.clearanceNameOther`, '', {shouldDirty: true});
+        setValue(`clinical.clearances.${index}.clearance`, e, {shouldDirty: true})
+    }
+
+    // show facility change
+    const onShowTestFacilityChange = (index: number) => (e: any) => {
+        setValue(`clinical.diagnosticTests.${index}.facility`, defaultFacility, {shouldDirty: true});
+        setValue(`clinical.diagnosticTests.${index}.atProcedureLocation`, e.target.checked, {shouldDirty: true})
     }
 
     const onShowClearanceFacilityChange = (index: number) => (e: any) => {
-        resetField(`clinical.clearances.${index}.facility`);
-        setValue(`clinical.clearances.${index}.sameAsProcedureLocation`, e.target.checked)
+        setValue(`clinical.clearances.${index}.facility`, defaultFacility, {shouldDirty: true});
+        setValue(`clinical.clearances.${index}.atProcedureLocation`, e.target.checked, {shouldDirty: true})
     }
 
-    useEffect(() => {
-        resetField(`clinical.clearances`);
-      }, [clearanceRequired]);
+    const onShowPreOpFacilityChange = (e: any) => {
+        setValue(`clinical.preOpForm.facility`, defaultFacility, {shouldDirty: true});
+        setValue(`clinical.preOpForm.atProcedureLocation`, e.target.checked, {shouldDirty: true})
+    }
 
-    useEffect(() => {
-        resetField(`clinical.diagnosticTests`);
-      }, [diagnosticTestsRequired]);
-
-    useEffect(() => {
-        resetField(`clinical.preOpForm`);
-      }, [preOpRequired]);
-
-    useEffect(() => {
-        resetField(`clinical.preOpForm.facility`);
-      }, [showPreOpLocation]);
       
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -86,11 +94,24 @@ export default function ClinicalTab(props: Props) {
                 </Grid>
                 <Typography variant="h6" sx={headerStyles}>Pre-Admission Assessment</Typography>
                 <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}>
-                    <RadioGroupController id="clinical.preOpRequired" size={12} title="Is pre-admission assessment required for this patient?" options={preOpRequiredOptions} config={config}/>
+                    <RadioGroupController 
+                        onChange={onPreOpRequiredChange} 
+                        id="clinical.preOpRequired" 
+                        size={12} 
+                        title="Is pre-admission assessment required for this patient?" 
+                        options={preOpRequiredOptions} 
+                        config={config}
+                    />
                     {preOpRequired==="true" && (
                         <React.Fragment>
                             <DateController withTime id={'clinical.preOpForm.preOpDateTime'} title="Pre-Op Date" placeholder="Pre-Op Date" size={12} config={config}/>
-                            <CheckboxController id={'clinical.preOpForm.atProcedureLocation'} title="At Procedure Location?" size={6} config={config}/>
+                            <CheckboxController 
+                                id={'clinical.preOpForm.atProcedureLocation'} 
+                                title="At Procedure Location?" 
+                                size={6} 
+                                config={config}
+                                onChange={onShowPreOpFacilityChange}
+                            />
                             <Box width="100%"/>
                             {showPreOpLocation && (
                                 <React.Fragment>
@@ -108,12 +129,18 @@ export default function ClinicalTab(props: Props) {
                 </Grid>
 
                 <Typography variant="h6" sx={headerStyles}>Pre-Admission Testing</Typography>
-                <RadioGroupController id="clinical.diagnosticTestsRequired" size={12} title="Is pre-admission testing required for this patient?" options={diagnosticTestsRequiredOptions} config={config}/>
+                <RadioGroupController 
+                    onChange={onDiagnosticTestsRequiredChange} 
+                    id="clinical.diagnosticTestsRequired" 
+                    size={12} title="Is pre-admission testing required for this patient?" 
+                    options={diagnosticTestsRequiredOptions} 
+                    config={config}
+                />
                     {diagnosticTestsRequired==="true" && (
                         <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"} sx={{marginTop: '1rem'}}>
                             {diagnosticTestFields.map((item, index, itemList)=>{
                             const testNameIsOther = R.path([index, 'diagnosticTest', 'testName'], diagnosticTests) === 'Other';
-                            const showTestLocation = !R.path([index, 'sameAsProcedureLocation'], diagnosticTests);
+                            const showTestLocation = !R.path([index, 'atProcedureLocation'], diagnosticTests);
                             return (
                                     <React.Fragment>
                                     <DropDownSearchController 
@@ -132,7 +159,7 @@ export default function ClinicalTab(props: Props) {
                                     <DateController withTime id={`clinical.diagnosticTests.${index}.testDateTime`} title="Pre-Op Testing Date" placeholder="Pre-Op Testing Date" size={6} config={config}/>
                                     <CheckboxController 
                                         onChange={onShowTestFacilityChange(index)}
-                                        id={`clinical.diagnosticTests.${index}.sameAsProcedureLocation`} 
+                                        id={`clinical.diagnosticTests.${index}.atProcedureLocation`} 
                                         title="At Procedure Location?" 
                                         size={12} 
                                         config={config}
@@ -170,12 +197,19 @@ export default function ClinicalTab(props: Props) {
                     )}
 
                 <Typography variant="h6" sx={headerStyles}>Clearances</Typography>
-                <RadioGroupController id="clinical.clearanceRequired" size={12} title="Are clearances required for this patient?" options={clearanceRequiredOptions} config={config}/>
+                <RadioGroupController 
+                    onChange={onClearanceRequiredChange} 
+                    id="clinical.clearanceRequired" 
+                    size={12} 
+                    title="Are clearances required for this patient?" 
+                    options={clearanceRequiredOptions} 
+                    config={config}
+                />
                     {clearanceRequired==="true" && (
                         <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"} sx={{marginTop: '1rem'}}>
                             {clearanceFields.map((item, index, itemList)=>{
                             const clearanceNameIsOther = R.path([index, 'clearance', 'clearanceName'], clearances) === 'Other';
-                            const showTestLocation = !R.path([index, 'sameAsProcedureLocation'], clearances);
+                            const showTestLocation = !R.path([index, 'atProcedureLocation'], clearances);
                             return (
                                     <React.Fragment>
                                     <DropDownSearchController 
@@ -197,7 +231,7 @@ export default function ClinicalTab(props: Props) {
                                     <InputController id={`clinical.clearances.${index}.physicianPhone`} title="Provider Phone Number" placeholder="Provider Phone Number" size={6} config={config}/>
                                     <CheckboxController 
                                         onChange={onShowClearanceFacilityChange(index)}
-                                        id={`clinical.clearances.${index}.sameAsProcedureLocation`} 
+                                        id={`clinical.clearances.${index}.atProcedureLocation`} 
                                         title="At Procedure Location?" 
                                         size={12} 
                                         config={config}
