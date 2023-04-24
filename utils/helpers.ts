@@ -170,10 +170,9 @@ export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", op
             const fieldId = fieldName + 'Id'
             if (Array.isArray(objNoId[fieldName])) { // for arrays, disconnect all previous relationships and connect ids in array
                 formattedObj[fieldName] = {set: [], connect: objNoId[fieldName].map((elem: any) => ({[fieldId]: elem[fieldId]}))};
-            } else if (objNoId[fieldName] instanceof Date || R.isNil(objNoId[fieldName])) {
+            } else if (objNoId[fieldName] instanceof Date || isMoment(objNoId[fieldName]) || R.isNil(objNoId[fieldName])) {
                 formattedObj[fieldName] = objNoId[fieldName]
-            }
-            else if (typeof objNoId[fieldName] === 'object') { // for objects, delete the Id
+            } else if (typeof objNoId[fieldName] === 'object') { // for objects, delete the Id
                 formattedObj[fieldId] = obj[fieldName][fieldId]
                 delete formattedObj[fieldName]
             }
@@ -189,7 +188,6 @@ export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", op
     if(Array.isArray(data)) {
         return {set: [], connect: data.map((elem: any) => ({[id]: elem[id]}))};
     } else if (typeof data === 'object' && !R.isEmpty(data)) {
-        console.log(id, " is object: ", data)
         let newObj = excludeField(data, id)
         Object.keys(data).forEach(key => (
             newObj[key] = convertObjectToPrismaFormat(data[key], key+'Id')
@@ -228,7 +226,7 @@ export function formatCreateCaseParams(data: FullCase) {
  * Useful for building performative update queries.
  */
 export function getDirtyValues(dirtyFields: any, allValues: any): any {
-    if (dirtyFields === true || Array.isArray(allValues) || isMoment(allValues)) {
+    if (dirtyFields === true || Array.isArray(allValues) || isMoment(allValues) || allValues instanceof Date ) {
       return allValues;
     }
     else if (R.isEmpty(dirtyFields) || R.isNil(dirtyFields)) {
@@ -241,9 +239,33 @@ export function getDirtyValues(dirtyFields: any, allValues: any): any {
     }
 }
 
+const flattenObj = (ob: any) => {
+    let result: IndexObject = {};
+    for (const i in ob) {
+        if (Array.isArray(ob[i])) {
+            ob[i].forEach((elem: any, index: number) => {
+                const temp = flattenObj(ob[i]);
+                for (const j in temp) {
+                    result[i + '.' + j] = temp[j];
+                }
+        })
+        } else if ((typeof ob[i]) === 'object' && !isMoment(ob[i])) {
+            const temp = flattenObj(ob[i]);
+            for (const j in temp) {
+                result[i + '.' + j] = temp[j];
+            }
+        } else if (isMoment(ob[i])) {
+            result[i] = ob[i].format();
+        } else {
+            result[i] = ob[i];
+        }
+    }
+    return result;
+};
+
 export const getDifference = (original: any, incoming: any) => {
-    const flatOriginal = flatten(original);
-    const flatIncoming = flatten(incoming);
+    const flatOriginal = flattenObj(original);
+    const flatIncoming = flattenObj(incoming);
   
     const differenceKeys = Object.keys(flatIncoming).filter(
       key => !R.equals(flatOriginal[key], flatIncoming[key])

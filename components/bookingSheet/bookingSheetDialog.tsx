@@ -49,6 +49,7 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
         query.financial = getPrismaArrayUpdateQuery(formData.financial, query.financial, 'financialId');
     } if (query.clinical) {
         const clinicalUpdates = query.clinical;
+        console.log("clinicalUpdates: ", clinicalUpdates)
         let clinicalQuery = convertObjectToPrismaFormat(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
             if(clinicalUpdates.preOpForm) {
@@ -59,11 +60,19 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
                 }
                 clinicalQuery.update.preOpForm = preOpForm;
             } 
-            if (clinicalUpdates.diagnosticTests) {
-                clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = getPrismaArrayUpdateQuery(formData.clinical.diagnosticTests, query.clinical.diagnosticTests, 'diagnosticTestFormId'));
+            if (formData.clinical.diagnosticTestsRequired === "true") {
+                if (clinicalUpdates.diagnosticTests) {
+                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = getPrismaArrayUpdateQuery(formData.clinical.diagnosticTests, query.clinical.diagnosticTests, 'diagnosticTestFormId'));
+                }
+            } else {
+                clinicalQuery.update.diagnosticTests = {set: []}
             }
-            if (clinicalUpdates.clearances) {
-                clinicalQuery.update.clearances = getPrismaArrayUpdateQuery(formData.clinical.clearances, query.clinical.clearances, 'clearanceFormId');
+            if (formData.clinical.clearanceRequired === "true") {
+                if (clinicalUpdates.clearances) {
+                    clinicalQuery.update.clearances = getPrismaArrayUpdateQuery(formData.clinical.clearances, query.clinical.clearances, 'clearanceFormId');
+                }
+            } else {
+                clinicalQuery.update.clearances = {set: []}
             }
             query.clinical = clinicalQuery
         }
@@ -77,7 +86,13 @@ function prepareFormForRender(data: any) {
     if (R.isEmpty(data.financial)) {
         parsedCase.financial = [defaultInsuranceValue]
     } else {
-        parsedCase.financial = parsedCase.financial.map((insurance: any) => ({...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}))
+        parsedCase.financial = parsedCase.financial.map((insurance: any) => {
+            if (typeof insurance.priorAuthorization === 'object') {
+                return insurance
+            } else {
+                return {...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}
+            }
+        })
     }
 
     if (R.isEmpty(data.clinical.diagnosticTests)) {

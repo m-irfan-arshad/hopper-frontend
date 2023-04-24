@@ -156,31 +156,6 @@ export const defaultInsuranceValue = {
   priorAuthDate: null,
 }
 
-export const defaultDiagnosticTest = {
-  testName: null,
-  testNameOther: '',
-  testDateTime: null,
-  atProcedureLocation: null,
-  testFacilityName: '',
-  testPhone: '',
-  testAddressOne: '',
-  testAddressTwo: '',
-  testCity: '',
-  testState: '',
-  testZip: '',
-}
-
-export const defaultClearance = {
-    clearanceName: null,
-    clearanceNameOther: '',
-    clearanceDateTime: null,
-    physicianFirstName: '',
-    physicianLastName: '',
-    physicianPhone: '',
-    atProcedureLocation: null,
-    postOpDateTime: null
-}
-
 export const defaultFacility = {
   facilityName: '',
   phone: '',
@@ -191,10 +166,29 @@ export const defaultFacility = {
   zip: ''
 }
 
+export const defaultClearance = {
+    clearanceName: null,
+    clearanceNameOther: '',
+    clearanceDateTime: null,
+    physicianFirstName: '',
+    physicianLastName: '',
+    physicianPhone: '',
+    atProcedureLocation: null,
+    facility: defaultFacility
+}
+
 export const defaultPreOpForm = {
   preOpDateTime: null,
   atProcedureLocation: null,
   facility: defaultFacility,
+}
+
+export const defaultDiagnosticTest = {
+  testName: null,
+  testNameOther: '',
+  testDateTime: null,
+  atProcedureLocation: null,
+  facility: defaultFacility
 }
 
 const facilityConfig = {

@@ -40,23 +40,6 @@ export default function ClinicalTab(props: Props) {
     const clearances = useWatch({ name: 'clinical.clearances' })
 
     // reset form and facility details when they are hidden
-    // form required change
-    const onPreOpRequiredChange = (e: any) => {
-        setValue('clinical.preOpForm', defaultPreOpForm, {shouldDirty: true});
-        setValue('clinical.preOpRequired', e.target.value, {shouldDirty: true})
-    }
-
-    const onDiagnosticTestsRequiredChange = (e: any) => {
-        setValue('clinical.diagnosticTests', [defaultDiagnosticTest], {shouldDirty: true});
-        setValue('clinical.diagnosticTestsRequired', e.target.value, {shouldDirty: true})
-    }
-
-    const onClearanceRequiredChange  = (e: any) => {
-        setValue('clinical.clearances', [defaultClearance], {shouldDirty: true});
-        setValue('clinical.clearanceRequired', e.target.value, {shouldDirty: true})
-    }
-    
-    // dropdown with other change
     const onTestNameChange = (index: number) => (e: diagnosticTest) => {
         setValue(`clinical.diagnosticTests.${index}.testNameOther`, '', {shouldDirty: true});
         setValue(`clinical.diagnosticTests.${index}.diagnosticTest`, e, {shouldDirty: true})
@@ -67,7 +50,6 @@ export default function ClinicalTab(props: Props) {
         setValue(`clinical.clearances.${index}.clearance`, e, {shouldDirty: true})
     }
 
-    // show facility change
     const onShowTestFacilityChange = (index: number) => (e: any) => {
         setValue(`clinical.diagnosticTests.${index}.facility`, defaultFacility, {shouldDirty: true});
         setValue(`clinical.diagnosticTests.${index}.atProcedureLocation`, e.target.checked, {shouldDirty: true})
@@ -95,7 +77,6 @@ export default function ClinicalTab(props: Props) {
                 <Typography variant="h6" sx={headerStyles}>Pre-Admission Assessment</Typography>
                 <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}>
                     <RadioGroupController 
-                        onChange={onPreOpRequiredChange} 
                         id="clinical.preOpRequired" 
                         size={12} 
                         title="Is pre-admission assessment required for this patient?" 
@@ -130,7 +111,6 @@ export default function ClinicalTab(props: Props) {
 
                 <Typography variant="h6" sx={headerStyles}>Pre-Admission Testing</Typography>
                 <RadioGroupController 
-                    onChange={onDiagnosticTestsRequiredChange} 
                     id="clinical.diagnosticTestsRequired" 
                     size={12} title="Is pre-admission testing required for this patient?" 
                     options={diagnosticTestsRequiredOptions} 
@@ -198,7 +178,6 @@ export default function ClinicalTab(props: Props) {
 
                 <Typography variant="h6" sx={headerStyles}>Clearances</Typography>
                 <RadioGroupController 
-                    onChange={onClearanceRequiredChange} 
                     id="clinical.clearanceRequired" 
                     size={12} 
                     title="Are clearances required for this patient?" 
@@ -267,7 +246,6 @@ export default function ClinicalTab(props: Props) {
                     </DialogActions>
                     </Grid>
                     )}
-
                 <Typography variant="h6" sx={headerStyles}>Post-Operative Care</Typography>
                 <DateController withTime id={'clinical.postOpDateTime'} title="Post-Op Date" placeholder="Post-Op Date" size={6} config={config}/>
             </LocalizationProvider>
