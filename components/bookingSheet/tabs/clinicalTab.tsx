@@ -34,8 +34,8 @@ export default function ClinicalTab(props: Props) {
     const diagnosticTestsRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
     const clearanceRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
 
-    const { append: appendDiagnosticTest, remove: removeDiagnosticTest, fields: diagnosticTestFields } = useFieldArray({control, name: "diagnosticTests"});
-    const { append: appendClearance, remove: removeClearance, fields: clearanceFields } = useFieldArray({control, name: "clearances"});
+    const { append: appendDiagnosticTest, remove: removeDiagnosticTest, fields: diagnosticTestFields } = useFieldArray({control, name: "clinical.diagnosticTests"});
+    const { append: appendClearance, remove: removeClearance, fields: clearanceFields } = useFieldArray({control, name: "clinical.clearances"});
     const diagnosticTests = useWatch({ name: 'clinical.diagnosticTests' })
     const clearances = useWatch({ name: 'clinical.clearances' })
 
@@ -225,7 +225,7 @@ export default function ClinicalTab(props: Props) {
                                     />
                                     {clearanceNameIsOther && <InputController id={`clinical.clearances.${index}.clearanceNameOther`} title="" placeholder="Clearance Name" size={6} config={config}/>}
                                     <Box width="100%"/>
-                                    <DateController withTime id={`clinical.clearances.${index}.testDateTime`} title="Clearance Date" placeholder="Clearance Date" size={6} config={config}/>
+                                    <DateController withTime id={`clinical.clearances.${index}.clearanceDateTime`} title="Clearance Date" placeholder="Clearance Date" size={6} config={config}/>
                                     <InputController id={`clinical.clearances.${index}.physicianFirstName`} title="Provider First Name" placeholder="Provider First Name" size={6} config={config}/>
                                     <InputController id={`clinical.clearances.${index}.physicianLastName`} title="Provider Last Name" placeholder="Provider Last Name" size={6} config={config}/>
                                     <InputController id={`clinical.clearances.${index}.physicianPhone`} title="Provider Phone Number" placeholder="Provider Phone Number" size={6} config={config}/>

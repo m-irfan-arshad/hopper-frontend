@@ -284,12 +284,13 @@ model facility {
 model diagnosticTestForm {
     diagnosticTestFormId        Int       @id @default(autoincrement()) @map("diagnostic_test_form_id")
     diagnosticTestId            Int?      @map("diagnostic_test_id")
+    clinicalId                  Int?       @map("clinical_id")       
     testNameOther               String?   @map("test_name_other") @default("")
-    testDateTime                DateTime  @map("test_date_time") @db.Timestamp(6)
+    testDateTime                DateTime?  @map("test_date_time") @db.Timestamp(6)
     atProcedureLocation         Boolean?   @map("at_procedure_location")
     facilityId                  Int?      @map("facility_id")
     facility                    facility?  @relation(fields: [facilityId], references: [facilityId])
-    clinical                    clinical[]
+    clinical                    clinical?  @relation(fields: [clinicalId], references: [clinicalId])
     diagnosticTest              diagnosticTest? @relation(fields: [diagnosticTestId], references: [diagnosticTestId])
 }
 
@@ -302,8 +303,9 @@ model diagnosticTest {
 model clearanceForm {
   clearanceFormId           Int       @id @default(autoincrement()) @map("clearance_form_id")
   clearanceId               Int?      @map("clearance_id")
+  clinicalId                Int?       @map("clinical_id")    
   clearanceNameOther        String?   @map("clearance_name_other") @default("")
-  clearanceDateTime         DateTime  @map("clearance_date_time") @db.Timestamp(6)
+  clearanceDateTime         DateTime?  @map("clearance_date_time") @db.Timestamp(6)
   physicianFirstName        String?   @map("physician_first_name") @default("")
   physicianLastName         String?   @map("physician_last_name") @default("")
   physicianPhone            String?   @map("physician_phone") @default("")
@@ -311,7 +313,7 @@ model clearanceForm {
   facilityId                Int?      @map("facility_id")
   facility                  facility?  @relation(fields: [facilityId], references: [facilityId])
   clearance                 clearance? @relation(fields: [clearanceId], references: [clearanceId])
-  clinical                  clinical[]
+  clinical                  clinical? @relation(fields: [clinicalId], references: [clinicalId])
 }
 
 model clearance {

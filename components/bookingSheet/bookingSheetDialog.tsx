@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { getDirtyValues, createValidationObject, excludeField, convertObjectToPrismaFormat } from '../../utils/helpers';
+import { getDirtyValues, createValidationObject, excludeField, convertObjectToPrismaFormat, getPrismaArrayUpdateQuery, getDifference } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance } from '../../reference';
 import * as R from 'ramda';
@@ -24,6 +24,7 @@ import FinancialTab from "./tabs/financialTab";
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 import ClinicalTab from "./tabs/clinicalTab";
+import { diagnosticTestForm } from "@prisma/client";
 
 interface Props {
     open: boolean
@@ -38,50 +39,35 @@ const StyledTab = styled(Tab)({
     textTransform: "capitalize"
 });
 
-function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
-    let query: any = {caseId: caseId, ...getDirtyValues(dirtyFields, formData)};
-    delete query['diagnosticTests']
-    delete query['clearances']
-    delete query['comment']
-    delete query['document']
+function prepareFormForSubmission(caseId: number, formData: any, defaultFields: any) {
+    let query: any = {caseId: caseId, ...getDifference(defaultFields, formData)};
+
+    query.scheduling && (query.scheduling = convertObjectToPrismaFormat(query.scheduling, "schedulingId"))
+    query.patient && (query.patient = convertObjectToPrismaFormat(query.patient, "patientId"))
+    query.procedureTab && (query.procedureTab = convertObjectToPrismaFormat(query.procedureTab, "procedureTabId"))
     if (query.financial) {
-        let newInsurances: object[] = [];
-        let updateInsurances: object[] = [];
-        formData.financial.forEach((insObj: any, index: number) => {
-            const updatedFields = dirtyFields.financial[index]
-            if (R.isNil(updatedFields)) return; // check if any fields in this insurance was updated
-
-            let formattedFinancials: any = getDirtyValues(updatedFields, insObj);
-            formattedFinancials.priorAuthorization && (formattedFinancials.priorAuthorization = formattedFinancials.priorAuthorization.priorAuthorization);
-            formattedFinancials.insurance && (formattedFinancials.insuranceId = formattedFinancials.insurance.insuranceId);
-            delete formattedFinancials.insurance;
-
-            if (insObj.financialId) { //if there is financialId present, update. Otherwise create
-                delete formattedFinancials.financialId;
-                delete formattedFinancials.caseId;
-                updateInsurances.push({data: formattedFinancials, where: {financialId: insObj.financialId}})
-            } else {
-                newInsurances.push(formattedFinancials)
-            } 
-        })
-        query.financial = {create: newInsurances, update: updateInsurances}
+        query.financial = getPrismaArrayUpdateQuery(formData.financial, query.financial, 'financialId');
     } if (query.clinical) {
         const clinicalUpdates = query.clinical;
-        console.log("clinicalUpdates: ", clinicalUpdates)
         let clinicalQuery = convertObjectToPrismaFormat(clinicalUpdates, 'clinicalId')
-        delete clinicalQuery['preOpFormId']
-        if(clinicalUpdates.preOpForm) {
-            clinicalQuery.update.preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId')
-            if (clinicalUpdates.preOpForm.facility) {
-                clinicalQuery.update.preOpForm.update.facility = convertObjectToPrismaFormat(clinicalUpdates.preOpForm.facility, 'facilityId')
-                delete clinicalQuery.update.preOpForm.update.facilityId
+        if (clinicalQuery?.update) {
+            if(clinicalUpdates.preOpForm) {
+                const preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId')
+                if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
+                    preOpForm?.update && (preOpForm.update.facility = convertObjectToPrismaFormat(clinicalUpdates.preOpForm.facility, 'facilityId'))
+                    delete preOpForm?.update.facilityId
+                }
+                clinicalQuery.update.preOpForm = preOpForm;
+            } 
+            if (clinicalUpdates.diagnosticTests) {
+                clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = getPrismaArrayUpdateQuery(formData.clinical.diagnosticTests, query.clinical.diagnosticTests, 'diagnosticTestFormId'));
             }
+            if (clinicalUpdates.clearances) {
+                clinicalQuery.update.clearances = getPrismaArrayUpdateQuery(formData.clinical.clearances, query.clinical.clearances, 'clearanceFormId');
+            }
+            query.clinical = clinicalQuery
         }
-        query.clinical = clinicalQuery
     }
-    console.log('dirty values: ', dirtyFields)
-    console.log('query: ', query)
-
     return query
 }
 
@@ -95,11 +81,11 @@ function prepareFormForRender(data: any) {
     }
 
     if (R.isEmpty(data.clinical.diagnosticTests)) {
-        parsedCase.diagnosticTests = [defaultDiagnosticTest]
+        parsedCase.clinical.diagnosticTests = [defaultDiagnosticTest]
     }
 
     if (R.isEmpty(data.clinical.clearances)) {
-        parsedCase.clearances = [defaultClearance]
+        parsedCase.clinical.clearances = [defaultClearance]
     }
 
     return parsedCase;
@@ -118,10 +104,11 @@ export default function BookingSheetDialog(props: Props) {
         defaultValues: validationSchema.cast({}),
         resolver: yupResolver(validationSchema, { stripUnknown: true, abortEarly: false }),
     });
-    const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
+    const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields, defaultValues } } = form;
+    
     const onSubmit = async () => {
-        const query = prepareFormForSubmission(data.caseId, getValues(), dirtyFields)
-        reset({}, { keepValues: true }) // resets dirty fields
+        const query = prepareFormForSubmission(data.caseId, getValues(), defaultValues)
+        reset(undefined, { keepValues: true }) // resets dirty fields
         await mutate(query)
         closeDialog()
         selectTab(initiallySelectedTab)

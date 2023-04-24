@@ -171,11 +171,14 @@ export const defaultDiagnosticTest = {
 }
 
 export const defaultClearance = {
-    testName: null,
-    testNameOther: '',
-    testDateTime: null,
+    clearanceName: null,
+    clearanceNameOther: '',
+    clearanceDateTime: null,
+    physicianFirstName: '',
+    physicianLastName: '',
+    physicianPhone: '',
     atProcedureLocation: null,
-    facility: null
+    postOpDateTime: null
 }
 
 export const defaultFacility = {

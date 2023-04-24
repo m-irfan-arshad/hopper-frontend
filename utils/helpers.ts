@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { APIParameters, FullCase, IndexObject } from '../reference';
 import { Prisma, insurance } from '@prisma/client';
-import moment from "moment";
+import moment, { isMoment } from "moment";
 import * as R from 'ramda';
 import * as yup from 'yup';
+var flatten = require('flat')
 
 interface DashboardQueryParams { 
     searchValue?: string
@@ -161,6 +162,9 @@ export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", op
 
     //update relationships by updating the Id, not the object itself
     if (typeof obj === 'object') {
+        if (R.isEmpty(obj)) {
+            return undefined
+        }
         const objNoId = excludeField(obj, id) // remove Id
         Object.keys(objNoId).forEach(function(fieldName){
             const fieldId = fieldName + 'Id'
@@ -180,6 +184,7 @@ export function convertObjectToPrismaFormat(obj: {[key: string]: any}, id="", op
     }
   }
 
+  //not in use yet
   export function convertObjectToPrismaFormatRecursive(data: any, id="", operation="update") {
     if(Array.isArray(data)) {
         return {set: [], connect: data.map((elem: any) => ({[id]: elem[id]}))};
@@ -222,12 +227,30 @@ export function formatCreateCaseParams(data: FullCase) {
  * Similar to react-hook-form's getDirtyFields, however it also returns the value of the dirty field instead of a boolean.
  * Useful for building performative update queries.
  */
-export function getDirtyValues(dirtyFields: any, allValues: any): object | undefined {
-    if (dirtyFields === true || Array.isArray(dirtyFields))
+export function getDirtyValues(dirtyFields: any, allValues: any): any {
+    if (dirtyFields === true || Array.isArray(allValues) || isMoment(allValues)) {
       return allValues;
-    if (R.isEmpty(allValues)) return undefined;
-    return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
+    }
+    else if (R.isEmpty(dirtyFields) || R.isNil(dirtyFields)) {
+        return undefined;
+    } 
+    else if (typeof dirtyFields === 'object') {
+        return Object.fromEntries(Object.keys(dirtyFields).map(key => [key, getDirtyValues(dirtyFields[key], allValues[key])]));
+    } else {
+        return allValues;
+    }
 }
+
+export const getDifference = (original: any, incoming: any) => {
+    const flatOriginal = flatten(original);
+    const flatIncoming = flatten(incoming);
+  
+    const differenceKeys = Object.keys(flatIncoming).filter(
+      key => !R.equals(flatOriginal[key], flatIncoming[key])
+    );
+  
+    return flatten.unflatten(R.pick(differenceKeys, flatIncoming));
+  }
 
 /**
  * Recursive function that converts a booking sheet config into a yup validation object.
@@ -277,4 +300,45 @@ export function isFieldVisible(config: object | undefined, id: string) {
 
 export function checkFieldForErrors(id: string, errors: any): boolean {
     return R.isNil(R.path(getPathFromId(id), errors)) ? false : true
+}
+
+export function getPrismaArrayUpdateQuery(formData: any, dirtyFields: any, arrayFieldId: string) {
+    let create: object[] = [];
+    let update: object[] = [];
+    formData.forEach((arrayElem: any, index: number) => {
+        const updatedFields: any = dirtyFields[index]
+        if (R.isNil(updatedFields)) return; // check if any fields were updated
+        const id = arrayFieldId
+        let formattedField: any = getDirtyValues(updatedFields, arrayElem);
+        delete formattedField.caseId
+
+        // formatting for insurance object
+        formattedField.priorAuthorization && (formattedField.priorAuthorization = formattedField.priorAuthorization.priorAuthorization);
+        if (formattedField.insurance) {
+            formattedField.insurance = { connect: {insuranceId: formattedField.insurance.insuranceId}}
+        } else {
+            delete formattedField.insurance;
+        }
+        delete formattedField.insuranceId;
+
+        // formatting for diagnostic test / clearance
+        formattedField.diagnosticTest && (formattedField.diagnosticTest = { connect: {diagnosticTestId: formattedField.diagnosticTest.diagnosticTestId}});
+        delete formattedField.diagnosticTestId
+        formattedField.clearance && (formattedField.clearance = { connect: {clearanceId: formattedField.clearance.clearanceId}});
+        delete formattedField.clearanceId;
+        if (formattedField.facility) {
+            formattedField.facility = convertObjectToPrismaFormat(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
+            delete formattedField.facilityId
+        }
+        
+        if (arrayElem[id]) { //if there is id present, update. Otherwise create
+            delete formattedField.caseId;
+            update.push({ data: formattedField, where: { [id]: arrayElem[id] } });
+            delete formattedField[id];
+        } else {
+            delete formattedField[id]
+            create.push(formattedField);
+        }
+    });
+    return { create, update }
 }
