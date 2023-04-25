@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { 
     Typography, 
     Grid, 
@@ -122,7 +122,7 @@ export default function ClinicalTab(props: Props) {
                             const testNameIsOther = R.path([index, 'diagnosticTest', 'testName'], diagnosticTests) === 'Other';
                             const showTestLocation = !R.path([index, 'atProcedureLocation'], diagnosticTests);
                             return (
-                                    <React.Fragment>
+                                    <React.Fragment key={index}>
                                     <DropDownSearchController 
                                         {...item}
                                         title="Diagnostic Test"
@@ -190,7 +190,7 @@ export default function ClinicalTab(props: Props) {
                             const clearanceNameIsOther = R.path([index, 'clearance', 'clearanceName'], clearances) === 'Other';
                             const showTestLocation = !R.path([index, 'atProcedureLocation'], clearances);
                             return (
-                                    <React.Fragment>
+                                    <React.Fragment key={index}>
                                     <DropDownSearchController 
                                         {...item}
                                         title="Clearance"
