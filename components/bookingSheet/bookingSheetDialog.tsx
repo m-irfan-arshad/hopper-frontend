@@ -49,17 +49,24 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
         query.financial = getPrismaArrayUpdateQuery(formData.financial, query.financial, 'financialId');
     } if (query.clinical) {
         const clinicalUpdates = query.clinical;
-        console.log("clinicalUpdates: ", clinicalUpdates)
         let clinicalQuery = convertObjectToPrismaFormat(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
-            if(clinicalUpdates.preOpForm) {
-                const preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId')
-                if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
-                    preOpForm?.update && (preOpForm.update.facility = convertObjectToPrismaFormat(clinicalUpdates.preOpForm.facility, 'facilityId'))
-                    delete preOpForm?.update.facilityId
+            if(formData.clinical.preOpRequired === "true") {
+                if(clinicalUpdates.preOpForm) {
+                    const preOpCrudOperation = R.path(['clinical','preOpForm','preOpFormId'], formData) ? 'update' : 'create';
+                    let preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
+                    if (preOpForm) {
+                        const formQuery = preOpForm[preOpCrudOperation]
+                        if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
+                            const facilityCrudOperation = R.path(['clinical','preOpForm','facility', 'facilityId'], formData) ? 'update' : 'create'
+                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility : convertObjectToPrismaFormat(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
+                        }
+                        clinicalQuery.update.preOpForm = preOpForm;
+                    }
                 }
-                clinicalQuery.update.preOpForm = preOpForm;
-            } 
+            } else {
+                clinicalQuery.update.preOpForm = {delete: true}
+            }
             if (formData.clinical.diagnosticTestsRequired === "true") {
                 if (clinicalUpdates.diagnosticTests) {
                     clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = getPrismaArrayUpdateQuery(formData.clinical.diagnosticTests, query.clinical.diagnosticTests, 'diagnosticTestFormId'));

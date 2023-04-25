@@ -37,6 +37,7 @@ export type FullCase = Prisma.casesGetPayload<{ include: {
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
   comment?: {orderBy: {createTime: 'desc'}},
   document?: {orderBy: {createTime: 'desc'}},
+  clinical?: {include: {diagnosticTests: {include: {facility: true, diagnosticTest: true}}, clearances: {include: {facility: true, clearance: true}}, preOpForm: {include: {facility: true}}}}
 } }>
 
 
@@ -184,7 +185,7 @@ export const defaultPreOpForm = {
 }
 
 export const defaultDiagnosticTest = {
-  testName: null,
+  diagnosticTest: null,
   testNameOther: '',
   testDateTime: null,
   atProcedureLocation: null,
