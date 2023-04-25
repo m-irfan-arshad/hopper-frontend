@@ -1,7 +1,12 @@
-import { render, fireEvent, within } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import DocumentTabItem from "../documentTabItem";
-import moment from "moment";
 import { mockSingleDocument } from "../../../../testReference";
+
+jest.mock('@tanstack/react-query', () => ({
+    useQueryClient: jest.fn().mockReturnValue(({invalidateQueries: ()=>{}})),
+    QueryClient: jest.fn(),
+    useQuery: jest.fn().mockReturnValue({ data: [] })
+}));
 
 describe("DocumentTabItem", () => {
 
@@ -23,6 +28,8 @@ describe("DocumentTabItem", () => {
         expect(getByRole("option", {name: "Download"})).toBeInTheDocument();
         expect(getByRole("option", {name: "View"})).toBeInTheDocument();
         expect(getByRole("option", {name: "Delete"})).toBeInTheDocument();
+        expect(getByRole("link", {name: "Download"})).toBeInTheDocument();
 
     });
+
 });

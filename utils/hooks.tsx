@@ -191,3 +191,7 @@ export function useCreateDocumentHook() {
         }
     )
 }
+
+export function useDownloadDocumentHook(storagePath: string) {
+    return useQuery([storagePath], async () => (await fetch(`/api/downloadDocument?storagePath=${storagePath}`)).json(), { enabled: false });
+}

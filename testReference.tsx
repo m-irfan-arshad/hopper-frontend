@@ -73,7 +73,7 @@ export const mockSingleFacility = {
 
 export const mockSingleDocument: document = {
     documentId: 1,
-    docTypes: ["H & P"],
+    docTypes: ["h&p"],
     notes: "Test Note",
     user: "Test User",
     caseId: 1,
