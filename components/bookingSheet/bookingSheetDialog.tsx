@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { getDirtyValues, createValidationObject, excludeField, convertObjectToPrismaFormat, getPrismaArrayUpdateQuery, getDifference } from '../../utils/helpers';
+import { createValidationObject, convertObjectToPrismaFormat, getPrismaArrayUpdateQuery, getDifference } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
 import * as R from 'ramda';
@@ -24,7 +24,6 @@ import FinancialTab from "./tabs/financialTab";
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 import ClinicalTab from "./tabs/clinicalTab";
-import { diagnosticTestForm } from "@prisma/client";
 
 interface Props {
     open: boolean
@@ -134,7 +133,7 @@ export default function BookingSheetDialog(props: Props) {
     
     const onSubmit = async () => {
         const query = prepareFormForSubmission(data.caseId, getValues(), defaultValues)
-        reset(undefined, { keepValues: true }) // resets dirty fields
+        reset({}, { keepValues: true }) // resets dirty fields
         await mutate(query)
         closeDialog()
         selectTab(initiallySelectedTab)
