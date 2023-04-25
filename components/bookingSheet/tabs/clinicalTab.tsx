@@ -30,7 +30,7 @@ export default function ClinicalTab(props: Props) {
     const showPreOpLocation = useWatch({ name: 'clinical.preOpForm.atProcedureLocation' }) !== true
     const diagnosticTestsRequired = useWatch({ name: 'clinical.diagnosticTestsRequired' })
     const clearanceRequired = useWatch({ name: 'clinical.clearanceRequired' })
-    const preOpRequiredOptions = [{title: "Yes", value: "true"}, {title: "No", value: "false"}];
+    const preOpRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
     const diagnosticTestsRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
     const clearanceRequiredOptions = [{title: "Yes, required", value: "true"}, {title: "No, not Required", value: "false"}];
 

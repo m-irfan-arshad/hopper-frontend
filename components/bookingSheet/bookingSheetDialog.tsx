@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { getDirtyValues, createValidationObject, excludeField, convertObjectToPrismaFormat, getPrismaArrayUpdateQuery, getDifference } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance } from '../../reference';
+import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -51,7 +51,9 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
         const clinicalUpdates = query.clinical;
         let clinicalQuery = convertObjectToPrismaFormat(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
-            if(formData.clinical.preOpRequired === "true") {
+            if(clinicalUpdates.preOpRequired === "false") {
+                clinicalQuery.update.preOpForm = {delete: true}
+            } else {
                 if(clinicalUpdates.preOpForm) {
                     const preOpCrudOperation = R.path(['clinical','preOpForm','preOpFormId'], formData) ? 'update' : 'create';
                     let preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
@@ -64,8 +66,6 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
                         clinicalQuery.update.preOpForm = preOpForm;
                     }
                 }
-            } else {
-                clinicalQuery.update.preOpForm = {delete: true}
             }
             if (formData.clinical.diagnosticTestsRequired === "true") {
                 if (clinicalUpdates.diagnosticTests) {
@@ -100,6 +100,10 @@ function prepareFormForRender(data: any) {
                 return {...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}
             }
         })
+    }
+
+    if (R.isEmpty(data.clinical.preOpForm)) {
+        parsedCase.clinical.preOpForm = defaultPreOpForm
     }
 
     if (R.isEmpty(data.clinical.diagnosticTests)) {
