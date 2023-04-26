@@ -8,7 +8,8 @@ export interface BookingSheetConfig {
   patient?: object,
   financial?: object,
   procedureTab?: object,
-  scheduling?: object
+  scheduling?: object,
+  clinical?: object
 }
 
 export interface caseFilterInterface {
@@ -328,14 +329,14 @@ export const defaultBookingSheetConfig = {
       facility: facilityConfig,
     },
     diagnosticTests: [{
-      diagnosticTest: {default: null},
+      diagnosticTest: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},
       facility: facilityConfig
     }],
     clearances: [{
-      clearance: {default: null},
+      clearance: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},

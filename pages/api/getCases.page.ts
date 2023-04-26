@@ -1,10 +1,9 @@
-import { clinical, cases, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { formatDashboardQueryParams, casesFormatter, withValidation } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
-import { diagnosticTestOptions, FullCase, paginationCount } from '../../reference';
+import { paginationCount } from '../../reference';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
-import PatientTab from '../../components/bookingSheet/tabs/patientTab';
 
 const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
