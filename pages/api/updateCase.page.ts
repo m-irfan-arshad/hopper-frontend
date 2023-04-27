@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../prisma/clientInstantiation';
-import { convertObjectToPrismaFormat, withValidation, excludeField } from '../../utils/helpers';
+import { withValidation, excludeField } from '../../utils/helpers';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 
 const requiredParams = ['caseId'];
