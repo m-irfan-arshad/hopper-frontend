@@ -3,8 +3,7 @@ import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
 import { Logout, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
-import { FullCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
-import DropDownComponent from "./shared/dropdown";
+import { FullCase, dashboardSortDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
@@ -18,7 +17,6 @@ interface CaseGroup {
 
 export default function Dashboard() {  
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-    const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
     const [context, setContext] = useContext(CaseFilterContext);
     const shouldShowCount = context.dashboard.workQueue || context.dashboard.searchBarValue;
 
@@ -48,7 +46,6 @@ export default function Dashboard() {
         context.dashboard.dateRangeStart, 
         context.dashboard.dateRangeEnd, 
         context.dashboard.dateSortValue, 
-        context.dashboard.caseFilterValue, 
         context.dashboard.searchBarValue, 
         context.dashboard.page.toString(),
         context.dashboard.workQueue
@@ -64,22 +61,10 @@ export default function Dashboard() {
             caseGroups[date] = new Array(singleCase)
         }
     })
-        
-    const handleCaseFilterChange = (value: caseFilterInterface[]) => {
-        handleStateUpdate('page',1);
-
-        if (value?.at(-1)?.id === "all" || value?.length === 0) {
-            handleStateUpdate('caseFilterValue',defaultCaseFilterValue);
-        } else {
-            handleStateUpdate('caseFilterValue',value.filter(elem => elem.id !== "all"));
-        }
-    };
 
     return (
         <React.Fragment>
             <CaseNavBar 
-                onCaseFilterChange={handleCaseFilterChange} 
-                caseFilterValue={context.dashboard.caseFilterValue} 
                 searchBarValue={context.dashboard.searchBarValue}
                 workQueue={context.dashboard.workQueue}
                 onWorkQueueChange={(value: any) => handleStateUpdate('workQueue', value)}

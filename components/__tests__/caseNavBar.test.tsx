@@ -16,8 +16,8 @@ jest.mock("../../utils/hooks", () => ({
 describe("CaseNavBar", () => {
     const props = {
         onDateFilterChange: jest.fn(),
-        onCaseFilterChange:  jest.fn(),
-        caseFilterValue: [{"value": 'All Steps', "id": "all"}],
+        onWorkQueueChange:  jest.fn(),
+        workQueue: 'workQueue',
         dateFilterValue: 'This month',
         search: jest.fn(),
         searchBarValue: "",

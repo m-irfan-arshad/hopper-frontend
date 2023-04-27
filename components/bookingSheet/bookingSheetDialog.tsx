@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { getDirtyValues, createValidationObject, excludeField, convertObjectToPrismaFormat, getPrismaArrayUpdateQuery, getDifference, createBookingSheetParams } from '../../utils/helpers';
+import { getDirtyValues, createValidationObject } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultInsuranceValue } from '../../reference';
 import * as R from 'ramda';
@@ -84,9 +84,6 @@ export default function BookingSheetDialog(props: Props) {
     const {mutate} = useUpdateCaseHook();
     const { data: orgConfigData = {} } = useGetBookingSheetConfigHook();
     const validationSchema = createValidationObject(bookingSheetConfig);
-    const prismaQuery = createBookingSheetParams(bookingSheetConfig);
-
-    console.log('prismaQuery',prismaQuery);
 
     const form = useForm({ 
         mode: 'onChange',

@@ -15,19 +15,21 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
     dateRangeEnd: <string>req.query["dateRangeEnd"],
-    vendorConfirmation: <string>req.query["vendorConfirmation"], //same thing gets removed cuz of dropdown filter?
-    priorAuthorization: <string>req.query["priorAuthorization"], //gets removed cuz of the step dropdown filter right?
     workQueue: <string>req.query["workQueue"]
   };
 
   const paginationSkipAmount = (parseInt(<string>req.query["page"]) - 1) * 50;
   const storage = new Storage();
+  let bookingSheetConfig = {};
 
   try {
-    const orgConfigData = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
-    const orgConfigJSON = JSON.parse(orgConfigData.toString());
-    const config = R.clone(defaultBookingSheetConfig);
-    const bookingSheetConfig = R.mergeDeepRight(config, orgConfigJSON.tabs)
+    
+    if (req.query["workQueue"]) {
+      const orgConfigData = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
+      const orgConfigJSON = JSON.parse(orgConfigData.toString());
+      const config = R.clone(defaultBookingSheetConfig);
+      bookingSheetConfig = R.mergeDeepRight(config, orgConfigJSON.tabs)
+    }
     
     const count =  await prisma.cases.count({
       where: formatDashboardQueryParams(dashboardParams, bookingSheetConfig)

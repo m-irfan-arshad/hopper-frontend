@@ -27,7 +27,6 @@ const initialDashboardState = [{
         dateRangeStart:  moment().startOf('day'),
         dateRangeEnd:  moment().add(7, 'days').endOf('day'),
         dateSortValue: 'Newest - Oldest',
-        caseFilterValue: [{id: "all", value: "All Steps"}],
         searchBarValue: '',
         page: 1
       }
@@ -83,7 +82,6 @@ describe("Dashboard", () => {
                 dateRangeStart:  moment().startOf('day'),
                 dateRangeEnd:  moment().add(7, 'days').endOf('day'),
                 dateSortValue: 'Newest - Oldest',
-                caseFilterValue: [{id: "all", value: "All Steps"}],
                 searchBarValue: '',
                 page: 2
             }
@@ -122,7 +120,6 @@ describe("Dashboard", () => {
                 dateRangeStart:  moment().startOf('day'),
                 dateRangeEnd:  moment().add(7, 'days').endOf('day'),
                 dateSortValue: 'Oldest - Newest',
-                caseFilterValue: [{id: "all", value: "All Steps"}],
                 searchBarValue: '',
                 page: 2
             }

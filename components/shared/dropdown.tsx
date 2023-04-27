@@ -21,6 +21,7 @@ export default function DropDownComponent(props: Props) {
     const defaultStyles = {
         color: "black.main",
         height: "2.5rem",
+        fontSize: "0.875rem",
         borderRadius: "none",
         ".MuiSelect-select": {
             display: 'flex',

@@ -12,11 +12,6 @@ export interface BookingSheetConfig {
   clinical?: object
 }
 
-export interface caseFilterInterface {
-  value: string,
-  id: string
-} 
-
 export interface Step {
   text: string,
   status: boolean
@@ -94,11 +89,6 @@ export const dashboardDateRangeDropDownValues = [
         id: "3"
     }
 ];
-
-export interface caseFilterInterface {
-  value: string,
-  id: string
-} 
 
 export const dashboardStepDropDownValues = [
     {
@@ -237,7 +227,6 @@ export const defaultCaseFilterContext = {
     dateRangeStart:  moment().startOf('day'),
     dateRangeEnd:  moment().add(7, 'days').endOf('day'),
     dateSortValue: 'Newest - Oldest',
-    caseFilterValue: [{id: "all", value: "All Steps"}],
     searchBarValue: '',
     page: 1,
     workQueue: ''

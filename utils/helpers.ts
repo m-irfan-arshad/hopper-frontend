@@ -27,12 +27,12 @@ interface FilterObject {
 
 export function formatDashboardQueryParams(params: DashboardQueryParams, bookingSheetConfig: BookingSheetConfig): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
-    const bookingSheetParams = createBookingSheetParams(params, bookingSheetConfig);
+    const bookingSheetParams = bookingSheetConfig && createBookingSheetParams(params, bookingSheetConfig);
 
     let filterObject: FilterObject = {
         scheduling: {
             AND: [
-                params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.scheduling : {},
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.scheduling : {},
                 {
                     procedureDate: {
                         gte: moment(dateRangeStart).startOf("day").toDate(),
@@ -45,12 +45,12 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
         ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
     }
 
-    filterObject.financial =  params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.financial : {};
-    filterObject.procedureTab = params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.procedureTab : {};
-    filterObject.clinical = params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.clinical : {};
+    filterObject.financial = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.financial : {};
+    filterObject.procedureTab = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.procedureTab : {};
+    filterObject.clinical = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.clinical : {};
 
     if (!searchValue) {
-        filterObject.patient = params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.patient : {};
+        filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {};
         return filterObject
     }
 
@@ -67,7 +67,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
     if (!nameTwo) { 
         filterObject.patient = {
             AND: [
-                params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.patient : {},
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {},
                 {
                     OR: [
                         {
@@ -90,7 +90,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
     else { 
         filterObject.patient = {
           AND: [
-            params.workQueue === 'Booking Sheet Request' ? bookingSheetParams.patient : {},
+            (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {},
             {
                 OR: [
                     { firstName: { startsWith: nameOne, mode: 'insensitive' } },
