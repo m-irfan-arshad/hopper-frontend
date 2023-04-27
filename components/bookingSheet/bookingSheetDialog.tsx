@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { createValidationObject, convertObjectToPrismaFormat, getPrismaArrayUpdateQuery, getDifference } from '../../utils/helpers';
+import { createValidationObject, arrayToPrismaQuery, formToPrismaQuery, getDifference, getClinicalQuery, getProcedureTabQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
 import * as R from 'ramda';
@@ -39,49 +39,14 @@ const StyledTab = styled(Tab)({
 });
 
 function prepareFormForSubmission(caseId: number, formData: any, defaultFields: any) {
-    let query: any = {caseId: caseId, ...getDifference(defaultFields, formData)};
-
-    query.scheduling && (query.scheduling = convertObjectToPrismaFormat(query.scheduling, "schedulingId"))
-    query.patient && (query.patient = convertObjectToPrismaFormat(query.patient, "patientId"))
-    query.procedureTab && (query.procedureTab = convertObjectToPrismaFormat(query.procedureTab, "procedureTabId"))
+    let query: any = {caseId: caseId, ...getDifference(defaultFields, formData, ['facilityId'])};
+    query.scheduling && (query.scheduling = formToPrismaQuery(query.scheduling, "schedulingId"))
+    query.patient && (query.patient = formToPrismaQuery(query.patient, "patientId"))
+    query.procedureTab && (query.procedureTab = getProcedureTabQuery(query.procedureTab, formData.procedureTab))
     if (query.financial) {
-        query.financial = getPrismaArrayUpdateQuery(formData.financial, query.financial, 'financialId');
+        query.financial = arrayToPrismaQuery(formData.financial, query.financial, 'financialId');
     } if (query.clinical) {
-        const clinicalUpdates = query.clinical;
-        let clinicalQuery = convertObjectToPrismaFormat(clinicalUpdates, 'clinicalId')
-        if (clinicalQuery?.update) {
-            if(clinicalUpdates.preOpRequired === "false") {
-                clinicalQuery.update.preOpForm = {delete: true}
-            } else {
-                if(clinicalUpdates.preOpForm) {
-                    const preOpCrudOperation = R.path(['clinical','preOpForm','preOpFormId'], formData) ? 'update' : 'create';
-                    let preOpForm = convertObjectToPrismaFormat(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
-                    if (preOpForm) {
-                        const formQuery = preOpForm[preOpCrudOperation]
-                        if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
-                            const facilityCrudOperation = R.path(['clinical','preOpForm','facility', 'facilityId'], formData) ? 'update' : 'create'
-                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility : convertObjectToPrismaFormat(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
-                        }
-                        clinicalQuery.update.preOpForm = preOpForm;
-                    }
-                }
-            }
-            if (formData.clinical.diagnosticTestsRequired === "true") {
-                if (clinicalUpdates.diagnosticTests) {
-                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = getPrismaArrayUpdateQuery(formData.clinical.diagnosticTests, query.clinical.diagnosticTests, 'diagnosticTestFormId'));
-                }
-            } else {
-                clinicalQuery.update.diagnosticTests = {set: []}
-            }
-            if (formData.clinical.clearanceRequired === "true") {
-                if (clinicalUpdates.clearances) {
-                    clinicalQuery.update.clearances = getPrismaArrayUpdateQuery(formData.clinical.clearances, query.clinical.clearances, 'clearanceFormId');
-                }
-            } else {
-                clinicalQuery.update.clearances = {set: []}
-            }
-            query.clinical = clinicalQuery
-        }
+        query.clinical = getClinicalQuery(query.clinical, formData.clinical)
     }
     return query
 }
