@@ -226,7 +226,6 @@ export const defaultCaseFilterContext = {
   dashboard: {
     dateRangeStart:  moment().startOf('day'),
     dateRangeEnd:  moment().add(7, 'days').endOf('day'),
-    dateSortValue: 'Newest - Oldest',
     searchBarValue: '',
     page: 1,
     workQueue: ''

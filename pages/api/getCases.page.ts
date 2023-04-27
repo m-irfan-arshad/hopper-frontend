@@ -7,7 +7,7 @@ import { paginationCount, defaultBookingSheetConfig } from '../../reference';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { Storage } from "@google-cloud/storage";
 
-const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
+const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page'];
 
 export default withApiAuthRequired( withValidation(requiredParams, async function getCasesHandler(req: NextApiRequest, res: NextApiResponse) {
   
@@ -23,7 +23,6 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
   let bookingSheetConfig = {};
 
   try {
-    
     if (req.query["workQueue"]) {
       const orgConfigData = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
       const orgConfigJSON = JSON.parse(orgConfigData.toString());
@@ -42,7 +41,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
         orderBy: [
           {
             scheduling: {
-              procedureDate: <Prisma.SortOrder>req.query["orderBy"]
+              procedureDate: 'asc'
             }
           }
         ],

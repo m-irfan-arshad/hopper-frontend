@@ -45,7 +45,6 @@ export default function Dashboard() {
     const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(
         context.dashboard.dateRangeStart, 
         context.dashboard.dateRangeEnd, 
-        context.dashboard.dateSortValue, 
         context.dashboard.searchBarValue, 
         context.dashboard.page.toString(),
         context.dashboard.workQueue

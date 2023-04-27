@@ -54,7 +54,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
         return filterObject
     }
 
-    //TODO: separate caseId and name logic
+    //TODO: Add back in caseId logic when UI is created
     const nameOne = searchValue.split(' ')[0];
     const nameTwo = searchValue.split(' ')[1];
     const caseId = parseInt(searchValue);
@@ -117,7 +117,6 @@ export function formatDate(date: Date | null | undefined) : string | null {
 export function casesFormatter (cases: FullCase | null): FullCase | null {
     if (cases) {
         const scheduling = cases.scheduling;
-        // const patient = cases.patient;
         const formattedProvider = (scheduling?.provider) ?  {
             ...scheduling.provider, 
             providerName: (scheduling.provider) ? `${scheduling.provider.firstName} ${scheduling.provider.lastName}` : ''
@@ -130,11 +129,7 @@ export function casesFormatter (cases: FullCase | null): FullCase | null {
             scheduling: {
                 ...scheduling,
                 provider: formattedProvider,
-            },
-            // patient: {
-            //     ...patient,
-            //     isComplete: (patient.firstName && patient.lastName && patient.mrn) ? true : false
-            // }
+            }
         }
         return newCase
     } else {
@@ -278,112 +273,10 @@ export function createValidationObject(bookingSheetConfig: IndexObject) {
     return yup.object().shape(tabValidationObject)
 }
 
-// export function createPrismaQuery(bookingSheetConfig: any) {
-//     let configObject = bookingSheetConfig as IndexObject;
-//     let modifiedConfig: any = {};
-//     let prismaQuery: any = {}
-//     let tabHeader: string;
-
-//     /* 
-//         TODO:
-//         1. How to drill down all the way on the clinical tab 
-//             (currently only drill down 2 layers but should drill down maybe based on pathToField?)
-//             1a. Maybe create dynamic path for facility and/or facility has no path?
-//         2. How to deal with the fact that there are 3 different paths to fields for facility? maybe facility doesnt need path to field...
-//         3. unit tests
-//         4. final review before PR
-//     */
-
-//     // if (typeof configObject === 'object' && Object.keys(configObject).some(r=> ['patient', 'financial', 'procedureTab', 'scheduling', 'clinical'].indexOf(r) >= 0)) {
-//     //     Object.keys(configObject).forEach(key => {
-//     //         modifiedConfig = createPrismaQuery(configObject[key]); //creates the 5 tab headers to later use to fill out because we are checking for them earlier
-//     //     })
-//     // }
-
-//     // if (Array.isArray(configObject)) {
-//     //     Object.keys(configObject[0]).forEach(key => {
-//     //         const prismaObj = createPrismaQuery(configObject[0][key])
-//     //         prismaObj && (modifiedConfig[key] = prismaObj)  
-            
-//     //     })
-//     //     //return yup.array().of(yup.object().shape(validationTab))
-//     // } else if (typeof configObject === 'object' && !Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
-//     //     Object.keys(configObject).forEach(key => {
-//     //         const prismaObj = createPrismaQuery(configObject[key])
-//     //         prismaObj && (modifiedConfig[key] = prismaObj)
-//     //     })
-//     //     //return yup.object().shape(prismaQuery)
-//     // }
-
-//     //currently only on first loop will it even enter this if statement... maybe make this statement just create the prisma query object and go through the rest of this stuff later on?
-
-//     if (typeof configObject === 'object' && Object.keys(configObject).some(r=> ['patient', 'financial', 'procedureTab', 'scheduling', 'clinical'].indexOf(r) >= 0)) {
-//         Object.keys(configObject).forEach(key => {
-//             const prismaQueryObj = createPrismaQuery(configObject[key]); //creates the 5 tab headers to later use to fill out because we are checking for them earlier
-//             const tab = Array.isArray(configObject[key]) ? configObject[key][0]: configObject[key];
-//             Object.keys(tab).forEach(keySecond => {
-//                 const tab = Array.isArray(configObject[key]) ? configObject[key][0]: configObject[key];
-//                 // const newPrismaQueryObj = createPrismaQuery(tab[keySecond]);
-
-//                 if (typeof tab[keySecond] === 'object' && Object.keys(tab[keySecond]).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)) {
-//                     console.log('configObject',configObject);
-//                     const pathToField = configObject.pathToField || '';
-//                     const isRequired = R.isNil(configObject.required) || configObject.required; //required by default
-//                     //console.log('isRequired',isRequired);
-//                     const keys = pathToField.split(".");
-
-//                     // if (configObject=== 'atProcedureLocation') {
-//                     //     console.log('hi');
-//                     // }
-
-//                     switch(key) {
-//                         case "patient": {
-//                             !isRequired && deleteFromObject(defaultPatientTabFilter, pathToField)
-//                             return prismaQueryObj && (prismaQuery[key] = defaultPatientTabFilter)
-//                         }
-//                         case "financial": {
-//                             !isRequired && deleteFromObject(defaultFinancialFilter, pathToField)
-//                             return prismaQueryObj && (prismaQuery[key] = defaultFinancialFilter)
-//                         }
-//                         case "procedureTab": {
-//                             !isRequired && deleteFromObject(defaultProcedureTabFilter, pathToField)
-//                             return prismaQueryObj && (prismaQuery[key] = defaultProcedureTabFilter)
-//                         }
-//                         case "scheduling": {
-//                             !isRequired && deleteFromObject(defaultSchedulingFilter, pathToField)
-//                             return prismaQueryObj && (prismaQuery[key] = defaultSchedulingFilter)
-//                         }
-//                         case "clinical": {
-//                             !isRequired && deleteFromObject(defaultClinicalFilter, pathToField)
-//                             return prismaQueryObj && (prismaQuery[key] = defaultClinicalFilter)
-//                         }
-//                         default: return
-//                     }
-//                 }
-//             })
-//         })
-//         return prismaQuery
-//     }
-//     return prismaQuery
-// }
-
 let fieldsToDelete: string[] = [];
 
 export function findFieldsToDelete(bookingSheetConfig: any) { //find fields to delete is new function
     let configObject = bookingSheetConfig as IndexObject;
-    //let fieldsToDelete: string[] = []; //will not remember the fields to delete...
-    /* 
-        TODO:
-        1. How to drill down all the way on the clinical tab  ... DONE
-            (currently only drill down 2 layers but should drill down maybe based on pathToField?)
-            1a. Maybe create dynamic path for facility and/or facility has no path?
-        2. How to deal with the fact that there are 3 different paths to fields for facility? maybe facility doesnt need path to field... DONE
-        3. REVIEW ISAACS PR https://github.com/Medtel/hopper-frontend/pull/88
-        4. merge this code into original code with UI updates 
-        5. finish other work queues
-        6. unit tests
-        7. final review before PR
-    */
 
     if (Array.isArray(configObject)) {
         Object.keys(configObject[0]).forEach(key => {

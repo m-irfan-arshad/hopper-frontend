@@ -6,15 +6,14 @@ import {AlertContext} from "../pages/_app.page"
 export function useGetCasesHook(
     dateRangeStart: moment.Moment, 
     dateRangeEnd: moment.Moment | null, 
-    dateSortValue: string, 
     searchBarValue: string, 
     page: string,
     workQueue: string
 ) {
     const [_, setAlertState] = useContext(AlertContext);
     return useQuery(
-        ["getCases", dateRangeStart, dateRangeEnd, dateSortValue, searchBarValue, page, workQueue], 
-        () => fetchCases(dateRangeStart, dateRangeEnd as moment.Moment, dateSortValue, searchBarValue, page, workQueue).then(res => {
+        ["getCases", dateRangeStart, dateRangeEnd, searchBarValue, page, workQueue], 
+        () => fetchCases(dateRangeStart, dateRangeEnd as moment.Moment, searchBarValue, page, workQueue).then(res => {
             if (res.ok) {
               return res.json()
             }      
@@ -115,24 +114,20 @@ export function useGetCaseByIdHook(caseId: string) {
     );
 }
 
-const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, searchBarValue: string, page: string, workQueue: string) => {
-    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, dateSortValue, searchBarValue, page, workQueue);
+const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, searchBarValue: string, page: string, workQueue: string) => {
+    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, searchBarValue, page, workQueue);
     return fetch(url)
 };
 
 // <----- helpers ------>
 
-function translateSortOrder(dateSortValue: string) {
-    return dateSortValue === 'Oldest - Newest' ? 'desc' : 'asc'; 
-}
 
-function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, searchBarValue: string, page: string, workQueue: string) {
+function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, searchBarValue: string, page: string, workQueue: string) {
     let parameters;
 
     parameters = new URLSearchParams({ 
         dateRangeStart: dateRangeStart.format(),
         dateRangeEnd:  dateRangeEnd.format(),
-        orderBy: translateSortOrder(dateSortValue),
         page: page,
         ...(workQueue !== "") && {workQueue: workQueue},
         ...(searchBarValue !== "") && {searchValue: searchBarValue},

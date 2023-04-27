@@ -35,6 +35,7 @@ export default function DropDownComponent(props: Props) {
         }
     };
     
+    //TODO: is renderValue like that really necessary? its ok if it is just wanna check
     return (
         <Select
             value={value ? value : placeholder}
