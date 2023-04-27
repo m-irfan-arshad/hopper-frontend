@@ -1,6 +1,48 @@
 import { Prisma } from '@prisma/client';
 import moment from "moment";
 
+
+//INTERFACES AND TYPES
+
+export interface BookingSheetConfig {
+  patient?: object,
+  financial?: object,
+  procedureTab?: object,
+  scheduling?: object
+  clinical?: object
+}
+
+export interface caseFilterInterface {
+  value: string,
+  id: string
+} 
+
+export interface Step {
+  text: string,
+  status: boolean
+}
+
+export interface APIParameters {
+  [key: string]: string | string[]
+}
+
+// object type that allows indexing by keys
+export interface IndexObject {
+  [key: string]: any
+}
+
+export type FullCase = Prisma.casesGetPayload<{ include: { 
+  patient: true, 
+  scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
+  financial: true,
+  procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
+  comment?: {orderBy: {createTime: 'desc'}},
+  document?: {orderBy: {createTime: 'desc'}},
+} }>
+
+
+// REFERENCE OBJECTS
+
 export const caseCardProcedureInformation = [
   {
     label: "Date",
@@ -183,10 +225,6 @@ export interface Step {
   status: boolean
 }
 
-export interface APIParameters {
-  [key: string]: string | string[]
-}
-
 export const caseStepMappings = {
   priorAuthorization: "Prior Authorization",
   vendorConfirmation: "Vendor Confirmation"
@@ -201,26 +239,16 @@ export const defaultCaseFilterContext = {
     dateSortValue: 'Newest - Oldest',
     caseFilterValue: [{id: "all", value: "All Steps"}],
     searchBarValue: '',
-    page: 1
+    page: 1,
+    workQueue: ''
   }
 };
-
-export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
 
 export const includeReferencesObject = { 
   patient: true, 
   scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} }, 
   financial: true
 }
-
-export type FullCase = Prisma.casesGetPayload<{ include: { 
-  patient: true, 
-  scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
-  financial: true,
-  procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
-  comment?: {orderBy: {createTime: 'desc'}},
-  document?: {orderBy: {createTime: 'desc'}},
-} }>
 
 export const defaultInsuranceValue = {
   insurance: null,
@@ -231,53 +259,366 @@ export const defaultInsuranceValue = {
   priorAuthDate: null,
 }
 
-// object type that allows indexing by keys
-export interface IndexObject {
-  [key: string]: any
+export const defaultDiagnosticTest = {
+  testName: null,
+  testNameOther: '',
+  testDateTime: null,
+  atProcedureLocation: null,
+  testFacilityName: '',
+  testPhone: '',
+  testAddressOne: '',
+  testAddressTwo: '',
+  testCity: '',
+  testState: '',
+  testZip: '',
 }
 
+export const defaultClearance = {
+    clearanceName: null,
+    clearanceNameOther: '',
+    clearanceDateTime: null,
+    physicianFirstName: '',
+    physicianLastName: '',
+    physicianPhone: '',
+    atProcedureLocation: null,
+    postOpDateTime: null
+}
+
+export const defaultFacility = {
+  facilityName: '',
+  phone: '',
+  addressOne: '',
+  addressTwo: '',
+  city: '',
+  state: '',
+  zip: ''
+}
+
+export const defaultPreOpForm = {
+  preOpDateTime: null,
+  atProcedureLocation: null,
+  facility: defaultFacility,
+}
+
+const facilityConfig = { 
+  facilityName: {default: '', required: false}, // pathToField: 'clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.facilityName'
+  phone: {default: '', required: false},
+  addressOne: {default: ''},
+  addressTwo: {default: ''},
+  city: {default: ''},
+  state: {default: ''},
+  zip: {default: ''}
+}
+
+//put required: true to the patient fields that are required false from the config (firstName is required false)
 export const defaultBookingSheetConfig = {
   patient: {
-      firstName: { default: '', required: true },
-      middleName: { default: '' },
-      lastName: { default: '' },
-      dateOfBirth: { default: null },
-      sex: { default: null },
-      address: { default: '' },
-      city: { default: '' },
-      state: { default: null },
-      zip: { default: '' },
+      firstName: { default: '', required: true, pathToField: 'patient.AND.0.firstName' },
+      middleName: { default: '', required: true, pathToField: 'patient.AND.0.middleName' },
+      lastName: { default: '', pathToField: 'patient.AND.0.lastName'  },
+      dateOfBirth: { default: null, required: true, pathToField: 'patient.AND.0.dateOfBirth' },
+      sex: { default: null, pathToField: 'patient.AND.0.sexId'  },
+      address: { default: '', pathToField: 'patient.AND.0.address'  },
+      city: { default: '', pathToField: 'patient.AND.0.city'  },
+      state: { default: null, pathToField: 'patient.AND.0.stateId' },
+      zip: { default: '', pathToField: 'patient.AND.0.zip'},
   },
   financial: [{
-      insurance: { default: null },
-      insuranceGroupName: { default: '' },
-      insuranceGroupNumber: { default: '' },
-      priorAuthorization: { default: null },
-      priorAuthId: { default: '' },
-      priorAuthDate: { default: null },
+      insurance: { default: null, required: false }, //this is just a list of insurances
+      insuranceGroupName: { default: '', pathToField: 'financial.none.insuranceGroupName' },
+      insuranceGroupNumber: { default: '', required: false, pathToField: 'financial.none.insuranceGroupNumber' },
+      priorAuthorization: { default: null, required: true, pathToField: 'financial.none.priorAuthorization' },
+      priorAuthId: { default: '', required: true, pathToField: 'financial.none.priorAuthId' },
+      priorAuthDate: { default: null, pathToField: 'financial.none.priorAuthDate' },
   }],
   procedureTab: {
-      procedure: { default: null },
-      approach: { default: null },
-      laterality: { default: null },
-      anesthesia: { default: [] },
-      anesthesiaNotes: { required: true, default: '' },
-      cptCode: { default: null },
-      icdCode: { default: null },
+      procedure: { default: null, pathToField: 'procedureTab.AND.0.procedureId' },
+      approach: { default: null, pathToField: 'procedureTab.AND.0.approachId' },
+      laterality: { default: null, pathToField: 'procedureTab.AND.0.lateralityId' },
+      anesthesia: { default: [], required: false }, //queries whole table
+      anesthesiaNotes: { required: true, default: '', pathToField: 'procedureTab.AND.0.anesthesiaNotes' },
+      cptCode: { default: null, required: false, pathToField: 'procedureTab.AND.0.cptCodeId' },
+      icdCode: { default: null, required: true, pathToField: 'procedureTab.AND.0.icdCodeId' },
   },
   scheduling: {
-      location: { default: null },
-      procedureUnit: { default: null },
-      serviceLine: { default: null },
-      provider: { default: null },
-      procedureDate: { default: null },
-      admissionType: { default: null }
+      location: { default: null, required: true, pathToField: 'scheduling.AND.0.locationId' },
+      procedureUnit: { default: null, required: false, pathToField: 'scheduling.AND.0.procedureUnitId' },
+      serviceLine: { default: null, pathToField: 'scheduling.AND.0.serviceLineId' },
+      provider: { default: null, pathToField: 'scheduling.AND.0.providerId' },
+      procedureDate: { default: null }, //already dealt with from the calendar picker so always needed
+      admissionType: { default: null, pathToField: 'scheduling.AND.0.admissionTypeId' }
+  },
+  clinical: {
+    physicianFirstName: {default: '', required: false, pathToField: 'clinical.AND.0.physicianFirstName'},
+    physicianLastName: {default: '', required: false, pathToField: 'clinical.AND.0.physicianLastName'},
+    physicianPhone: {default: '', pathToField: 'clinical.AND.0.physicianPhone'},
+    preOpRequired: {default: null}, //pathToField: 'clinical.AND.1.OR.0.preOpRequired'
+    //do i add in clearanceRequired?
+    postOpDateTime: {default: null, pathToField: 'clinical.AND.0.postOpDateTime'},
+    diagnosticTestsRequired: {default: null}, //pathToField: 'clinical.AND.3.OR.0.diagnosticTestsRequired'
+    preOpForm: {
+      preOpDateTime: {default: null },
+      atProcedureLocation: {default: null},
+      facility: facilityConfig,
+    },
+    diagnosticTests: [{
+      diagnosticTest: {default: null},
+      testNameOther: {default: ''},
+      testDateTime: {default: null},
+      atProcedureLocation: {default: null},
+      facility: facilityConfig
+    }],
+    clearances: [{
+      clearance: {default: null},
+      testNameOther: {default: ''},
+      testDateTime: {default: null},
+      atProcedureLocation: {default: null},
+      facility: facilityConfig
+    }],
   }
 }
 
-export interface BookingSheetConfig {
-  patient?: object,
-  financial?: object,
-  procedureTab?: object,
-  scheduling?: object
+export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
+
+export const diagnosticTestOptions = [
+  {testName: 'A1C'},
+  {testName: 'Basic Metabolic Panel (BMP)'},
+  {testName: 'Chem 12'},
+  {testName: 'Chem 7'},
+  {testName: 'Chest X-ray'},
+  {testName: 'Colonoscopy'},
+  {testName: 'Complete Blood Count (CBC)'},
+  {testName: 'Complete Blood Count (CBC) With Differential'},
+  {testName: 'Complete Metabolic Panel (CMP)'},
+  {testName: 'COVID'},
+  {testName: 'Computerized tomography (CT) scan'},
+  {testName: 'Electrocardiogram (ECG or EKG)'},
+  {testName: 'Glucose'},
+  {testName: 'International Normalized Ratio (INR)'},
+  {testName: 'Lung Function Tests'},
+  {testName: 'Magnetic resonance imaging (MRI)'},
+  {testName: 'Methicillin-resistant Staphylococcus Aureus (MRSA)'},
+  {testName: 'Pacemaker or Defibrillator Placement Report'},
+  {testName: 'Partial thromboplastin time (PTT)'},
+  {testName: 'Prothrombin time test (PT)'},
+  {testName: 'Sickle Cell'},
+  {testName: 'Stress Test'},
+  {testName: 'Urinalysis (UA)'},
+  {testName: 'Ultrasound'},
+  {testName: 'Upper Endoscopy'},
+  {testName: 'X-Ray'},
+  {testName: 'Other'}
+]
+
+export const clearanceOptions = [
+  {clearanceName: 'Medical'},
+  {clearanceName: 'Cardiac'},
+  {clearanceName: 'Dental'},
+  {clearanceName: 'Pulmonary'},
+  {clearanceName: 'Endocrine'},
+  {clearanceName: 'Oncology/Hematology'},
+  {clearanceName: 'Other'},
+]
+
+export interface patientTabFilterInterface {
+  AND: patient[],
+} 
+
+export interface patient {
+  firstName?: object
+  middleName?: object
+  lastName?: object
+  dateOfBirth?: object
+  sexId?: object 
+  address?: object
+  city?: object
+  stateId?: object
+  zip?: object
+}
+
+export const defaultPatientTabFilter: patientTabFilterInterface = {
+  AND: [
+    {
+        firstName: {not: ''},
+        middleName: {not: ''},
+        lastName: {not: ''},
+        zip: {not: ''},
+        dateOfBirth: {not: null},
+        address: {not: ''},
+        city: {not: ''},
+        sexId: {not: 0},
+        stateId: {not: 0},
+    }
+  ]
+}
+
+export interface SchedulingTabInterface {
+  AND: scheduling[],
+} 
+
+export interface scheduling {
+  admissionTypeId?: object
+  locationId?: object
+  procedureUnitId: object,
+  serviceLineId: object,
+  providerId: object,
+}
+
+export const defaultSchedulingFilter: SchedulingTabInterface = {
+  AND: [
+    {
+      locationId: {not: 0},
+      procedureUnitId: {not: 0},
+      serviceLineId: {not: 0},
+      providerId: {not: 0},
+      admissionTypeId: {not: 0},
+    }
+  ]
+}
+
+export interface ProcedureTabInterface {
+  AND: procedureTab[],
+} 
+
+export interface procedureTab {
+  procedureId?: object 
+  approachId?: object 
+  lateralityId?: object 
+  cptCodeId?: object 
+  icdCodeId?: object 
+  anesthesiaNotes?: object
+}
+
+export const defaultProcedureTabFilter: ProcedureTabInterface = {
+  AND: [
+    {
+      procedureId: {not: 0},
+      approachId: {not: 0 },
+      lateralityId: {not: 0 } ,
+      anesthesiaNotes: {not: ''},
+      cptCodeId: {not: 0 },
+      icdCodeId: {not: 0 },
+    }
+  ]
+}
+
+export interface FinancialTabInterface {
+  none: financial,
+  some: object
+} 
+
+export interface financial {
+  insuranceGroupName?: string
+  insuranceGroupNumber?: string
+  priorAuthorization?: string
+  priorAuthId?: string
+  priorAuthDate?: Date | null
+}
+
+export const defaultFinancialFilter: FinancialTabInterface = {
+  none: {
+    insuranceGroupName: '' ,
+    insuranceGroupNumber: '' ,
+    priorAuthorization: '' ,
+    priorAuthId: '',
+    priorAuthDate: null,
+  },
+  some: {}
+}
+
+const facilityFilter = {
+  OR: [
+    {atProcedureLocation: true},
+    {
+      facility: {
+        is: {
+            facilityName: {not: ""},
+            phone: {not: ""} ,
+            addressOne: {not: ""} ,
+            addressTwo:{not: ""} ,
+            city: {not: ""} ,
+            state: {not: ""} ,
+            zip: {not: ""} ,
+        }
+      }
+    }
+  ]
+}
+  
+const preOpFormFilter = {
+  OR: [
+    {preOpRequired: 'false'},
+    {
+      preOpForm: {
+        is: {
+          preOpDateTime: { not: null },
+          ...facilityFilter
+        }
+      }
+    }
+  ]
+}
+
+const diagnosticTestFormFilter = {
+  OR: [
+    {diagnosticTestsRequired: 'false'},
+    {
+      diagnosticTests: {
+        every: {
+          AND: [
+            { 
+              OR: [
+                {diagnosticTest: {is: {testName: {not: "Other"}}}},
+                {diagnosticTest: {is: {testName: "Other"}}, testNameOther: { not: "" }}
+              ]
+            }
+          ],
+          testDateTime: { not: null },
+          ...facilityFilter
+        },
+        some: {}
+      }
+    }
+  ]
+}
+  
+const clearanceFormFilter = {
+  OR: [
+    {clearanceRequired: 'false'},
+    {
+      clearances: {
+        every: {
+          AND: [
+              { 
+                OR: [
+                  {clearance: {is: {clearanceName: {not: "Other"}}}},
+                  {clearance: {is: {clearanceName: "Other" }}, clearanceNameOther: { not: "" }}
+                ]
+              }
+          ],
+          clearanceDateTime: { not: null },
+          ...facilityFilter
+        },
+        some: {}
+      }
+    }
+  ]  
+}
+
+export interface ClinicalTabInterface {
+  AND: object[]
+} 
+
+export const defaultClinicalFilter: ClinicalTabInterface = {
+  AND: [
+    {
+      physicianFirstName: {not: ""},
+      physicianLastName: {not: ""} ,
+      physicianPhone: {not: ""} ,
+      postOpDateTime: {not: null},
+    },
+      preOpFormFilter,
+      clearanceFormFilter,
+      diagnosticTestFormFilter
+  ],
 }

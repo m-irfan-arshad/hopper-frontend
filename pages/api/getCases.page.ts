@@ -1,9 +1,11 @@
 import { Prisma } from '@prisma/client';
+import * as R from 'ramda'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { formatDashboardQueryParams, casesFormatter, withValidation } from '../../utils/helpers';
 import prisma from '../../prisma/clientInstantiation';
-import { paginationCount } from '../../reference';
+import { paginationCount, defaultBookingSheetConfig } from '../../reference';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { Storage } from "@google-cloud/storage";
 
 const requiredParams = ['dateRangeStart', 'dateRangeEnd', 'page', 'orderBy'];
 
@@ -13,19 +15,26 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
     searchValue: <string>req.query["searchValue"],
     dateRangeStart: <string>req.query["dateRangeStart"],
     dateRangeEnd: <string>req.query["dateRangeEnd"],
-    vendorConfirmation: <string>req.query["vendorConfirmation"],
-    priorAuthorization: <string>req.query["priorAuthorization"],
+    vendorConfirmation: <string>req.query["vendorConfirmation"], //same thing gets removed cuz of dropdown filter?
+    priorAuthorization: <string>req.query["priorAuthorization"], //gets removed cuz of the step dropdown filter right?
+    workQueue: <string>req.query["workQueue"]
   };
 
   const paginationSkipAmount = (parseInt(<string>req.query["page"]) - 1) * 50;
+  const storage = new Storage();
 
   try {
+    const orgConfigData = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
+    const orgConfigJSON = JSON.parse(orgConfigData.toString());
+    const config = R.clone(defaultBookingSheetConfig);
+    const bookingSheetConfig = R.mergeDeepRight(config, orgConfigJSON.tabs)
+    
     const count =  await prisma.cases.count({
-      where: formatDashboardQueryParams(dashboardParams)
+      where: formatDashboardQueryParams(dashboardParams, bookingSheetConfig)
     });
 
     const resultPosts = await prisma.cases.findMany({
-        where: formatDashboardQueryParams(dashboardParams),
+        where: formatDashboardQueryParams(dashboardParams, bookingSheetConfig),
         take: paginationCount,
         skip: paginationSkipAmount,
         orderBy: [
@@ -53,40 +62,3 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
 }
   
 }))
-
-
-/* TODO: HPR-425
-
-
-    1. isComplete is not part of the object itself... its added as an extension, need each tab to have this 
-        and then use all of these combined to make a full case
-    2. use prisma $extends to solve 
-
-      [12:44 PM] Isaac Blinder
-
-
-
-      TODO: 
-      use AND/OR logic of native prisma to try and create relational logic for prisma (in clinical Tab, if this checkbox is clicked, then all of these fields are required)
-
-      example below is saying on the clinicalTab grab it if clearanceRequired is false or clearances is filled out (not working just an idea)
-
-      const getUser = prisma.cases.findMany({
-  where: {
-    clinicalTab: {
-      OR: [
-        {clearanceRequired: false},
-        {clearances: {
-          clearanceDateTime: {}
-        }}
-     ]
-    }
-  },
-  include: {
-    clinicalTab: true
-  }
-})
-
-has context menu
-
-*/

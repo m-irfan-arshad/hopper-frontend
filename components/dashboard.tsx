@@ -20,6 +20,7 @@ export default function Dashboard() {
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
     const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
     const [context, setContext] = useContext(CaseFilterContext);
+    const shouldShowCount = context.dashboard.workQueue || context.dashboard.searchBarValue;
 
     function handleStateUpdate(key: any, value: any) {
         const contextState = R.clone(context);
@@ -49,7 +50,8 @@ export default function Dashboard() {
         context.dashboard.dateSortValue, 
         context.dashboard.caseFilterValue, 
         context.dashboard.searchBarValue, 
-        context.dashboard.page.toString()
+        context.dashboard.page.toString(),
+        context.dashboard.workQueue
     );
 
     const caseGroups:CaseGroup = {};
@@ -79,6 +81,8 @@ export default function Dashboard() {
                 onCaseFilterChange={handleCaseFilterChange} 
                 caseFilterValue={context.dashboard.caseFilterValue} 
                 searchBarValue={context.dashboard.searchBarValue}
+                workQueue={context.dashboard.workQueue}
+                onWorkQueueChange={(value: any) => handleStateUpdate('workQueue', value)}
                 search={handleSearchBarChange}
                 dateRangePickerProps={{
                     dateRangeStart: context.dashboard.dateRangeStart,
@@ -111,7 +115,7 @@ export default function Dashboard() {
                         justifyContent: "center"
                     }}>
                         <Typography variant="h6">
-                            {`${data.count || 0} ${data.count === 1 ? 'Case' : 'Cases'}`}
+                            {`${shouldShowCount && (data.count || 0)} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
                     </Box>
                     <Box sx={{display: "flex"}}>

@@ -109,6 +109,8 @@ interface Props {
     caseFilterValue: caseFilterInterface[]
     searchBarValue: string
     dateRangePickerProps: dateRangePickerProps
+    workQueue: string
+    onWorkQueueChange: (value: string) => void
 }
 
 interface dateRangePickerProps {
@@ -119,10 +121,11 @@ interface dateRangePickerProps {
 }
 
 export default function CaseNavBar(props: Props) {
-    const { onCaseFilterChange, caseFilterValue, searchBarValue, search, dateRangePickerProps } = props;
+    const { onCaseFilterChange, caseFilterValue, searchBarValue, search, dateRangePickerProps, onWorkQueueChange, workQueue } = props;
+
+    console.log('workQueue',workQueue);
 
     const [isDialogOpen, setDialogState] = useState(false);
-    const [selectedWorkQueue, selectWorkQueue] = useState('');
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
 
     const StyledBox = styled(Box)({
@@ -173,8 +176,8 @@ export default function CaseNavBar(props: Props) {
                             placeholder={'Select Work Queue'}
                             selectId="work-queue-select"
                             additionalStyles={{ marginRight: "0.625rem", alignSelf: 'flex-end'}}
-                            onChange={(value) => selectWorkQueue(value)}
-                            value={selectedWorkQueue}
+                            onChange={(value) => onWorkQueueChange(value)}
+                            value={workQueue}
                         />
                     { !isMobile &&
                         <React.Fragment>
@@ -184,14 +187,14 @@ export default function CaseNavBar(props: Props) {
                                 setDateRangeStart={dateRangePickerProps.setDateRangeStart}
                                 setDateRangeEnd={dateRangePickerProps.setDateRangeEnd}
                             />
-                            <MultiSelectDropdown
+                            {/* <MultiSelectDropdown
                                 menuItems={dashboardStepDropDownValues}
                                 title="Step:"
                                 selectId="case-step-select"
                                 additionalStyles={{ marginLeft: "0.625rem", padding: 0}}
                                 onChange={onCaseFilterChange}
                                 value={caseFilterValue}
-                            />
+                            /> */}
                         </React.Fragment>
                         }
                     </StyledBox>

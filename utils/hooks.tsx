@@ -10,12 +10,13 @@ export function useGetCasesHook(
     dateSortValue: string, 
     caseFilter: caseFilterInterface[], 
     searchBarValue: string, 
-    page: string
+    page: string,
+    workQueue: string
 ) {
     const [_, setAlertState] = useContext(AlertContext);
     return useQuery(
-        ["getCases", dateRangeStart, dateRangeEnd, dateSortValue, caseFilter, searchBarValue, page], 
-        () => fetchCases(dateRangeStart, dateRangeEnd as moment.Moment, dateSortValue, caseFilter, searchBarValue, page).then(res => {
+        ["getCases", dateRangeStart, dateRangeEnd, dateSortValue, caseFilter, searchBarValue, page, workQueue], 
+        () => fetchCases(dateRangeStart, dateRangeEnd as moment.Moment, dateSortValue, caseFilter, searchBarValue, page, workQueue).then(res => {
             if (res.ok) {
               return res.json()
             }      
@@ -116,8 +117,8 @@ export function useGetCaseByIdHook(caseId: string) {
     );
 }
 
-const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
-    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, dateSortValue, caseFilter, searchBarValue, page);
+const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string, workQueue: string) => {
+    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, dateSortValue, caseFilter, searchBarValue, page, workQueue);
     return fetch(url)
 };
 
@@ -133,7 +134,7 @@ export function convertCaseStepsToFilters(caseFilter: caseFilterInterface[]): ob
     return returnObject
 }
 
-function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
+function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string, workQueue: string) {
     let parameters;
 
     parameters = new URLSearchParams({ 
@@ -141,6 +142,7 @@ function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: mome
         dateRangeEnd:  dateRangeEnd.format(),
         orderBy: translateSortOrder(dateSortValue),
         page: page,
+        ...(workQueue !== "") && {workQueue: workQueue},
         ...(searchBarValue !== "") && {searchValue: searchBarValue},
         ...convertCaseStepsToFilters(caseFilter)
     });
