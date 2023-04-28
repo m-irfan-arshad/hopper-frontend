@@ -38,7 +38,7 @@ test.describe('Landing Page', () => {
         const patientName = `${lastName}, ${firstName}`;
         const caseCardName = await dashboard.caseCardName();
         await expect(caseCardName).toEqual(patientName);
-        // await dashboard.openFirstPatientDropDown();
+        await dashboard.openFirstPatientDropDown();
         // const caseIdNumber = await dashboard.caseIdNumber();
         // await page.reload();
         // const [res2] = await Promise.all([
