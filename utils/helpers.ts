@@ -38,10 +38,24 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
             ]
         }
     }
+    
     if (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) {
         filterObject.financial = bookingSheetParams.financial;
         filterObject.procedureTab = bookingSheetParams.procedureTab;
         filterObject.clinical = bookingSheetParams.clinical;
+    }
+
+    if (params.workQueue === 'Preadmission Testing At Hospital') {
+        filterObject.clinical = {    
+            is: {
+                preOpRequired: 'true',
+                preOpForm: {
+                    is: {
+                        atProcedureLocation: true
+                    }
+                }
+            }
+        }
     }
 
     if (!searchValue) {

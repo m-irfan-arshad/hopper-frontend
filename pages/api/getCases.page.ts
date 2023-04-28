@@ -23,7 +23,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
   let bookingSheetConfig = {};
 
   try {
-    if (req.query["workQueue"]) {
+    if (req.query["workQueue"] === 'Booking Sheet Request') {
       const orgConfigData = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
       const orgConfigJSON = JSON.parse(orgConfigData.toString());
       const config = R.clone(defaultBookingSheetConfig);

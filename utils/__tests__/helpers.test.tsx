@@ -6,7 +6,7 @@ import { mockBookingSheetConfig, mockSingleCase } from "../../testReference";
 import { defaultBookingSheetConfig, defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter } from "../../reference";
 
 describe("Utils", () => {
-    test("formatDashboardQueryParams with work queue", async() => {
+    test("formatDashboardQueryParams with booking sheet request work queue", async() => {
         const params = {
             workQueue: 'Booking Sheet Request',
             dateRangeStart: '2022-10-10',
@@ -31,6 +31,41 @@ describe("Utils", () => {
             financial: defaultFinancialFilter,
             procedureTab: defaultProcedureTabFilter,
             patient: defaultPatientTabFilter
+          });    
+    });
+
+    test("formatDashboardQueryParams with Preadmission Testing At Hospital work queue", async() => {
+        const params = {
+            workQueue: 'Preadmission Testing At Hospital',
+            dateRangeStart: '2022-10-10',
+            dateRangeEnd: '2022-11-11',
+        };
+
+        const result = formatDashboardQueryParams(params, defaultBookingSheetConfig);
+        
+        expect(result).toEqual({
+            scheduling: {
+                AND: [
+                    {},
+                    {
+                        procedureDate: {
+                            gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
+                            lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
+                        },
+                    }
+                ]
+            },
+            clinical: {    
+                is: {
+                    preOpRequired: 'true',
+                    preOpForm: {
+                        is: {
+                            atProcedureLocation: true
+                        }
+                    }
+                }
+            },
+            patient: {}
           });    
     });
 
