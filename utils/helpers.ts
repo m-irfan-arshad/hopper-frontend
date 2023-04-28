@@ -147,9 +147,7 @@ export function withValidation(requiredParams: Array<string>, queryFunc: Functio
 }
 
 export function excludeField(object: any, fieldName: string): any {
-    let newObject = R.clone(object)
-    delete newObject[fieldName]
-    return newObject
+    return R.dissoc(fieldName, object);
   }
 
 /**
@@ -157,7 +155,7 @@ export function excludeField(object: any, fieldName: string): any {
  * Sample Input Obj: {sampleTab: { sampleField: {sampleFieldId: 1, sampleFieldName: "name"}}}
  * Output: {sampleTab: { update: { sampleFieldId: 1}}}
  */
-export function formToPrismaQuery(obj: {[key: string]: any}, id="", operation="update") {
+export function formObjectToPrismaQuery(obj: IndexObject, id="", operation="update") {
     let formattedObj = excludeField(obj, id);
 
     //update relationships by updating the Id, not the object itself
@@ -181,7 +179,7 @@ export function formToPrismaQuery(obj: {[key: string]: any}, id="", operation="u
     }
   }
 
-export function arrayToPrismaQuery(formData: any, dirtyFields: any, arrayFieldId: string) {
+export function formArrayToPrismaQuery(formData: IndexObject[], dirtyFields: IndexObject[], arrayFieldId: string) {
     let create: object[] = [];
     let update: object[] = [];
     formData.forEach((arrayElem: any, index: number) => {
@@ -206,7 +204,7 @@ export function arrayToPrismaQuery(formData: any, dirtyFields: any, arrayFieldId
         formattedField.clearance && (formattedField.clearance = { connect: {clearanceId: formattedField.clearance.clearanceId}});
         delete formattedField.clearanceId;
         if (formattedField.facility) {
-            formattedField.facility = formToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
+            formattedField.facility = formObjectToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
             delete formattedField.facilityId
         }
         
@@ -223,7 +221,7 @@ export function arrayToPrismaQuery(formData: any, dirtyFields: any, arrayFieldId
 }
 
 export function getClinicalQuery(clinicalUpdates: any, formData: any) {
-        let clinicalQuery = formToPrismaQuery(clinicalUpdates, 'clinicalId')
+        let clinicalQuery = formObjectToPrismaQuery(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
             if(clinicalUpdates.preOpRequired === "false") {
                 if (R.path(['preOpForm', 'preOpFormId'], formData)) {
@@ -232,12 +230,12 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
             } else {
                 if(clinicalUpdates.preOpForm) {
                     const preOpCrudOperation = R.path(['preOpForm','preOpFormId'], formData) ? 'update' : 'create';
-                    let preOpForm = formToPrismaQuery(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
+                    let preOpForm = formObjectToPrismaQuery(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
                     if (preOpForm) {
                         const formQuery = preOpForm[preOpCrudOperation]
                         if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
                             const facilityCrudOperation = R.path(['preOpForm', 'facility', 'facilityId'], formData) ? 'update' : 'create'
-                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility : formToPrismaQuery(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
+                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility : formObjectToPrismaQuery(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
                         }
                         clinicalQuery.update.preOpForm = preOpForm;
                     }
@@ -245,14 +243,14 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
             }
             if (formData.diagnosticTestsRequired === "true") {
                 if (clinicalUpdates.diagnosticTests) {
-                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = arrayToPrismaQuery(formData.diagnosticTests, clinicalUpdates.diagnosticTests, 'diagnosticTestFormId'));
+                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = formArrayToPrismaQuery(formData.diagnosticTests, clinicalUpdates.diagnosticTests, 'diagnosticTestFormId'));
                 }
             } else {
                 clinicalQuery.update.diagnosticTests = {set: []}
             }
             if (formData.clearanceRequired === "true") {
                 if (clinicalUpdates.clearances) {
-                    clinicalQuery.update.clearances = arrayToPrismaQuery(formData.clearances, clinicalUpdates.clearances, 'clearanceFormId');
+                    clinicalQuery.update.clearances = formArrayToPrismaQuery(formData.clearances, clinicalUpdates.clearances, 'clearanceFormId');
                 }
             } else {
                 clinicalQuery.update.clearances = {set: []}
@@ -262,7 +260,7 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
   }
 
 export function getProcedureTabQuery(procedureTabUpdates: any, formData: any) {
-    const query = formToPrismaQuery(procedureTabUpdates, "procedureTabId")
+    const query = formObjectToPrismaQuery(procedureTabUpdates, "procedureTabId")
     if (query) {
         const anesthesiaIds = formData.anesthesia.map((elem: any) => ({['anesthesiaId']: elem['anesthesiaId']}))
         query.update.anesthesia = {
@@ -340,7 +338,7 @@ const flattenObj = (ob: any) => {
     return result;
 };
 
-export const getDifference = (original: any, incoming: any, ignoreKeys?: string[]) => {
+export const getDifference = (original: { [key: string]: any }, incoming: { [key: string]: any }, ignoreKeys?: string[]) => {
     const flatOriginal = flattenObj(original);
     const flatIncoming = flattenObj(incoming);
 

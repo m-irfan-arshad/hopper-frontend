@@ -1,8 +1,9 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { checkFieldForErrors, createValidationObject, formatDashboardQueryParams, formatDate, formToPrismaQuery, getClinicalQuery, getDifference, getProcedureTabQuery, isFieldVisible, validateQueryOrBody } from "../helpers";
+import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, getClinicalQuery, getDifference, getProcedureTabQuery, isFieldVisible, validateQueryOrBody } from "../helpers";
 import httpMock from 'node-mocks-http';
 import { mockBookingSheetConfig, mockSingleCase, mockSingleClearance, mockSingleProcedure, mockSingleScheduling } from "../../testReference";
+import * as R from "ramda";
 
 describe("Utils", () => {
     test("formatDashboardQueryParams with case id", async() => {
@@ -159,10 +160,10 @@ describe("Utils", () => {
         expect(insuranceError).toEqual(true);
     });
 
-    test("formToPrismaQuery function", async () => {
+    test("formObjectToPrismaQuery function", async () => {
         const sampleForm = mockSingleScheduling;
         const sampleOutput = {"update": {"admissionTypeId": 1, "locationId": 1, "procedureDate": moment('2022-10-10').toDate(), "procedureUnitId": 1, "providerId": 1, "schedulingId": 1, "serviceLineId": 1}}
-        expect(formToPrismaQuery(sampleForm)).toEqual(sampleOutput)
+        expect(formObjectToPrismaQuery(sampleForm)).toEqual(sampleOutput)
     });
 
     test("getProcedureTabQuery function", async () => {
@@ -299,4 +300,8 @@ describe("Utils", () => {
         const expected = {procedureId: 2, anesthesia: [undefined, undefined, {anesthesiaId: 3}]};
         expect(getDifference(sampleOld, sampleNew)).toEqual(expected)
     });
+
+    test("excludeField function", ()=>{
+        expect(excludeField({caseId: "123", cases: {}}, "caseId")).toEqual({cases: {}})
+    })
 });

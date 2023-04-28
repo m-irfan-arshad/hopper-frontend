@@ -323,6 +323,7 @@ export const defaultBookingSheetConfig = {
     preOpRequired: {default: null},
     postOpDateTime: {default: null},
     diagnosticTestsRequired: {default: null},
+    clearanceRequired: {default: null},
     preOpForm: {
       preOpDateTime: {default: null},
       atProcedureLocation: {default: null},
