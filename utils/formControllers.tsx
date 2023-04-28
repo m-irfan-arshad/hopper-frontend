@@ -6,7 +6,13 @@ import {
     styled,
     TextFieldProps,
     Grid,
-    Box
+    Box,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    Checkbox
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -56,14 +62,33 @@ interface DropDownSearchControllerProps {
     dependency?: string,
     multiple?: boolean,
     size: number,
-    config?: BookingSheetConfig
+    config?: BookingSheetConfig,
+    onChange?: any
+}
+
+interface RadioControllerProps {
+    id: any,
+    title?: string,
+    size: number,
+    config?: BookingSheetConfig,
+    options: Array<{title: string, value: any}>,
+    onChange?: any
+}
+
+interface CheckboxControllerProps {
+    id: any,
+    title?: string,
+    size: number,
+    config?: BookingSheetConfig,
+    onChange?: any
 }
 
 interface ConfigWrapperProps {
     children: any, 
     id: string, 
     size: number,
-    config?: BookingSheetConfig
+    config?: BookingSheetConfig,
+    styles?: object
 }
 
 const helperTextProps = {
@@ -76,11 +101,11 @@ const helperTextProps = {
 };
 
 function ConfigWrapper(props: ConfigWrapperProps) {
-    const {children, id, size, config} = props;
+    const {children, id, size, config, styles} = props;
     const isVisible = isFieldVisible(config, id)
     if (!isVisible) return <></>;
     return(
-        <Grid item xs={size}>
+        <Grid item xs={size} sx={styles ? styles : {}}>
             {children}
         </Grid>
       )
@@ -191,6 +216,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             name={id}
             control={control}
             render={({ field }) => {
+                const onChangeFunc = props.onChange ? props.onChange : field.onChange;
                 return <DropDownSearchComponent
                         label={title}
                         value={field.value}
@@ -198,7 +224,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         id={id}
                         multiple={multiple}
                         options={dropdownData}
-                        onChange={field.onChange}
+                        onChange={onChangeFunc}
                         disabled={isDisabled} 
                         placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
                         additionalStyles={additionalStyles}
@@ -207,4 +233,48 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                     />
                 }}
         /></ConfigWrapper>
+}
+
+export function RadioGroupController(props: RadioControllerProps) {
+    const { control, trigger, formState: {errors} } = useFormContext();
+    const {id, title, size, config, options} = props;
+
+    return <ConfigWrapper id={id} size={size} config={config}><Controller
+        name={id}
+        control={control}
+        render={({ field }) => {
+            const onChangeFunc = props.onChange ? props.onChange : field.onChange;
+            return <FormControl>
+                <FormLabel>{title}</FormLabel>
+                <RadioGroup row id={id} {...field} onChange={onChangeFunc}>
+                    {options.map((option, index) => <FormControlLabel key={index} control={<Radio />} label={option.title} value={option.value} />)}
+                </RadioGroup>
+            </FormControl>
+        }}
+      /></ConfigWrapper>
+}
+
+export function CheckboxController(props: CheckboxControllerProps) {
+    const { control, trigger, formState: {errors} } = useFormContext();
+    const {id, title, size, config} = props;
+
+    return (
+        <ConfigWrapper id={id} size={size} config={config} styles={{marginBottom: '1.3rem'}}><Controller
+        name={id}
+        control={control}
+        render={({ field }) => {
+            const onChangeFunc = props.onChange ? props.onChange : field.onChange;
+            return (<Box sx={{display: 'flex', alignItems: 'center'}}>
+                <FormLabel>{title}</FormLabel>
+                <Checkbox
+                    {...field}
+                    checked={field.value}
+                    id={id}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    onChange={onChangeFunc}
+                />
+            </Box>
+        )}}
+      /></ConfigWrapper>
+    )
 }
