@@ -251,12 +251,15 @@ export const mockServiceLineData = [
 ];
 
 export const mockBookingSheetConfig = {
-    patient: {
-        firstName: { visible: true, required: false },
-        middleName: { visible: true, required: false },
-        lastName: { visible: true, required: true },
-        state: { visible: true },
-        dateOfBirth: { required: false }
+    organization: "Aetna",
+    tabs: {
+        patient: {
+            firstName: { visible: true, required: false, pathToField: 'patient.AND.0.firstName' },
+            middleName: { visible: true, required: false, pathToField: 'patient.AND.0.middleName' },
+            lastName: { visible: true, required: true, pathToField: 'patient.AND.0.lastName' },
+            state: { visible: true,  pathToField: 'patient.AND.0.stateId' },
+            dateOfBirth: { required: false,  pathToField: 'patient.AND.0.dateOfBirth' }
+        }
     }
 }
 export const mockCommentData = [

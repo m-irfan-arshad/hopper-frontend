@@ -289,7 +289,7 @@ export const defaultPreOpForm = {
 }
 
 const facilityConfig = { 
-  facilityName: {default: '', required: false}, // pathToField: 'clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.facilityName'
+  facilityName: {default: '', required: false},
   phone: {default: '', required: false},
   addressOne: {default: ''},
   addressTwo: {default: ''},
@@ -298,7 +298,6 @@ const facilityConfig = {
   zip: {default: ''}
 }
 
-//put required: true to the patient fields that are required false from the config (firstName is required false)
 export const defaultBookingSheetConfig = {
   patient: {
       firstName: { default: '', required: true, pathToField: 'patient.AND.0.firstName' },
@@ -312,9 +311,9 @@ export const defaultBookingSheetConfig = {
       zip: { default: '', pathToField: 'patient.AND.0.zip'},
   },
   financial: [{
-      insurance: { default: null, required: false }, //this is just a list of insurances
+      insurance: { default: null, required: false },
       insuranceGroupName: { default: '', pathToField: 'financial.none.insuranceGroupName' },
-      insuranceGroupNumber: { default: '', required: false, pathToField: 'financial.none.insuranceGroupNumber' },
+      insuranceGroupNumber: { default: '', pathToField: 'financial.none.insuranceGroupNumber' },
       priorAuthorization: { default: null, required: true, pathToField: 'financial.none.priorAuthorization' },
       priorAuthId: { default: '', required: true, pathToField: 'financial.none.priorAuthId' },
       priorAuthDate: { default: null, pathToField: 'financial.none.priorAuthDate' },
@@ -323,27 +322,26 @@ export const defaultBookingSheetConfig = {
       procedure: { default: null, pathToField: 'procedureTab.AND.0.procedureId' },
       approach: { default: null, pathToField: 'procedureTab.AND.0.approachId' },
       laterality: { default: null, pathToField: 'procedureTab.AND.0.lateralityId' },
-      anesthesia: { default: [], required: false }, //queries whole table
+      anesthesia: { default: [], required: false }, 
       anesthesiaNotes: { required: true, default: '', pathToField: 'procedureTab.AND.0.anesthesiaNotes' },
-      cptCode: { default: null, required: false, pathToField: 'procedureTab.AND.0.cptCodeId' },
+      cptCode: { default: null, pathToField: 'procedureTab.AND.0.cptCodeId' },
       icdCode: { default: null, required: true, pathToField: 'procedureTab.AND.0.icdCodeId' },
   },
   scheduling: {
       location: { default: null, required: true, pathToField: 'scheduling.AND.0.locationId' },
-      procedureUnit: { default: null, required: false, pathToField: 'scheduling.AND.0.procedureUnitId' },
+      procedureUnit: { default: null, pathToField: 'scheduling.AND.0.procedureUnitId' },
       serviceLine: { default: null, pathToField: 'scheduling.AND.0.serviceLineId' },
       provider: { default: null, pathToField: 'scheduling.AND.0.providerId' },
-      procedureDate: { default: null }, //already dealt with from the calendar picker so always needed
+      procedureDate: { default: null },
       admissionType: { default: null, pathToField: 'scheduling.AND.0.admissionTypeId' }
   },
   clinical: {
-    physicianFirstName: {default: '', required: false, pathToField: 'clinical.AND.0.physicianFirstName'},
-    physicianLastName: {default: '', required: false, pathToField: 'clinical.AND.0.physicianLastName'},
+    physicianFirstName: {default: '', pathToField: 'clinical.AND.0.physicianFirstName'},
+    physicianLastName: {default: '', pathToField: 'clinical.AND.0.physicianLastName'},
     physicianPhone: {default: '', pathToField: 'clinical.AND.0.physicianPhone'},
-    preOpRequired: {default: null}, //pathToField: 'clinical.AND.1.OR.0.preOpRequired'
-    //do i add in clearanceRequired?
+    preOpRequired: {default: null},
     postOpDateTime: {default: null, pathToField: 'clinical.AND.0.postOpDateTime'},
-    diagnosticTestsRequired: {default: null}, //pathToField: 'clinical.AND.3.OR.0.diagnosticTestsRequired'
+    diagnosticTestsRequired: {default: null},
     preOpForm: {
       preOpDateTime: {default: null },
       atProcedureLocation: {default: null},

@@ -29,14 +29,14 @@ describe("CaseNavBar", () => {
         }
     }
 
-    test("renders the caseNavBar", async() => {
-        const { getByRole } = render(
+    test("renders the caseNavBar and interacts with work queue dropdown", async() => {
+        const { getByRole, getByTestId } = render(
             <CaseNavBar  {...props}/>
         ); 
        
         expect(getByRole("textbox", {name: "Date Range Start"})).toBeInTheDocument();
         expect(getByRole("textbox", {name: "Date Range End"})).toBeInTheDocument();
-        expect(getByRole("button", {name: "Step: All Steps"})).toBeInTheDocument();
+        expect(getByTestId('work-queue-select')).toBeInTheDocument();
     });
 
     test("open create case dialog and close it", async () => {

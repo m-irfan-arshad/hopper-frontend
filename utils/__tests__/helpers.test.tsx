@@ -1,29 +1,36 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { checkFieldForErrors, createValidationObject, formatDashboardQueryParams, formatDate, isFieldVisible, validateQueryOrBody } from "../helpers";
+import { checkFieldForErrors, createValidationObject, formatDashboardQueryParams, formatDate, isFieldVisible, validateQueryOrBody, findFieldsToDelete, createBookingSheetParams, deleteFromObject } from "../helpers";
 import httpMock from 'node-mocks-http';
 import { mockBookingSheetConfig, mockSingleCase } from "../../testReference";
+import { defaultBookingSheetConfig, defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter } from "../../reference";
 
 describe("Utils", () => {
-    test("formatDashboardQueryParams with case id", async() => {
+    test("formatDashboardQueryParams with work queue", async() => {
         const params = {
-            searchValue: '1234',
+            workQueue: 'Booking Sheet Request',
             dateRangeStart: '2022-10-10',
             dateRangeEnd: '2022-11-11',
         };
 
-        const result = formatDashboardQueryParams(params);
+        const result = formatDashboardQueryParams(params, defaultBookingSheetConfig);
         
         expect(result).toEqual({
             scheduling: {
-                procedureDate: {
-                    gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
-                    lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
-                },
+                AND: [
+                    defaultSchedulingFilter,
+                    {
+                        procedureDate: {
+                            gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
+                            lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
+                        },
+                    }
+                ]
             },
-            caseId: {
-                equals: parseInt('1234')
-            }
+            clinical: defaultClinicalFilter,
+            financial: defaultFinancialFilter,
+            procedureTab: defaultProcedureTabFilter,
+            patient: defaultPatientTabFilter
           });    
     });
 
@@ -34,31 +41,41 @@ describe("Utils", () => {
             dateRangeEnd: '2022-11-11',
         };
 
-        const result = formatDashboardQueryParams(params);
+        const result = formatDashboardQueryParams(params, defaultBookingSheetConfig);
 
         expect(result).toEqual( {
             scheduling: {
-                procedureDate: {
-                    gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
-                    lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
-                }
+                AND: [
+                    {},
+                    {
+                        procedureDate: {
+                            gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
+                            lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
+                        }
+                    }
+                ]
             },
             patient: {
-                OR: [
+                AND: [
+                    {},
                     {
-                        firstName: {
-                        startsWith: 'Bob',
-                        mode: 'insensitive'
-                        },
-                    },
-                    {
-                        lastName: {
-                        startsWith: 'Bob',
-                        mode: 'insensitive'
-                        },
-                    },
+                        OR: [
+                            {
+                                firstName: {
+                                startsWith: 'Bob',
+                                mode: 'insensitive'
+                                },
+                            },
+                            {
+                                lastName: {
+                                startsWith: 'Bob',
+                                mode: 'insensitive'
+                                },
+                            },
+                        ]
+                    }
                 ]
-          }
+            }
         }
         );    
     });
@@ -70,17 +87,23 @@ describe("Utils", () => {
             dateRangeEnd: '2022-11-11',
         };
 
-        const result = formatDashboardQueryParams(params);
+        const result = formatDashboardQueryParams(params, defaultBookingSheetConfig);
         
         expect(result).toEqual({
             scheduling: {
-                procedureDate: {
-                    gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
-                    lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
-                }
+                AND: [
+                    {},
+                    {
+                        procedureDate: {
+                            gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
+                            lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
+                        }
+                    }
+                ]
             },
             patient: {
             AND: [
+                {}, 
               {
                 OR: [
                     { firstName: { startsWith: 'Bob', mode: 'insensitive' } },
@@ -128,8 +151,8 @@ describe("Utils", () => {
     });
 
     test("createValidationObject function", async () => {
-        let schema = createValidationObject(mockBookingSheetConfig)
-        
+        let schema = createValidationObject(mockBookingSheetConfig.tabs)
+
         await expect(schema.validateAt('patient.firstName', mockSingleCase)).resolves.toBeTruthy();
         await expect(schema.validateAt('patient.firstName', {})).resolves.toBeFalsy();
     });
@@ -157,5 +180,30 @@ describe("Utils", () => {
 
         let insuranceError = checkFieldForErrors('financial.0.insurance', {financial: [{insurance: true}]});
         expect(insuranceError).toEqual(true);
+    });
+
+    test("findFieldsToDelete function", async () => {
+        let fieldsToDelete = findFieldsToDelete(mockBookingSheetConfig.tabs);
+        expect(fieldsToDelete).toEqual(['patient.AND.0.firstName', 'patient.AND.0.middleName', 'patient.AND.0.dateOfBirth']);
+
+      
+    });
+
+    test("createBookingSheetParams function", async () => {
+        let bookingSheetParams = createBookingSheetParams(mockBookingSheetConfig.tabs);
+        
+        expect(bookingSheetParams).toEqual({
+            patient: defaultPatientTabFilter,
+            procedureTab: defaultProcedureTabFilter,
+            clinical: defaultClinicalFilter,
+            financial: defaultFinancialFilter,
+            scheduling: defaultSchedulingFilter
+        });
+    });
+
+    test("deleteFromObject function", async () => {
+        let modifiedObject = deleteFromObject({patient: {firstName: ''}}, 'patient.firstName');
+        
+        expect(modifiedObject).toEqual({patient: {}});
     });
 });

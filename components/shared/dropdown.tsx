@@ -35,11 +35,11 @@ export default function DropDownComponent(props: Props) {
         }
     };
     
-    //TODO: is renderValue like that really necessary? its ok if it is just wanna check
     return (
         <Select
             value={value ? value : placeholder}
             id={selectId}
+            data-testid={selectId}
             renderValue={          
                 value !== "" ? undefined : () => <Typography variant="body2" sx={{color: "gray.dark"}}>{value !== '' ? value : placeholder}</Typography>
             }

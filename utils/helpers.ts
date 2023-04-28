@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { APIParameters, FullCase, IndexObject, defaultPatientTabFilter, defaultSchedulingFilter, defaultProcedureTabFilter, defaultFinancialFilter, BookingSheetConfig, defaultClinicalFilter } from '../reference';
 import { Prisma } from '@prisma/client';
-import moment, { isMoment } from "moment";
+import moment from "moment";
 import * as R from 'ramda';
 import * as yup from 'yup';
 
@@ -9,8 +9,6 @@ interface DashboardQueryParams {
     searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
-    priorAuthorization?: string;
-    vendorConfirmation?: string;
     workQueue?: string;
 }
 
@@ -21,13 +19,11 @@ interface FilterObject {
     procedureTab?: object;
     caseId?: object;
     patient?: object;
-    priorAuthorization?: object;
-    vendorConfirmation?: object;
 }
 
 export function formatDashboardQueryParams(params: DashboardQueryParams, bookingSheetConfig: BookingSheetConfig): Prisma.casesWhereInput   {
-    const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
-    const bookingSheetParams = bookingSheetConfig && createBookingSheetParams(params, bookingSheetConfig);
+    const { searchValue, dateRangeStart, dateRangeEnd } = params;
+    const bookingSheetParams = bookingSheetConfig && createBookingSheetParams(bookingSheetConfig);
 
     let filterObject: FilterObject = {
         scheduling: {
@@ -40,14 +36,13 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
                     },
                 }
             ]
-        },
-        ...(priorAuthorization === "Incomplete") && {financial: { some: {priorAuthorization: {contains: "Incomplete"}}}},
-        ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
+        }
     }
-
-    filterObject.financial = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.financial : {};
-    filterObject.procedureTab = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.procedureTab : {};
-    filterObject.clinical = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.clinical : {};
+    if (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) {
+        filterObject.financial = bookingSheetParams.financial;
+        filterObject.procedureTab = bookingSheetParams.procedureTab;
+        filterObject.clinical = bookingSheetParams.clinical;
+    }
 
     if (!searchValue) {
         filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {};
@@ -275,7 +270,7 @@ export function createValidationObject(bookingSheetConfig: IndexObject) {
 
 let fieldsToDelete: string[] = [];
 
-export function findFieldsToDelete(bookingSheetConfig: any) { //find fields to delete is new function
+export function findFieldsToDelete(bookingSheetConfig: any) {
     let configObject = bookingSheetConfig as IndexObject;
 
     if (Array.isArray(configObject)) {
@@ -299,7 +294,7 @@ export function findFieldsToDelete(bookingSheetConfig: any) { //find fields to d
     return fieldsToDelete
 }
 
-export function createBookingSheetParams(params: any, bookingSheetConfig: any) {
+export function createBookingSheetParams(bookingSheetConfig: any) {
     let fieldsToDelete = findFieldsToDelete(bookingSheetConfig);
 
     let defaultQuery = {

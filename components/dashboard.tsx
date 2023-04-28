@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
-import { Logout, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import { FullCase, dashboardSortDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
@@ -101,19 +100,6 @@ export default function Dashboard() {
                         <Typography variant="h6">
                             {`${shouldShowCount && (data.count || 0)} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
-                    </Box>
-                    <Box sx={{display: "flex"}}>
-
-                        <Button variant="contained" size="small">
-                            <Logout sx={{
-                                transform: "rotate(270deg)", 
-                                marginRight: {xs: 0, sm:"0.375rem"}, 
-                                height: "0.875rem", 
-                                width: "0.875rem"
-                            }} />
-
-                            {isMobile ? '' : 'Export'}
-                        </Button>
                     </Box>
                 </Box>
                 {
