@@ -31,24 +31,24 @@ test.describe('Landing Page', () => {
 
         const [res] = await Promise.all([
             page.waitForResponse(res => res.url().includes('/getCases') && res.url().includes('searchValue') && res.status() === 200),
-            page.locator("[placeholder$='Search Name or Case ID']").fill(`${firstName} ${lastName}`)
+            page.locator("[placeholder$='Search Patient Name']").fill(`${firstName} ${lastName}`)
         ]);
 
         await res.finished()
         const patientName = `${lastName}, ${firstName}`;
         const caseCardName = await dashboard.caseCardName();
         await expect(caseCardName).toEqual(patientName);
-        await dashboard.openFirstPatientDropDown();
-        const caseIdNumber = await dashboard.caseIdNumber();
-        await page.reload();
-        const [res2] = await Promise.all([
-            page.waitForResponse(res2 => res2.url().includes('/getCases') && res2.url().includes('searchValue') && res2.status() === 200),
-            page.locator("[placeholder$='Search Name or Case ID']").fill(`${caseIdNumber}`)
-        ]);
+        // await dashboard.openFirstPatientDropDown();
+        // const caseIdNumber = await dashboard.caseIdNumber();
+        // await page.reload();
+        // const [res2] = await Promise.all([
+        //     page.waitForResponse(res2 => res2.url().includes('/getCases') && res2.url().includes('searchValue') && res2.status() === 200),
+        //     page.locator("[placeholder$='Search Patient Name']").fill(`${caseIdNumber}`)
+        // ]);
 
-        await res2.finished()
-        const caseCardName2 = await dashboard.caseCardName();
-        await expect(caseCardName2).toEqual(patientName);
+        // await res2.finished()
+        // const caseCardName2 = await dashboard.caseCardName();
+        // await expect(caseCardName2).toEqual(patientName);
 
     });
 });
