@@ -329,25 +329,18 @@ model product {
   productName               String  @default("")
   quantity                  Int  @default(1)
   catalogNumber             String?  @default("")
+  productType               String?  @default("")
   vendorConfirmation        Boolean?
   implantDelivery           Boolean?
   trayDelivery              Boolean?
   sterilization             Boolean?
 
   caseId                    Int?
-  productTypeId             Int?
   manufacturerId            Int?
   vendorId                  Int?
-  productType               productType?  @relation(fields: [productTypeId], references: [productTypeId])
   manufacturer              manufacturer?  @relation(fields: [manufacturerId], references: [manufacturerId])
   vendor                    vendor?  @relation(fields: [vendorId], references: [vendorId])
   cases                     cases?
-}
-
-model productType {
-  productTypeId   Int       @id @default(autoincrement()) @map("product_type_id")
-  productType     String @map("product_type")
-  product         product[]
 }
 
 model manufacturer {

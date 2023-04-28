@@ -24,15 +24,14 @@ interface Props {
 }
 
 interface ProductRowProps {
-    index: number
+    index: number,
+    remove: any,
     productName: string,
     manufacturer: {
         manufacturerName: string
     },
     quantity: number,
-    productType: {
-        productType: string
-    },
+    productType: string,
     catalogNumber: string,
     vendor: {
         vendorName: string
@@ -49,23 +48,23 @@ function HeaderCell(props: {title: string, size: number}) {
     </Grid>)
 }
 
-function StatusCheckbox(props: {id: string, title: string}) {
+function StatusCheckbox(props: {id: string, title: string, value: Boolean}) {
     const { control } = useFormContext();
-    const {id, title} = props;
+    const {id, title, value} = props;
     return <ConfigWrapper id={id} config={{}} size={16} styles={{}}><Controller
     name={id}
     control={control}
     render={({ field }) => {
-        const onChangeFunc = field.onChange;
         return (<Box sx={{display: 'flex', alignItems: 'center'}}>
             <Checkbox
                 {...field}
                 checked={field.value}
                 id={id}
+                value={value}
                 size="small"
                 sx={{height: "2rem"}}
                 inputProps={{ 'aria-label': 'controlled', height: "1rem" }}
-                onChange={onChangeFunc}
+                onChange={field.onChange}
             />
             <Typography variant="body2">{title}</Typography>
         </Box>
@@ -74,7 +73,7 @@ function StatusCheckbox(props: {id: string, title: string}) {
 }
 
 function ProductRow(props: ProductRowProps){
-    const {index, productName, manufacturer, quantity, productType, catalogNumber, vendor, vendorConfirmation, implantDelivery, trayDelivery, sterilization} = props;
+    const {index, remove, quantity, productName, manufacturer, productType, catalogNumber, vendor, vendorConfirmation, implantDelivery, trayDelivery, sterilization} = props;
     const [showDelete, setShowDelete] = useState(false);
     return (
         <React.Fragment>
@@ -82,30 +81,33 @@ function ProductRow(props: ProductRowProps){
         onMouseOver={() => setShowDelete(true)}
         onMouseOut={() => setShowDelete(false)}>
             <Grid item xs={0.5} sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
-                {showDelete && <DeleteIcon sx={{height:"1.3rem"}}/>}
+                {showDelete && <DeleteIcon sx={{height:"1.3rem"}} onClick={()=>remove(index)}/>}
                 </Grid>
             <Grid item xs={4}>
                 <Typography variant="subtitle2" sx={{fontWeight: 700, color: "black.main"}}>{productName}</Typography>
                 <Typography variant="body2">{manufacturer.manufacturerName}</Typography>
                 <Typography variant="body2" sx={{display: 'flex', alignItems:"center"}}>
-                    Quantity: <TextField 
-                        size="small" 
-                        id={`product.${index}.quantity`} 
+                    Quantity: 
+                        <InputController 
+                        title=""
+                        id={`product.${index}.quantity`}
+                        placeholder="" 
+                        multiline
+                        size={5}
                         type="number" 
-                        sx={{marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}}
-                        InputProps={{style: {height: "2rem"}}}
-                        />
+                        config={{}}
+                    />
                 </Typography>
             </Grid>
-            <Grid item xs={2}><Typography variant="body2">{productType.productType}</Typography></Grid>
+            <Grid item xs={2}><Typography variant="body2">{productType}</Typography></Grid>
             <Grid item xs={2}><Typography variant="body2">{catalogNumber}</Typography></Grid>
             <Grid item xs={2}><Typography variant="body2">{vendor.vendorName}</Typography></Grid>
             <Grid item xs={2.5}><Link underline="none" variant="body2">Manage Trays</Link></Grid>
             <Grid item xs={3}>
-                <StatusCheckbox id={`product.${index}.vendorConfirmation`} title="Vendor Confirmation" />
-                <StatusCheckbox id={`product.${index}.implantDelivery`} title="Implant Delivery" />
-                <StatusCheckbox id={`product.${index}.trayDelivery`}  title="Tray Delivery" />
-                <StatusCheckbox id={`product.${index}.sterilization`} title="Sterilization" />
+                <StatusCheckbox id={`product.${index}.vendorConfirmation`} title="Vendor Confirmation" value={vendorConfirmation}/>
+                <StatusCheckbox id={`product.${index}.implantDelivery`} title="Implant Delivery" value={implantDelivery}/>
+                <StatusCheckbox id={`product.${index}.trayDelivery`}  title="Tray Delivery" value={trayDelivery}/>
+                <StatusCheckbox id={`product.${index}.sterilization`} title="Sterilization" value={sterilization}/>
             </Grid>
         </Grid>
         <Divider light sx={{marginTop: "1rem", marginBottom: "1.6rem"}}/>
@@ -117,24 +119,6 @@ export default function ProductTab(props: Props) {
     const {config} = props;
     const { control, getValues, trigger, formState: {errors} } = useFormContext();
     const { append, remove, fields } = useFieldArray({control, name: "product"});
-    const sampleData = {
-        productName: "Biolox delta Ceramic Femoral Head",
-        manufacturer: {
-            manufacturerName: "Zimmer Biolet"
-        },
-        quantity: 2,
-        productType: {
-            productType: "Implant"
-        },
-        catalogNumber: "122345",
-        vendor: {
-            vendorName: "Kendall R (SBOX-Medtel)"
-        },
-        vendorConfirmation: false,
-        implantDelivery: false,
-        trayDelivery: false,
-        sterilization: false
-    }
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Product</Typography>
@@ -147,7 +131,9 @@ export default function ProductTab(props: Props) {
                     <HeaderCell title="Tray Delivery Details" size={2.5} />
                     <HeaderCell title="Statuses" size={3} />
                 </Grid>
-                <ProductRow index={0} {...sampleData} />
+                {fields.map((item, index)=>(<React.Fragment key={item.id}>
+                    <ProductRow index={index} {...getValues(`product.${index}`)} remove={remove}/>
+                </React.Fragment>))}
                 
                 <Grid container width={"100%"}>
                     <Typography variant="body2" sx={{fontSize: "0.88rem", marginTop: "0.25rem", marginBottom: "0.25rem", color: "gray.dark"}}>Add Product</Typography>
@@ -156,7 +142,22 @@ export default function ProductTab(props: Props) {
                             label=""
                             labelProperties={["product"]}
                             options={productData}
-                            onChange={()=>{}}
+                            onChange={(productOption) => append({
+                                productName: productOption.product,
+                                manufacturer: {
+                                    manufacturerName: "Zimmer Biolet"
+                                },
+                                quantity: 1,
+                                productType: productOption.productType,
+                                catalogNumber: "122345",
+                                vendor: {
+                                    vendorName: "Kendall R (SBOX-Medtel)"
+                                },
+                                vendorConfirmation: false,
+                                implantDelivery: false,
+                                trayDelivery: false,
+                                sterilization: false
+                            })}
                             placeholder="Select Product"                        
                             error={false}
                         />
@@ -168,7 +169,12 @@ export default function ProductTab(props: Props) {
 }
 
 /*
-{fields.map((item, index)=>(<React.Fragment key={item.id}>
-                    <ProductRow index={index} {...getValues(`product.${index}`)} />
-                </React.Fragment>))}
+<TextField 
+                        size="small" 
+                        id={`product.${index}.quantity`} 
+                        type="number"
+                        value={quantity}
+                        sx={{marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}}
+                        InputProps={{style: {height: "2rem"}}}
+                        />
 */

@@ -396,4 +396,4 @@ export const clearanceOptions = [
   {clearanceName: 'Other'},
 ]
 
-export const productData = [{product: 'Product 1'}, {product: 'Product 2'}, {product: 'Other'}];
+export const productData = [{product: 'Product 1', productType: 'Ancillary'}, {product: 'Product 2', productType: 'Bone graft'}, {product: 'Product 3', productType: 'Implant'}, {product: 'Product 4', productType: 'Monitoring'}, {product: 'Other', productType: 'Other'}];

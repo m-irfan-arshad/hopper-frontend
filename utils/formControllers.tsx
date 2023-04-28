@@ -32,7 +32,8 @@ interface InputControllerProps {
     maxLength?: number,
     size: number,
     config?: BookingSheetConfig,
-    minRows?: number
+    minRows?: number,
+    type?: string
 }
 
 interface DateControllerProps {
@@ -125,9 +126,14 @@ const sharedProps = {
   
 export function InputController(props: InputControllerProps) {
     const { control, trigger, formState: {errors} } = useFormContext();
-    const {id, title, placeholder, multiline, maxLength, size, config, minRows} = props;
+    const {id, title, placeholder, multiline, maxLength, size, config, minRows, type} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
-    const numCharacters = currentValue ? currentValue.length : 0
+    const numCharacters = currentValue ? currentValue.length : 0;
+    const numberOrTextProps = type === "number" ? {
+        type: "number", 
+        InputProps: {style: {height: "2rem"}},
+        sx: {marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}
+    } : {minRows: minRows, maxRows: 6, multiline: multiline};
     const hasError = checkFieldForErrors(id, errors);
     const helperText = <Box sx={{display: "flex", justifyContent: "space-between"}}>
         <Box>{hasError ? "Required" : ""}</Box>
@@ -150,9 +156,7 @@ export function InputController(props: InputControllerProps) {
                 label={title} 
                 autoComplete='off' 
                 placeholder={placeholder} 
-                multiline={multiline} 
-                minRows={minRows}
-                maxRows={6}
+                {...numberOrTextProps}
             />
         )}
       /></ConfigWrapper>
