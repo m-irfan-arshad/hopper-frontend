@@ -24,6 +24,7 @@ import FinancialTab from "./tabs/financialTab";
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 import ClinicalTab from "./tabs/clinicalTab";
+import ProductTab from "./tabs/productTab";
 
 interface Props {
     open: boolean
@@ -121,7 +122,7 @@ export default function BookingSheetDialog(props: Props) {
 
     const validForm = isValid && !R.isEmpty(dirtyFields)
     return (
-        <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem", maxWidth: "60rem" }}}>
+        <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem", width: "100%" }}}>
             <DialogTitle 
                 sx={{
                     display: "flex",
@@ -146,17 +147,18 @@ export default function BookingSheetDialog(props: Props) {
                         <StyledTab label="Financial" value="Financial"   />
                         <StyledTab label="Procedure" value="Procedure"  />
                         <StyledTab label="Scheduling" value="Scheduling" />
-                        <StyledTab label="Implants & Products" value="Implants & Products"  />
+                        <StyledTab label="Implants & Products" value="Product"  />
                         <StyledTab label="Clinical" value="Clinical" />
                     </Tabs>
                 </Box>
             </DialogTitle>
-            <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
+            <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem", width: "100%"}}>
                 <FormProvider {...form}>
                     {selectedTab === "Patient" && <PatientTab config={bookingSheetConfig}/>}
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
                     {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
+                    {selectedTab === "Product" &&  <ProductTab config={bookingSheetConfig} />}
                     {selectedTab === "Clinical" &&  <ClinicalTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>

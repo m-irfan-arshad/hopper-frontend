@@ -100,7 +100,7 @@ const helperTextProps = {
     component: 'div'
 };
 
-function ConfigWrapper(props: ConfigWrapperProps) {
+export function ConfigWrapper(props: ConfigWrapperProps) {
     const {children, id, size, config, styles} = props;
     const isVisible = isFieldVisible(config, id)
     if (!isVisible) return <></>;

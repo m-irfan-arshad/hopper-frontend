@@ -316,6 +316,15 @@ export const defaultBookingSheetConfig = {
       procedureDate: { default: null },
       admissionType: { default: null }
   },
+  product: [{
+    productName: {default: ""},
+    quantity: {default: 1},
+    catalogNumber: {default: ""},
+    vendorConfirmation: { default: null },
+    implantDelivery: { default: null },
+    trayDelivery: { default: null },
+    sterilization: { default: null }
+  }],
   clinical: {
     physicianFirstName: {default: ''},
     physicianLastName: {default: ''},
@@ -386,3 +395,5 @@ export const clearanceOptions = [
   {clearanceName: 'Oncology/Hematology'},
   {clearanceName: 'Other'},
 ]
+
+export const productData = [{product: 'Product 1'}, {product: 'Product 2'}, {product: 'Other'}];

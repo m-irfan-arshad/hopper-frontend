@@ -15,7 +15,8 @@ model cases {
   patientId             Int       @map("patient_id")
   schedulingId          Int       @map("scheduling_id") @unique
   procedureTabId        Int       @map("procedure_tab_id") @unique
-  clinicalId         Int       @map("clinical_tab_id") @unique
+  clinicalId            Int       @map("clinical_tab_id") @unique
+  productId             Int       @map("product_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
   comment            comment[]
@@ -25,6 +26,7 @@ model cases {
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
   clinical           clinical @relation(fields: [clinicalId], references: [clinicalId])
+  product            product @relation(fields: [productId], references: [productId])
 }
 
 model comment {
@@ -320,4 +322,42 @@ model clearance {
   clearanceId     Int       @id @default(autoincrement()) @map("clearance_id")
   clearanceName   String    @map("clearance_name")
   clearanceForm   clearanceForm[]
+}
+
+model product {
+  productId                 Int  @id @default(autoincrement()) @map("product_id")
+  productName               String  @default("")
+  quantity                  Int  @default(1)
+  catalogNumber             String?  @default("")
+  vendorConfirmation        Boolean?
+  implantDelivery           Boolean?
+  trayDelivery              Boolean?
+  sterilization             Boolean?
+
+  caseId                    Int?
+  productTypeId             Int?
+  manufacturerId            Int?
+  vendorId                  Int?
+  productType               productType?  @relation(fields: [productTypeId], references: [productTypeId])
+  manufacturer              manufacturer?  @relation(fields: [manufacturerId], references: [manufacturerId])
+  vendor                    vendor?  @relation(fields: [vendorId], references: [vendorId])
+  cases                     cases?
+}
+
+model productType {
+  productTypeId   Int       @id @default(autoincrement()) @map("product_type_id")
+  productType     String @map("product_type")
+  product         product[]
+}
+
+model manufacturer {
+  manufacturerId        Int       @id @default(autoincrement()) @map("manufacturer_id")
+  manufacturerName      String @map("manufacturer_name")
+  product               product[]
+}
+
+model vendor {
+  vendorId      Int @id @default(autoincrement()) @map("vendor_id")
+  vendorName    String @map("vendor_name")
+  product       product[]
 }

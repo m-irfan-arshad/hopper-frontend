@@ -7,7 +7,7 @@ interface Option {
 }
 
 interface Props {
-    id: string
+    id?: string
     disabled?: boolean
     placeholder: string
     additionalStyles?: React.CSSProperties | object
