@@ -1,6 +1,6 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
-import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, getClinicalQuery, getDifference, getProcedureTabQuery, isFieldVisible, validateQueryOrBody } from "../helpers";
+import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody } from "../helpers";
 import httpMock from 'node-mocks-http';
 import { mockBookingSheetConfig, mockSingleCase, mockSingleClearance, mockSingleProcedure, mockSingleScheduling } from "../../testReference";
 import * as R from "ramda";
@@ -166,7 +166,7 @@ describe("Utils", () => {
         expect(formObjectToPrismaQuery(sampleForm)).toEqual(sampleOutput)
     });
 
-    test("getProcedureTabQuery function", async () => {
+    test("procedureTabToPrismaQuery function", async () => {
         const sampleForm = {
             mockSingleProcedure, 
             anesthesia: [
@@ -190,10 +190,10 @@ describe("Utils", () => {
                 }
             }
         }
-        expect(getProcedureTabQuery(sampleUpdates, sampleForm)).toEqual(sampleOutput)
+        expect(procedureTabToPrismaQuery(sampleUpdates, sampleForm)).toEqual(sampleOutput)
     });
 
-    test("getClinicalQuery function", async () => {
+    test("clinicalTabToPrismaQuery function", async () => {
         const sampleClinicalUpdates = {
             "physicianFirstName":"roger",
             "physicianLastName":"newcare",
@@ -252,17 +252,17 @@ describe("Utils", () => {
                 "diagnosticTests":{"set":[]},
                 "clearances":{"set":[]}
             }}
-        expect(getClinicalQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
+        expect(clinicalTabToPrismaQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
     });
 
-    test("getClinicalQuery function preOpForm, diagnosticTest, and clearance all not required", async () => {
+    test("clinicalTabToPrismaQuery function preOpForm, diagnosticTest, and clearance all not required", async () => {
         const sampleClinicalUpdates = {"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"false","diagnosticTestsRequired":"false","clearanceRequired":"false","postOpDateTime":"2023-04-28T04:21:00-04:00"}
         const sampleFormData = {"clinicalId":304,"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"false","diagnosticTestsRequired":"false","clearanceRequired":"false","postOpDateTime":"2023-04-28T08:21:00.000Z","preOpFormId":null,"diagnosticTests":[{"diagnosticTest":null,"testNameOther":"","testDateTime":null,"atProcedureLocation":null,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"clearances":[{"clearanceName":null,"clearanceNameOther":"","clearanceDateTime":null,"physicianFirstName":"","physicianLastName":"","physicianPhone":"","atProcedureLocation":null,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"preOpForm":null}
         const expectedQuery = {"update":{"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"false","diagnosticTestsRequired":"false","clearanceRequired":"false","postOpDateTime":"2023-04-28T04:21:00-04:00","diagnosticTests":{"set":[]},"clearances":{"set":[]}}}
-        expect(getClinicalQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
+        expect(clinicalTabToPrismaQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
     })
 
-    test("getClinicalQuery function full update", async () => {
+    test("clinicalTabToPrismaQuery function full update", async () => {
         const sampleClinicalUpdates = {"preOpRequired":"true","clearanceRequired":"true","diagnosticTests":[{"facility":{"phone":"Phone","addressOne":"Ad","addressTwo":"sdsdcd","city":"saxawa","state":"asxs","zip":"saefe"},"diagnosticTest":{"diagnosticTestId":219,"testName":"Chem 12"}},{"diagnosticTest":{"diagnosticTestId":224,"testName":"Complete Blood Count (CBC) With Differential"},"testNameOther":"","testDateTime":"2023-04-14T01:05:00-04:00","atProcedureLocation":true,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"clearances":[{"physicianFirstName":"P First","physicianLastName":"P last","physicianPhone":"P phone","facility":{"facilityName":"F name","phone":"F phone","addressOne":"F ad","addressTwo":"F ad 2","city":"NY","state":"NY","zip":"12345"},"clearanceDateTime":"2023-04-15T00:01:00-04:00","clearance":{"clearanceId":57,"clearanceName":"Medical"}}],"preOpForm":{"facility":{"facilityName":"F 1","phone":"F 2","addressOne":"F 3","addressTwo":"F 4","city":"F 5","state":"F 6"}}}
         const sampleFormData = {"clinicalId":304,"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"true","diagnosticTestsRequired":"true","clearanceRequired":"true","postOpDateTime":"2023-04-28T08:21:00.000Z","preOpFormId":null,"diagnosticTests":[{"diagnosticTestFormId":22,"diagnosticTestId":218,"clinicalId":304,"testNameOther":"","testDateTime":null,"atProcedureLocation":null,"facilityId":91,"facility":{"facilityId":91,"facilityName":"niknk","phone":"Phone","addressOne":"Ad","addressTwo":"sdsdcd","city":"saxawa","state":"asxs","zip":"saefe"},"diagnosticTest":{"diagnosticTestId":219,"testName":"Chem 12"}},{"diagnosticTest":{"diagnosticTestId":224,"testName":"Complete Blood Count (CBC) With Differential"},"testNameOther":"","testDateTime":"2023-04-14T05:05:00.000Z","atProcedureLocation":true,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"clearances":[{"clearanceName":null,"clearanceNameOther":"","clearanceDateTime":"2023-04-15T04:01:00.000Z","physicianFirstName":"P First","physicianLastName":"P last","physicianPhone":"P phone","atProcedureLocation":null,"facility":{"facilityName":"F name","phone":"F phone","addressOne":"F ad","addressTwo":"F ad 2","city":"NY","state":"NY","zip":"12345"},"clearance":{"clearanceId":57,"clearanceName":"Medical"}}],"preOpForm":{"preOpDateTime":null,"atProcedureLocation":null,"facility":{"facilityName":"F 1","phone":"F 2","addressOne":"F 3","addressTwo":"F 4","city":"F 5","state":"F 6","zip":null}}}
         const expectedQuery = {"update": {
@@ -288,7 +288,7 @@ describe("Utils", () => {
                 }
             }
         }}
-        expect(getClinicalQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
+        expect(clinicalTabToPrismaQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
     })
 
     test("formatCreateCaseParams function", async () => {
@@ -298,6 +298,13 @@ describe("Utils", () => {
         const sampleOld = {locationId: 1, procedureId: 1, anesthesia: [{anesthesiaId: 1},{anesthesiaId: 2},{anesthesiaId: 3}]};
         const sampleNew = {locationId: 1, procedureId: 2, anesthesia: [{anesthesiaId: 1},{anesthesiaId: 2}]};
         const expected = {procedureId: 2, anesthesia: [undefined, undefined, {anesthesiaId: 3}]};
+        expect(getDifference(sampleOld, sampleNew)).toEqual(expected)
+    });
+
+    test("getDifference function with objects in array", async () => {
+        const sampleOld = {anesthesia: [{anesthesiaId: 3, testId: 4}]};
+        const sampleNew = {anesthesia: [{anesthesiaId: 5, testId: 4}]};
+        const expected = {anesthesia: [{anesthesiaId: 5}]};
         expect(getDifference(sampleOld, sampleNew)).toEqual(expected)
     });
 

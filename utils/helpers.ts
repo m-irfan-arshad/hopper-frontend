@@ -220,7 +220,7 @@ export function formArrayToPrismaQuery(formData: IndexObject[], dirtyFields: Ind
     return { create, update }
 }
 
-export function getClinicalQuery(clinicalUpdates: any, formData: any) {
+export function clinicalTabToPrismaQuery(clinicalUpdates: any, formData: any) {
         let clinicalQuery = formObjectToPrismaQuery(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
             if(clinicalUpdates.preOpRequired === "false") {
@@ -259,7 +259,7 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
     return clinicalQuery
   }
 
-export function getProcedureTabQuery(procedureTabUpdates: any, formData: any) {
+export function procedureTabToPrismaQuery(procedureTabUpdates: any, formData: any) {
     const query = formObjectToPrismaQuery(procedureTabUpdates, "procedureTabId")
     if (query) {
         const anesthesiaIds = formData.anesthesia.map((elem: any) => ({['anesthesiaId']: elem['anesthesiaId']}))

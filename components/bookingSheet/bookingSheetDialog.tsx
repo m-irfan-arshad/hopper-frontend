@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, getClinicalQuery, getProcedureTabQuery } from '../../utils/helpers';
+import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
 import * as R from 'ramda';
@@ -42,11 +42,11 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
     let query: any = {caseId: caseId, ...getDifference(defaultFields, formData, ['facilityId'])};
     query.scheduling && (query.scheduling = formObjectToPrismaQuery(query.scheduling, "schedulingId"))
     query.patient && (query.patient = formObjectToPrismaQuery(query.patient, "patientId"))
-    query.procedureTab && (query.procedureTab = getProcedureTabQuery(query.procedureTab, formData.procedureTab))
+    query.procedureTab && (query.procedureTab = procedureTabToPrismaQuery(query.procedureTab, formData.procedureTab))
     if (query.financial) {
         query.financial = formArrayToPrismaQuery(formData.financial, query.financial, 'financialId');
     } if (query.clinical) {
-        query.clinical = getClinicalQuery(query.clinical, formData.clinical)
+        query.clinical = clinicalTabToPrismaQuery(query.clinical, formData.clinical)
     }
     return query
 }
