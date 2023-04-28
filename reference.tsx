@@ -8,9 +8,14 @@ export interface BookingSheetConfig {
   patient?: object,
   financial?: object,
   procedureTab?: object,
-  scheduling?: object
+  scheduling?: object,
   clinical?: object
 }
+
+export interface caseFilterInterface {
+  value: string,
+  id: string
+} 
 
 export interface Step {
   text: string,
@@ -33,6 +38,7 @@ export type FullCase = Prisma.casesGetPayload<{ include: {
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
   comment?: {orderBy: {createTime: 'desc'}},
   document?: {orderBy: {createTime: 'desc'}},
+  clinical?: {include: {diagnosticTests: {include: {facility: true, diagnosticTest: true}}, clearances: {include: {facility: true, clearance: true}}, preOpForm: {include: {facility: true}}}}
 } }>
 
 
@@ -238,6 +244,9 @@ export const includeReferencesObject = {
   financial: true
 }
 
+
+// BOOKING SHEET REFERENCE
+
 export const defaultInsuranceValue = {
   insurance: null,
   insuranceGroupName: '',
@@ -245,31 +254,6 @@ export const defaultInsuranceValue = {
   priorAuthorization: '',
   priorAuthId: '',
   priorAuthDate: null,
-}
-
-export const defaultDiagnosticTest = {
-  testName: null,
-  testNameOther: '',
-  testDateTime: null,
-  atProcedureLocation: null,
-  testFacilityName: '',
-  testPhone: '',
-  testAddressOne: '',
-  testAddressTwo: '',
-  testCity: '',
-  testState: '',
-  testZip: '',
-}
-
-export const defaultClearance = {
-    clearanceName: null,
-    clearanceNameOther: '',
-    clearanceDateTime: null,
-    physicianFirstName: '',
-    physicianLastName: '',
-    physicianPhone: '',
-    atProcedureLocation: null,
-    postOpDateTime: null
 }
 
 export const defaultFacility = {
@@ -282,15 +266,34 @@ export const defaultFacility = {
   zip: ''
 }
 
+export const defaultClearance = {
+    clearanceName: null,
+    clearanceNameOther: '',
+    clearanceDateTime: null,
+    physicianFirstName: '',
+    physicianLastName: '',
+    physicianPhone: '',
+    atProcedureLocation: null,
+    facility: defaultFacility
+}
+
 export const defaultPreOpForm = {
   preOpDateTime: null,
   atProcedureLocation: null,
   facility: defaultFacility,
 }
 
-const facilityConfig = { 
-  facilityName: {default: '', required: false},
-  phone: {default: '', required: false},
+export const defaultDiagnosticTest = {
+  diagnosticTest: null,
+  testNameOther: '',
+  testDateTime: null,
+  atProcedureLocation: null,
+  facility: defaultFacility
+}
+
+const facilityConfig = {
+  facilityName: {default: ''},
+  phone: {default: ''},
   addressOne: {default: ''},
   addressTwo: {default: ''},
   city: {default: ''},
@@ -348,14 +351,14 @@ export const defaultBookingSheetConfig = {
       facility: facilityConfig,
     },
     diagnosticTests: [{
-      diagnosticTest: {default: null},
+      diagnosticTest: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},
       facility: facilityConfig
     }],
     clearances: [{
-      clearance: {default: null},
+      clearance: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},

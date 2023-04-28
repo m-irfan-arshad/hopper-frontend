@@ -124,13 +124,13 @@ export default function CreateCaseDialog(props: Props) {
             <FormProvider {...form} >
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                     <Typography variant="subtitle1" sx={{marginTop: "1.5rem", marginBottom: "1.25rem"}}>Patient Information</Typography>
-                    <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
+                    <Grid container justifyContent={"space-between"} spacing={"0.85rem"}>
                         <InputController id="patient.firstName" title="First Name" placeholder="First Name" size={6}/>
                         <InputController id="patient.lastName" title="Last Name" placeholder="Last Name" size={6}/>
                         <DateController id="patient.dateOfBirth" title="Patient Date of Birth" placeholder="Patient Date of Birth" size={6}/>
                     </Grid>
                     <Typography variant="subtitle1" sx={{marginTop: "2.5rem", marginBottom: "1.25rem"}}>Procedure Information</Typography>
-                    <Grid container justifyContent={"space-between"} spacing={"2.5rem"}>
+                    <Grid container justifyContent={"space-between"} spacing={"0.85rem"}>
                         <DropDownSearchController
                             title="Surgical Location"
                             id="scheduling.location" 

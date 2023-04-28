@@ -14,15 +14,16 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { getDirtyValues, createValidationObject } from '../../utils/helpers';
+import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultInsuranceValue } from '../../reference';
+import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
 import FinancialTab from "./tabs/financialTab";
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
+import ClinicalTab from "./tabs/clinicalTab";
 
 interface Props {
     open: boolean
@@ -37,31 +38,16 @@ const StyledTab = styled(Tab)({
     textTransform: "capitalize"
 });
 
-function prepareFormForSubmission(caseId: number, formData: any, dirtyFields: any) {
-    let query: any = {caseId: caseId, ...getDirtyValues(dirtyFields, formData)};
-    if (dirtyFields.financial) {
-        let newInsurances: object[] = [];
-        let updateInsurances: object[] = [];
-        formData.financial.forEach((insObj: any, index: number) => {
-            const updatedFields = dirtyFields.financial[index]
-            if (R.isNil(updatedFields)) return; // check if any fields in this insurance was updated
-
-            let formattedFinancials: any = getDirtyValues(updatedFields, insObj);
-            formattedFinancials.priorAuthorization && (formattedFinancials.priorAuthorization = formattedFinancials.priorAuthorization.priorAuthorization);
-            formattedFinancials.insurance && (formattedFinancials.insuranceId = formattedFinancials.insurance.insuranceId);
-            delete formattedFinancials.insurance;
-
-            if (insObj.financialId) { //if there is financialId present, update. Otherwise create
-                delete formattedFinancials.financialId;
-                delete formattedFinancials.caseId;
-                updateInsurances.push({data: formattedFinancials, where: {financialId: insObj.financialId}})
-            } else {
-                newInsurances.push(formattedFinancials)
-            } 
-        })
-        query.financial = {create: newInsurances, update: updateInsurances}
+function prepareFormForSubmission(caseId: number, formData: any, defaultFields: any) {
+    let query: any = {caseId: caseId, ...getDifference(defaultFields, formData, ['facilityId'])};
+    query.scheduling && (query.scheduling = formObjectToPrismaQuery(query.scheduling, "schedulingId"))
+    query.patient && (query.patient = formObjectToPrismaQuery(query.patient, "patientId"))
+    query.procedureTab && (query.procedureTab = procedureTabToPrismaQuery(query.procedureTab, formData.procedureTab))
+    if (query.financial) {
+        query.financial = formArrayToPrismaQuery(formData.financial, query.financial, 'financialId');
+    } if (query.clinical) {
+        query.clinical = clinicalTabToPrismaQuery(query.clinical, formData.clinical)
     }
-
     return query
 }
 
@@ -71,7 +57,25 @@ function prepareFormForRender(data: any) {
     if (R.isEmpty(data.financial)) {
         parsedCase.financial = [defaultInsuranceValue]
     } else {
-        parsedCase.financial = parsedCase.financial.map((insurance: any) => ({...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}))
+        parsedCase.financial = parsedCase.financial.map((insurance: any) => {
+            if (typeof insurance.priorAuthorization === 'object') {
+                return insurance
+            } else {
+                return {...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}
+            }
+        })
+    }
+
+    if (R.isEmpty(data.clinical.preOpForm)) {
+        parsedCase.clinical.preOpForm = defaultPreOpForm
+    }
+
+    if (R.isEmpty(data.clinical.diagnosticTests)) {
+        parsedCase.clinical.diagnosticTests = [defaultDiagnosticTest]
+    }
+
+    if (R.isEmpty(data.clinical.clearances)) {
+        parsedCase.clinical.clearances = [defaultClearance]
     }
 
     return parsedCase;
@@ -90,9 +94,10 @@ export default function BookingSheetDialog(props: Props) {
         defaultValues: validationSchema.cast({}),
         resolver: yupResolver(validationSchema, { stripUnknown: true, abortEarly: false }),
     });
-    const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields } } = form;
+    const { handleSubmit, control, reset, getValues, formState: { errors, isValid, dirtyFields, defaultValues } } = form;
+    
     const onSubmit = async () => {
-        const query = prepareFormForSubmission(data.caseId, getValues(), dirtyFields)
+        const query = prepareFormForSubmission(data.caseId, getValues(), defaultValues)
         reset({}, { keepValues: true }) // resets dirty fields
         await mutate(query)
         closeDialog()
@@ -127,7 +132,7 @@ export default function BookingSheetDialog(props: Props) {
                     paddingRight: 0,
                     paddingLeft: 0
                 }}> 
-                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "2rem"}}>
+                <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                     <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
                         {`${data?.patient?.firstName} ${data?.patient?.lastName}`}
                     </Typography>
@@ -136,7 +141,7 @@ export default function BookingSheetDialog(props: Props) {
                     </IconButton>
                 </Box>
                 <Box>
-                    <Tabs value={selectedTab} onChange={(event, value) => selectTab(value)}> 
+                    <Tabs variant="fullWidth" value={selectedTab} onChange={(event, value) => selectTab(value)}> 
                         <StyledTab label="Patient" value="Patient" /> 
                         <StyledTab label="Financial" value="Financial"   />
                         <StyledTab label="Procedure" value="Procedure"  />
@@ -152,6 +157,7 @@ export default function BookingSheetDialog(props: Props) {
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
                     {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
+                    {selectedTab === "Clinical" &&  <ClinicalTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>
             <DialogActions 

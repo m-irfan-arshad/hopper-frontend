@@ -4,9 +4,72 @@ import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
 import { FullCase } from "./reference";
 import { useForm, FormProvider } from "react-hook-form";
-import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab, comment, document } from "@prisma/client";
+import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab, comment, document, clinical } from "@prisma/client";
 
 const sampleDate = moment('2023-01-09').toDate();
+
+export const mockSingleFacility = {
+    facilityId: 1,
+    facilityName: 'Test Facility',
+    phone: '1234567890',
+    addressOne: 'Test Address 1',
+    addressTwo: 'Test Address 2',
+    city: 'NY',
+    state: 'NY',
+    zip: '10000'
+  }
+  
+  export const mockSingleClearance = {
+      clinicalId: 1,
+      clearanceId: 1,
+      clearanceFormId: 1,
+      clearanceNameId: 1,
+      facilityId: 1,
+      clearance: {clearanceName: 'test clearance', clearanceId: 1},
+      clearanceNameOther: '',
+      clearanceDateTime: null,
+      physicianFirstName: '',
+      physicianLastName: '',
+      physicianPhone: '',
+      atProcedureLocation: null,
+      facility: mockSingleFacility
+  }
+  
+  export const mockSinglePreOpForm = {
+    clinicalId: 1,
+    preOpFormId: 1,
+    facilityId: 1,
+    preOpDateTime: null,
+    atProcedureLocation: null,
+    facility: mockSingleFacility,
+  }
+  
+  export const mockSingleDiagnosticTest = {
+    diagnosticTestFormId: 1,
+    diagnosticTestId: 1, 
+    clinicalId: 1,
+    facilityId: 1,
+    diagnosticTest: {diagnosticTestId: 1, testName: "test test"},
+    testNameOther: '',
+    testDateTime: null,
+    atProcedureLocation: null,
+    facility: mockSingleFacility
+  }
+
+  export const mockSingleClinical = {
+    clinicalId: 1,
+    physicianFirstName: 'John',
+    physicianLastName: 'Doe',
+    physicianPhone: '1234567890',
+    diagnosticTestsRequired: 'true',
+    clearanceRequired: 'true',
+    preOpRequired: 'true',
+    preOpFormId: 1,
+    postOpDateTime: moment('2023-03-29').toDate(),
+    diagnosticTests: [mockSingleDiagnosticTest],
+    clearances: [mockSingleClearance],
+    preOpForm: mockSinglePreOpForm
+}
 
 export const mockSingleDocument: document = {
     documentId: 1,
@@ -173,12 +236,14 @@ export const mockSingleCase: FullCase = {
     patientId: 1,
     schedulingId: 1,
     procedureTabId: 1,
+    clinicalId: 1,
     patient: mockSinglePatient,
     financial: [mockSingleFinancial],
     scheduling: mockSingleScheduling,
     procedureTab: mockSingleProcedureTab,
     comment: [mockSingleComment],
-    document: [mockSingleDocument]
+    document: [mockSingleDocument],
+    clinical: mockSingleClinical
 }
 
 export const mockCaseData = [

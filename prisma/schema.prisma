@@ -15,6 +15,7 @@ model cases {
   patientId             Int       @map("patient_id")
   schedulingId          Int       @map("scheduling_id") @unique
   procedureTabId        Int       @map("procedure_tab_id") @unique
+  clinicalId         Int       @map("clinical_tab_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
   comment            comment[]
@@ -23,6 +24,7 @@ model cases {
   financial          financial[]
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
+  clinical           clinical @relation(fields: [clinicalId], references: [clinicalId])
 }
 
 model comment {
@@ -237,4 +239,85 @@ model icdCode {
   icdCodeId    Int       @id @default(autoincrement()) @map("icd_code_id")
   icdCodeName  String @map("icd_code_name")
   procedureTab   procedureTab[]
+}
+
+model clinical {
+  clinicalId           Int       @id @default(autoincrement()) @map("clinical_id")
+  physicianFirstName      String?    @map("physician_first_name") @default("")
+  physicianLastName       String?    @map("physician_last_name") @default("")
+  physicianPhone          String?    @map("physician_phone") @default("")
+  preOpRequired           String?   @map("pre_op_required")
+  diagnosticTestsRequired String?   @map("diagnostic_tests_required")
+  clearanceRequired       String?   @map("clearance_required")
+  postOpDateTime          DateTime?  @map("post_op_date_time") @db.Timestamp(6)
+  preOpFormId             Int?        @map("pre_op_form_id")
+  preOpForm               preOpForm?  @relation(fields: [preOpFormId], references: [preOpFormId])
+  diagnosticTests         diagnosticTestForm[]
+  clearances              clearanceForm[]
+  cases                   cases?
+}
+
+model preOpForm {
+  preOpFormId             Int       @id @default(autoincrement()) @map("pre_op_form_id")
+  clinicalId           Int?       @map("clinical_id")
+  preOpDateTime           DateTime?  @map("pre_op_date_time") @db.Timestamp(6)
+  atProcedureLocation     Boolean?   @map("at_procedure_location")
+  facilityId              Int?       @map("facility_id")
+  facility                facility?  @relation(fields: [facilityId], references: [facilityId])
+  clinical             clinical[]
+}
+
+model facility {
+    facilityId              Int       @id @default(autoincrement()) @map("facility_id")
+    facilityName            String    @map("facility_name") @default("")
+    phone                   String    @map("phone") @default("")
+    addressOne              String    @map("address_one") @default("")
+    addressTwo              String    @map("address_two") @default("")
+    city                    String    @map("city") @default("")
+    state                   String    @map("state") @default("")
+    zip                     String    @map("zip") @default("")
+    diagnosticTestForm      diagnosticTestForm[]
+    clearanceForm           clearanceForm[]
+    preOpForm               preOpForm[]
+}
+
+model diagnosticTestForm {
+    diagnosticTestFormId        Int       @id @default(autoincrement()) @map("diagnostic_test_form_id")
+    diagnosticTestId            Int?      @map("diagnostic_test_id")
+    clinicalId                  Int?       @map("clinical_id")       
+    testNameOther               String?   @map("test_name_other") @default("")
+    testDateTime                DateTime?  @map("test_date_time") @db.Timestamp(6)
+    atProcedureLocation         Boolean?   @map("at_procedure_location")
+    facilityId                  Int?      @map("facility_id")
+    facility                    facility?  @relation(fields: [facilityId], references: [facilityId])
+    clinical                    clinical?  @relation(fields: [clinicalId], references: [clinicalId])
+    diagnosticTest              diagnosticTest? @relation(fields: [diagnosticTestId], references: [diagnosticTestId])
+}
+
+model diagnosticTest {
+  diagnosticTestId      Int       @id @default(autoincrement()) @map("diagnostic_test_id")
+  testName              String    @map("test_name")
+  diagnosticTestForm    diagnosticTestForm[]
+}
+
+model clearanceForm {
+  clearanceFormId           Int       @id @default(autoincrement()) @map("clearance_form_id")
+  clearanceId               Int?      @map("clearance_id")
+  clinicalId                Int?       @map("clinical_id")    
+  clearanceNameOther        String?   @map("clearance_name_other") @default("")
+  clearanceDateTime         DateTime?  @map("clearance_date_time") @db.Timestamp(6)
+  physicianFirstName        String?   @map("physician_first_name") @default("")
+  physicianLastName         String?   @map("physician_last_name") @default("")
+  physicianPhone            String?   @map("physician_phone") @default("")
+  atProcedureLocation       Boolean?   @map("at_procedure_location")
+  facilityId                Int?      @map("facility_id")
+  facility                  facility?  @relation(fields: [facilityId], references: [facilityId])
+  clearance                 clearance? @relation(fields: [clearanceId], references: [clearanceId])
+  clinical                  clinical? @relation(fields: [clinicalId], references: [clinicalId])
+}
+
+model clearance {
+  clearanceId     Int       @id @default(autoincrement()) @map("clearance_id")
+  clearanceName   String    @map("clearance_name")
+  clearanceForm   clearanceForm[]
 }
