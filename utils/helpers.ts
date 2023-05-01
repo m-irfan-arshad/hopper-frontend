@@ -429,7 +429,9 @@ export function findRequiredBookingSheetFieldsToDelete(bookingSheetConfig: Booki
     if (typeof configObject === 'object' && Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)) {
         const isRequired = R.isNil(configObject.required) || configObject.required; //required by default
 
-        !isRequired && configObject.pathToDeleteFieldFromQuery && !requiredBookingSheetFieldsToDelete.includes(configObject.pathToDeleteFieldFromQuery) && requiredBookingSheetFieldsToDelete.push(configObject.pathToDeleteFieldFromQuery);
+        !isRequired && configObject.pathToDeleteFieldFromQuery 
+        && !requiredBookingSheetFieldsToDelete.includes(configObject.pathToDeleteFieldFromQuery) 
+        && requiredBookingSheetFieldsToDelete.push(configObject.pathToDeleteFieldFromQuery);
     }
 
     return requiredBookingSheetFieldsToDelete

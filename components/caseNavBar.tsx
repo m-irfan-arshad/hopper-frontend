@@ -78,7 +78,7 @@ export default function CaseNavBar(props: Props) {
                             placeholder={'Select Work Queue'}
                             selectId="work-queue-select"
                             additionalStyles={{ marginRight: "0.625rem", alignSelf: 'flex-end'}}
-                            onChange={(value) => onWorkQueueChange(value)}
+                            onChange={(value: string) => onWorkQueueChange(value)}
                             value={workQueue}
                         />
                     { !isMobile &&
