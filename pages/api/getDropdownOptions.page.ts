@@ -77,6 +77,9 @@ export default withApiAuthRequired(async function getDropdownOptionsHandler(req:
             case "getClearances":
                 values = await prisma.clearance.findMany();
                 break;
+            case "getProducts":
+                values = await prisma.product.findMany();
+                break;
             default:
                 console.warn("could not find field name ", queryKey)
                 values = [];

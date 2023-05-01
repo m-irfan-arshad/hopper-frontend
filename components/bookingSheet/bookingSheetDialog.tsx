@@ -44,11 +44,9 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
     query.scheduling && (query.scheduling = formToPrismaQuery(query.scheduling, "schedulingId"))
     query.patient && (query.patient = formToPrismaQuery(query.patient, "patientId"))
     query.procedureTab && (query.procedureTab = getProcedureTabQuery(query.procedureTab, formData.procedureTab))
-    if (query.financial) {
-        query.financial = arrayToPrismaQuery(formData.financial, query.financial, 'financialId');
-    } if (query.clinical) {
-        query.clinical = getClinicalQuery(query.clinical, formData.clinical)
-    }
+    query.financial && (query.financial = arrayToPrismaQuery(formData.financial, 'financialId'))
+    query.productTab && (query.productTab = arrayToPrismaQuery(formData.productTab, 'productTabId'))
+    query.clinical && (query.clinical = getClinicalQuery(query.clinical, formData.clinical))
     return query
 }
 
@@ -147,7 +145,7 @@ export default function BookingSheetDialog(props: Props) {
                         <StyledTab label="Financial" value="Financial"   />
                         <StyledTab label="Procedure" value="Procedure"  />
                         <StyledTab label="Scheduling" value="Scheduling" />
-                        <StyledTab label="Implants & Products" value="Product"  />
+                        <StyledTab label="Product" value="Product"  />
                         <StyledTab label="Clinical" value="Clinical" />
                     </Tabs>
                 </Box>

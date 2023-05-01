@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("LOCAL_DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model cases {
@@ -16,7 +16,6 @@ model cases {
   schedulingId          Int       @map("scheduling_id") @unique
   procedureTabId        Int       @map("procedure_tab_id") @unique
   clinicalId            Int       @map("clinical_tab_id") @unique
-  productTabId             Int       @map("product_tab_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
   comment            comment[]
@@ -336,15 +335,19 @@ model productTab {
   caseId                    Int?
   manufacturerId            Int?
   vendorId                  Int?
+  productId                 Int?
   manufacturer              manufacturer?  @relation(fields: [manufacturerId], references: [manufacturerId])
+  product                   product?  @relation(fields: [productId], references: [productId])
   vendor                    vendor?  @relation(fields: [vendorId], references: [vendorId])
-  cases                     cases? @relation(fields: [productTabId], references: [productTabId])
+  cases                     cases? @relation(fields: [caseId], references: [caseId])
 }
 
 model product {
     productId                 Int  @id @default(autoincrement()) @map("product_id")
+    productTabId              Int?
     productName               String  @default("")
-    productType               String?  @default("")
+    productType               String  @default("")
+    productTab                productTab[]
 } 
 
 model manufacturer {

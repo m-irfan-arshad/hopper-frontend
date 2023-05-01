@@ -181,14 +181,11 @@ export function formToPrismaQuery(obj: {[key: string]: any}, id="", operation="u
     }
   }
 
-export function arrayToPrismaQuery(formData: any, dirtyFields: any, arrayFieldId: string) {
+export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
     let create: object[] = [];
-    let update: object[] = [];
-    formData.forEach((arrayElem: any, index: number) => {
-        const updatedFields: any = dirtyFields[index]
-        if (R.isNil(updatedFields)) return; // check if any fields were updated
+    formData.forEach((arrayElem: any) => {
         const id = arrayFieldId
-        let formattedField: any = getDirtyValues(updatedFields, arrayElem);
+        let formattedField: any = R.clone(arrayElem);
         delete formattedField.caseId
 
         // formatting for insurance object
@@ -200,6 +197,15 @@ export function arrayToPrismaQuery(formData: any, dirtyFields: any, arrayFieldId
         }
         delete formattedField.insuranceId;
 
+        // formatting for product object
+        formattedField.quantity && (formattedField.quantity = parseInt(formattedField.quantity))
+        formattedField.product && (formattedField.product = { connect: {productId: formattedField.product.productId}})
+        formattedField.vendor && (formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}})
+        formattedField.manufacturer && (formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}})
+        delete formattedField.productId;
+        delete formattedField.vendorId;
+        delete formattedField.manufacturerId;
+
         // formatting for diagnostic test / clearance
         formattedField.diagnosticTest && (formattedField.diagnosticTest = { connect: {diagnosticTestId: formattedField.diagnosticTest.diagnosticTestId}});
         delete formattedField.diagnosticTestId
@@ -209,17 +215,11 @@ export function arrayToPrismaQuery(formData: any, dirtyFields: any, arrayFieldId
             formattedField.facility = formToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
             delete formattedField.facilityId
         }
-        
-        if (arrayElem[id]) { //if there is id present, update. Otherwise create
-            delete formattedField.caseId;
-            update.push({ data: formattedField, where: { [id]: arrayElem[id] } });
-            delete formattedField[id];
-        } else {
-            delete formattedField[id]
-            create.push(formattedField);
-        }
+
+        delete formattedField[id]
+        create.push(formattedField);
     });
-    return { create, update }
+    return { deleteMany: {}, create: create }
 }
 
 export function getClinicalQuery(clinicalUpdates: any, formData: any) {
@@ -245,14 +245,14 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
             }
             if (formData.diagnosticTestsRequired === "true") {
                 if (clinicalUpdates.diagnosticTests) {
-                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = arrayToPrismaQuery(formData.diagnosticTests, clinicalUpdates.diagnosticTests, 'diagnosticTestFormId'));
+                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = arrayToPrismaQuery(formData.diagnosticTests, 'diagnosticTestFormId'));
                 }
             } else {
                 clinicalQuery.update.diagnosticTests = {set: []}
             }
             if (formData.clearanceRequired === "true") {
                 if (clinicalUpdates.clearances) {
-                    clinicalQuery.update.clearances = arrayToPrismaQuery(formData.clearances, clinicalUpdates.clearances, 'clearanceFormId');
+                    clinicalQuery.update.clearances = arrayToPrismaQuery(formData.clearances, 'clearanceFormId');
                 }
             } else {
                 clinicalQuery.update.clearances = {set: []}

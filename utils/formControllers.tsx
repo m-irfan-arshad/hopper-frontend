@@ -133,7 +133,9 @@ export function InputController(props: InputControllerProps) {
         type: "number", 
         InputProps: {style: {height: "2rem"}},
         sx: {marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}
-    } : {minRows: minRows, maxRows: 6, multiline: multiline};
+    } : {
+        maxRows: 6, 
+    };
     const hasError = checkFieldForErrors(id, errors);
     const helperText = <Box sx={{display: "flex", justifyContent: "space-between"}}>
         <Box>{hasError ? "Required" : ""}</Box>
@@ -155,6 +157,8 @@ export function InputController(props: InputControllerProps) {
                 variant="outlined" 
                 label={title} 
                 autoComplete='off' 
+                minRows={minRows}
+                multiline={multiline}
                 placeholder={placeholder} 
                 {...numberOrTextProps}
             />

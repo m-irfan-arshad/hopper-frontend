@@ -39,7 +39,7 @@ describe('[caseId]: Case Hub Page', () => {
     expect(getByRole('tab', {name: 'Financial'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Procedure'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Scheduling'})).toBeInTheDocument();
-    expect(getByRole('tab', {name: 'Implants & Products'})).toBeInTheDocument();
+    expect(getByRole('tab', {name: 'Product'})).toBeInTheDocument();
     expect(getByRole('tab', {name: 'Clinical'})).toBeInTheDocument();
 
     expect(getByRole('heading', {name: 'Procedure Information'})).toBeInTheDocument();

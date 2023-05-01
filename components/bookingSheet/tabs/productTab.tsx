@@ -18,6 +18,7 @@ import {
     Delete as DeleteIcon
   } from "@mui/icons-material";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { useGetDropdownOptionsHook } from "../../../utils/hooks";
 
 interface Props {
     config: BookingSheetConfig,
@@ -87,14 +88,13 @@ function ProductRow(props: ProductRowProps){
                 </Grid>
             <Grid item xs={4}>
                 <Typography variant="subtitle2" sx={{fontWeight: 700, color: "black.main"}}>{product?.productName}</Typography>
-                <Typography variant="body2">{manufacturer.manufacturerName}</Typography>
+                <Typography variant="body2">{manufacturer?.manufacturerName}</Typography>
                 <Typography variant="body2" sx={{display: 'flex', alignItems:"center"}}>
                     Quantity: 
                         <InputController 
                         title=""
                         id={`productTab.${index}.quantity`}
                         placeholder="" 
-                        multiline
                         size={5}
                         type="number" 
                         config={{}}
@@ -103,7 +103,7 @@ function ProductRow(props: ProductRowProps){
             </Grid>
             <Grid item xs={2}><Typography variant="body2">{product?.productType}</Typography></Grid>
             <Grid item xs={2}><Typography variant="body2">{catalogNumber}</Typography></Grid>
-            <Grid item xs={2}><Typography variant="body2">{vendor.vendorName}</Typography></Grid>
+            <Grid item xs={2}><Typography variant="body2">{vendor?.vendorName}</Typography></Grid>
             <Grid item xs={2.5}><Link underline="none" variant="body2">Manage Trays</Link></Grid>
             <Grid item xs={3}>
                 <StatusCheckbox id={`productTab.${index}.vendorConfirmation`} title="Vendor Confirmation" value={vendorConfirmation}/>
@@ -121,6 +121,8 @@ export default function ProductTab(props: Props) {
     const {config} = props;
     const { control, getValues, trigger, formState: {errors} } = useFormContext();
     const { append, remove, fields } = useFieldArray({control, name: "productTab"});
+    const { data: productData = [] } = useGetDropdownOptionsHook({queryKey: "getProducts", paramString: "", dependency: undefined})
+
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Product</Typography>
@@ -142,19 +144,16 @@ export default function ProductTab(props: Props) {
                     <Grid item xs={12}>
                         <DropDownSearchComponent
                             label=""
+                            id="productTab.product"
                             labelProperties={["productName"]}
                             options={productData}
                             onChange={(productOption) => append({
-                                productName: productOption.productName,
-                                manufacturer: {
-                                    manufacturerName: "Zimmer Biolet"
-                                },
+                                productId: productOption.productId,
+                                manufacturer: undefined,
                                 quantity: 1,
-                                productType: productOption.productType,
+                                product: productOption,
                                 catalogNumber: "122345",
-                                vendor: {
-                                    vendorName: "Kendall R (SBOX-Medtel)"
-                                },
+                                vendor: undefined,
                                 vendorConfirmation: false,
                                 implantDelivery: false,
                                 trayDelivery: false,
@@ -169,14 +168,3 @@ export default function ProductTab(props: Props) {
             </LocalizationProvider>
     )
 }
-
-/*
-<TextField 
-                        size="small" 
-                        id={`productTab.${index}.quantity`} 
-                        type="number"
-                        value={quantity}
-                        sx={{marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}}
-                        InputProps={{style: {height: "2rem"}}}
-                        />
-*/

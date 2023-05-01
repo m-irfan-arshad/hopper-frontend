@@ -33,7 +33,7 @@ async function createCases() {
                     clearances: {create: []},
                     diagnosticTests: {create: []},
                 }},
-
+                productTab: {create: []}
             }
         })
     }
