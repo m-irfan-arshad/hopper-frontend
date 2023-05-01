@@ -46,18 +46,6 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
         filterObject.clinical = bookingSheetRequiredFields.clinical;
     }
 
-    // if (params.workQueue === 'Preadmission Testing At Hospital') {
-    //     filterObject.clinical = {    
-    //         is: {
-    //             OR: [
-    //                 {diagnosticTestsRequired: 'true'},
-    //                 {preOpRequired: 'true'},
-    //                 {clearanceRequired: 'true'},
-    //             ]
-    //         }
-    //     }
-    // } 
-
     if (!searchValue) {
         filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {};
         return filterObject

@@ -352,21 +352,21 @@ export const defaultBookingSheetConfig = {
     preOpForm: {
       preOpDateTime: {default: null, required: true, pathToDeleteFieldFromQuery: 'clinical.AND.1.OR.1.preOpForm.is.preOpDateTime' },
       atProcedureLocation: {default: null},
-      facility: facilityConfig('clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.'), //clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.
+      facility: facilityConfig('clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.')
     },
     diagnosticTests: [{
       diagnosticTest: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},
-      facility: facilityConfig('clinical.AND.3.OR.1.diagnosticTests.some.OR.1.facility.is.') //clinical.AND.3.OR.1.diagnosticTests.some.OR.1.facility.is.
+      facility: facilityConfig('clinical.AND.3.OR.1.diagnosticTests.some.OR.1.facility.is.')
     }],
     clearances: [{
       clearance: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},
-      facility: facilityConfig('clinical.AND.2.OR.1.clearances.some.OR.1.facility.is.') //clinical.AND.2.OR.1.clearances.some.OR.1.facility.is.
+      facility: facilityConfig('clinical.AND.2.OR.1.clearances.some.OR.1.facility.is.')
     }],
   }
 } 

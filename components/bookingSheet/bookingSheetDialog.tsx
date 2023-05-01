@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery, createBookingSheetRequiredFields } from '../../utils/helpers';
+import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
 import * as R from 'ramda';
@@ -88,10 +88,6 @@ export default function BookingSheetDialog(props: Props) {
     const {mutate} = useUpdateCaseHook();
     const { data: orgConfigData = {} } = useGetBookingSheetConfigHook();
     const validationSchema = createValidationObject(bookingSheetConfig);
-    const requiredFields = createBookingSheetRequiredFields(bookingSheetConfig);
-
-    console.log('requiredFields',requiredFields);
-    //clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.
 
     const form = useForm({ 
         mode: 'onChange',
