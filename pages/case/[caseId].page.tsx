@@ -130,7 +130,7 @@ export default function CaseHub() {
                                 <BookingSheetTab label="Financial" />
                                 <BookingSheetTab complete label="Procedure" />
                                 <BookingSheetTab label="Scheduling"  />
-                                <BookingSheetTab label="Implants & Products"  />
+                                <BookingSheetTab label="Product"  />
                                 <BookingSheetTab label="Clinical" />
                             </Tabs>
                         </Box>

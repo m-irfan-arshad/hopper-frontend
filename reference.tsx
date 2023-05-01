@@ -316,8 +316,8 @@ export const defaultBookingSheetConfig = {
       procedureDate: { default: null },
       admissionType: { default: null }
   },
-  product: [{
-    productName: {default: ""},
+  productTab: [{
+    product: { default: null },
     quantity: {default: 1},
     catalogNumber: {default: ""},
     vendorConfirmation: { default: null },
@@ -396,4 +396,4 @@ export const clearanceOptions = [
   {clearanceName: 'Other'},
 ]
 
-export const productData = [{product: 'Product 1', productType: 'Ancillary'}, {product: 'Product 2', productType: 'Bone graft'}, {product: 'Product 3', productType: 'Implant'}, {product: 'Product 4', productType: 'Monitoring'}, {product: 'Other', productType: 'Other'}];
+export const productData = [{productName: 'Product 1', productType: 'Ancillary'}, {productName: 'Product 2', productType: 'Bone graft'}, {productName: 'Product 3', productType: 'Implant'}, {productName: 'Product 4', productType: 'Monitoring'}, {productName: 'Other', productType: 'Other'}];

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("LOCAL_DATABASE_URL")
 }
 
 model cases {
@@ -16,7 +16,7 @@ model cases {
   schedulingId          Int       @map("scheduling_id") @unique
   procedureTabId        Int       @map("procedure_tab_id") @unique
   clinicalId            Int       @map("clinical_tab_id") @unique
-  productId             Int       @map("product_id") @unique
+  productTabId             Int       @map("product_tab_id") @unique
   vendorConfirmation    String    @map("vendor_confirmation") @default("Incomplete")
 
   comment            comment[]
@@ -26,7 +26,7 @@ model cases {
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
   clinical           clinical @relation(fields: [clinicalId], references: [clinicalId])
-  product            product @relation(fields: [productId], references: [productId])
+  productTab         productTab[]
 }
 
 model comment {
@@ -324,12 +324,10 @@ model clearance {
   clearanceForm   clearanceForm[]
 }
 
-model product {
-  productId                 Int  @id @default(autoincrement()) @map("product_id")
-  productName               String  @default("")
+model productTab {
+  productTabId              Int  @id @default(autoincrement()) @map("product_tab_id")
   quantity                  Int  @default(1)
   catalogNumber             String?  @default("")
-  productType               String?  @default("")
   vendorConfirmation        Boolean?
   implantDelivery           Boolean?
   trayDelivery              Boolean?
@@ -340,17 +338,23 @@ model product {
   vendorId                  Int?
   manufacturer              manufacturer?  @relation(fields: [manufacturerId], references: [manufacturerId])
   vendor                    vendor?  @relation(fields: [vendorId], references: [vendorId])
-  cases                     cases?
+  cases                     cases? @relation(fields: [productTabId], references: [productTabId])
 }
+
+model product {
+    productId                 Int  @id @default(autoincrement()) @map("product_id")
+    productName               String  @default("")
+    productType               String?  @default("")
+} 
 
 model manufacturer {
   manufacturerId        Int       @id @default(autoincrement()) @map("manufacturer_id")
   manufacturerName      String @map("manufacturer_name")
-  product               product[]
+  productTab               productTab[]
 }
 
 model vendor {
   vendorId      Int @id @default(autoincrement()) @map("vendor_id")
   vendorName    String @map("vendor_name")
-  product       product[]
+  productTab       productTab[]
 }

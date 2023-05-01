@@ -1,6 +1,6 @@
 import { prisma } from './clientInstantiation';
 import Chance from 'chance';
-import { diagnosticTestOptions, clearanceOptions } from '../reference';
+import { diagnosticTestOptions, clearanceOptions, productData } from '../reference';
 
 const chance = new Chance();
 const locationOptions = ['Healthy Heart Hospital', 'Senior Day Care', 'Burger King', 'Medtel Hospital']
@@ -33,6 +33,7 @@ async function createCases() {
                     clearances: {create: []},
                     diagnosticTests: {create: []},
                 }},
+
             }
         })
     }
@@ -149,6 +150,12 @@ async function createLocations() {
     }
 }
 
+async function createProductOptions() {
+    await prisma.product.createMany({ 
+        data: productData
+    })
+}
+
 async function main() {
     await Promise.all([
         createCases(),
@@ -164,7 +171,8 @@ async function main() {
         createCptCodeOptions(),
         createIcdCodeOptions(),
         createDiagnosticTestOptions(),
-        createClearanceOptions()
+        createClearanceOptions(),
+        createProductOptions()
     ])
 }
 

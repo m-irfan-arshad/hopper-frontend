@@ -33,7 +33,7 @@ describe("BookingSheetDialog", () => {
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Procedure"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Scheduling"})).toBeInTheDocument();
-        expect(getByRole("tab", {name: "Implants & Products"})).toBeInTheDocument();
+        expect(getByRole("tab", {name: "Product"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Clinical"})).toBeInTheDocument();
         expect(getByRole("button", {name: ""})).toBeInTheDocument();
 
@@ -52,7 +52,7 @@ describe("BookingSheetDialog", () => {
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Procedure"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Scheduling"})).toBeInTheDocument();
-        expect(getByRole("tab", {name: "Implants & Products"})).toBeInTheDocument();
+        expect(getByRole("tab", {name: "Product"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Clinical"})).toBeInTheDocument();
         expect(getByRole("button", {name: ""})).toBeInTheDocument();
         

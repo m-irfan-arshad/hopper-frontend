@@ -26,12 +26,14 @@ interface Props {
 interface ProductRowProps {
     index: number,
     remove: any,
-    productName: string,
+    product: {
+        productName: string,
+        productType: string,
+    },
     manufacturer: {
         manufacturerName: string
     },
     quantity: number,
-    productType: string,
     catalogNumber: string,
     vendor: {
         vendorName: string
@@ -73,7 +75,7 @@ function StatusCheckbox(props: {id: string, title: string, value: Boolean}) {
 }
 
 function ProductRow(props: ProductRowProps){
-    const {index, remove, quantity, productName, manufacturer, productType, catalogNumber, vendor, vendorConfirmation, implantDelivery, trayDelivery, sterilization} = props;
+    const {index, remove, quantity, product, manufacturer, catalogNumber, vendor, vendorConfirmation, implantDelivery, trayDelivery, sterilization} = props;
     const [showDelete, setShowDelete] = useState(false);
     return (
         <React.Fragment>
@@ -84,13 +86,13 @@ function ProductRow(props: ProductRowProps){
                 {showDelete && <DeleteIcon sx={{height:"1.3rem"}} onClick={()=>remove(index)}/>}
                 </Grid>
             <Grid item xs={4}>
-                <Typography variant="subtitle2" sx={{fontWeight: 700, color: "black.main"}}>{productName}</Typography>
+                <Typography variant="subtitle2" sx={{fontWeight: 700, color: "black.main"}}>{product?.productName}</Typography>
                 <Typography variant="body2">{manufacturer.manufacturerName}</Typography>
                 <Typography variant="body2" sx={{display: 'flex', alignItems:"center"}}>
                     Quantity: 
                         <InputController 
                         title=""
-                        id={`product.${index}.quantity`}
+                        id={`productTab.${index}.quantity`}
                         placeholder="" 
                         multiline
                         size={5}
@@ -99,15 +101,15 @@ function ProductRow(props: ProductRowProps){
                     />
                 </Typography>
             </Grid>
-            <Grid item xs={2}><Typography variant="body2">{productType}</Typography></Grid>
+            <Grid item xs={2}><Typography variant="body2">{product?.productType}</Typography></Grid>
             <Grid item xs={2}><Typography variant="body2">{catalogNumber}</Typography></Grid>
             <Grid item xs={2}><Typography variant="body2">{vendor.vendorName}</Typography></Grid>
             <Grid item xs={2.5}><Link underline="none" variant="body2">Manage Trays</Link></Grid>
             <Grid item xs={3}>
-                <StatusCheckbox id={`product.${index}.vendorConfirmation`} title="Vendor Confirmation" value={vendorConfirmation}/>
-                <StatusCheckbox id={`product.${index}.implantDelivery`} title="Implant Delivery" value={implantDelivery}/>
-                <StatusCheckbox id={`product.${index}.trayDelivery`}  title="Tray Delivery" value={trayDelivery}/>
-                <StatusCheckbox id={`product.${index}.sterilization`} title="Sterilization" value={sterilization}/>
+                <StatusCheckbox id={`productTab.${index}.vendorConfirmation`} title="Vendor Confirmation" value={vendorConfirmation}/>
+                <StatusCheckbox id={`productTab.${index}.implantDelivery`} title="Implant Delivery" value={implantDelivery}/>
+                <StatusCheckbox id={`productTab.${index}.trayDelivery`}  title="Tray Delivery" value={trayDelivery}/>
+                <StatusCheckbox id={`productTab.${index}.sterilization`} title="Sterilization" value={sterilization}/>
             </Grid>
         </Grid>
         <Divider light sx={{marginTop: "1rem", marginBottom: "1.6rem"}}/>
@@ -118,7 +120,7 @@ function ProductRow(props: ProductRowProps){
 export default function ProductTab(props: Props) {
     const {config} = props;
     const { control, getValues, trigger, formState: {errors} } = useFormContext();
-    const { append, remove, fields } = useFieldArray({control, name: "product"});
+    const { append, remove, fields } = useFieldArray({control, name: "productTab"});
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <Typography variant="h5" sx={{marginTop: "2.25rem", marginBottom: "2.25rem", color: "gray.dark"}}>Product</Typography>
@@ -132,7 +134,7 @@ export default function ProductTab(props: Props) {
                     <HeaderCell title="Statuses" size={3} />
                 </Grid>
                 {fields.map((item, index)=>(<React.Fragment key={item.id}>
-                    <ProductRow index={index} {...getValues(`product.${index}`)} remove={remove}/>
+                    <ProductRow index={index} {...getValues(`productTab.${index}`)} remove={remove}/>
                 </React.Fragment>))}
                 
                 <Grid container width={"100%"}>
@@ -140,10 +142,10 @@ export default function ProductTab(props: Props) {
                     <Grid item xs={12}>
                         <DropDownSearchComponent
                             label=""
-                            labelProperties={["product"]}
+                            labelProperties={["productName"]}
                             options={productData}
                             onChange={(productOption) => append({
-                                productName: productOption.product,
+                                productName: productOption.productName,
                                 manufacturer: {
                                     manufacturerName: "Zimmer Biolet"
                                 },
@@ -171,7 +173,7 @@ export default function ProductTab(props: Props) {
 /*
 <TextField 
                         size="small" 
-                        id={`product.${index}.quantity`} 
+                        id={`productTab.${index}.quantity`} 
                         type="number"
                         value={quantity}
                         sx={{marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}}

@@ -292,6 +292,9 @@ export function formatCreateCaseParams(data: FullCase) {
       },
       clinical: {
         create: {}
+      },
+      productTab: {
+        create: []
       }
     })
   }
