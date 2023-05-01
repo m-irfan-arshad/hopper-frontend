@@ -34,7 +34,13 @@ export default function DropDownComponent(props: Props) {
             borderColor: "gray.main"
         }
     };
-    
+
+    function handleMenuItemClick(item: MenuItem) {
+        if (value === item.value) {
+            onChange('');
+        }
+    }
+
     return (
         <Select
             value={value ? value : placeholder}
@@ -51,7 +57,7 @@ export default function DropDownComponent(props: Props) {
         >
             {
                 menuItems.map((item, index) => (
-                    <MenuItem key={index} value={item.value} sx={{fontSize: "0.688rem"}}>{item.value}</MenuItem>
+                    <MenuItem key={index} value={item.value} sx={{fontSize: "0.688rem"}} onClick={() => handleMenuItemClick(item)}>{item.value}</MenuItem>
                 ))
             }
         </Select>

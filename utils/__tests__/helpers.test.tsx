@@ -1,7 +1,7 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
 import { defaultBookingSheetConfig, defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter } from "../../reference";
-import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody, findFieldsToDelete, createBookingSheetParams, deleteFromObject } from "../helpers";
+import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody, findRequiredBookingSheetFieldsToDelete, createBookingSheetRequiredFields, deleteFromObject } from "../helpers";
 import httpMock from 'node-mocks-http';
 import { mockBookingSheetConfig, mockSingleCase, mockSingleClearance, mockSingleProcedure, mockSingleScheduling } from "../../testReference";
 import * as R from "ramda";
@@ -32,41 +32,6 @@ describe("Utils", () => {
             financial: defaultFinancialFilter,
             procedureTab: defaultProcedureTabFilter,
             patient: defaultPatientTabFilter
-          });    
-    });
-
-    test("formatDashboardQueryParams with Preadmission Testing At Hospital work queue", async() => {
-        const params = {
-            workQueue: 'Preadmission Testing At Hospital',
-            dateRangeStart: '2022-10-10',
-            dateRangeEnd: '2022-11-11',
-        };
-
-        const result = formatDashboardQueryParams(params, defaultBookingSheetConfig);
-        
-        expect(result).toEqual({
-            scheduling: {
-                AND: [
-                    {},
-                    {
-                        procedureDate: {
-                            gte: moment('10/10/2022', 'MM/DD/YYYY').startOf("day").toDate(),
-                            lte: moment('11/11/2022', 'MM/DD/YYYY').endOf("day").toDate()
-                        },
-                    }
-                ]
-            },
-            clinical: {    
-                is: {
-                    preOpRequired: 'true',
-                    preOpForm: {
-                        is: {
-                            atProcedureLocation: true
-                        }
-                    }
-                }
-            },
-            patient: {}
           });    
     });
 
@@ -218,17 +183,16 @@ describe("Utils", () => {
         expect(insuranceError).toEqual(true);
     });
 
-    test("findFieldsToDelete function", async () => {
-        let fieldsToDelete = findFieldsToDelete(mockBookingSheetConfig.tabs);
-        expect(fieldsToDelete).toEqual(['patient.AND.0.firstName', 'patient.AND.0.middleName', 'patient.AND.0.dateOfBirth']);
+    test("findRequiredBookingSheetFieldsToDelete function", async () => {
+        let fieldsToDelete = findRequiredBookingSheetFieldsToDelete(mockBookingSheetConfig.tabs);
+        expect(fieldsToDelete).toEqual([ 'patient.AND.0.middleName', 'patient.AND.0.firstName', 'patient.AND.0.dateOfBirth']);
 
-      
     });
 
-    test("createBookingSheetParams function", async () => {
-        let bookingSheetParams = createBookingSheetParams(mockBookingSheetConfig.tabs);
+    test("createBookingSheetRequiredFields function", async () => {
+        let bookingSheetRequiredFields = createBookingSheetRequiredFields(mockBookingSheetConfig.tabs);
         
-        expect(bookingSheetParams).toEqual({
+        expect(bookingSheetRequiredFields).toEqual({
             patient: defaultPatientTabFilter,
             procedureTab: defaultProcedureTabFilter,
             clinical: defaultClinicalFilter,

@@ -319,11 +319,11 @@ export const mockBookingSheetConfig = {
     organization: "Aetna",
     tabs: {
         patient: {
-            firstName: { visible: true, required: false, pathToField: 'patient.AND.0.firstName' },
-            middleName: { visible: true, required: false, pathToField: 'patient.AND.0.middleName' },
-            lastName: { visible: true, required: true, pathToField: 'patient.AND.0.lastName' },
-            state: { visible: true,  pathToField: 'patient.AND.0.stateId' },
-            dateOfBirth: { required: false,  pathToField: 'patient.AND.0.dateOfBirth' }
+            firstName: { visible: true, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.firstName' },
+            middleName: { visible: true, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.middleName' },
+            lastName: { visible: true, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.lastName' },
+            state: { visible: true,  pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
+            dateOfBirth: { required: false,  pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' }
         }
     }
 }

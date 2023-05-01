@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import moment from "moment";
+import * as R from "ramda";
 
 
 //INTERFACES AND TYPES
@@ -291,81 +292,84 @@ export const defaultDiagnosticTest = {
   facility: defaultFacility
 }
 
-const facilityConfig = {
-  facilityName: {default: ''},
-  phone: {default: ''},
-  addressOne: {default: ''},
-  addressTwo: {default: ''},
-  city: {default: ''},
-  state: {default: ''},
-  zip: {default: ''}
+const facilityConfig = (pathToDeleteFieldFromFacility: string) => {
+  return {
+    facilityName: {default: '', required: true, pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'facilityName'},
+    phone: {default: '', pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'phone'},
+    addressOne: {default: '', required: true, pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'addressOne'},
+    addressTwo: {default: '', required: true, pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'addressTwo'},
+    city: {default: '', pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'city'},
+    state: {default: '', pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'state'},
+    zip: {default: '', pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'zip'}
+  }
 }
 
 export const defaultBookingSheetConfig = {
   patient: {
-      firstName: { default: '', required: true, pathToField: 'patient.AND.0.firstName' },
-      middleName: { default: '', required: true, pathToField: 'patient.AND.0.middleName' },
-      lastName: { default: '', pathToField: 'patient.AND.0.lastName'  },
-      dateOfBirth: { default: null, required: true, pathToField: 'patient.AND.0.dateOfBirth' },
-      sex: { default: null, pathToField: 'patient.AND.0.sexId'  },
-      address: { default: '', pathToField: 'patient.AND.0.address'  },
-      city: { default: '', pathToField: 'patient.AND.0.city'  },
-      state: { default: null, pathToField: 'patient.AND.0.stateId' },
-      zip: { default: '', pathToField: 'patient.AND.0.zip'},
+      firstName: { default: '', required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.firstName' },
+      middleName: { default: '', required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.middleName' },
+      lastName: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.lastName'  },
+      dateOfBirth: { default: null, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' },
+      sex: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.sexId'  },
+      address: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address'  },
+      city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.city'  },
+      state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
+      zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.zip'},
   },
   financial: [{
       insurance: { default: null, required: false },
-      insuranceGroupName: { default: '', pathToField: 'financial.none.insuranceGroupName' },
-      insuranceGroupNumber: { default: '', pathToField: 'financial.none.insuranceGroupNumber' },
-      priorAuthorization: { default: null, required: true, pathToField: 'financial.none.priorAuthorization' },
-      priorAuthId: { default: '', required: true, pathToField: 'financial.none.priorAuthId' },
-      priorAuthDate: { default: null, pathToField: 'financial.none.priorAuthDate' },
+      insuranceGroupName: { default: '', pathToDeleteFieldFromQuery: 'financial.none.insuranceGroupName' },
+      insuranceGroupNumber: { default: '', pathToDeleteFieldFromQuery: 'financial.none.insuranceGroupNumber' },
+      priorAuthorization: { default: null, required: true, pathToDeleteFieldFromQuery: 'financial.none.priorAuthorization' },
+      priorAuthId: { default: '', required: true, pathToDeleteFieldFromQuery: 'financial.none.priorAuthId' },
+      priorAuthDate: { default: null, pathToDeleteFieldFromQuery: 'financial.none.priorAuthDate' },
   }],
   procedureTab: {
-      procedure: { default: null, pathToField: 'procedureTab.AND.0.procedureId' },
-      approach: { default: null, pathToField: 'procedureTab.AND.0.approachId' },
-      laterality: { default: null, pathToField: 'procedureTab.AND.0.lateralityId' },
+      procedure: { default: null, pathToDeleteFieldFromQuery: 'procedureTab.AND.0.procedureId' },
+      approach: { default: null, pathToDeleteFieldFromQuery: 'procedureTab.AND.0.approachId' },
+      laterality: { default: null, pathToDeleteFieldFromQuery: 'procedureTab.AND.0.lateralityId' },
       anesthesia: { default: [], required: false }, 
-      anesthesiaNotes: { required: true, default: '', pathToField: 'procedureTab.AND.0.anesthesiaNotes' },
-      cptCode: { default: null, pathToField: 'procedureTab.AND.0.cptCodeId' },
-      icdCode: { default: null, required: true, pathToField: 'procedureTab.AND.0.icdCodeId' },
+      anesthesiaNotes: { required: true, default: '', pathToDeleteFieldFromQuery: 'procedureTab.AND.0.anesthesiaNotes' },
+      cptCode: { default: null, pathToDeleteFieldFromQuery: 'procedureTab.AND.0.cptCodeId' },
+      icdCode: { default: null, required: true, pathToDeleteFieldFromQuery: 'procedureTab.AND.0.icdCodeId' },
   },
   scheduling: {
-      location: { default: null, required: true, pathToField: 'scheduling.AND.0.locationId' },
-      procedureUnit: { default: null, pathToField: 'scheduling.AND.0.procedureUnitId' },
-      serviceLine: { default: null, pathToField: 'scheduling.AND.0.serviceLineId' },
-      provider: { default: null, pathToField: 'scheduling.AND.0.providerId' },
+      location: { default: null, required: true, pathToDeleteFieldFromQuery: 'scheduling.AND.0.locationId' },
+      procedureUnit: { default: null, pathToDeleteFieldFromQuery: 'scheduling.AND.0.procedureUnitId' },
+      serviceLine: { default: null, pathToDeleteFieldFromQuery: 'scheduling.AND.0.serviceLineId' },
+      provider: { default: null, pathToDeleteFieldFromQuery: 'scheduling.AND.0.providerId' },
       procedureDate: { default: null },
-      admissionType: { default: null, pathToField: 'scheduling.AND.0.admissionTypeId' }
+      admissionType: { default: null, pathToDeleteFieldFromQuery: 'scheduling.AND.0.admissionTypeId' }
   },
   clinical: {
-    physicianFirstName: {default: '', pathToField: 'clinical.AND.0.physicianFirstName'},
-    physicianLastName: {default: '', pathToField: 'clinical.AND.0.physicianLastName'},
-    physicianPhone: {default: '', pathToField: 'clinical.AND.0.physicianPhone'},
+    physicianFirstName: {default: '', pathToDeleteFieldFromQuery: 'clinical.AND.0.physicianFirstName'},
+    physicianLastName: {default: '', pathToDeleteFieldFromQuery: 'clinical.AND.0.physicianLastName'},
+    physicianPhone: {default: '', pathToDeleteFieldFromQuery: 'clinical.AND.0.physicianPhone'},
     preOpRequired: {default: null},
-    postOpDateTime: {default: null, pathToField: 'clinical.AND.0.postOpDateTime'},
+    postOpDateTime: {default: null, pathToDeleteFieldFromQuery: 'clinical.AND.0.postOpDateTime'},
     diagnosticTestsRequired: {default: null},
+    clearanceRequired: {default: null},
     preOpForm: {
-      preOpDateTime: {default: null },
+      preOpDateTime: {default: null, required: true, pathToDeleteFieldFromQuery: 'clinical.AND.1.OR.1.preOpForm.is.preOpDateTime' },
       atProcedureLocation: {default: null},
-      facility: facilityConfig,
+      facility: facilityConfig('clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.'), //clinical.AND.1.OR.1.preOpForm.is.OR.1.facility.is.
     },
     diagnosticTests: [{
       diagnosticTest: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},
-      facility: facilityConfig
+      facility: facilityConfig('clinical.AND.3.OR.1.diagnosticTests.some.OR.1.facility.is.') //clinical.AND.3.OR.1.diagnosticTests.some.OR.1.facility.is.
     }],
     clearances: [{
       clearance: {default: null, required: false},
       testNameOther: {default: ''},
       testDateTime: {default: null},
       atProcedureLocation: {default: null},
-      facility: facilityConfig
+      facility: facilityConfig('clinical.AND.2.OR.1.clearances.some.OR.1.facility.is.') //clinical.AND.2.OR.1.clearances.some.OR.1.facility.is.
     }],
   }
-}
+} 
 
 export const priorAuthorizationData = [{priorAuthorization: 'Incomplete'}, {priorAuthorization: 'Complete'}];
 
@@ -553,7 +557,7 @@ const diagnosticTestFormFilter = {
     {diagnosticTestsRequired: 'false'},
     {
       diagnosticTests: {
-        every: {
+        some: {
           AND: [
             { 
               OR: [
@@ -564,8 +568,7 @@ const diagnosticTestFormFilter = {
           ],
           testDateTime: { not: null },
           ...facilityFilter
-        },
-        some: {}
+        }
       }
     }
   ]
@@ -576,7 +579,7 @@ const clearanceFormFilter = {
     {clearanceRequired: 'false'},
     {
       clearances: {
-        every: {
+        some: {
           AND: [
               { 
                 OR: [
@@ -587,8 +590,7 @@ const clearanceFormFilter = {
           ],
           clearanceDateTime: { not: null },
           ...facilityFilter
-        },
-        some: {}
+        }
       }
     }
   ]  

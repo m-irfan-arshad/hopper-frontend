@@ -24,12 +24,12 @@ interface FilterObject {
 
 export function formatDashboardQueryParams(params: DashboardQueryParams, bookingSheetConfig: BookingSheetConfig): Prisma.casesWhereInput   {
     const { searchValue, dateRangeStart, dateRangeEnd } = params;
-    const bookingSheetParams = bookingSheetConfig && createBookingSheetParams(bookingSheetConfig);
+    const bookingSheetRequiredFields = bookingSheetConfig && createBookingSheetRequiredFields(bookingSheetConfig);
 
     let filterObject: FilterObject = {
         scheduling: {
             AND: [
-                (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.scheduling : {},
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.scheduling : {},
                 {
                     procedureDate: {
                         gte: moment(dateRangeStart).startOf("day").toDate(),
@@ -40,27 +40,26 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
         }
     }
     
-    if (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) {
-        filterObject.financial = bookingSheetParams.financial;
-        filterObject.procedureTab = bookingSheetParams.procedureTab;
-        filterObject.clinical = bookingSheetParams.clinical;
+    if (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) {
+        filterObject.financial = bookingSheetRequiredFields.financial;
+        filterObject.procedureTab = bookingSheetRequiredFields.procedureTab;
+        filterObject.clinical = bookingSheetRequiredFields.clinical;
     }
 
-    if (params.workQueue === 'Preadmission Testing At Hospital') {
-        filterObject.clinical = {    
-            is: {
-                preOpRequired: 'true',
-                preOpForm: {
-                    is: {
-                        atProcedureLocation: true
-                    }
-                }
-            }
-        }
-    }
+    // if (params.workQueue === 'Preadmission Testing At Hospital') {
+    //     filterObject.clinical = {    
+    //         is: {
+    //             OR: [
+    //                 {diagnosticTestsRequired: 'true'},
+    //                 {preOpRequired: 'true'},
+    //                 {clearanceRequired: 'true'},
+    //             ]
+    //         }
+    //     }
+    // } 
 
     if (!searchValue) {
-        filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {};
+        filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {};
         return filterObject
     }
 
@@ -77,7 +76,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
     if (!nameTwo) { 
         filterObject.patient = {
             AND: [
-                (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {},
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {},
                 {
                     OR: [
                         {
@@ -100,7 +99,7 @@ export function formatDashboardQueryParams(params: DashboardQueryParams, booking
     else { 
         filterObject.patient = {
           AND: [
-            (params.workQueue === 'Booking Sheet Request' && bookingSheetParams) ? bookingSheetParams.patient : {},
+            (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {},
             {
                 OR: [
                     { firstName: { startsWith: nameOne, mode: 'insensitive' } },
@@ -422,58 +421,58 @@ export function createValidationObject(configObject: IndexObject | Array<IndexOb
     return isRequired ? yup.string().required().default(configObject.default) : yup.string().notRequired().default(configObject.default)
 }
 
-let fieldsToDelete: string[] = [];
+let requiredBookingSheetFieldsToDelete: string[] = [];
 
-export function findFieldsToDelete(bookingSheetConfig: any) {
+export function findRequiredBookingSheetFieldsToDelete(bookingSheetConfig: BookingSheetConfig) {
     let configObject = bookingSheetConfig as IndexObject;
 
     if (Array.isArray(configObject)) {
         Object.keys(configObject[0]).forEach(key => {
-            findFieldsToDelete(configObject[0][key]);
+            findRequiredBookingSheetFieldsToDelete(configObject[0][key]);
         })
-        return fieldsToDelete;
+        return requiredBookingSheetFieldsToDelete;
     } else if (typeof configObject === 'object' && !Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
         Object.keys(configObject).forEach(key => {
-            findFieldsToDelete(configObject[key]);
+            findRequiredBookingSheetFieldsToDelete(configObject[key]);
         })
-        return fieldsToDelete
+        return requiredBookingSheetFieldsToDelete
     }
 
     if (typeof configObject === 'object' && Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)) {
         const isRequired = R.isNil(configObject.required) || configObject.required; //required by default
 
-        !isRequired && configObject.pathToField && !fieldsToDelete.includes(configObject.pathToField) && fieldsToDelete.push(configObject.pathToField);
+        !isRequired && configObject.pathToDeleteFieldFromQuery && !requiredBookingSheetFieldsToDelete.includes(configObject.pathToDeleteFieldFromQuery) && requiredBookingSheetFieldsToDelete.push(configObject.pathToDeleteFieldFromQuery);
     }
 
-    return fieldsToDelete
+    return requiredBookingSheetFieldsToDelete
 }
 
-export function createBookingSheetParams(bookingSheetConfig: any) {
-    let fieldsToDelete = findFieldsToDelete(bookingSheetConfig);
+export function createBookingSheetRequiredFields(bookingSheetConfig: BookingSheetConfig) {
+    let bookingSheetFieldsToDelete = findRequiredBookingSheetFieldsToDelete(bookingSheetConfig);
 
     let defaultQuery = {
         patient: defaultPatientTabFilter,
-        clinical: defaultClinicalFilter,
+        clinical: R.clone(defaultClinicalFilter),
         scheduling: defaultSchedulingFilter,
         financial: defaultFinancialFilter,
         procedureTab: defaultProcedureTabFilter
     };
 
-    fieldsToDelete.map((pathToField: string) => {
-        deleteFromObject(defaultQuery, pathToField)
+    bookingSheetFieldsToDelete.map((pathToDeleteFieldFromQuery: string) => {
+        deleteFromObject(defaultQuery, pathToDeleteFieldFromQuery)
     });
 
     return defaultQuery
 }
 
-export function deleteFromObject(object: any, pathToField: string) {
-    const keys = pathToField.split(".");
+export function deleteFromObject(object: IndexObject, pathToDeleteFieldFromQuery: string) {
+    const keys = pathToDeleteFieldFromQuery.split(".");
     const lastKey = keys.pop();
     const nextLastKey = keys.pop();
     const nextLastObj = keys.reduce((a, key) => a[key], object);
-    
+
     delete nextLastObj[nextLastKey as string][lastKey as string]
-    
+
     return object;
 }
 

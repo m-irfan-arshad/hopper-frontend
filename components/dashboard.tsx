@@ -25,17 +25,6 @@ export default function Dashboard() {
         setContext(contextState)
     }
 
-    const StyledCheckbox = styled(Checkbox)({
-        marginLeft: "0.625rem",
-        marginRight: "0.313rem", 
-        height: "1.5rem", 
-        width: "1.5rem",
-        color: defaultTheme.palette.blue.light,
-        "&.Mui-checked": {
-            color: defaultTheme.palette.green.light
-        }
-    });
-
     function handleSearchBarChange(value: string) {
         handleStateUpdate('page', 1);
         handleStateUpdate('searchBarValue', value);
@@ -65,7 +54,7 @@ export default function Dashboard() {
             <CaseNavBar 
                 searchBarValue={context.dashboard.searchBarValue}
                 workQueue={context.dashboard.workQueue}
-                onWorkQueueChange={(value: any) => handleStateUpdate('workQueue', value)}
+                onWorkQueueChange={(value: string) => handleStateUpdate('workQueue', value)}
                 search={handleSearchBarChange}
                 dateRangePickerProps={{
                     dateRangeStart: context.dashboard.dateRangeStart,
