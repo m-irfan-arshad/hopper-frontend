@@ -1,13 +1,13 @@
 /**
  * @jest-environment node
  */
- import httpMock from 'node-mocks-http';
- import type { NextApiRequest } from 'next';
+ import httpMock, { MockResponse } from 'node-mocks-http';
+ import type { NextApiRequest, NextApiResponse } from 'next';
  import { prismaMock } from '../../../prisma/singleton'
  import getCasesHandler from '../getCases.page'
  import moment from 'moment'
  import {mockCaseData, mockBookingSheetConfig} from "../../../testReference";
- import {defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter} from "../../../reference";
+ import {defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter, FullCase} from "../../../reference";
 
  jest.mock('@auth0/nextjs-auth0', () => ({
         withApiAuthRequired: jest.fn((args) => args),
@@ -41,7 +41,7 @@ jest.mock('@google-cloud/storage', () => {
         const req: NextApiRequest = httpMock.createRequest({
             url: `/api/getCases?${urlParams.toString()}`
         });
-        const res: any = httpMock.createResponse({});
+        const res: MockResponse<NextApiResponse> = httpMock.createResponse({});
         const cases = mockCaseData;
 
         const params = {
@@ -96,7 +96,7 @@ jest.mock('@google-cloud/storage', () => {
               }
         }
 
-        prismaMock.cases.findMany.mockResolvedValueOnce(cases as any)
+        prismaMock.cases.findMany.mockResolvedValueOnce(cases as FullCase[])
         prismaMock.cases.count.mockResolvedValueOnce(1)
 
         await getCasesHandler(req, res)
@@ -121,7 +121,7 @@ jest.mock('@google-cloud/storage', () => {
         const req: NextApiRequest = httpMock.createRequest({
             url: `/api/getCases?${urlParams.toString()}`
         });
-        const res: any = httpMock.createResponse({});
+        const res: MockResponse<NextApiResponse> = httpMock.createResponse({});
         const cases = mockCaseData;
 
         const params = {
@@ -179,7 +179,7 @@ jest.mock('@google-cloud/storage', () => {
               }
         }
 
-        prismaMock.cases.findMany.mockResolvedValueOnce(cases as any)
+        prismaMock.cases.findMany.mockResolvedValueOnce(cases as FullCase[])
         prismaMock.cases.count.mockResolvedValueOnce(1)
 
         await getCasesHandler(req, res)
