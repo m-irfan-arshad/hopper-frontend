@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { APIParameters, FullCase, IndexObject } from '../reference';
-import { Prisma, insurance } from '@prisma/client';
+import { APIParameters, FullCase, IndexObject, defaultPatientTabFilter, defaultSchedulingFilter, defaultProcedureTabFilter, defaultFinancialFilter, BookingSheetConfig, defaultClinicalFilter } from '../reference';
+import { Prisma } from '@prisma/client';
 import moment, { isMoment } from "moment";
 import * as R from 'ramda';
 import * as yup from 'yup';
@@ -10,78 +10,97 @@ interface DashboardQueryParams {
     searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
-    priorAuthorization?: string;
-    vendorConfirmation?: string;
+    workQueue?: string;
 }
 
 interface FilterObject {
     scheduling: object;
+    financial?: object;
+    clinical?: object;
+    procedureTab?: object;
     caseId?: object;
     patient?: object;
-    priorAuthorization?: object;
-    vendorConfirmation?: object;
-  }
+}
 
-export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
-    const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
-    
+export function formatDashboardQueryParams(params: DashboardQueryParams, bookingSheetConfig: BookingSheetConfig): Prisma.casesWhereInput   {
+    const { searchValue, dateRangeStart, dateRangeEnd } = params;
+    const bookingSheetRequiredFields = bookingSheetConfig && createBookingSheetRequiredFields(bookingSheetConfig);
+
     let filterObject: FilterObject = {
         scheduling: {
-            procedureDate: {
-                gte: moment(dateRangeStart).startOf("day").toDate(),
-                lte: moment(dateRangeEnd).endOf("day").toDate()
-            },
-        },
-        ...(priorAuthorization === "Incomplete") && {financial: { some: {priorAuthorization: {contains: "Incomplete"}}}},
-        ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
+            AND: [
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.scheduling : {},
+                {
+                    procedureDate: {
+                        gte: moment(dateRangeStart).startOf("day").toDate(),
+                        lte: moment(dateRangeEnd).endOf("day").toDate()
+                    },
+                }
+            ]
+        }
+    }
+    
+    if (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) {
+        filterObject.financial = bookingSheetRequiredFields.financial;
+        filterObject.procedureTab = bookingSheetRequiredFields.procedureTab;
+        filterObject.clinical = bookingSheetRequiredFields.clinical;
     }
 
     if (!searchValue) {
+        filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {};
         return filterObject
     }
 
+    //TODO: Add back in caseId logic when UI is created
     const nameOne = searchValue.split(' ')[0];
     const nameTwo = searchValue.split(' ')[1];
     const caseId = parseInt(searchValue);
     const isStringNumeric = /^[0-9]+$/gi.test(searchValue);
-    if (isStringNumeric) {
-        filterObject.caseId = {
-                equals: caseId
-            }
-    } else if (!nameTwo) {
+    // if (isStringNumeric) {
+    //     filterObject.caseId = {
+    //             equals: caseId
+    //         }
+    // }
+    if (!nameTwo) { 
         filterObject.patient = {
-            OR: [
+            AND: [
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {},
                 {
-                    firstName: {
-                    startsWith: nameOne,
-                    mode: 'insensitive'
-                    },
-                },
-                {
-                    lastName: {
-                    startsWith: nameOne,
-                    mode: 'insensitive'
-                    },
-                },
+                    OR: [
+                        {
+                            firstName: {
+                            startsWith: nameOne,
+                            mode: 'insensitive'
+                            },
+                        },
+                        {
+                            lastName: {
+                            startsWith: nameOne,
+                            mode: 'insensitive'
+                            },
+                        },
+                    ]
+                }
             ]
         }
     }
-    else {
+    else { 
         filterObject.patient = {
-        AND: [
-          {
-            OR: [
-                { firstName: { startsWith: nameOne, mode: 'insensitive' } },
-                { lastName: { startsWith: nameOne, mode: 'insensitive' } }
-              ]
-          },
-          {
-            OR: [
-                { firstName: { startsWith: nameTwo, mode: 'insensitive' } },
-                { lastName: { startsWith: nameTwo, mode: 'insensitive' } }
-              ]
-          },
-        ]
+          AND: [
+            (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {},
+            {
+                OR: [
+                    { firstName: { startsWith: nameOne, mode: 'insensitive' } },
+                    { lastName: { startsWith: nameOne, mode: 'insensitive' } }
+                ]
+            },
+            {
+                OR: [
+                    { firstName: { startsWith: nameTwo, mode: 'insensitive' } },
+                    { lastName: { startsWith: nameTwo, mode: 'insensitive' } }
+                ]
+            },
+          ]
       }
    }
    return filterObject
@@ -388,6 +407,63 @@ export function createValidationObject(configObject: IndexObject | Array<IndexOb
         return isRequired ? yup.mixed().required().default(configObject.default) : yup.mixed().notRequired().default(configObject.default)
     }
     return isRequired ? yup.string().required().default(configObject.default) : yup.string().notRequired().default(configObject.default)
+}
+
+let requiredBookingSheetFieldsToDelete: string[] = [];
+
+export function findRequiredBookingSheetFieldsToDelete(bookingSheetConfig: BookingSheetConfig) {
+    let configObject = bookingSheetConfig as IndexObject;
+
+    if (Array.isArray(configObject)) {
+        Object.keys(configObject[0]).forEach(key => {
+            findRequiredBookingSheetFieldsToDelete(configObject[0][key]);
+        })
+        return requiredBookingSheetFieldsToDelete;
+    } else if (typeof configObject === 'object' && !Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
+        Object.keys(configObject).forEach(key => {
+            findRequiredBookingSheetFieldsToDelete(configObject[key]);
+        })
+        return requiredBookingSheetFieldsToDelete
+    }
+
+    if (typeof configObject === 'object' && Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)) {
+        const isRequired = R.isNil(configObject.required) || configObject.required; //required by default
+
+        !isRequired && configObject.pathToDeleteFieldFromQuery 
+        && !requiredBookingSheetFieldsToDelete.includes(configObject.pathToDeleteFieldFromQuery) 
+        && requiredBookingSheetFieldsToDelete.push(configObject.pathToDeleteFieldFromQuery);
+    }
+
+    return requiredBookingSheetFieldsToDelete
+}
+
+export function createBookingSheetRequiredFields(bookingSheetConfig: BookingSheetConfig) {
+    let bookingSheetFieldsToDelete = findRequiredBookingSheetFieldsToDelete(bookingSheetConfig);
+
+    let defaultQuery = {
+        patient: defaultPatientTabFilter,
+        clinical: R.clone(defaultClinicalFilter),
+        scheduling: defaultSchedulingFilter,
+        financial: defaultFinancialFilter,
+        procedureTab: defaultProcedureTabFilter
+    };
+
+    bookingSheetFieldsToDelete.map((pathToDeleteFieldFromQuery: string) => {
+        deleteFromObject(defaultQuery, pathToDeleteFieldFromQuery)
+    });
+
+    return defaultQuery
+}
+
+export function deleteFromObject(object: IndexObject, pathToDeleteFieldFromQuery: string) {
+    const keys = pathToDeleteFieldFromQuery.split(".");
+    const lastKey = keys.pop();
+    const nextLastKey = keys.pop();
+    const nextLastObj = keys.reduce((a, key) => a[key], object);
+
+    delete nextLastObj[nextLastKey as string][lastKey as string]
+
+    return object;
 }
 
 export function getPathFromId(id: string) {
