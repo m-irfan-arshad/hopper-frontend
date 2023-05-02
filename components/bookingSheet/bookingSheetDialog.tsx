@@ -156,7 +156,7 @@ export default function BookingSheetDialog(props: Props) {
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
                     {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
-                    {selectedTab === "Product" &&  <ProductTab config={bookingSheetConfig} />}
+                    {selectedTab === "Product" &&  <ProductTab />}
                     {selectedTab === "Clinical" &&  <ClinicalTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>

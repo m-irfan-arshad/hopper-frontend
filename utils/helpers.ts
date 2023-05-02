@@ -198,11 +198,9 @@ export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
         delete formattedField.insuranceId;
 
         // formatting for product object
-        formattedField.quantity && (formattedField.quantity = parseInt(formattedField.quantity))
-        formattedField.product && (formattedField.product = { connect: {productId: formattedField.product.productId}})
-        formattedField.vendor && (formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}})
-        formattedField.manufacturer && (formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}})
-        delete formattedField.productId;
+        formattedField.quantity = R.isNil(formattedField.quantity) ? undefined : parseInt(formattedField.quantity)
+        formattedField.vendor = R.isNil(formattedField.vendor) ? undefined : { connect: {vendorId: formattedField.vendor.vendorId}}
+        formattedField.manufacturer = R.isNil(formattedField.manufacturer) ? undefined : { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}}
         delete formattedField.vendorId;
         delete formattedField.manufacturerId;
 

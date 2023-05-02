@@ -14,11 +14,11 @@ interface Props {
     onChange: (value: any) => void
     labelProperties: string[]
     options: Option[]
-    value?: any
+    value?: Option | undefined
     label?: string
     multiple?: boolean
-    error?: any
-    onClick?: any
+    error?: boolean
+    onClick?: () => void
 }
 
 const helperTextProps = {
@@ -26,7 +26,7 @@ const helperTextProps = {
 };
 
 export default function DropDownSearchComponent(props: Props) {
-    const {id, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, multiple, error,  onClick, ...restParams} = props;
+    const {id, value, disabled, placeholder, additionalStyles, onChange, options, labelProperties, label, multiple, error,  onClick, ...restParams} = props;
 
     function getOptionLabel(option: Option) {
         const labelArray = labelProperties.map((p) => {
@@ -40,10 +40,11 @@ export default function DropDownSearchComponent(props: Props) {
     return (
         <Autocomplete
             {...restParams}
+            value={value}
             data-testid='autocomplete'
             id={id}
             disableClearable
-            isOptionEqualToValue={(option, value) => getOptionLabel(option) === getOptionLabel(value)}
+            isOptionEqualToValue={(option, optionValue) => getOptionLabel(option) === getOptionLabel(optionValue)}
             getOptionLabel={(option: Option) => getOptionLabel(option)}
             onChange={(_, data) => onChange(data)}
             options={options}

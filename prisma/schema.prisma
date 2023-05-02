@@ -325,19 +325,20 @@ model clearance {
 
 model productTab {
   productTabId              Int  @id @default(autoincrement()) @map("product_tab_id")
+  caseId                    Int?
+  manufacturerId            Int?
+  vendorId                  Int?
+
   quantity                  Int  @default(1)
   catalogNumber             String?  @default("")
   vendorConfirmation        Boolean?
   implantDelivery           Boolean?
   trayDelivery              Boolean?
   sterilization             Boolean?
+  productName               String?  @default("")
+  productType               String?  @default("")
 
-  caseId                    Int?
-  manufacturerId            Int?
-  vendorId                  Int?
-  productId                 Int?
   manufacturer              manufacturer?  @relation(fields: [manufacturerId], references: [manufacturerId])
-  product                   product?  @relation(fields: [productId], references: [productId])
   vendor                    vendor?  @relation(fields: [vendorId], references: [vendorId])
   cases                     cases? @relation(fields: [caseId], references: [caseId])
 }
@@ -345,11 +346,16 @@ model productTab {
 model product {
     productId                 Int  @id @default(autoincrement()) @map("product_id")
     productTabId              Int?
-    productName               String  @default("")
-    productType               String  @default("")
-    productTab                productTab[]
-} 
+    productTypeId             Int?
+    productName               String
+    productType               productType? @relation(fields: [productTypeId], references: [productTypeId])
+}
 
+model productType {
+    productTypeId             Int  @id @default(autoincrement()) @map("product_type_id")
+    productType               String
+    product                   product[]
+}
 model manufacturer {
   manufacturerId        Int       @id @default(autoincrement()) @map("manufacturer_id")
   manufacturerName      String @map("manufacturer_name")

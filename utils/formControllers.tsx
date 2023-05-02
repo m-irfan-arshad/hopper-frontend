@@ -131,7 +131,7 @@ export function InputController(props: InputControllerProps) {
     const numCharacters = currentValue ? currentValue.length : 0;
     const numberOrTextProps = type === "number" ? {
         type: "number", 
-        InputProps: {style: {height: "2rem"}},
+        InputProps: {style: {height: "2rem"}, inputProps: {min: 1}},
         sx: {marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}
     } : {
         maxRows: 6, 
@@ -226,8 +226,8 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             render={({ field }) => {
                 const onChangeFunc = props.onChange ? props.onChange : field.onChange;
                 return <DropDownSearchComponent
+                        {...field}
                         label={title}
-                        value={field.value}
                         labelProperties={labelProperties}
                         id={id}
                         multiple={multiple}
