@@ -216,8 +216,16 @@ export function formArrayToPrismaQuery(formData: IndexObject[], arrayFieldId: st
 
         // formatting for product object
         !R.isNil(formattedField.quantity) && (formattedField.quantity = parseInt(formattedField.quantity))
-        !R.isNil(formattedField.vendor) && (formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}})
-        !R.isNil(formattedField.manufacturer) && (formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}})
+        if (R.isNil(formattedField.vendor)) {
+            delete formattedField.vendor
+        } else {
+            formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}}
+        }
+        if (R.isNil(formattedField.manufacturer)) {
+            delete formattedField.manufacturer
+        } else {
+            formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}}
+        }
         delete formattedField.vendorId;
         delete formattedField.manufacturerId;
 
