@@ -3,17 +3,18 @@ import { AppBar, styled, Box, Button, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DateRangePicker from "./shared/dateRangePicker";
-import { dashboardStepDropDownValues, caseFilterInterface } from "../reference";
+import { dashboardStepDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
-import MultiSelectDropdown from "./shared/multiSelectDropdown";
+import DropDownComponent from "./shared/dropdown";
+import { dashboardWorkQueueDropDownValues } from '../reference';
 
 interface Props {
-    onCaseFilterChange: (value: caseFilterInterface[]) => void
     search: (value: string) => void
-    caseFilterValue: caseFilterInterface[]
     searchBarValue: string
     dateRangePickerProps: dateRangePickerProps
+    workQueue: string
+    onWorkQueueChange: (value: string) => void
 }
 
 interface dateRangePickerProps {
@@ -24,7 +25,7 @@ interface dateRangePickerProps {
 }
 
 export default function CaseNavBar(props: Props) {
-    const { onCaseFilterChange, caseFilterValue, searchBarValue, search, dateRangePickerProps } = props;
+    const { searchBarValue, search, dateRangePickerProps, onWorkQueueChange, workQueue } = props;
 
     const [isDialogOpen, setDialogState] = useState(false);
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
@@ -52,18 +53,34 @@ export default function CaseNavBar(props: Props) {
                         <DebouncedInput 
                             value={searchBarValue} 
                             onChange={search}
-                            placeholder={'Search Name or Case ID'}
+                            placeholder={'Search Patient Name'}
                             additionalStyles={{ 
                                 "& .MuiInputBase-root": {
-                                    height: '2.5rem'
+                                    height: '2.5rem',
+                                    '& fieldset': {
+                                        borderColor: 'gray.main',
+                                    },
                                 },
                                 "& .MuiOutlinedInput-input": {
-                                    fontSize: "0.875rem"
+                                    fontSize: "0.875rem",
+                                    "&::placeholder": {
+                                        fontStyle: "normal",
+                                        color: "gray.dark",
+                                        opacity: 1
+                                    }
                                 },
                                 marginRight: "0.625rem",
-                                minWidth: "230px"
+                                minWidth: "14.375rem"
                             }}
                         /> 
+                         <DropDownComponent
+                            menuItems={dashboardWorkQueueDropDownValues}
+                            placeholder={'Select Work Queue'}
+                            selectId="work-queue-select"
+                            additionalStyles={{ marginRight: "0.625rem", alignSelf: 'flex-end'}}
+                            onChange={(value: string) => onWorkQueueChange(value)}
+                            value={workQueue}
+                        />
                     { !isMobile &&
                         <React.Fragment>
                             <DateRangePicker 
@@ -71,14 +88,6 @@ export default function CaseNavBar(props: Props) {
                                 dateRangeEnd={dateRangePickerProps.dateRangeEnd} 
                                 setDateRangeStart={dateRangePickerProps.setDateRangeStart}
                                 setDateRangeEnd={dateRangePickerProps.setDateRangeEnd}
-                            />
-                            <MultiSelectDropdown
-                                menuItems={dashboardStepDropDownValues}
-                                title="Step:"
-                                selectId="case-step-select"
-                                additionalStyles={{ marginLeft: "0.625rem"}}
-                                onChange={onCaseFilterChange}
-                                value={caseFilterValue}
                             />
                         </React.Fragment>
                         }

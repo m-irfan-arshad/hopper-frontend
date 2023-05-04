@@ -2,9 +2,7 @@ import React, { useContext } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
-import { Logout, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
-import { FullCase, dashboardSortDropDownValues, caseFilterInterface } from "../reference";
-import DropDownComponent from "./shared/dropdown";
+import { FullCase, dashboardSortDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
@@ -18,25 +16,14 @@ interface CaseGroup {
 
 export default function Dashboard() {  
     const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
-    const defaultCaseFilterValue: caseFilterInterface[] = [{id: "all", value: "All Steps"}]
     const [context, setContext] = useContext(CaseFilterContext);
+    const shouldShowCount = context.dashboard.workQueue || context.dashboard.searchBarValue;
 
     function handleStateUpdate(key: any, value: any) {
         const contextState = R.clone(context);
         contextState.dashboard[key] = value;
         setContext(contextState)
     }
-
-    const StyledCheckbox = styled(Checkbox)({
-        marginLeft: "0.625rem",
-        marginRight: "0.313rem", 
-        height: "1.5rem", 
-        width: "1.5rem",
-        color: defaultTheme.palette.blue.light,
-        "&.Mui-checked": {
-            color: defaultTheme.palette.green.light
-        }
-    });
 
     function handleSearchBarChange(value: string) {
         handleStateUpdate('page', 1);
@@ -46,10 +33,9 @@ export default function Dashboard() {
     const { data = {cases: [], count: 0}, isFetching } = useGetCasesHook(
         context.dashboard.dateRangeStart, 
         context.dashboard.dateRangeEnd, 
-        context.dashboard.dateSortValue, 
-        context.dashboard.caseFilterValue, 
         context.dashboard.searchBarValue, 
-        context.dashboard.page.toString()
+        context.dashboard.page.toString(),
+        context.dashboard.workQueue
     );
 
     const caseGroups:CaseGroup = {};
@@ -62,23 +48,13 @@ export default function Dashboard() {
             caseGroups[date] = new Array(singleCase)
         }
     })
-        
-    const handleCaseFilterChange = (value: caseFilterInterface[]) => {
-        handleStateUpdate('page',1);
-
-        if (value?.at(-1)?.id === "all" || value?.length === 0) {
-            handleStateUpdate('caseFilterValue',defaultCaseFilterValue);
-        } else {
-            handleStateUpdate('caseFilterValue',value.filter(elem => elem.id !== "all"));
-        }
-    };
 
     return (
         <React.Fragment>
             <CaseNavBar 
-                onCaseFilterChange={handleCaseFilterChange} 
-                caseFilterValue={context.dashboard.caseFilterValue} 
                 searchBarValue={context.dashboard.searchBarValue}
+                workQueue={context.dashboard.workQueue}
+                onWorkQueueChange={(value: string) => handleStateUpdate('workQueue', value)}
                 search={handleSearchBarChange}
                 dateRangePickerProps={{
                     dateRangeStart: context.dashboard.dateRangeStart,
@@ -111,47 +87,8 @@ export default function Dashboard() {
                         justifyContent: "center"
                     }}>
                         <Typography variant="h6">
-                            {`${data.count || 0} ${data.count === 1 ? 'Case' : 'Cases'}`}
+                            {`${shouldShowCount && (data.count || 0)} ${data.count === 1 ? 'Case' : 'Cases'}`}
                         </Typography>
-                        {!isMobile 
-                            && <Box sx={{ minWidth: 120 }}>
-                                    <DropDownComponent
-                                        menuItems={dashboardSortDropDownValues}
-                                        title="Sort:"
-                                        selectId="case-sort-select"
-                                        additionalStyles={{ marginLeft: "0.625rem" }}
-                                        onChange={(value) => handleStateUpdate('dateSortValue', value)}
-                                        value={context.dashboard.dateSortValue}
-                                    />
-                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="caption" color="black.main">Show Completed Cases</Typography>
-                            </Box>
-                        }
-                    </Box>
-                    <Box sx={{display: "flex"}}>
-                        {isMobile 
-                            && <Box sx={{ marginRight: "0.313rem" }}>
-                                    <DropDownComponent
-                                        menuItems={dashboardSortDropDownValues}
-                                        title="Sort:"
-                                        selectId="case-sort-select"
-                                        onChange={(value) => handleStateUpdate('dateSortValue', value)}
-                                        value={context.dashboard.dateSortValue}
-                                    />
-                                <StyledCheckbox checkedIcon={<CheckBoxOutlinedIcon/>} />
-                                <Typography variant="caption" color="black.main" >Show Completed Cases</Typography>
-                            </Box>
-                        }
-                        <Button variant="contained" size="small">
-                            <Logout sx={{
-                                transform: "rotate(270deg)", 
-                                marginRight: {xs: 0, sm:"0.375rem"}, 
-                                height: "0.875rem", 
-                                width: "0.875rem"
-                            }} />
-
-                            {isMobile ? '' : 'Export'}
-                        </Button>
                     </Box>
                 </Box>
                 {

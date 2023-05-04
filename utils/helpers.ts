@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { APIParameters, FullCase, IndexObject } from '../reference';
-import { Prisma, insurance } from '@prisma/client';
+import { APIParameters, FullCase, IndexObject, defaultPatientTabFilter, defaultSchedulingFilter, defaultProcedureTabFilter, defaultFinancialFilter, BookingSheetConfig, defaultClinicalFilter } from '../reference';
+import { Prisma } from '@prisma/client';
 import moment, { isMoment } from "moment";
 import * as R from 'ramda';
 import * as yup from 'yup';
@@ -10,78 +10,97 @@ interface DashboardQueryParams {
     searchValue?: string
     dateRangeStart: string
     dateRangeEnd: string
-    priorAuthorization?: string;
-    vendorConfirmation?: string;
+    workQueue?: string;
 }
 
 interface FilterObject {
     scheduling: object;
+    financial?: object;
+    clinical?: object;
+    procedureTab?: object;
     caseId?: object;
     patient?: object;
-    priorAuthorization?: object;
-    vendorConfirmation?: object;
-  }
+}
 
-export function formatDashboardQueryParams(params: DashboardQueryParams): Prisma.casesWhereInput   {
-    const { searchValue, dateRangeStart, dateRangeEnd, priorAuthorization, vendorConfirmation } = params;
-    
+export function formatDashboardQueryParams(params: DashboardQueryParams, bookingSheetConfig: BookingSheetConfig): Prisma.casesWhereInput   {
+    const { searchValue, dateRangeStart, dateRangeEnd } = params;
+    const bookingSheetRequiredFields = bookingSheetConfig && createBookingSheetRequiredFields(bookingSheetConfig);
+
     let filterObject: FilterObject = {
         scheduling: {
-            procedureDate: {
-                gte: moment(dateRangeStart).startOf("day").toDate(),
-                lte: moment(dateRangeEnd).endOf("day").toDate()
-            },
-        },
-        ...(priorAuthorization === "Incomplete") && {financial: { some: {priorAuthorization: {contains: "Incomplete"}}}},
-        ...(vendorConfirmation === "Incomplete") && {vendorConfirmation: {equals: vendorConfirmation}}
+            AND: [
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.scheduling : {},
+                {
+                    procedureDate: {
+                        gte: moment(dateRangeStart).startOf("day").toDate(),
+                        lte: moment(dateRangeEnd).endOf("day").toDate()
+                    },
+                }
+            ]
+        }
+    }
+    
+    if (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) {
+        filterObject.financial = bookingSheetRequiredFields.financial;
+        filterObject.procedureTab = bookingSheetRequiredFields.procedureTab;
+        filterObject.clinical = bookingSheetRequiredFields.clinical;
     }
 
     if (!searchValue) {
+        filterObject.patient = (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {};
         return filterObject
     }
 
+    //TODO: Add back in caseId logic when UI is created
     const nameOne = searchValue.split(' ')[0];
     const nameTwo = searchValue.split(' ')[1];
     const caseId = parseInt(searchValue);
     const isStringNumeric = /^[0-9]+$/gi.test(searchValue);
-    if (isStringNumeric) {
-        filterObject.caseId = {
-                equals: caseId
-            }
-    } else if (!nameTwo) {
+    // if (isStringNumeric) {
+    //     filterObject.caseId = {
+    //             equals: caseId
+    //         }
+    // }
+    if (!nameTwo) { 
         filterObject.patient = {
-            OR: [
+            AND: [
+                (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {},
                 {
-                    firstName: {
-                    startsWith: nameOne,
-                    mode: 'insensitive'
-                    },
-                },
-                {
-                    lastName: {
-                    startsWith: nameOne,
-                    mode: 'insensitive'
-                    },
-                },
+                    OR: [
+                        {
+                            firstName: {
+                            startsWith: nameOne,
+                            mode: 'insensitive'
+                            },
+                        },
+                        {
+                            lastName: {
+                            startsWith: nameOne,
+                            mode: 'insensitive'
+                            },
+                        },
+                    ]
+                }
             ]
         }
     }
-    else {
+    else { 
         filterObject.patient = {
-        AND: [
-          {
-            OR: [
-                { firstName: { startsWith: nameOne, mode: 'insensitive' } },
-                { lastName: { startsWith: nameOne, mode: 'insensitive' } }
-              ]
-          },
-          {
-            OR: [
-                { firstName: { startsWith: nameTwo, mode: 'insensitive' } },
-                { lastName: { startsWith: nameTwo, mode: 'insensitive' } }
-              ]
-          },
-        ]
+          AND: [
+            (params.workQueue === 'Booking Sheet Request' && bookingSheetRequiredFields) ? bookingSheetRequiredFields.patient : {},
+            {
+                OR: [
+                    { firstName: { startsWith: nameOne, mode: 'insensitive' } },
+                    { lastName: { startsWith: nameOne, mode: 'insensitive' } }
+                ]
+            },
+            {
+                OR: [
+                    { firstName: { startsWith: nameTwo, mode: 'insensitive' } },
+                    { lastName: { startsWith: nameTwo, mode: 'insensitive' } }
+                ]
+            },
+          ]
       }
    }
    return filterObject
@@ -147,9 +166,7 @@ export function withValidation(requiredParams: Array<string>, queryFunc: Functio
 }
 
 export function excludeField(object: any, fieldName: string): any {
-    let newObject = R.clone(object)
-    delete newObject[fieldName]
-    return newObject
+    return R.dissoc(fieldName, object);
   }
 
 /**
@@ -157,7 +174,7 @@ export function excludeField(object: any, fieldName: string): any {
  * Sample Input Obj: {sampleTab: { sampleField: {sampleFieldId: 1, sampleFieldName: "name"}}}
  * Output: {sampleTab: { update: { sampleFieldId: 1}}}
  */
-export function formToPrismaQuery(obj: {[key: string]: any}, id="", operation="update") {
+export function formObjectToPrismaQuery(obj: IndexObject, id="", operation="update") {
     let formattedObj = excludeField(obj, id);
 
     //update relationships by updating the Id, not the object itself
@@ -181,7 +198,7 @@ export function formToPrismaQuery(obj: {[key: string]: any}, id="", operation="u
     }
   }
 
-export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
+export function formArrayToPrismaQuery(formData: IndexObject[], arrayFieldId: string) {
     let create: object[] = [];
     formData.forEach((arrayElem: any) => {
         const id = arrayFieldId
@@ -210,7 +227,7 @@ export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
         formattedField.clearance && (formattedField.clearance = { connect: {clearanceId: formattedField.clearance.clearanceId}});
         delete formattedField.clearanceId;
         if (formattedField.facility) {
-            formattedField.facility = formToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
+            formattedField.facility = formObjectToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
             delete formattedField.facilityId
         }
 
@@ -220,8 +237,8 @@ export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
     return { deleteMany: {}, create: create }
 }
 
-export function getClinicalQuery(clinicalUpdates: any, formData: any) {
-        let clinicalQuery = formToPrismaQuery(clinicalUpdates, 'clinicalId')
+export function clinicalTabToPrismaQuery(clinicalUpdates: any, formData: any) {
+        let clinicalQuery = formObjectToPrismaQuery(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
             delete clinicalQuery.update.preOpFormId
             if(clinicalUpdates.preOpRequired === "false") {
@@ -231,13 +248,12 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
             } else {
                 if(clinicalUpdates.preOpForm) {
                     const preOpCrudOperation = R.path(['preOpForm','preOpFormId'], formData) ? 'update' : 'create';
-                    let preOpForm = formToPrismaQuery(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
+                    let preOpForm = formObjectToPrismaQuery(clinicalUpdates.preOpForm, 'preOpFormId', preOpCrudOperation)
                     if (preOpForm) {
                         const formQuery = preOpForm[preOpCrudOperation]
                         if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
                             const facilityCrudOperation = R.path(['preOpForm', 'facility', 'facilityId'], formData) ? 'update' : 'create'
-                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility: formToPrismaQuery(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
-                            delete preOpForm[preOpCrudOperation].facilityId
+                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility : formObjectToPrismaQuery(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
                         }
                         clinicalQuery.update.preOpForm = preOpForm;
                     }
@@ -245,14 +261,14 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
             }
             if (formData.diagnosticTestsRequired === "true") {
                 if (clinicalUpdates.diagnosticTests) {
-                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = arrayToPrismaQuery(formData.diagnosticTests, 'diagnosticTestFormId'));
+                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = formArrayToPrismaQuery(formData.diagnosticTests, 'diagnosticTestFormId'));
                 }
             } else {
                 clinicalQuery.update.diagnosticTests = {deleteMany: {}}
             }
             if (formData.clearanceRequired === "true") {
                 if (clinicalUpdates.clearances) {
-                    clinicalQuery.update.clearances = arrayToPrismaQuery(formData.clearances, 'clearanceFormId');
+                    clinicalQuery.update.clearances = formArrayToPrismaQuery(formData.clearances, 'clearanceFormId');
                 }
             } else {
                 clinicalQuery.update.clearances = {deleteMany: {}}
@@ -261,8 +277,8 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
     return clinicalQuery
   }
 
-export function getProcedureTabQuery(procedureTabUpdates: any, formData: any) {
-    const query = formToPrismaQuery(procedureTabUpdates, "procedureTabId")
+export function procedureTabToPrismaQuery(procedureTabUpdates: any, formData: any) {
+    const query = formObjectToPrismaQuery(procedureTabUpdates, "procedureTabId")
     if (query) {
         const anesthesiaIds = formData.anesthesia.map((elem: any) => ({['anesthesiaId']: elem['anesthesiaId']}))
         query.update.anesthesia = {
@@ -343,7 +359,7 @@ const flattenObj = (ob: any) => {
     return result;
 };
 
-export const getDifference = (original: any, incoming: any, ignoreKeys?: string[]) => {
+export const getDifference = (original: { [key: string]: any }, incoming: { [key: string]: any }, ignoreKeys?: string[]) => {
     const flatOriginal = flattenObj(original);
     const flatIncoming = flattenObj(incoming);
 
@@ -393,6 +409,63 @@ export function createValidationObject(configObject: IndexObject | Array<IndexOb
         return isRequired ? yup.mixed().required().default(configObject.default) : yup.mixed().notRequired().default(configObject.default)
     }
     return isRequired ? yup.string().required().default(configObject.default) : yup.string().notRequired().default(configObject.default)
+}
+
+let requiredBookingSheetFieldsToDelete: string[] = [];
+
+export function findRequiredBookingSheetFieldsToDelete(bookingSheetConfig: BookingSheetConfig) {
+    let configObject = bookingSheetConfig as IndexObject;
+
+    if (Array.isArray(configObject)) {
+        Object.keys(configObject[0]).forEach(key => {
+            findRequiredBookingSheetFieldsToDelete(configObject[0][key]);
+        })
+        return requiredBookingSheetFieldsToDelete;
+    } else if (typeof configObject === 'object' && !Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
+        Object.keys(configObject).forEach(key => {
+            findRequiredBookingSheetFieldsToDelete(configObject[key]);
+        })
+        return requiredBookingSheetFieldsToDelete
+    }
+
+    if (typeof configObject === 'object' && Object.keys(configObject).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)) {
+        const isRequired = R.isNil(configObject.required) || configObject.required; //required by default
+
+        !isRequired && configObject.pathToDeleteFieldFromQuery 
+        && !requiredBookingSheetFieldsToDelete.includes(configObject.pathToDeleteFieldFromQuery) 
+        && requiredBookingSheetFieldsToDelete.push(configObject.pathToDeleteFieldFromQuery);
+    }
+
+    return requiredBookingSheetFieldsToDelete
+}
+
+export function createBookingSheetRequiredFields(bookingSheetConfig: BookingSheetConfig) {
+    let bookingSheetFieldsToDelete = findRequiredBookingSheetFieldsToDelete(bookingSheetConfig);
+
+    let defaultQuery = {
+        patient: defaultPatientTabFilter,
+        clinical: R.clone(defaultClinicalFilter),
+        scheduling: defaultSchedulingFilter,
+        financial: defaultFinancialFilter,
+        procedureTab: defaultProcedureTabFilter
+    };
+
+    bookingSheetFieldsToDelete.map((pathToDeleteFieldFromQuery: string) => {
+        deleteFromObject(defaultQuery, pathToDeleteFieldFromQuery)
+    });
+
+    return defaultQuery
+}
+
+export function deleteFromObject(object: IndexObject, pathToDeleteFieldFromQuery: string) {
+    const keys = pathToDeleteFieldFromQuery.split(".");
+    const lastKey = keys.pop();
+    const nextLastKey = keys.pop();
+    const nextLastObj = keys.reduce((a, key) => a[key], object);
+
+    delete nextLastObj[nextLastKey as string][lastKey as string]
+
+    return object;
 }
 
 export function getPathFromId(id: string) {

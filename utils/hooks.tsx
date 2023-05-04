@@ -1,21 +1,19 @@
 import { useContext } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import moment, { isMoment } from "moment";
-import { caseFilterInterface } from "../reference";
 import {AlertContext} from "../pages/_app.page"
 
 export function useGetCasesHook(
     dateRangeStart: moment.Moment, 
     dateRangeEnd: moment.Moment | null, 
-    dateSortValue: string, 
-    caseFilter: caseFilterInterface[], 
     searchBarValue: string, 
-    page: string
+    page: string,
+    workQueue: string
 ) {
     const [_, setAlertState] = useContext(AlertContext);
     return useQuery(
-        ["getCases", dateRangeStart, dateRangeEnd, dateSortValue, caseFilter, searchBarValue, page], 
-        () => fetchCases(dateRangeStart, dateRangeEnd as moment.Moment, dateSortValue, caseFilter, searchBarValue, page).then(res => {
+        ["getCases", dateRangeStart, dateRangeEnd, searchBarValue, page, workQueue], 
+        () => fetchCases(dateRangeStart, dateRangeEnd as moment.Moment, searchBarValue, page, workQueue).then(res => {
             if (res.ok) {
               return res.json()
             }      
@@ -116,33 +114,23 @@ export function useGetCaseByIdHook(caseId: string) {
     );
 }
 
-const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) => {
-    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, dateSortValue, caseFilter, searchBarValue, page);
+const fetchCases = async (dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, searchBarValue: string, page: string, workQueue: string) => {
+    const url = calculateDashboardURL(dateRangeStart, dateRangeEnd, searchBarValue, page, workQueue);
     return fetch(url)
 };
 
 // <----- helpers ------>
 
-function translateSortOrder(dateSortValue: string) {
-    return dateSortValue === 'Oldest - Newest' ? 'desc' : 'asc'; 
-}
 
-export function convertCaseStepsToFilters(caseFilter: caseFilterInterface[]): object {
-    let returnObject: any = {};
-    caseFilter.filter(filterObj => filterObj.id !== "all").forEach(filterObj => (returnObject[filterObj.id] = "Incomplete"))
-    return returnObject
-}
-
-function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, dateSortValue: string, caseFilter: caseFilterInterface[], searchBarValue: string, page: string) {
+function calculateDashboardURL(dateRangeStart: moment.Moment, dateRangeEnd: moment.Moment, searchBarValue: string, page: string, workQueue: string) {
     let parameters;
 
     parameters = new URLSearchParams({ 
         dateRangeStart: dateRangeStart.format(),
         dateRangeEnd:  dateRangeEnd.format(),
-        orderBy: translateSortOrder(dateSortValue),
         page: page,
+        ...(workQueue !== "") && {workQueue: workQueue},
         ...(searchBarValue !== "") && {searchValue: searchBarValue},
-        ...convertCaseStepsToFilters(caseFilter)
     });
 
     const url =  `/api/getCases?` + parameters;

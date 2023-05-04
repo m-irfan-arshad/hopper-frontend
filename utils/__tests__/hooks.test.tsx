@@ -36,7 +36,13 @@ describe("Hooks", () => {
     );
 
     test("call getCasesHook", async() => {
-        const { result } = renderHook(() => useGetCasesHook(moment().utc().startOf('month'), moment().utc().endOf('month'), 'Oldest - Newest', [{"value": "true", "id": "vendorConfirmation"}], '1234', '1'), { wrapper });
+        const { result } = renderHook(() => useGetCasesHook(
+            moment().utc().startOf('month'), 
+            moment().utc().endOf('month'), 
+            'searchBarValue', 
+            '1',
+            'Work Queue'
+            ), { wrapper });
 
         await waitFor(() => {
             expect(result.current.isSuccess).toEqual(true);
@@ -45,10 +51,9 @@ describe("Hooks", () => {
         const queryString = new URLSearchParams({ 
             dateRangeStart: moment().utc().startOf('month').format(),
             dateRangeEnd: moment().utc().endOf('month').format(),
-            orderBy: 'desc',
             page: '1',
-            searchValue: '1234',
-            vendorConfirmation: 'Incomplete'
+            workQueue: 'Work Queue',
+            searchValue: 'searchBarValue',
         });
 
         expect(result.current.data).toEqual(mockCaseData);
