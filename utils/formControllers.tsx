@@ -103,7 +103,7 @@ const helperTextProps = {
 
 export function ConfigWrapper(props: ConfigWrapperProps) {
     const {children, id, size, config, styles} = props;
-    const isVisible = isFieldVisible(config, id)
+    const isVisible = !config || isFieldVisible(config, id)
     if (!isVisible) return <></>;
     return(
         <Grid item xs={size} sx={styles ? styles : {}}>

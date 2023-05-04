@@ -62,25 +62,26 @@ function HeaderCell(props: {title: string, size: number}) {
 function StatusCheckbox(props: {id: string, title: string, value: Boolean}) {
     const { control } = useFormContext();
     const {id, title, value} = props;
-    return <ConfigWrapper id={id} config={{}} size={16} styles={{}}><Controller
-    name={id}
-    control={control}
-    render={({ field }) => {
-        return (<Box sx={{display: 'flex', alignItems: 'center'}}>
-            <Checkbox
-                {...field}
-                checked={field.value}
-                id={id}
-                value={value}
-                size="small"
-                sx={{height: "2rem"}}
-                inputProps={{ 'aria-label': 'controlled', height: "1rem" }}
-                onChange={field.onChange}
-            />
-            <Typography variant="body2">{title}</Typography>
-        </Box>
-    )}}
-  /></ConfigWrapper>
+    return <ConfigWrapper id={id} size={16}>
+        <Controller
+        name={id}
+        control={control}
+        render={({ field }) => {
+            return (<Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Checkbox
+                    {...field}
+                    checked={field.value}
+                    id={id}
+                    value={value}
+                    size="small"
+                    sx={{height: "2rem"}}
+                    inputProps={{ 'aria-label': 'controlled', height: "1rem" }}
+                    onChange={field.onChange}
+                />
+                <Typography variant="body2">{title}</Typography>
+            </Box>
+        )}} />
+    </ConfigWrapper>
 }
 
 function ProductRow(props: ProductRowProps){
@@ -125,7 +126,7 @@ function ProductRow(props: ProductRowProps){
     )
 }
 
-function CreateProductModal(props: CreateProductModalProps){
+export function CreateProductModal(props: CreateProductModalProps){
     const {open, closeDialog, append} = props;
     const schema = yup.object().shape({
         productName: yup.string().required(),
@@ -220,14 +221,19 @@ function CreateProductModal(props: CreateProductModalProps){
                 }}>
                 <Button 
                     onClick={() => closeDialog()}
-                    sx={{ color: "gray.main", padding: "0.625rem"}}
+                    sx={{ color: "grey", padding: "0.625rem"}}
                 >
                     Cancel
                 </Button>
                 <Button 
                     onClick={handleSubmit(onSubmit)}
                     disabled={!isValid}
-                    sx={{ color: "blue.main", padding: "0.625rem"}}
+                    sx={{
+                        backgroundColor: isValid ? "blue.main" : "gray.main",
+                        border: 1,
+                        borderColor: isValid ? "blue.main" : "gray.main",
+                        marginRight: "1.75rem",
+                    }}
                 >
                     Save
                 </Button>
@@ -281,7 +287,6 @@ export default function ProductTab() {
                 <Grid item xs={12}>
                     <DropDownSearchComponent
                         label=""
-                        id="productTab.product"
                         labelProperties={["productName"]}
                         options={productData}
                         onChange={onSelectProduct}

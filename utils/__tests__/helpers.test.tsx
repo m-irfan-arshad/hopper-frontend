@@ -248,45 +248,61 @@ describe("Utils", () => {
                         }
                     }
                 },
-                "diagnosticTests":{"set":[]},
-                "clearances":{"set":[]}
+                "diagnosticTests":{"deleteMany":{}},
+                "clearances":{"deleteMany":{}}
             }}
         expect(getClinicalQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
     });
 
-    test("getClinicalQuery function preOpForm, diagnosticTest, and clearance all not required", async () => {
-        const sampleClinicalUpdates = {"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"false","diagnosticTestsRequired":"false","clearanceRequired":"false","postOpDateTime":"2023-04-28T04:21:00-04:00"}
-        const sampleFormData = {"clinicalId":304,"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"false","diagnosticTestsRequired":"false","clearanceRequired":"false","postOpDateTime":"2023-04-28T08:21:00.000Z","preOpFormId":null,"diagnosticTests":[{"diagnosticTest":null,"testNameOther":"","testDateTime":null,"atProcedureLocation":null,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"clearances":[{"clearanceName":null,"clearanceNameOther":"","clearanceDateTime":null,"physicianFirstName":"","physicianLastName":"","physicianPhone":"","atProcedureLocation":null,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"preOpForm":null}
-        const expectedQuery = {"update":{"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"false","diagnosticTestsRequired":"false","clearanceRequired":"false","postOpDateTime":"2023-04-28T04:21:00-04:00","diagnosticTests":{"set":[]},"clearances":{"set":[]}}}
-        expect(getClinicalQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
-    })
-
     test("getClinicalQuery function full update", async () => {
-        const sampleClinicalUpdates = {"preOpRequired":"true","clearanceRequired":"true","diagnosticTests":[{"facility":{"phone":"Phone","addressOne":"Ad","addressTwo":"sdsdcd","city":"saxawa","state":"asxs","zip":"saefe"},"diagnosticTest":{"diagnosticTestId":219,"testName":"Chem 12"}},{"diagnosticTest":{"diagnosticTestId":224,"testName":"Complete Blood Count (CBC) With Differential"},"testNameOther":"","testDateTime":"2023-04-14T01:05:00-04:00","atProcedureLocation":true,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"clearances":[{"physicianFirstName":"P First","physicianLastName":"P last","physicianPhone":"P phone","facility":{"facilityName":"F name","phone":"F phone","addressOne":"F ad","addressTwo":"F ad 2","city":"NY","state":"NY","zip":"12345"},"clearanceDateTime":"2023-04-15T00:01:00-04:00","clearance":{"clearanceId":57,"clearanceName":"Medical"}}],"preOpForm":{"facility":{"facilityName":"F 1","phone":"F 2","addressOne":"F 3","addressTwo":"F 4","city":"F 5","state":"F 6"}}}
-        const sampleFormData = {"clinicalId":304,"physicianFirstName":"NewCareFirst","physicianLastName":"NewCareLast","physicianPhone":"1234567890","preOpRequired":"true","diagnosticTestsRequired":"true","clearanceRequired":"true","postOpDateTime":"2023-04-28T08:21:00.000Z","preOpFormId":null,"diagnosticTests":[{"diagnosticTestFormId":22,"diagnosticTestId":218,"clinicalId":304,"testNameOther":"","testDateTime":null,"atProcedureLocation":null,"facilityId":91,"facility":{"facilityId":91,"facilityName":"niknk","phone":"Phone","addressOne":"Ad","addressTwo":"sdsdcd","city":"saxawa","state":"asxs","zip":"saefe"},"diagnosticTest":{"diagnosticTestId":219,"testName":"Chem 12"}},{"diagnosticTest":{"diagnosticTestId":224,"testName":"Complete Blood Count (CBC) With Differential"},"testNameOther":"","testDateTime":"2023-04-14T05:05:00.000Z","atProcedureLocation":true,"facility":{"facilityName":"","phone":"","addressOne":"","addressTwo":"","city":"","state":"","zip":""}}],"clearances":[{"clearanceName":null,"clearanceNameOther":"","clearanceDateTime":"2023-04-15T04:01:00.000Z","physicianFirstName":"P First","physicianLastName":"P last","physicianPhone":"P phone","atProcedureLocation":null,"facility":{"facilityName":"F name","phone":"F phone","addressOne":"F ad","addressTwo":"F ad 2","city":"NY","state":"NY","zip":"12345"},"clearance":{"clearanceId":57,"clearanceName":"Medical"}}],"preOpForm":{"preOpDateTime":null,"atProcedureLocation":null,"facility":{"facilityName":"F 1","phone":"F 2","addressOne":"F 3","addressTwo":"F 4","city":"F 5","state":"F 6","zip":null}}}
-        const expectedQuery = {"update": {
-            "preOpRequired":"true",
-            "clearanceRequired":"true",
-            "diagnosticTests":{
-                "create":[
-                    {"diagnosticTest":{"connect":{"diagnosticTestId":224}},"testDateTime":"2023-04-14T05:05:00.000Z","atProcedureLocation":true,"facility":{"create":{}}}
-                ],
-                "update":[
-                    {"data":{"facility":{"update":{"phone":"Phone","addressOne":"Ad","addressTwo":"sdsdcd","city":"saxawa","state":"asxs","zip":"saefe"}},"diagnosticTest":{"connect":{"diagnosticTestId":219}}},"where":{"diagnosticTestFormId":22}}
-                ]
-            },
-            "clearances":{
-                "create":[
-                    {"physicianFirstName":"P First","physicianLastName":"P last","physicianPhone":"P phone","facility":{"create":{"facilityName":"F name","phone":"F phone","addressOne":"F ad","addressTwo":"F ad 2","city":"NY","state":"NY","zip":"12345"}},"clearanceDateTime":"2023-04-15T04:01:00.000Z","clearance":{"connect":{"clearanceId":57}}}
-                ],
-                "update":[]
-            },
-            "preOpForm":{
-                "create":{
-                    "facility":{"create":{"facilityName":"F 1","phone":"F 2","addressOne":"F 3","addressTwo":"F 4","city":"F 5","state":"F 6"}}
-                }
+        const sampleClinicalUpdates = {
+            clearanceRequired: "false",
+            diagnosticTestsRequired: "true",
+            physicianFirstName: 'NewP', 
+            physicianLastName: 'NewP Last', 
+            physicianPhone: '5555555555', 
+            diagnosticTests: [
+                {
+                    diagnosticTest: {
+                        diagnosticTestId: 216, 
+                        testName: "Other"
+                    }, 
+                    facility: {
+                        facilityName: "Facility 3"
+                    }, 
+                    testNameOther: "OtherTest",
+                    atProcedureLocation: false
+                },
+            ], 
+            preOpForm: {facility: {facilityName: "Facility 1", zip: "12212"}}
+        }
+
+        const sampleFormData = sampleClinicalUpdates;
+
+        const expectedQuery = {
+            update: {
+                clearanceRequired: "false",
+                clearances: {deleteMany: {}},
+                diagnosticTestsRequired: "true",
+                diagnosticTests: {
+                    deleteMany: {}, 
+                    create: [
+                        {
+                            atProcedureLocation: false,
+                            diagnosticTest: {connect: {diagnosticTestId: 216}},
+                            facility: {create: {
+                                facilityName: "Facility 3",
+                            }},
+                            testNameOther: "OtherTest",
+                        }
+                    ]
+                },
+                physicianFirstName: "NewP",
+                physicianLastName: "NewP Last",
+                physicianPhone: "5555555555",
+                preOpForm: {create: { facility: { create: {facilityName: "Facility 1", zip: "12212"}}}}
             }
-        }}
+        }
         expect(getClinicalQuery(sampleClinicalUpdates, sampleFormData)).toEqual(expectedQuery)
     })
 

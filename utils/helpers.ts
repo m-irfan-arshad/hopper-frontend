@@ -198,9 +198,9 @@ export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
         delete formattedField.insuranceId;
 
         // formatting for product object
-        formattedField.quantity = R.isNil(formattedField.quantity) ? undefined : parseInt(formattedField.quantity)
-        formattedField.vendor = R.isNil(formattedField.vendor) ? undefined : { connect: {vendorId: formattedField.vendor.vendorId}}
-        formattedField.manufacturer = R.isNil(formattedField.manufacturer) ? undefined : { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}}
+        !R.isNil(formattedField.quantity) && (formattedField.quantity = parseInt(formattedField.quantity))
+        !R.isNil(formattedField.vendor) && (formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}})
+        !R.isNil(formattedField.manufacturer) && (formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}})
         delete formattedField.vendorId;
         delete formattedField.manufacturerId;
 
@@ -223,6 +223,7 @@ export function arrayToPrismaQuery(formData: any, arrayFieldId: string) {
 export function getClinicalQuery(clinicalUpdates: any, formData: any) {
         let clinicalQuery = formToPrismaQuery(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
+            delete clinicalQuery.update.preOpFormId
             if(clinicalUpdates.preOpRequired === "false") {
                 if (R.path(['preOpForm', 'preOpFormId'], formData)) {
                     clinicalQuery.update.preOpForm = {delete: true}
@@ -235,7 +236,8 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
                         const formQuery = preOpForm[preOpCrudOperation]
                         if (R.path(['preOpForm', 'facility'], clinicalUpdates)) {
                             const facilityCrudOperation = R.path(['preOpForm', 'facility', 'facilityId'], formData) ? 'update' : 'create'
-                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility : formToPrismaQuery(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
+                            preOpForm = {...preOpForm, [preOpCrudOperation]: {...formQuery, facility: formToPrismaQuery(clinicalUpdates.preOpForm.facility, 'facilityId', facilityCrudOperation)}}
+                            delete preOpForm[preOpCrudOperation].facilityId
                         }
                         clinicalQuery.update.preOpForm = preOpForm;
                     }
@@ -246,14 +248,14 @@ export function getClinicalQuery(clinicalUpdates: any, formData: any) {
                     clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = arrayToPrismaQuery(formData.diagnosticTests, 'diagnosticTestFormId'));
                 }
             } else {
-                clinicalQuery.update.diagnosticTests = {set: []}
+                clinicalQuery.update.diagnosticTests = {deleteMany: {}}
             }
             if (formData.clearanceRequired === "true") {
                 if (clinicalUpdates.clearances) {
                     clinicalQuery.update.clearances = arrayToPrismaQuery(formData.clearances, 'clearanceFormId');
                 }
             } else {
-                clinicalQuery.update.clearances = {set: []}
+                clinicalQuery.update.clearances = {deleteMany: {}}
             }
         }
     return clinicalQuery
