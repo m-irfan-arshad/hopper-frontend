@@ -27,7 +27,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
       const orgConfigData = await storage.bucket("hopper_booking_sheet_configs").file("sample_org_config.json").download();
       const orgConfigJSON = JSON.parse(orgConfigData.toString());
       const config = R.clone(defaultBookingSheetConfig);
-      bookingSheetConfig = R.mergeDeepRight(config, orgConfigJSON.tabs)
+      bookingSheetConfig = R.mergeDeepRight(config, orgConfigJSON)
     }
     
     const count =  await prisma.cases.count({

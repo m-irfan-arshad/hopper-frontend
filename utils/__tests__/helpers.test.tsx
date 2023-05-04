@@ -152,7 +152,7 @@ describe("Utils", () => {
     });
 
     test("createValidationObject function", async () => {
-        let schema = createValidationObject(mockBookingSheetConfig.tabs)
+        let schema = createValidationObject(mockBookingSheetConfig)
 
         await expect(schema.validateAt('patient.firstName', mockSingleCase)).resolves.toBeTruthy();
         await expect(schema.validateAt('patient.firstName', {})).resolves.toBeFalsy();
@@ -184,13 +184,13 @@ describe("Utils", () => {
     });
 
     test("findRequiredBookingSheetFieldsToDelete function", async () => {
-        let fieldsToDelete = findRequiredBookingSheetFieldsToDelete(mockBookingSheetConfig.tabs);
+        let fieldsToDelete = findRequiredBookingSheetFieldsToDelete(mockBookingSheetConfig);
         expect(fieldsToDelete).toEqual([ 'patient.AND.0.middleName', 'patient.AND.0.firstName', 'patient.AND.0.dateOfBirth']);
 
     });
 
     test("createBookingSheetRequiredFields function", async () => {
-        let bookingSheetRequiredFields = createBookingSheetRequiredFields(mockBookingSheetConfig.tabs);
+        let bookingSheetRequiredFields = createBookingSheetRequiredFields(mockBookingSheetConfig);
         
         expect(bookingSheetRequiredFields).toEqual({
             patient: defaultPatientTabFilter,
@@ -393,7 +393,7 @@ describe("Utils", () => {
             state: {state: "NY"},
             zip: "10000"
         };
-        expect(isTabComplete(patientForm, mockBookingSheetConfig.tabs.patient)).toEqual(true)
+        expect(isTabComplete(patientForm, mockBookingSheetConfig.patient)).toEqual(true)
     });
 
     test("isTabComplete function with array", async () => {
@@ -405,7 +405,7 @@ describe("Utils", () => {
             priorAuthId: "123",
             priorAuthDate: moment('10/10/2022', 'MM/DD/YYYY'),
         }];
-        expect(isTabComplete(insuranceForm, mockBookingSheetConfig.tabs.financial)).toEqual(true)
+        expect(isTabComplete(insuranceForm, mockBookingSheetConfig.financial)).toEqual(true)
     });
 
     test("isTabComplete function incomplete tab", async () => {
@@ -420,7 +420,7 @@ describe("Utils", () => {
             state: {state: "NY"},
             zip: "10000"
         };
-        expect(isTabComplete(patientForm, mockBookingSheetConfig.tabs.patient)).toEqual(false)
+        expect(isTabComplete(patientForm, mockBookingSheetConfig.patient)).toEqual(false)
     });
 
     test("isTabComplete function incomplete array tab", async () => {
@@ -432,6 +432,6 @@ describe("Utils", () => {
             priorAuthId: "123",
             priorAuthDate: moment('10/10/2022', 'MM/DD/YYYY'),
         }];
-        expect(isTabComplete(insuranceForm, mockBookingSheetConfig.tabs.financial)).toEqual(false)
+        expect(isTabComplete(insuranceForm, mockBookingSheetConfig.financial)).toEqual(false)
     });
 });

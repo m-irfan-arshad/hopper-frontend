@@ -36,10 +36,7 @@ jest.mock("../../../../utils/hooks", () => ({
 
 describe("SchedulingTab", () => {
     const props = {
-        config: {
-            organization: "...",
-            tabs: []
-        }
+        config: {}
     };
 
     test("renders the scheduling tab", () => {
