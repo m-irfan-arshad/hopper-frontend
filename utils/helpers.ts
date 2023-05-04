@@ -493,6 +493,7 @@ export function checkFieldForErrors(id: string, errors: any): boolean {
 export function isTabComplete(tabData: IndexObject | IndexObject[], tabConfig: IndexObject | IndexObject[]): boolean {
     let isComplete = true;
     if (Array.isArray(tabData) && Array.isArray(tabConfig)) {
+        if (tabData.length === 0) isComplete = false;
         tabData.forEach((tabElem) => {
             if(!isTabComplete(tabElem, tabConfig[0])) isComplete = false;
         })
