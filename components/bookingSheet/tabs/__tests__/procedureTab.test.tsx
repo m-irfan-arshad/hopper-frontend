@@ -17,10 +17,7 @@ jest.mock("../../../../utils/hooks", () => ({
 
 describe("ProcedureTab", () => {
     const props = {
-        config: {
-            organization: "...",
-            tabs: []
-        }
+        config: {}
     };
 
     test("renders the procedure tab", () => {

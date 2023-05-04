@@ -91,7 +91,7 @@ function ProductRow(props: ProductRowProps){
         onMouseOver={() => setShowDelete(true)}
         onMouseOut={() => setShowDelete(false)}>
             <Grid item xs={0.5} sx={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
-                {showDelete && <DeleteIcon sx={{height:"1.3rem"}} onClick={()=>remove(index)}/>}
+                {showDelete && <DeleteIcon sx={{height:"1.3rem", cursor:"pointer"}} onClick={()=>remove(index)}/>}
                 </Grid>
             <Grid item xs={4}>
                 <Typography variant="subtitle2" sx={{fontWeight: 700, color: "black.main"}}>{productName}</Typography>

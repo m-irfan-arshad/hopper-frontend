@@ -29,10 +29,7 @@ const FinancialFormWrapper = (props: any) => {
 describe("FinancialTab", () => { 
 
     const props = {
-        config: {
-            organization: "",
-            tabs: []
-        }
+        config: {}
     };
 
     test("renders the financial tab", () => {
