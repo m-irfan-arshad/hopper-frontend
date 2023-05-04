@@ -18,7 +18,7 @@ async function createCases() {
                         firstName: chance.first({ nationality: 'en' }),
                         lastName: chance.last({ nationality: 'en' }),
                         mrn: chance.string({ length: 10, numeric: true }),
-                        address: chance.address(),
+                        address: {create: []},
                         mobilePhone: chance.phone({ country: 'us', formatted: true }),
                         dateOfBirth: chance.date({ year: 1970 }),
                     }

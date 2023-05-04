@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
+import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery, patientTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
 import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig, defaultPatientAddress } from '../../reference';
 import * as R from 'ramda';
@@ -43,7 +43,7 @@ const StyledTab = styled(Tab)({
 function prepareFormForSubmission(caseId: number, formData: any, defaultFields: any) {
     let query: any = {caseId: caseId, ...getDifference(defaultFields, formData, ['facilityId'])};
     query.scheduling && (query.scheduling = formObjectToPrismaQuery(query.scheduling, "schedulingId"))
-    query.patient && (query.patient = formObjectToPrismaQuery(query.patient, "patientId"))
+    query.patient && (query.patient = patientTabToPrismaQuery(query.patient, formData.patient))
     query.procedureTab && (query.procedureTab = procedureTabToPrismaQuery(query.procedureTab, formData.procedureTab))
     query.financial && (query.financial = formArrayToPrismaQuery(formData.financial, 'financialId'))
     query.productTab && (query.productTab = formArrayToPrismaQuery(formData.productTab, 'productTabId'))

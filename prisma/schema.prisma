@@ -73,7 +73,7 @@ model patient {
 
 model address {
   addressId      Int       @id @default(autoincrement()) @map("address_id")
-  patientId      Int?       @map("patient_id")
+  patientId      Int?      @map("patient_id")
   stateId        Int?      @map("state_id")
 
   addressOne     String?   @default("") @map("address_one")

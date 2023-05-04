@@ -42,7 +42,7 @@ export default function CaseHub() {
 
   useEffect(() => {
     if(!R.isEmpty(orgConfigData)){
-        setBookingSheetConfig(R.mergeDeepRight(defaultBookingSheetConfig, orgConfigData.tabs));
+        setBookingSheetConfig(R.mergeDeepRight(defaultBookingSheetConfig, orgConfigData));
     }
 }, [orgConfigData]);
 

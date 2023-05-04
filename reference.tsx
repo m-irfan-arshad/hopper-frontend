@@ -34,7 +34,7 @@ export interface IndexObject {
 }
 
 export type FullCase = Prisma.casesGetPayload<{ include: { 
-  patient: true, 
+  patient: { include: {address: {include: { state: true}}}}, 
   scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
   financial: true,
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},

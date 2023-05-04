@@ -57,7 +57,7 @@ return (
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Address</Typography>
-                    <Typography variant="body2">{row.patient?.address || 'N/A'}</Typography>
+                    <Typography variant="body2">{row.patient?.address[0]?.addressOne || 'N/A'}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Phone</Typography>
