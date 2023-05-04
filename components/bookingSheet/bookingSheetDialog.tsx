@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
+import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -29,8 +29,9 @@ import ProductTab from "./tabs/productTab";
 interface Props {
     open: boolean
     closeDialog: () => void,
-    data: any
-    initiallySelectedTab: string
+    data: any,
+    initiallySelectedTab: string,
+    bookingSheetConfig: BookingSheetConfig
 }
 
 const StyledTab = styled(Tab)({
@@ -81,11 +82,9 @@ function prepareFormForRender(data: any) {
 }
 
 export default function BookingSheetDialog(props: Props) {
-    const {open, closeDialog, data, initiallySelectedTab} = props;
+    const {open, closeDialog, data, initiallySelectedTab, bookingSheetConfig} = props;
     const [selectedTab, selectTab] = useState(initiallySelectedTab);
-    const [bookingSheetConfig, setBookingSheetConfig] = useState(defaultBookingSheetConfig)
     const {mutate} = useUpdateCaseHook();
-    const { data: orgConfigData = {} } = useGetBookingSheetConfigHook();
     const validationSchema = createValidationObject(bookingSheetConfig);
 
     const form = useForm({ 
@@ -107,12 +106,6 @@ export default function BookingSheetDialog(props: Props) {
     useEffect(() => {
         if(data) reset(prepareFormForRender(data), {keepDirty: true});
     }, [data]);
-
-    useEffect(() => {
-        if(!R.isEmpty(orgConfigData)){
-            setBookingSheetConfig(R.mergeDeepRight(defaultBookingSheetConfig, orgConfigData.tabs));
-        }
-    }, [orgConfigData]);
 
     useEffect(() => {
         selectTab(initiallySelectedTab)

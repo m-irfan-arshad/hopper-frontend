@@ -419,9 +419,8 @@ export function createValidationObject(configObject: IndexObject | Array<IndexOb
     return isRequired ? yup.string().required().default(configObject.default) : yup.string().notRequired().default(configObject.default)
 }
 
-let requiredBookingSheetFieldsToDelete: string[] = [];
-
 export function findRequiredBookingSheetFieldsToDelete(bookingSheetConfig: BookingSheetConfig) {
+    let requiredBookingSheetFieldsToDelete: string[] = [];
     let configObject = bookingSheetConfig as IndexObject;
 
     if (Array.isArray(configObject)) {
@@ -489,4 +488,24 @@ export function isFieldVisible(config: object | undefined, id: string) {
 
 export function checkFieldForErrors(id: string, errors: any): boolean {
     return R.isNil(R.path(getPathFromId(id), errors)) ? false : true
+}
+
+export function isTabComplete(tabData: IndexObject | IndexObject[], tabConfig: IndexObject | IndexObject[]): boolean {
+    let isComplete = true;
+    if (Array.isArray(tabData) && Array.isArray(tabConfig)) {
+        tabData.forEach((tabElem) => {
+            if(!isTabComplete(tabElem, tabConfig[0])) isComplete = false;
+        })
+    } else if (!Array.isArray(tabConfig) && typeof tabConfig === 'object' && Object.keys(tabConfig).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
+        if(!(tabConfig.required === false) && (R.isNil(tabData) || R.isEmpty(tabData))) {
+            isComplete = false;
+        } 
+    } else if (typeof tabConfig === 'object' && typeof tabData === 'object' && !Array.isArray(tabData)){
+        Object.keys(tabConfig).forEach(key => {
+            if(!isTabComplete(tabData[key], tabConfig[key])) isComplete = false;
+        })
+    } else {
+        isComplete = !(R.isNil(tabData) || R.isEmpty(tabData))
+    }
+    return isComplete;
 }

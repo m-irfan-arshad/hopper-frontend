@@ -6,6 +6,7 @@ import * as R from "ramda";
 //INTERFACES AND TYPES
 
 export interface BookingSheetConfig {
+  [key: string]: any
   patient?: object,
   financial?: object,
   procedureTab?: object,

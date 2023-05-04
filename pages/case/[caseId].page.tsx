@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router'
-import { useGetCaseByIdHook } from '../../utils/hooks';
+import { useGetBookingSheetConfigHook, useGetCaseByIdHook } from '../../utils/hooks';
 import { Button, Box, Typography, Tabs, styled, useMediaQuery, Tab, CircularProgress } from '@mui/material';
 import BookingSheetDialog from "../../components/bookingSheet/bookingSheetDialog";
 import TopNavBar from "../../components/topNavBar";
@@ -9,7 +9,9 @@ import CaseSummaryContent from "../../components/caseSummaryContent";
 import CaseHubTabs from "../../components/caseHubTabs/caseHubTabs";
 import Link from 'next/link';
 import { defaultTheme } from "../../theme";
-import { formatDate } from "../../utils/helpers";
+import { formatDate, isTabComplete } from "../../utils/helpers";
+import { defaultBookingSheetConfig } from "../../reference";
+import * as R from 'ramda';
 
 interface BookingSheetTabProps {
     label: string
@@ -29,11 +31,20 @@ export default function CaseHub() {
   const { data, isLoading, isFetching } = useGetCaseByIdHook(router.query.caseId as string);
   const [isBookingSheetDialogOpen, setBookingSheetDialogState] = useState(false);
   const [bookingSheetTab, selectBookingSheetTab] = useState('Patient');
+  const [bookingSheetConfig, setBookingSheetConfig] = useState(defaultBookingSheetConfig)
+  const { data: orgConfigData = {}, isLoading: isConfigLoading } = useGetBookingSheetConfigHook();
+
 
   function handleselectBookingSheetTab(selectedTab: string) {
     setBookingSheetDialogState(true);
     selectBookingSheetTab(selectedTab)
   }
+
+  useEffect(() => {
+    if(!R.isEmpty(orgConfigData)){
+        setBookingSheetConfig(R.mergeDeepRight(defaultBookingSheetConfig, orgConfigData.tabs));
+    }
+}, [orgConfigData]);
 
   const StyledBookingSheetTab = styled((props: any) => {
       const { complete, ...other } = props;
@@ -86,7 +97,7 @@ export default function CaseHub() {
     <React.Fragment>
         <Box sx={{backgroundColor: "gray.light", height: "100vh" }}>
             <TopNavBar />
-            { !isLoading
+            { !(isLoading || isConfigLoading)
             &&
                 <Box sx={{display: "flex", justifyContent: "center", marginLeft: "1rem"}}>
                     <Box 
@@ -101,6 +112,7 @@ export default function CaseHub() {
                             <BookingSheetDialog 
                                 initiallySelectedTab={bookingSheetTab} 
                                 data={data} 
+                                bookingSheetConfig={bookingSheetConfig}
                                 open={isBookingSheetDialogOpen} 
                                 closeDialog={() => setBookingSheetDialogState(false)} 
                             />
@@ -126,12 +138,12 @@ export default function CaseHub() {
                                 Booking Sheet
                             </BookingSheetButton> 
                             <Tabs orientation="vertical" value={false} > 
-                                <BookingSheetTab complete label="Patient"  /> 
-                                <BookingSheetTab label="Financial" />
-                                <BookingSheetTab complete label="Procedure" />
-                                <BookingSheetTab label="Scheduling"  />
-                                <BookingSheetTab label="Product"  />
-                                <BookingSheetTab label="Clinical" />
+                                <BookingSheetTab complete={isTabComplete(data.patient, bookingSheetConfig.patient)} label="Patient"  /> 
+                                <BookingSheetTab complete={isTabComplete(data.financial, bookingSheetConfig.financial)} label="Financial" />
+                                <BookingSheetTab complete={isTabComplete(data.procedureTab, bookingSheetConfig.procedureTab)} label="Procedure" />
+                                <BookingSheetTab complete={isTabComplete(data.scheduling, bookingSheetConfig.scheduling)} label="Scheduling"  />
+                                <BookingSheetTab complete={isTabComplete(data.productTab, bookingSheetConfig.productTab)} label="Product"  />
+                                <BookingSheetTab complete={isTabComplete(data.clinical, bookingSheetConfig.clinical)} label="Clinical" />
                             </Tabs>
                         </Box>
                         <Box 
