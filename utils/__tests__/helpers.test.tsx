@@ -1,7 +1,7 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
 import { defaultBookingSheetConfig, defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter } from "../../reference";
-import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody, findRequiredBookingSheetFieldsToDelete, createBookingSheetRequiredFields, deleteFromObject } from "../helpers";
+import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody, findRequiredBookingSheetFieldsToDelete, createBookingSheetRequiredFields, deleteFromObject, isTabComplete } from "../helpers";
 import httpMock from 'node-mocks-http';
 import { mockBookingSheetConfig, mockSingleCase, mockSingleClearance, mockSingleProcedure, mockSingleScheduling } from "../../testReference";
 import * as R from "ramda";
@@ -380,4 +380,58 @@ describe("Utils", () => {
     test("excludeField function", ()=>{
         expect(excludeField({caseId: "123", cases: {}}, "caseId")).toEqual({cases: {}})
     })
+
+    test("isTabComplete function", async () => {
+        const patientForm = {
+            firstName: "Me", 
+            middleName: "B", 
+            lastName: "you", 
+            dateOfBirth: moment('10/10/2022', 'MM/DD/YYYY'),
+            sex: {sex: "M"},
+            address: "Some Address",
+            city: "NY",
+            state: {state: "NY"},
+            zip: "10000"
+        };
+        expect(isTabComplete(patientForm, mockBookingSheetConfig.tabs.patient)).toEqual(true)
+    });
+
+    test("isTabComplete function with array", async () => {
+        const insuranceForm = [{
+            insurance: {"name": "ins"},
+            insuranceGroupName: {"gname": "name"},
+            insuranceGroupNumber: {"num": "num"},
+            priorAuthorization: { "priorAuth": true},
+            priorAuthId: "123",
+            priorAuthDate: moment('10/10/2022', 'MM/DD/YYYY'),
+        }];
+        expect(isTabComplete(insuranceForm, mockBookingSheetConfig.tabs.financial)).toEqual(true)
+    });
+
+    test("isTabComplete function incomplete tab", async () => {
+        const patientForm = {
+            firstName: "Me", 
+            middleName: "B", 
+            lastName: "",
+            dateOfBirth: moment('10/10/2022', 'MM/DD/YYYY'),
+            sex: {sex: "M"},
+            address: "Some Address",
+            city: "NY",
+            state: {state: "NY"},
+            zip: "10000"
+        };
+        expect(isTabComplete(patientForm, mockBookingSheetConfig.tabs.patient)).toEqual(false)
+    });
+
+    test("isTabComplete function incomplete array tab", async () => {
+        const insuranceForm = [{
+            insurance: {"name": "ins"},
+            insuranceGroupName: null,
+            insuranceGroupNumber: {"num": "num"},
+            priorAuthorization: { "priorAuth": true},
+            priorAuthId: "123",
+            priorAuthDate: moment('10/10/2022', 'MM/DD/YYYY'),
+        }];
+        expect(isTabComplete(insuranceForm, mockBookingSheetConfig.tabs.financial)).toEqual(false)
+    });
 });

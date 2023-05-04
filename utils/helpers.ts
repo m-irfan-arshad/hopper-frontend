@@ -419,8 +419,9 @@ export function createValidationObject(configObject: IndexObject | Array<IndexOb
     return isRequired ? yup.string().required().default(configObject.default) : yup.string().notRequired().default(configObject.default)
 }
 
+let requiredBookingSheetFieldsToDelete: string[] = [];
+
 export function findRequiredBookingSheetFieldsToDelete(bookingSheetConfig: BookingSheetConfig) {
-    let requiredBookingSheetFieldsToDelete: string[] = [];
     let configObject = bookingSheetConfig as IndexObject;
 
     if (Array.isArray(configObject)) {

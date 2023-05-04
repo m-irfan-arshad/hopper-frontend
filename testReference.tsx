@@ -348,7 +348,15 @@ export const mockBookingSheetConfig = {
             lastName: { visible: true, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.lastName' },
             state: { visible: true,  pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
             dateOfBirth: { required: false,  pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' }
-        }
+        },
+        financial: [{
+            insurance: { default: null, required: false },
+            insuranceGroupName: { default: '', pathToDeleteFieldFromQuery: 'financial.none.insuranceGroupName' },
+            insuranceGroupNumber: { default: '', pathToDeleteFieldFromQuery: 'financial.none.insuranceGroupNumber' },
+            priorAuthorization: { default: null, required: true, pathToDeleteFieldFromQuery: 'financial.none.priorAuthorization' },
+            priorAuthId: { default: '', required: true, pathToDeleteFieldFromQuery: 'financial.none.priorAuthId' },
+            priorAuthDate: { default: null, pathToDeleteFieldFromQuery: 'financial.none.priorAuthDate' },
+        }],
     }
 }
 export const mockCommentData = [
