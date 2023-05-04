@@ -198,14 +198,11 @@ export function formObjectToPrismaQuery(obj: IndexObject, id="", operation="upda
     }
   }
 
-export function formArrayToPrismaQuery(formData: IndexObject[], dirtyFields: IndexObject[], arrayFieldId: string) {
+export function formArrayToPrismaQuery(formData: IndexObject[], arrayFieldId: string) {
     let create: object[] = [];
-    let update: object[] = [];
-    formData.forEach((arrayElem: any, index: number) => {
-        const updatedFields: any = dirtyFields[index]
-        if (R.isNil(updatedFields)) return; // check if any fields were updated
+    formData.forEach((arrayElem: any) => {
         const id = arrayFieldId
-        let formattedField: any = getDirtyValues(updatedFields, arrayElem);
+        let formattedField: any = R.clone(arrayElem);
         delete formattedField.caseId
 
         // formatting for insurance object
@@ -217,6 +214,21 @@ export function formArrayToPrismaQuery(formData: IndexObject[], dirtyFields: Ind
         }
         delete formattedField.insuranceId;
 
+        // formatting for product object
+        !R.isNil(formattedField.quantity) && (formattedField.quantity = parseInt(formattedField.quantity))
+        if (R.isNil(formattedField.vendor)) {
+            delete formattedField.vendor
+        } else {
+            formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}}
+        }
+        if (R.isNil(formattedField.manufacturer)) {
+            delete formattedField.manufacturer
+        } else {
+            formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}}
+        }
+        delete formattedField.vendorId;
+        delete formattedField.manufacturerId;
+
         // formatting for diagnostic test / clearance
         formattedField.diagnosticTest && (formattedField.diagnosticTest = { connect: {diagnosticTestId: formattedField.diagnosticTest.diagnosticTestId}});
         delete formattedField.diagnosticTestId
@@ -226,22 +238,17 @@ export function formArrayToPrismaQuery(formData: IndexObject[], dirtyFields: Ind
             formattedField.facility = formObjectToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
             delete formattedField.facilityId
         }
-        
-        if (arrayElem[id]) { //if there is id present, update. Otherwise create
-            delete formattedField.caseId;
-            update.push({ data: formattedField, where: { [id]: arrayElem[id] } });
-            delete formattedField[id];
-        } else {
-            delete formattedField[id]
-            create.push(formattedField);
-        }
+
+        delete formattedField[id]
+        create.push(formattedField);
     });
-    return { create, update }
+    return { deleteMany: {}, create: create }
 }
 
 export function clinicalTabToPrismaQuery(clinicalUpdates: any, formData: any) {
         let clinicalQuery = formObjectToPrismaQuery(clinicalUpdates, 'clinicalId')
         if (clinicalQuery?.update) {
+            delete clinicalQuery.update.preOpFormId
             if(clinicalUpdates.preOpRequired === "false") {
                 if (R.path(['preOpForm', 'preOpFormId'], formData)) {
                     clinicalQuery.update.preOpForm = {delete: true}
@@ -262,17 +269,17 @@ export function clinicalTabToPrismaQuery(clinicalUpdates: any, formData: any) {
             }
             if (formData.diagnosticTestsRequired === "true") {
                 if (clinicalUpdates.diagnosticTests) {
-                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = formArrayToPrismaQuery(formData.diagnosticTests, clinicalUpdates.diagnosticTests, 'diagnosticTestFormId'));
+                    clinicalQuery.update.diagnosticTests && (clinicalQuery.update.diagnosticTests = formArrayToPrismaQuery(formData.diagnosticTests, 'diagnosticTestFormId'));
                 }
             } else {
-                clinicalQuery.update.diagnosticTests = {set: []}
+                clinicalQuery.update.diagnosticTests = {deleteMany: {}}
             }
             if (formData.clearanceRequired === "true") {
                 if (clinicalUpdates.clearances) {
-                    clinicalQuery.update.clearances = formArrayToPrismaQuery(formData.clearances, clinicalUpdates.clearances, 'clearanceFormId');
+                    clinicalQuery.update.clearances = formArrayToPrismaQuery(formData.clearances, 'clearanceFormId');
                 }
             } else {
-                clinicalQuery.update.clearances = {set: []}
+                clinicalQuery.update.clearances = {deleteMany: {}}
             }
         }
     return clinicalQuery
@@ -309,6 +316,9 @@ export function formatCreateCaseParams(data: FullCase) {
       },
       clinical: {
         create: {}
+      },
+      productTab: {
+        create: []
       }
     })
   }
@@ -479,4 +489,25 @@ export function isFieldVisible(config: object | undefined, id: string) {
 
 export function checkFieldForErrors(id: string, errors: any): boolean {
     return R.isNil(R.path(getPathFromId(id), errors)) ? false : true
+}
+
+export function isTabComplete(tabData: IndexObject | IndexObject[], tabConfig: IndexObject | IndexObject[]): boolean {
+    let isComplete = true;
+    if (Array.isArray(tabData) && Array.isArray(tabConfig)) {
+        if (tabData.length === 0) isComplete = false;
+        tabData.forEach((tabElem) => {
+            if(!isTabComplete(tabElem, tabConfig[0])) isComplete = false;
+        })
+    } else if (!Array.isArray(tabConfig) && typeof tabConfig === 'object' && Object.keys(tabConfig).some(r=> ['default', 'required', 'visible'].indexOf(r) >= 0)){
+        if(!(tabConfig.required === false) && (R.isNil(tabData) || R.isEmpty(tabData))) {
+            isComplete = false;
+        } 
+    } else if (typeof tabConfig === 'object' && typeof tabData === 'object' && !Array.isArray(tabData)){
+        Object.keys(tabConfig).forEach(key => {
+            if(!isTabComplete(tabData[key], tabConfig[key])) isComplete = false;
+        })
+    } else {
+        isComplete = !(R.isNil(tabData) || R.isEmpty(tabData))
+    }
+    return isComplete;
 }

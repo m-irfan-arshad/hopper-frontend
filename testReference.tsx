@@ -8,7 +8,7 @@ import { Prisma, patient, provider, scheduling, location, insurance, serviceLine
 
 const sampleDate = moment('2023-01-09').toDate();
 
-export const mockSingleFacility = {
+  export const mockSingleFacility = {
     facilityId: 1,
     facilityName: 'Test Facility',
     phone: '1234567890',
@@ -17,6 +17,29 @@ export const mockSingleFacility = {
     city: 'NY',
     state: 'NY',
     zip: '10000'
+  }
+
+  export const mockSingleProduct = {
+    productTabId: 1, 
+    manufacturerId: 1, 
+    vendorId: 1,
+    caseId: 1, 
+    productName: "testProduct",
+    productType: "testProductType",
+    manufacturer: {
+        manufacturerId: 1, 
+        manufacturerName: "testManufacturer"
+    },
+    quantity: 2,
+    catalogNumber: "12345",
+    vendor: {
+        vendorId: 1,
+        vendorName: "testVendor"
+    },
+    vendorConfirmation: false,
+    implantDelivery: false,
+    trayDelivery: false,
+    sterilization: false
   }
   
   export const mockSingleClearance = {
@@ -243,7 +266,8 @@ export const mockSingleCase: FullCase = {
     procedureTab: mockSingleProcedureTab,
     comment: [mockSingleComment],
     document: [mockSingleDocument],
-    clinical: mockSingleClinical
+    clinical: mockSingleClinical,
+    productTab: [mockSingleProduct]
 }
 
 export const mockCaseData = [
@@ -316,16 +340,21 @@ export const mockServiceLineData = [
 ];
 
 export const mockBookingSheetConfig = {
-    organization: "Aetna",
-    tabs: {
-        patient: {
-            firstName: { visible: true, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.firstName' },
-            middleName: { visible: true, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.middleName' },
-            lastName: { visible: true, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.lastName' },
-            state: { visible: true,  pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
-            dateOfBirth: { required: false,  pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' }
-        }
-    }
+    patient: {
+        firstName: { visible: true, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.firstName' },
+        middleName: { visible: true, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.middleName' },
+        lastName: { visible: true, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.lastName' },
+        state: { visible: true,  pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
+        dateOfBirth: { required: false,  pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' }
+    },
+    financial: [{
+        insurance: { default: null, required: false },
+        insuranceGroupName: { default: '', pathToDeleteFieldFromQuery: 'financial.none.insuranceGroupName' },
+        insuranceGroupNumber: { default: '', pathToDeleteFieldFromQuery: 'financial.none.insuranceGroupNumber' },
+        priorAuthorization: { default: null, required: true, pathToDeleteFieldFromQuery: 'financial.none.priorAuthorization' },
+        priorAuthId: { default: '', required: true, pathToDeleteFieldFromQuery: 'financial.none.priorAuthId' },
+        priorAuthDate: { default: null, pathToDeleteFieldFromQuery: 'financial.none.priorAuthDate' },
+    }],
 }
 export const mockCommentData = [
     {

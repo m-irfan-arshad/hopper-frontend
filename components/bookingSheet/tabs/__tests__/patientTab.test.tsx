@@ -17,7 +17,7 @@ describe("PatientTab", () => {
     
     const props = {
         control: result.current.control,
-        config: mockBookingSheetConfig.tabs,
+        config: mockBookingSheetConfig,
         getValues: jest.fn()
     };
 

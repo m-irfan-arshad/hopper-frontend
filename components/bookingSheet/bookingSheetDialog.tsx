@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm } from '../../reference';
+import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -24,12 +24,14 @@ import FinancialTab from "./tabs/financialTab";
 import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 import ClinicalTab from "./tabs/clinicalTab";
+import ProductTab from "./tabs/productTab";
 
 interface Props {
     open: boolean
     closeDialog: () => void,
-    data: any
-    initiallySelectedTab: string
+    data: any,
+    initiallySelectedTab: string,
+    bookingSheetConfig: BookingSheetConfig
 }
 
 const StyledTab = styled(Tab)({
@@ -43,11 +45,9 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
     query.scheduling && (query.scheduling = formObjectToPrismaQuery(query.scheduling, "schedulingId"))
     query.patient && (query.patient = formObjectToPrismaQuery(query.patient, "patientId"))
     query.procedureTab && (query.procedureTab = procedureTabToPrismaQuery(query.procedureTab, formData.procedureTab))
-    if (query.financial) {
-        query.financial = formArrayToPrismaQuery(formData.financial, query.financial, 'financialId');
-    } if (query.clinical) {
-        query.clinical = clinicalTabToPrismaQuery(query.clinical, formData.clinical)
-    }
+    query.financial && (query.financial = formArrayToPrismaQuery(formData.financial, 'financialId'))
+    query.productTab && (query.productTab = formArrayToPrismaQuery(formData.productTab, 'productTabId'))
+    query.clinical && (query.clinical = clinicalTabToPrismaQuery(query.clinical, formData.clinical))
     return query
 }
 
@@ -82,11 +82,9 @@ function prepareFormForRender(data: any) {
 }
 
 export default function BookingSheetDialog(props: Props) {
-    const {open, closeDialog, data, initiallySelectedTab} = props;
+    const {open, closeDialog, data, initiallySelectedTab, bookingSheetConfig} = props;
     const [selectedTab, selectTab] = useState(initiallySelectedTab);
-    const [bookingSheetConfig, setBookingSheetConfig] = useState(defaultBookingSheetConfig)
     const {mutate} = useUpdateCaseHook();
-    const { data: orgConfigData = {} } = useGetBookingSheetConfigHook();
     const validationSchema = createValidationObject(bookingSheetConfig);
 
     const form = useForm({ 
@@ -110,18 +108,12 @@ export default function BookingSheetDialog(props: Props) {
     }, [data]);
 
     useEffect(() => {
-        if(!R.isEmpty(orgConfigData)){
-            setBookingSheetConfig(R.mergeDeepRight(defaultBookingSheetConfig, orgConfigData.tabs));
-        }
-    }, [orgConfigData]);
-
-    useEffect(() => {
         selectTab(initiallySelectedTab)
     }, [initiallySelectedTab]);
 
     const validForm = isValid && !R.isEmpty(dirtyFields)
     return (
-        <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem", maxWidth: "60rem" }}}>
+        <Dialog maxWidth='lg' open={open} sx={{ "& .MuiPaper-root": { borderRadius: "0.625rem", width: "100%" }}}>
             <DialogTitle 
                 sx={{
                     display: "flex",
@@ -146,17 +138,18 @@ export default function BookingSheetDialog(props: Props) {
                         <StyledTab label="Financial" value="Financial"   />
                         <StyledTab label="Procedure" value="Procedure"  />
                         <StyledTab label="Scheduling" value="Scheduling" />
-                        <StyledTab label="Implants & Products" value="Implants & Products"  />
+                        <StyledTab label="Products" value="Products"  />
                         <StyledTab label="Clinical" value="Clinical" />
                     </Tabs>
                 </Box>
             </DialogTitle>
-            <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem"}}>
+            <DialogContent sx={{height: "30rem", overflowY: "scroll", padding: "2rem", width: "100%"}}>
                 <FormProvider {...form}>
                     {selectedTab === "Patient" && <PatientTab config={bookingSheetConfig}/>}
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
                     {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
+                    {selectedTab === "Products" &&  <ProductTab />}
                     {selectedTab === "Clinical" &&  <ClinicalTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>

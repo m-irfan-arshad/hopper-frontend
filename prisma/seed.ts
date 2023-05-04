@@ -1,6 +1,7 @@
 import { prisma } from './clientInstantiation';
 import Chance from 'chance';
-import { diagnosticTestOptions, clearanceOptions } from '../reference';
+import { diagnosticTestOptions, clearanceOptions, productData } from '../reference';
+import { Prisma } from '@prisma/client';
 
 const chance = new Chance();
 const locationOptions = ['Healthy Heart Hospital', 'Senior Day Care', 'Burger King', 'Medtel Hospital']
@@ -33,6 +34,7 @@ async function createCases() {
                     clearances: {create: []},
                     diagnosticTests: {create: []},
                 }},
+                productTab: {create: []}
             }
         })
     }
@@ -149,6 +151,26 @@ async function createLocations() {
     }
 }
 
+async function createProductOptions() {
+    var promises: Promise<any>[] = [];
+    productData.forEach((product) => promises.push(prisma.product.create({ 
+        data: {productName: product.productName, productType: product.productType ? { create: {productType: product.productType}} : undefined}
+    })))
+    await Promise.all(promises)
+}
+
+async function createManufacturerOptions() {
+    await prisma.manufacturer.createMany({ 
+        data: [1,2,3,4].map(e => ({manufacturerName: chance.company()}))
+    })
+}
+
+async function createVendorOptions() {
+    await prisma.vendor.createMany({ 
+        data: [1,2,3,4].map(e => ({vendorName: chance.name({ nationality: 'it' })}))
+    })
+}
+
 async function main() {
     await Promise.all([
         createCases(),
@@ -164,7 +186,10 @@ async function main() {
         createCptCodeOptions(),
         createIcdCodeOptions(),
         createDiagnosticTestOptions(),
-        createClearanceOptions()
+        createClearanceOptions(),
+        createProductOptions(),
+        createManufacturerOptions(),
+        createVendorOptions()
     ])
 }
 

@@ -32,7 +32,8 @@ interface InputControllerProps {
     maxLength?: number,
     size: number,
     config?: BookingSheetConfig,
-    minRows?: number
+    minRows?: number,
+    type?: string
 }
 
 interface DateControllerProps {
@@ -100,9 +101,9 @@ const helperTextProps = {
     component: 'div'
 };
 
-function ConfigWrapper(props: ConfigWrapperProps) {
+export function ConfigWrapper(props: ConfigWrapperProps) {
     const {children, id, size, config, styles} = props;
-    const isVisible = isFieldVisible(config, id)
+    const isVisible = !config || isFieldVisible(config, id)
     if (!isVisible) return <></>;
     return(
         <Grid item xs={size} sx={styles ? styles : {}}>
@@ -125,9 +126,16 @@ const sharedProps = {
   
 export function InputController(props: InputControllerProps) {
     const { control, trigger, formState: {errors} } = useFormContext();
-    const {id, title, placeholder, multiline, maxLength, size, config, minRows} = props;
+    const {id, title, placeholder, multiline, maxLength, size, config, minRows, type} = props;
     const currentValue = maxLength ? useWatch({name: id}) : null
-    const numCharacters = currentValue ? currentValue.length : 0
+    const numCharacters = currentValue ? currentValue.length : 0;
+    const numberOrTextProps = type === "number" ? {
+        type: "number", 
+        InputProps: {style: {height: "2rem"}, inputProps: {min: 1}},
+        sx: {marginLeft: "0.5rem", width: "4.5rem", height: "2rem"}
+    } : {
+        maxRows: 6, 
+    };
     const hasError = checkFieldForErrors(id, errors);
     const helperText = <Box sx={{display: "flex", justifyContent: "space-between"}}>
         <Box>{hasError ? "Required" : ""}</Box>
@@ -149,10 +157,10 @@ export function InputController(props: InputControllerProps) {
                 variant="outlined" 
                 label={title} 
                 autoComplete='off' 
-                placeholder={placeholder} 
-                multiline={multiline} 
                 minRows={minRows}
-                maxRows={6}
+                multiline={multiline}
+                placeholder={placeholder} 
+                {...numberOrTextProps}
             />
         )}
       /></ConfigWrapper>
@@ -218,8 +226,8 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
             render={({ field }) => {
                 const onChangeFunc = props.onChange ? props.onChange : field.onChange;
                 return <DropDownSearchComponent
+                        {...field}
                         label={title}
-                        value={field.value}
                         labelProperties={labelProperties}
                         id={id}
                         multiple={multiple}

@@ -35,7 +35,7 @@ const ClinicalFormWrapper = (props: any) => {
   };
 
 
-describe.only("ClinicalTab", () => {
+describe("ClinicalTab", () => {
     const { result } = renderHook(() => useForm())
     
     const props = {

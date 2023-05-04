@@ -12,7 +12,6 @@ jest.mock("../../../utils/hooks", () => ({
     useGetCaseByIdHook: jest.fn().mockImplementation(() => ({ data: mockSingleCase })),
     useUpdateCaseHook: jest.fn().mockImplementation(() => ({ mutate: jest.fn() })),
     useGetDropdownOptionsHook: jest.fn().mockImplementation(() => ({ data: [] })),
-    useGetBookingSheetConfigHook: jest.fn().mockImplementation(() => ({}))
 }));
 
 describe("BookingSheetDialog", () => {
@@ -21,6 +20,7 @@ describe("BookingSheetDialog", () => {
         open: true,
         initiallySelectedTab: "Patient",
         data: mockSingleCase,
+        bookingSheetConfig: {}
     };
 
     test("renders and closes the bookingSheetDialog", () => {
@@ -33,7 +33,7 @@ describe("BookingSheetDialog", () => {
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Procedure"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Scheduling"})).toBeInTheDocument();
-        expect(getByRole("tab", {name: "Implants & Products"})).toBeInTheDocument();
+        expect(getByRole("tab", {name: "Products"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Clinical"})).toBeInTheDocument();
         expect(getByRole("button", {name: ""})).toBeInTheDocument();
 
@@ -52,7 +52,7 @@ describe("BookingSheetDialog", () => {
         expect(getByRole("tab", {name: "Financial"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Procedure"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Scheduling"})).toBeInTheDocument();
-        expect(getByRole("tab", {name: "Implants & Products"})).toBeInTheDocument();
+        expect(getByRole("tab", {name: "Products"})).toBeInTheDocument();
         expect(getByRole("tab", {name: "Clinical"})).toBeInTheDocument();
         expect(getByRole("button", {name: ""})).toBeInTheDocument();
         

@@ -6,6 +6,7 @@ import * as R from "ramda";
 //INTERFACES AND TYPES
 
 export interface BookingSheetConfig {
+  [key: string]: any
   patient?: object,
   financial?: object,
   procedureTab?: object,
@@ -39,6 +40,7 @@ export type FullCase = Prisma.casesGetPayload<{ include: {
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
   comment?: {orderBy: {createTime: 'desc'}},
   document?: {orderBy: {createTime: 'desc'}},
+  productTab?: {include: {manufacturer: true, vendor: true}},
   clinical?: {include: {diagnosticTests: {include: {facility: true, diagnosticTest: true}}, clearances: {include: {facility: true, clearance: true}}, preOpForm: {include: {facility: true}}}}
 } }>
 
@@ -341,6 +343,15 @@ export const defaultBookingSheetConfig = {
       procedureDate: { default: null },
       admissionType: { default: null, pathToDeleteFieldFromQuery: 'scheduling.AND.0.admissionTypeId' }
   },
+  productTab: [{
+    product: { default: null },
+    quantity: {default: 1},
+    catalogNumber: {default: ""},
+    vendorConfirmation: { default: null },
+    implantDelivery: { default: null },
+    trayDelivery: { default: null },
+    sterilization: { default: null }
+  }],
   clinical: {
     physicianFirstName: {default: '', pathToDeleteFieldFromQuery: 'clinical.AND.0.physicianFirstName'},
     physicianLastName: {default: '', pathToDeleteFieldFromQuery: 'clinical.AND.0.physicianLastName'},
@@ -412,6 +423,10 @@ export const clearanceOptions = [
   {clearanceName: 'Oncology/Hematology'},
   {clearanceName: 'Other'},
 ]
+
+export const productData = [{productName: 'Product 1', productType: 'Ancillary'}, {productName: 'Product 2', productType: 'Bone graft'}, {productName: 'Product 3', productType: 'Implant'}, {productName: 'Product 4', productType: 'Monitoring'}, {productName: 'Other'}];
+export const productTypeOptions = [{name: 'Ancillary'}, {name: 'Bone graft'}, {name: 'Implant'}, {name: 'Monitoring'}]
+export const vendorOptions = [{name: 'Person 1'}, {name: 'Person 2'}, {name: 'Person 3'}, {name: 'Person 4'}]
 
 export interface patientTabFilterInterface {
   AND: patient[],
