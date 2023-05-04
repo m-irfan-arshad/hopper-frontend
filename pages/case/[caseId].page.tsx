@@ -142,7 +142,7 @@ export default function CaseHub() {
                                 <BookingSheetTab complete={isTabComplete(data.financial, bookingSheetConfig.financial)} label="Financial" />
                                 <BookingSheetTab complete={isTabComplete(data.procedureTab, bookingSheetConfig.procedureTab)} label="Procedure" />
                                 <BookingSheetTab complete={isTabComplete(data.scheduling, bookingSheetConfig.scheduling)} label="Scheduling"  />
-                                <BookingSheetTab complete={isTabComplete(data.productTab, bookingSheetConfig.productTab)} label="Product"  />
+                                <BookingSheetTab complete={isTabComplete(data.productTab, bookingSheetConfig.productTab)} label="Products"  />
                                 <BookingSheetTab complete={isTabComplete(data.clinical, bookingSheetConfig.clinical)} label="Clinical" />
                             </Tabs>
                         </Box>

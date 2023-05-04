@@ -138,7 +138,7 @@ export default function BookingSheetDialog(props: Props) {
                         <StyledTab label="Financial" value="Financial"   />
                         <StyledTab label="Procedure" value="Procedure"  />
                         <StyledTab label="Scheduling" value="Scheduling" />
-                        <StyledTab label="Product" value="Product"  />
+                        <StyledTab label="Products" value="Products"  />
                         <StyledTab label="Clinical" value="Clinical" />
                     </Tabs>
                 </Box>
@@ -149,7 +149,7 @@ export default function BookingSheetDialog(props: Props) {
                     {selectedTab === "Financial" &&  <FinancialTab config={bookingSheetConfig}/>}
                     {selectedTab === "Procedure" &&  <ProcedureTab config={bookingSheetConfig} />}
                     {selectedTab === "Scheduling" &&  <SchedulingTab config={bookingSheetConfig} />}
-                    {selectedTab === "Product" &&  <ProductTab />}
+                    {selectedTab === "Products" &&  <ProductTab />}
                     {selectedTab === "Clinical" &&  <ClinicalTab config={bookingSheetConfig} />}
                 </FormProvider>
             </DialogContent>
