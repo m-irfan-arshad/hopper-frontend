@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("LOCAL_DATABASE_URL")
 }
 
 model cases {
@@ -60,10 +60,6 @@ model patient {
   middleName     String?   @map("middle_name") @default("")
   lastName       String?   @map("last_name") @default("")
   mrn            String?   @default("")
-  address        String?   @default("")
-  city           String?   @default("")
-  stateId        Int?      @map("state_id")
-  zip            String?   @default("")
   sexId          Int?      @map("sex_id")
   mobilePhone    String?   @map("mobile_phone") @default("")
   homePhone      String?   @map("home_phone") @default("")
@@ -71,7 +67,21 @@ model patient {
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   cases          cases[]
+  address        address[]
   sex            sex? @relation(fields: [sexId], references: [sexId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model address {
+  addressId      Int       @id @default(autoincrement()) @map("address_id")
+  patientId      Int?       @map("patient_id")
+  stateId        Int?      @map("state_id")
+
+  addressOne     String?   @default("") @map("address_one")
+  addressTwo     String?   @default("") @map("address_two")
+  city           String?   @default("")
+  zip            String?   @default("")
+  
+  patient        patient? @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
   state          state? @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -84,7 +94,7 @@ model sex {
 model state {
   stateId       Int @id @default(autoincrement()) @map("state_id")
   stateName     String
-  patients      patient[]
+  address      address[]
 }
 
 

@@ -211,17 +211,25 @@ export const mockSingleComment: comment = {
     updateTime: sampleDate
 }
 
-export const mockSinglePatient: patient = {
+export const mockPatientAddress = {
+    addressId: 1,
+    stateId: 1,
+    patientId: 1,
+    addressOne: "212 New Drive",
+    addressTwo: "335 Old Street",
+    city: "New York",
+    state: {stateName: "New York", stateId: 1},
+    zip: "10000",
+  }
+
+export const mockSinglePatient: Prisma.patientGetPayload<{include: {address: true}}> = {
     patientId: 1,
     fhirResourceId: 'patientFhirResourceId',
     firstName: 'Captain',
     middleName: 'Bernard',
     lastName: 'Whitebeard',
     mrn: 'testMrn',
-    address: '360 Washington Ave',
-    city: 'Portland',
-    stateId: 1,
-    zip: '92543',
+    address: [mockPatientAddress],
     sexId: 1,
     mobilePhone: '221-345-2211',
     homePhone: '333-544-2222',

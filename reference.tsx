@@ -294,6 +294,14 @@ export const defaultDiagnosticTest = {
   facility: defaultFacility
 }
 
+export const defaultPatientAddress = {
+  addressOne: "",
+  addressTwo: "",
+  city: "",
+  state: null,
+  zip: "",
+}
+
 const facilityConfig = (pathToDeleteFieldFromFacility: string) => {
   return {
     facilityName: {default: '', required: true, pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'facilityName'},
@@ -313,10 +321,13 @@ export const defaultBookingSheetConfig = {
       lastName: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.lastName'  },
       dateOfBirth: { default: null, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' },
       sex: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.sexId'  },
-      address: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address'  },
-      city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.city'  },
-      state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
-      zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.zip'},
+      address: [{ 
+        addressOne: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.addressOne'  },
+        addressTwo: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city'  },
+        city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city'  },
+        state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.stateId' },
+        zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.zip'},
+      }],
   },
   financial: [{
       insurance: { default: null, required: false },
