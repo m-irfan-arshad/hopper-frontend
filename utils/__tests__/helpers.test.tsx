@@ -1,9 +1,9 @@
 import moment from "moment";
 import type { NextApiResponse } from 'next'
 import { defaultBookingSheetConfig, defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter } from "../../reference";
-import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody, findRequiredBookingSheetFieldsToDelete, createBookingSheetRequiredFields, deleteFromObject, isTabComplete } from "../helpers";
+import { checkFieldForErrors, createValidationObject, excludeField, formatDashboardQueryParams, formatDate, formObjectToPrismaQuery, clinicalTabToPrismaQuery, getDifference, procedureTabToPrismaQuery, isFieldVisible, validateQueryOrBody, findRequiredBookingSheetFieldsToDelete, createBookingSheetRequiredFields, deleteFromObject, isTabComplete, casesFormatter } from "../helpers";
 import httpMock from 'node-mocks-http';
-import { mockBookingSheetConfig, mockSingleCase, mockSingleClearance, mockSingleProcedure, mockSingleScheduling } from "../../testReference";
+import { mockBookingSheetConfig, mockSingleCase, mockSingleClearance, mockSingleProcedure, mockSingleScheduling, mockSingleCaseWithCompletedBookingSheet } from "../../testReference";
 import * as R from "ramda";
 
 describe("Utils", () => {
@@ -433,5 +433,9 @@ describe("Utils", () => {
             priorAuthDate: moment('10/10/2022', 'MM/DD/YYYY'),
         }];
         expect(isTabComplete(insuranceForm, mockBookingSheetConfig.financial)).toEqual(false)
+    });
+
+    test("casesFormatter function formats a case properly", async () => {
+        expect(casesFormatter(mockSingleCase, [1])).toEqual(mockSingleCaseWithCompletedBookingSheet)
     });
 });

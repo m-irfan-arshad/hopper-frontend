@@ -2,7 +2,7 @@ import moment from "moment";
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "./theme";
-import { FullCase } from "./reference";
+import { FullCase, FullCaseWithBookingSheetStatus } from "./reference";
 import { useForm, FormProvider } from "react-hook-form";
 import { Prisma, patient, provider, scheduling, location, insurance, serviceLine, procedureUnit, admissionType, procedure, approach, laterality, anesthesia, icdCode, cptCode, procedureTab, comment, document, clinical } from "@prisma/client";
 
@@ -269,6 +269,32 @@ export const mockSingleCase: FullCase = {
     clinical: mockSingleClinical,
     productTab: [mockSingleProduct]
 }
+
+export const mockSingleCaseWithCompletedBookingSheet: FullCaseWithBookingSheetStatus = {
+    caseId: 1,
+    fhirResourceId: 'mockCaseFRId',
+    vendorConfirmation: "Incomplete",
+    isBookingSheetComplete: true,
+    createTime: sampleDate,
+    updateTime: sampleDate,
+    patientId: 1,
+    schedulingId: 1,
+    procedureTabId: 1,
+    clinicalId: 1,
+    patient: mockSinglePatient,
+    financial: [mockSingleFinancial],
+    scheduling: mockSingleScheduling,
+    procedureTab: mockSingleProcedureTab,
+    comment: [mockSingleComment],
+    document: [mockSingleDocument],
+    clinical: mockSingleClinical,
+    productTab: [mockSingleProduct]
+}
+
+export const mockCasesWithCompletedBookingSheetData = [
+    mockSingleCaseWithCompletedBookingSheet,
+    mockSingleCaseWithCompletedBookingSheet
+];
 
 export const mockCaseData = [
     mockSingleCase,

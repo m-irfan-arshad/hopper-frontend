@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import { styled } from "@mui/material/styles";
 import * as R from 'ramda';
@@ -6,6 +6,7 @@ import {
   Card, 
   CardHeader,
   Collapse, 
+  Divider,
   Grid, 
   Box, 
   Typography, 
@@ -21,24 +22,23 @@ import {
   Biotech as BiotechIcon,
   Assignment as AssignmentIcon,
   Ballot as BallotIcon,
-  CheckCircle as CheckCircleIcon
+  CheckCircle as CheckCircleIcon,
+  Check as CheckIcon
 } from "@mui/icons-material";
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
-
 import { caseCardProcedureInformation, caseCardCaseIdentifiers, caseStepMappings } from "../reference";
-import { FullCase } from "../reference";
+import { FullCaseWithBookingSheetStatus } from "../reference";
 import CaseSummaryDialog from "./caseSummaryDialog";
 import { defaultTheme } from "../theme";
 import moment from "moment";
 import { formatDate } from "../utils/helpers";
-import { scheduling } from "@prisma/client";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 
 interface CaseCardProps {
-  row: FullCase
+  row: FullCaseWithBookingSheetStatus
 }
 
 interface HeaderCellProps {
@@ -81,6 +81,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
 
   const isMobile = useMediaQuery(defaultTheme.breakpoints.down('sm'));
   const steps: {[key: string]: any} = {
+    "bookingSheetRequest": row?.isBookingSheetComplete,
     "vendorConfirmation": row?.vendorConfirmation === "Complete",
     "priorAuthorization": row.financial.length > 0 && row.financial.every(insuranceObj => insuranceObj.priorAuthorization === "Complete")
   }
@@ -103,7 +104,6 @@ export default function CaseCard ({ row }: CaseCardProps) {
   const linearProgressStyle = {
     height: "0.688rem", 
     width: "8.125rem", 
-    marginLeft: "auto", 
     alignSelf: "center",
     borderRadius: "0.625rem",
     "& .MuiLinearProgress-bar": {
@@ -219,12 +219,20 @@ export default function CaseCard ({ row }: CaseCardProps) {
               </Typography>
 
               {threatOfCancellation && <NotificationImportantIcon color="error" fontSize="small" sx={{position: "relative", top: "0.313rem", left: "0.626rem"}}/>}
-              
-              <LinearProgress 
-                variant="determinate" 
-                value={(numberOfCompletedSteps/numberOfSteps) * 100}
-                sx={linearProgressStyle} 
-              />  
+              <Box sx={{display: "flex", marginLeft: "auto", alignSelf: "center"}}>
+                <Divider orientation="vertical" flexItem sx={{marginRight: "3rem", marginY: "-18px", backgroundColor: "gray.main"}}/>
+                {
+                  row.isBookingSheetComplete 
+                  ? <CheckIcon sx={{marginRight: "3rem", color: "green.main", alignSelf: "center"}}></CheckIcon> 
+                  : <AssignmentIcon sx={{marginRight: "3rem", color: "gray.main", alignSelf: "center"}}></AssignmentIcon> 
+                }
+                <Divider orientation="vertical" flexItem sx={{marginRight: "2rem",  marginY: "-18px", backgroundColor: "gray.main"}}/>
+                <LinearProgress 
+                  variant="determinate" 
+                  value={(numberOfCompletedSteps/numberOfSteps) * 100}
+                  sx={linearProgressStyle} 
+                />  
+              </Box>
             </Box>
           }
           disableTypography
@@ -284,7 +292,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                   <ListItem
                     key={index}
                   >
-                    { steps[key] === "Complete" ?
+                    { steps[key] === true ?
                       <CheckCircleIcon
                         sx={{
                           height: "0.875rem",
@@ -303,7 +311,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
                           }}
                       />
                     }
-                    <Typography variant={steps[key] === "Complete"  ? "subtitle2" : "body2"} sx={{color: steps[key] === "Complete"  ? "green.main" : "inherit"}}>
+                    <Typography variant={steps[key] === true  ? "subtitle2" : "body2"} sx={{color: steps[key] === true  ? "green.main" : "inherit"}}>
                       {caseStepMappings[key as keyof typeof caseStepMappings]}
                     </Typography>
                   </ListItem>

@@ -3,7 +3,7 @@ import CaseCard from "../caseCard";
 import { ThemeProvider } from "@mui/material/styles";
 import { defaultTheme } from "../../theme";
 import * as R from 'ramda';
-import { mockSingleCase } from "../../testReference";
+import { mockSingleCaseWithCompletedBookingSheet } from "../../testReference";
 import moment from 'moment'
 
 
@@ -16,7 +16,7 @@ jest.mock('@tanstack/react-query', () => ({
 describe("CaseCard", () => {
   test("renders the caseCard and can expand it", async () => {
     const { getByText, queryByText, getByTestId } = render(
-        <CaseCard row={mockSingleCase} />
+        <CaseCard row={mockSingleCaseWithCompletedBookingSheet} />
     );
 
     expect(getByText("Whitebeard, Captain")).toBeInTheDocument();
@@ -37,13 +37,13 @@ describe("CaseCard", () => {
   test("renders progress bar with varied lengths/colors", () => {
     const {container} = render(
       <ThemeProvider theme={defaultTheme}>
-        <CaseCard row={mockSingleCase} />
+        <CaseCard row={mockSingleCaseWithCompletedBookingSheet} />
       </ThemeProvider>
     );
 
     // expect(container.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #EF5350');
 
-    const rowClone = R.clone(mockSingleCase);
+    const rowClone = R.clone(mockSingleCaseWithCompletedBookingSheet);
     rowClone.financial[0].priorAuthorization = "Incomplete"
     rowClone.vendorConfirmation = "Complete"
 
@@ -55,7 +55,7 @@ describe("CaseCard", () => {
 
    expect(containerClone.querySelector(".MuiLinearProgress-bar")).toHaveStyle('background-color: #FFA726');
 
-    const rowClone2 = R.clone(mockSingleCase);
+    const rowClone2 = R.clone(mockSingleCaseWithCompletedBookingSheet);
     rowClone2.financial[0].priorAuthorization = "Complete"
     rowClone2.vendorConfirmation = "Complete"
 
@@ -72,7 +72,7 @@ describe("CaseCard", () => {
     Date.now = jest.fn().mockReturnValue(new Date('2022-10-20'));
 
     const { getByRole, getByTestId, queryByRole } = render(
-      <CaseCard row={mockSingleCase} />
+      <CaseCard row={mockSingleCaseWithCompletedBookingSheet} />
     );
 
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
@@ -110,7 +110,7 @@ describe("CaseCard", () => {
     });
 
     const { getByRole, queryByRole, getByTestId } = render(
-      <CaseCard row={mockSingleCase} />
+      <CaseCard row={mockSingleCaseWithCompletedBookingSheet} />
     );
 
     expect(getByTestId("ArrowDropDownOutlinedIcon")).toBeInTheDocument();
@@ -126,7 +126,7 @@ describe("CaseCard", () => {
   });
 
   test("renders threat of cancellation when appointment is 24 hours away or less and not all steps completed", async () => {
-    const rowClone3 = {...mockSingleCase, vendorConfirmation: "Incomplete"}
+    const rowClone3 = {...mockSingleCaseWithCompletedBookingSheet, vendorConfirmation: "Incomplete"}
     rowClone3.scheduling.procedureDate = moment('2022-10-20').toDate() 
     rowClone3.financial[0].priorAuthorization = "Complete"
     const { getByTestId } = render(
@@ -137,7 +137,7 @@ describe("CaseCard", () => {
   });
 
   test("does not render threat of cancellation when appointment is more than 24 hours away", async () => {
-    const rowClone = {...mockSingleCase}
+    const rowClone = {...mockSingleCaseWithCompletedBookingSheet}
     rowClone.scheduling.procedureDate = moment('2022-10-22').toDate() 
     const { queryByTestId } = render(
       <CaseCard row={rowClone} />
@@ -147,7 +147,7 @@ describe("CaseCard", () => {
   });
 
   test("does not render threat of cancellation when all steps completed", async () => {
-    const rowClone4 = {...mockSingleCase, vendorConfirmation: "Complete"}
+    const rowClone4 = {...mockSingleCaseWithCompletedBookingSheet, vendorConfirmation: "Complete"}
     rowClone4.financial[0].priorAuthorization = "Complete"
     rowClone4.scheduling.procedureDate = moment().toDate() 
     const { queryByTestId } = render(
@@ -155,5 +155,26 @@ describe("CaseCard", () => {
     );
 
     expect(queryByTestId("NotificationImportantIcon")).toBeNull();
+  });
+
+  test("renders the booking sheet status as complete", async () => {
+    const { queryByTestId } = render(
+      <CaseCard row={mockSingleCaseWithCompletedBookingSheet} />
+    );
+
+    expect(queryByTestId("CheckIcon")).toBeInTheDocument();
+    expect(queryByTestId("AssignmentIcon")).toBeNull();
+
+  });
+  
+  test("renders the booking sheet status as not complete", async () => {
+    const rowClone = {...mockSingleCaseWithCompletedBookingSheet, isBookingSheetComplete: false}
+    const { queryByTestId } = render(
+      <CaseCard row={rowClone} />
+    );
+
+    expect(queryByTestId("CheckIcon")).toBeNull();
+    expect(queryByTestId("AssignmentIcon")).toBeInTheDocument();
+
   });
 });
