@@ -15,8 +15,8 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery, patientTabToPrismaQuery } from '../../utils/helpers';
-import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig, defaultPatientAddress, defaultPhone } from '../../reference';
+import { useUpdateCaseHook } from '../../utils/hooks';
+import { defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig, defaultPatientAddress, defaultPhone } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -113,11 +113,15 @@ export default function BookingSheetDialog(props: Props) {
     
     const onSubmit = async () => {
         const query = prepareFormForSubmission(data.caseId, getValues(), defaultValues)
-        reset({}, { keepValues: true }) // resets dirty fields
+        reset(prepareFormForRender(data), { keepValues: false })
         await mutate(query)
         closeDialog()
-        selectTab(initiallySelectedTab)
     };
+
+    function onClose() {
+        reset(prepareFormForRender(data), { keepValues: false })
+        closeDialog()  
+    }
         
     //populate form with data from API
     useEffect(() => {
@@ -145,7 +149,7 @@ export default function BookingSheetDialog(props: Props) {
                     <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
                         {`${data?.patient?.firstName} ${data?.patient?.lastName}`}
                     </Typography>
-                    <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={closeDialog}>
+                    <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={onClose}>
                         <CloseIcon />
                     </IconButton>
                 </Box>
