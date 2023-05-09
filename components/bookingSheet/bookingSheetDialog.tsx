@@ -53,7 +53,7 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
 }
 
 function prepareFormForRender(data: any) {
-    const parsedCase: any = data;
+    const parsedCase: any = R.clone(data);
 
     if (R.isEmpty(data.financial)) {
         parsedCase.financial = [defaultInsuranceValue]
