@@ -284,7 +284,7 @@ export default function CaseCard ({ row }: CaseCardProps) {
             
             </Box>
             {!isMobile 
-            && <List dense sx={{width: "28%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+            && <List dense sx={{display: "flex", flexDirection: "column", alignItems: "center", minWidth: "18.688rem"}}>
               <Typography variant="subtitle2" sx={{alignSelf: "flex-start", paddingLeft: "1.1rem", marginBottom: "0.313rem"}}>
                  Progress
               </Typography>
