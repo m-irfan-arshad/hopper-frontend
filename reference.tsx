@@ -34,7 +34,7 @@ export interface IndexObject {
 }
 
 export type FullCase = Prisma.casesGetPayload<{ include: { 
-  patient: { include: {address: {include: { state?: true}}, phone: true}}, 
+  patient: { include: {address?: {include: { state?: true}}, phone?: true}}, 
   scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
   financial: true,
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
@@ -337,7 +337,7 @@ export const defaultBookingSheetConfig = {
       phone: [{
         phoneNumber: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
         type: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.type' },
-        hasVoicemail: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
+        hasVoicemail: { default: null, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
       }]
   },
   financial: [{
