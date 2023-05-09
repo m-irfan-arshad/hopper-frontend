@@ -218,8 +218,9 @@ export function formArrayToPrismaQuery(formData: IndexObject[], arrayFieldId: st
         delete formattedField.caseId
         delete formattedField.patientId
 
-        // formatting for patient address
+        // formatting for patient
         formattedField = connectDropdownSelection("state", formattedField)
+        formattedField.type && (formattedField.type = formattedField.type.type);
 
         // formatting for insurance object
         formattedField.priorAuthorization && (formattedField.priorAuthorization = formattedField.priorAuthorization.priorAuthorization);
@@ -303,13 +304,16 @@ export function patientTabToPrismaQuery(patientTabUpdates: any, formData: any) {
     if (query.update.address?.length > 0) {
         query.update.address = formArrayToPrismaQuery(formData.address, 'addressId');
     }
+    if (query.update.phone?.length > 0) {
+        query.update.phone = formArrayToPrismaQuery(formData.phone, 'phoneId');
+    }
     return query
 }
 
 export function formatCreateCaseParams(data: FullCase) {
     return Prisma.validator<Prisma.casesCreateInput>()({
       patient: {
-        create: {...data.patient, address: undefined}
+        create: {...data.patient, address: {create: []}, phone: {create: []}}
       },
       scheduling: {
         create: {

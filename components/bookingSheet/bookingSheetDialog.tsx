@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
 import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery, patientTabToPrismaQuery } from '../../utils/helpers';
 import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig, defaultPatientAddress } from '../../reference';
+import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig, defaultPatientAddress, defaultPhone } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -68,6 +68,18 @@ function prepareFormForRender(data: any) {
 
     if (R.isEmpty(data.patient.address)) {
         parsedCase.patient.address = [defaultPatientAddress]
+    }
+
+    if (R.isEmpty(data.patient.phone)) {
+        parsedCase.patient.phone = [defaultPhone]
+    } else {
+        parsedCase.patient.phone = parsedCase.patient.phone.map((phone: any) => {
+            if (typeof phone.type === 'object') {
+                return phone
+            } else {
+                return {...phone, type: {"type": phone.type}}
+            }
+        })
     }
 
     if (R.isEmpty(data.clinical.preOpForm)) {

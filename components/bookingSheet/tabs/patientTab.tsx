@@ -3,13 +3,16 @@ import {
     Typography, 
     Grid, 
     Box,
-    Divider
+    Divider,
+    Button,
+    DialogActions
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import {InputController, DateController, DropDownSearchController} from '../../../utils/formControllers'
-import { BookingSheetConfig } from "../../../reference";
+import {InputController, DateController, DropDownSearchController, CheckboxController} from '../../../utils/formControllers'
+import { BookingSheetConfig, defaultPatientAddress, defaultPhone, phoneTypeOptions } from "../../../reference";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { Add } from "@mui/icons-material";
 
 interface Props {
     config: BookingSheetConfig,
@@ -18,7 +21,8 @@ interface Props {
 export default function PatientTab(props: Props) {
     const {config} = props;
     const { control } = useFormContext();
-    const { append, remove, fields } = useFieldArray({control, name: "patient.address"});
+    const { append: appendAddress, remove: removeAddress, fields: addressFields } = useFieldArray({control, name: "patient.address"});
+    const { append: appendPhone, remove: removePhone, fields: phoneFields } = useFieldArray({control, name: "patient.phone"});
 
     return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -37,25 +41,72 @@ export default function PatientTab(props: Props) {
                         size={6} 
                         config={config}
                     />
-                    {fields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
-                        <Grid container justifyContent={"left"} spacing={"1.25rem"} rowSpacing={"0.85rem"}>
-                            <InputController id={`patient.address.${index}.addressOne`} title="Address One" placeholder="Address One" size={12} config={config}/>
-                            <InputController id={`patient.address.${index}.addressTwo`} title="Address Two" placeholder="Address Two" size={12} config={config}/>
-                            <InputController id={`patient.address.${index}.city`} title="City" placeholder="City" size={4} config={config}/>
-                            <DropDownSearchController 
-                                title="State"
-                                id={`patient.address.${index}.state`}
-                                labelProperties={["stateName"]}
-                                placeholder="State" 
-                                queryKey="getStates"
-                                size={4} 
-                                config={config}
-                            />
-                            <InputController id={`patient.address.${index}.zip`} title="Zip" placeholder="Zip" size={4} config={config}/>
-                        </Grid>
-                        {(index+1 !== itemList.length) && <Divider light sx={{marginTop: "1.6rem", marginBottom: "3rem"}}/>}
+                </Grid>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}>
+                    <Grid item><Typography variant="body2" sx={{marginTop: "0.5rem", color: "gray.dark"}}>Patient Address</Typography></Grid>
+                    {addressFields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
+                        <InputController id={`patient.address.${index}.addressOne`} title="Address One" placeholder="Address One" size={12} config={config}/>
+                        <InputController id={`patient.address.${index}.addressTwo`} title="Address Two" placeholder="Address Two" size={12} config={config}/>
+                        <InputController id={`patient.address.${index}.city`} title="City" placeholder="City" size={4} config={config}/>
+                        <DropDownSearchController 
+                            title="State"
+                            id={`patient.address.${index}.state`}
+                            labelProperties={["stateName"]}
+                            placeholder="State" 
+                            queryKey="getStates"
+                            size={4} 
+                            config={config}
+                        />
+                        <InputController id={`patient.address.${index}.zip`} title="Zip" placeholder="Zip" size={4} config={config}/>
                     </React.Fragment>))}
                 </Grid>
+                <Button 
+                    variant="contained" 
+                    onClick={()=>appendAddress(defaultPatientAddress)}
+                    startIcon={<Add />}
+                    disabled={false}
+                    size="small"
+                    sx={{
+                        backgroundColor: "blue.dark",
+                        marginRight: "1.75rem",
+                    }}>
+                    Add Address
+                </Button>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}  sx={{marginTop: "1rem"}}>
+                    <Grid item sm={12}><Typography variant="body2" sx={{marginTop: "0.5rem", color: "gray.dark"}}>Patient Phone</Typography></Grid>
+                    {phoneFields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
+                        <InputController id={`patient.phone.${index}.phoneNumber`} title="Phone Number" placeholder="Phone Number" size={6} config={config}/>
+                        <DropDownSearchController 
+                            {...item}
+                            title="Type"
+                            id={`patient.phone.${index}.type`}
+                            options={phoneTypeOptions} 
+                            labelProperties={["type"]}
+                            placeholder="Type" 
+                            size={4} 
+                            config={config}
+                        />
+                        <CheckboxController 
+                            id={`patient.phone.${index}.hasVoicemail`} 
+                            title="Voicemail" 
+                            size={2} 
+                            config={config}
+                        />
+
+                    </React.Fragment>))}
+                </Grid>
+                <Button 
+                    variant="contained" 
+                    onClick={()=>appendPhone(defaultPhone)}
+                    startIcon={<Add />}
+                    disabled={false}
+                    size="small"
+                    sx={{
+                        backgroundColor: "blue.dark",
+                        marginRight: "1.75rem",
+                    }}>
+                    Add Phone
+                </Button>
             </LocalizationProvider>
     )
 }

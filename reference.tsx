@@ -34,7 +34,7 @@ export interface IndexObject {
 }
 
 export type FullCase = Prisma.casesGetPayload<{ include: { 
-  patient: { include: {address: {include: { state?: true}}}}, 
+  patient: { include: {address: {include: { state?: true}}, phone: true}}, 
   scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
   financial: true,
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
@@ -302,6 +302,12 @@ export const defaultPatientAddress = {
   zip: "",
 }
 
+export const defaultPhone = {
+  phoneNumber: "",
+  type: null,
+  hasVoicemail: false
+}
+
 const facilityConfig = (pathToDeleteFieldFromFacility: string) => {
   return {
     facilityName: {default: '', required: true, pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'facilityName'},
@@ -322,12 +328,17 @@ export const defaultBookingSheetConfig = {
       dateOfBirth: { default: null, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' },
       sex: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.sexId'  },
       address: [{ 
-        addressOne: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.addressOne'  },
-        addressTwo: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city'  },
-        city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city'  },
+        addressOne: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.addressOne' },
+        addressTwo: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city' },
+        city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city' },
         state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.stateId' },
-        zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.zip'},
+        zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.zip' },
       }],
+      phone: [{
+        phoneNumber: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
+        type: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.type' },
+        hasVoicemail: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
+      }]
   },
   financial: [{
       insurance: { default: null, required: false },
@@ -438,6 +449,7 @@ export const clearanceOptions = [
 export const productData = [{productName: 'Product 1', productType: 'Ancillary'}, {productName: 'Product 2', productType: 'Bone graft'}, {productName: 'Product 3', productType: 'Implant'}, {productName: 'Product 4', productType: 'Monitoring'}, {productName: 'Other'}];
 export const productTypeOptions = [{name: 'Ancillary'}, {name: 'Bone graft'}, {name: 'Implant'}, {name: 'Monitoring'}]
 export const vendorOptions = [{name: 'Person 1'}, {name: 'Person 2'}, {name: 'Person 3'}, {name: 'Person 4'}]
+export const phoneTypeOptions = [{type: 'Home'}, {type: 'Mobile'}, {type: 'Fax'}, {type: 'Other'}]
 
 export interface patientTabFilterInterface {
   AND: patient[],

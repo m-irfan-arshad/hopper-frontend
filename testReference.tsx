@@ -222,7 +222,15 @@ export const mockPatientAddress = {
     zip: "10000",
   }
 
-export const mockSinglePatient: Prisma.patientGetPayload<{include: {address: true}}> = {
+ export const mockPhone = {
+    phoneId: 1,
+    patientId: 1,
+    phoneNumber: "123-456-7890",
+    type: "Home",
+    hasVoicemail: true
+ }
+
+export const mockSinglePatient: Prisma.patientGetPayload<{include: {address: true, phone: true}}> = {
     patientId: 1,
     fhirResourceId: 'patientFhirResourceId',
     firstName: 'Captain',
@@ -230,9 +238,8 @@ export const mockSinglePatient: Prisma.patientGetPayload<{include: {address: tru
     lastName: 'Whitebeard',
     mrn: 'testMrn',
     address: [mockPatientAddress],
+    phone: [mockPhone],
     sexId: 1,
-    mobilePhone: '221-345-2211',
-    homePhone: '333-544-2222',
     dateOfBirth: moment('1990-02-01').toDate(),
     createTime: sampleDate,
     updateTime: sampleDate,
@@ -289,9 +296,9 @@ export const mockCaseData = [
             firstName: 'firstName2',
             lastName: 'lastName2',
             dateOfBirth: 'DOB2',
-            mobilePhone: 'mobilePhone2',
+            phone: [mockPhone],
             mrn: 'mrn2',
-            address: 'address2'
+            address: [mockPatientAddress]
         }
     }
 ]; 

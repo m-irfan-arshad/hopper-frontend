@@ -10,6 +10,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import DottedDivider from "./shared/dottedDivider";
 import {formatDate} from "../utils/helpers";
 import {FullCase} from '../reference';
+import * as R from "ramda";
 
 interface SectionHeaderProps {
     title: string;
@@ -41,7 +42,8 @@ export default function CaseSummaryContent(props: Props) {
             </Typography> 
         )
       }
-    
+
+      const phoneDisplay = !R.isEmpty(patient?.phone) ? patient?.phone[0].type + ": " + patient?.phone[0].phoneNumber : "N/A";
 
 return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -61,8 +63,7 @@ return (
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Phone</Typography>
-                    <Typography variant="body2">{`Mobile: ${patient?.mobilePhone || 'N/A'}`}</Typography>
-                    <Typography variant="body2">{`Home: ${patient?.homePhone || 'N/A'}`}</Typography>
+                    <Typography variant="body2">{phoneDisplay}</Typography>
                 </Grid>
             </Grid>
         <DottedDivider additionalStyles={{marginTop: "2rem"}} />
