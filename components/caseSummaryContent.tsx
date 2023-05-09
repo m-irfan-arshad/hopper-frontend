@@ -43,7 +43,8 @@ export default function CaseSummaryContent(props: Props) {
         )
       }
 
-      const phoneDisplay = !R.isEmpty(patient?.phone) ? patient?.phone[0].type + ": " + patient?.phone[0].phoneNumber : "N/A";
+      const phoneDisplay = (patient.phone && !R.isEmpty(patient?.phone)) ? patient?.phone[0].type + ": " + patient?.phone[0].phoneNumber : "N/A";
+      const addressDisplay = (patient.address && !R.isEmpty(patient?.address)) ? patient?.address[0].addressOne : 'N/A'
 
 return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -59,7 +60,7 @@ return (
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Address</Typography>
-                    <Typography variant="body2">{row.patient?.address[0]?.addressOne || 'N/A'}</Typography>
+                    <Typography variant="body2">{addressDisplay}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="caption">Patient Phone</Typography>
