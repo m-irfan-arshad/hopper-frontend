@@ -25,6 +25,7 @@ import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 import ClinicalTab from "./tabs/clinicalTab";
 import ProductTab from "./tabs/productTab";
+import { phone } from "@prisma/client";
 
 interface Props {
     open: boolean
@@ -73,7 +74,7 @@ function prepareFormForRender(data: any) {
     if (R.isEmpty(data.patient.phone)) {
         parsedCase.patient.phone = [defaultPhone]
     } else {
-        parsedCase.patient.phone = parsedCase.patient.phone.map((phone: any) => {
+        parsedCase.patient.phone = parsedCase.patient.phone.map((phone: phone) => {
             if (typeof phone.type === 'object') {
                 return phone
             } else {
