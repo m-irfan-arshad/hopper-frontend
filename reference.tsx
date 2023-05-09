@@ -44,6 +44,7 @@ export type FullCase = Prisma.casesGetPayload<{ include: {
   clinical?: {include: {diagnosticTests: {include: {facility: true, diagnosticTest: true}}, clearances: {include: {facility: true, clearance: true}}, preOpForm: {include: {facility: true}}}}
 } }>
 
+export type FullCaseWithBookingSheetStatus = FullCase & {isBookingSheetComplete: boolean}
 
 // REFERENCE OBJECTS
 
@@ -97,21 +98,6 @@ export const dashboardDateRangeDropDownValues = [
         value: "Next quarter",
         id: "3"
     }
-];
-
-export const dashboardStepDropDownValues = [
-    {
-        value: "All Steps",
-        id: "all"
-    },
-    {
-        value: "Insurance Authorization",
-        id: "priorAuthorization"
-    },
-    {
-        value: "Vendor Confirmation",
-        id: "vendorConfirmation"
-    },
 ];
 
 export const dashboardSortDropDownValues = [
@@ -226,7 +212,8 @@ export interface Step {
 
 export const caseStepMappings = {
   priorAuthorization: "Prior Authorization",
-  vendorConfirmation: "Vendor Confirmation"
+  vendorConfirmation: "Vendor Confirmation",
+  bookingSheetRequest: "Booking Sheet Request"
 }
 
 export const paginationCount = 50;
@@ -471,7 +458,7 @@ export interface scheduling {
   serviceLineId: object,
   providerId: object,
 }
-
+  
 export const defaultSchedulingFilter: SchedulingTabInterface = {
   AND: [
     {

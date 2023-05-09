@@ -3,7 +3,6 @@ import { AppBar, styled, Box, Button, useMediaQuery } from '@mui/material';
 import { Add, CheckBoxOutlined as CheckBoxOutlinedIcon } from "@mui/icons-material";
 import CreateCaseDialog from "./createCaseDialog";
 import DateRangePicker from "./shared/dateRangePicker";
-import { dashboardStepDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 import DebouncedInput from './debouncedInput';
 import DropDownComponent from "./shared/dropdown";

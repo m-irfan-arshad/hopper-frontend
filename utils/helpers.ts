@@ -111,22 +111,18 @@ export function formatDate(date: Date | null | undefined) : string | null {
     return moment(date).format('MM/DD/YYYY')
 }
 
-export function casesFormatter (cases: FullCase | null): FullCase | null {
+export function casesFormatter (cases: FullCase | null, completedCaseIds?: number[] | null): FullCase | null {
     if (cases) {
-        const scheduling = cases.scheduling;
-        const formattedProvider = (scheduling?.provider) ?  {
-            ...scheduling.provider, 
-            providerName: (scheduling.provider) ? `${scheduling.provider.firstName} ${scheduling.provider.lastName}` : ''
-        } : null;
+        let isBookingSheetComplete = false;
+        if (completedCaseIds && completedCaseIds.includes(cases.caseId)) {
+            isBookingSheetComplete = true
+        }
         
         let newCase = {
             ...cases,
             caseId: cases.caseId,
             fhirResourceId: cases.fhirResourceId,
-            scheduling: {
-                ...scheduling,
-                provider: formattedProvider,
-            }
+            isBookingSheetComplete: isBookingSheetComplete
         }
         return newCase
     } else {

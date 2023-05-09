@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import CaseDateGroup from '../components/caseDateGroup';
 import CaseNavBar from "../components/caseNavBar";
 import { Box, Stack, Button, Typography, useMediaQuery, CircularProgress, Pagination, styled, Checkbox } from "@mui/material";
-import { FullCase, dashboardSortDropDownValues } from "../reference";
+import { FullCaseWithBookingSheetStatus, dashboardSortDropDownValues } from "../reference";
 import { defaultTheme } from "../theme";
 import { useGetCasesHook } from '../utils/hooks';
 import { paginationCount } from '../reference';
@@ -11,7 +11,7 @@ import * as R from 'ramda';
 import { CaseFilterContext } from "../pages/_app.page";
 
 interface CaseGroup {
-    [key: string]: FullCase[]
+    [key: string]: FullCaseWithBookingSheetStatus[]
 }
 
 export default function Dashboard() {  
@@ -40,7 +40,7 @@ export default function Dashboard() {
 
     const caseGroups:CaseGroup = {};
 
-    data.cases.forEach(function(singleCase: FullCase) {
+    data.cases.forEach(function(singleCase: FullCaseWithBookingSheetStatus) {
         const date = formatDate(singleCase.scheduling?.procedureDate) || "";
         if (date in caseGroups) {
             caseGroups[date].push(singleCase);
@@ -94,7 +94,7 @@ export default function Dashboard() {
                 {
                     Object.keys(caseGroups).map((key, index) => {
                         return (
-                            <CaseDateGroup key={key} date={key} list={caseGroups[key]} />
+                            <CaseDateGroup index={index} key={key} date={key} list={caseGroups[key]} />
                         )
                     })
                 }

@@ -6,8 +6,8 @@
  import { prismaMock } from '../../../prisma/singleton'
  import getCasesHandler from '../getCases.page'
  import moment from 'moment'
- import {mockCaseData, mockBookingSheetConfig} from "../../../testReference";
- import {defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter, FullCase} from "../../../reference";
+ import {mockCaseData, mockCasesWithCompletedBookingSheetData, mockBookingSheetConfig} from "../../../testReference";
+ import {defaultClinicalFilter, defaultFinancialFilter, defaultPatientTabFilter, defaultProcedureTabFilter, defaultSchedulingFilter, FullCase, FullCaseWithBookingSheetStatus} from "../../../reference";
 
  jest.mock('@auth0/nextjs-auth0', () => ({
         withApiAuthRequired: jest.fn((args) => args),
@@ -42,7 +42,7 @@ jest.mock('@google-cloud/storage', () => {
             url: `/api/getCases?${urlParams.toString()}`
         });
         const res: MockResponse<NextApiResponse> = httpMock.createResponse({});
-        const cases = mockCaseData;
+        const cases = mockCasesWithCompletedBookingSheetData;
 
         const params = {
             where: {
@@ -96,7 +96,7 @@ jest.mock('@google-cloud/storage', () => {
               }
         }
 
-        prismaMock.cases.findMany.mockResolvedValueOnce(cases as FullCase[])
+        prismaMock.cases.findMany.mockResolvedValue(cases as FullCaseWithBookingSheetStatus[])
         prismaMock.cases.count.mockResolvedValueOnce(1)
 
         await getCasesHandler(req, res)
@@ -105,7 +105,7 @@ jest.mock('@google-cloud/storage', () => {
         expect(data.cases[0].patientId).toEqual(1)
         expect(data.cases[0].scheduling.provider.firstName).toEqual("Robert")
         expect(data.count).toEqual(1)
-        expect(prismaMock.cases.findMany).toBeCalledTimes(1)
+        expect(prismaMock.cases.findMany).toBeCalledTimes(2)
         expect(prismaMock.cases.findMany).toBeCalledWith(params)
     })
 
