@@ -58,6 +58,7 @@ export default function PatientTab(props: Props) {
                             config={config}
                         />
                         <InputController id={`patient.address.${index}.zip`} title="Zip" placeholder="Zip" size={4} config={config}/>
+                        {(index+1 !== itemList.length) && <Grid item sm={12}><Divider light sx={{marginTop: "0.5rem", marginBottom: "1.6rem"}}/></Grid>}
                     </React.Fragment>))}
                 </Grid>
                 <Button 
@@ -69,10 +70,12 @@ export default function PatientTab(props: Props) {
                     sx={{
                         backgroundColor: "blue.dark",
                         marginRight: "1.75rem",
+                        width: "8rem",
+                        marginTop: "0.85rem"
                     }}>
                     Add Address
                 </Button>
-                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}  sx={{marginTop: "1rem"}}>
+                <Grid container justifyContent={"left"} spacing={"1rem"} rowSpacing={"0.85rem"}  sx={{marginTop: "1.5rem"}}>
                     <Grid item sm={12}><Typography variant="body2" sx={{marginTop: "0.5rem", color: "gray.dark"}}>Patient Phone</Typography></Grid>
                     {phoneFields.map((item, index, itemList)=>(<React.Fragment key={item.id}>
                         <InputController id={`patient.phone.${index}.phoneNumber`} title="Phone Number" placeholder="Phone Number" size={6} config={config}/>
@@ -92,7 +95,7 @@ export default function PatientTab(props: Props) {
                             size={2} 
                             config={config}
                         />
-
+                        {(index+1 !== itemList.length) && <Grid item sm={12}><Divider light sx={{ marginBottom: "1rem"}}/></Grid>}
                     </React.Fragment>))}
                 </Grid>
                 <Button 
@@ -104,6 +107,8 @@ export default function PatientTab(props: Props) {
                     sx={{
                         backgroundColor: "blue.dark",
                         marginRight: "1.75rem",
+                        width: "8rem",
+                        marginTop: "0.85rem"
                     }}>
                     Add Phone
                 </Button>
