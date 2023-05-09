@@ -43,7 +43,9 @@ export default function CaseSummaryContent(props: Props) {
         )
       }
 
-      const phoneDisplay = (patient.phone && !R.isEmpty(patient?.phone)) ? patient?.phone[0].type + ": " + patient?.phone[0].phoneNumber : "N/A";
+      //@ts-ignore
+      const phoneType = patient?.phone[0].type?.type;
+      const phoneDisplay = (patient.phone && !R.isEmpty(patient?.phone)) ? phoneType  + ": " + patient?.phone[0].phoneNumber : "N/A";
       const addressDisplay = (patient.address && !R.isEmpty(patient?.address)) ? patient?.address[0].addressOne : 'N/A'
 
 return (
