@@ -46,7 +46,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
           }
         ],
         include: { 
-          patient: {include: {address: {include: {state: true}}}},
+          patient: {include: {address: {include: {state: true}}, sex: true, phone: true}},
           scheduling: { include: {provider: true, location: true} }, 
           financial: true
         }

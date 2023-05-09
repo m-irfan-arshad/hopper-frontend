@@ -90,7 +90,7 @@ jest.mock('@google-cloud/storage', () => {
                 }
             ],
             include: { 
-                patient: true,
+                patient: {include: {address: {include: {state: true}}, sex: true, phone: true}},
                 scheduling: { include: {provider: true, location: true} }, 
                 financial: true
               }
@@ -173,7 +173,7 @@ jest.mock('@google-cloud/storage', () => {
                 }
             ],
             include: { 
-                patient: true,
+                patient: {include: {address: {include: {state: true}}, sex: true, phone: true}},
                 scheduling: { include: {provider: true, location: true} }, 
                 financial: true
               }
