@@ -194,36 +194,38 @@ export function formObjectToPrismaQuery(obj: IndexObject, id="", operation="upda
     }
   }
 
+export function connectDropdownSelection(dropdownName: string, field: IndexObject) {
+    const newField = R.clone(field)
+    const dropdownId = dropdownName + "Id"
+    if (R.isNil(newField[dropdownName])) {
+        delete newField[dropdownName]
+    } else {
+        newField[dropdownName] = { connect: {[dropdownId]: newField[dropdownName][dropdownId]}}
+    }
+    delete newField[dropdownId];
+    return newField
+}
+
 export function formArrayToPrismaQuery(formData: IndexObject[], arrayFieldId: string) {
     let create: object[] = [];
     formData.forEach((arrayElem: any) => {
         const id = arrayFieldId
         let formattedField: any = R.clone(arrayElem);
         delete formattedField.caseId
+        delete formattedField.patientId
+
+        // formatting for patient
+        formattedField = connectDropdownSelection("state", formattedField)
+        formattedField.type && (formattedField.type = formattedField.type.type);
 
         // formatting for insurance object
         formattedField.priorAuthorization && (formattedField.priorAuthorization = formattedField.priorAuthorization.priorAuthorization);
-        if (formattedField.insurance) {
-            formattedField.insurance = { connect: {insuranceId: formattedField.insurance.insuranceId}}
-        } else {
-            delete formattedField.insurance;
-        }
-        delete formattedField.insuranceId;
+        formattedField = connectDropdownSelection("insurance", formattedField)
 
         // formatting for product object
         !R.isNil(formattedField.quantity) && (formattedField.quantity = parseInt(formattedField.quantity))
-        if (R.isNil(formattedField.vendor)) {
-            delete formattedField.vendor
-        } else {
-            formattedField.vendor = { connect: {vendorId: formattedField.vendor.vendorId}}
-        }
-        if (R.isNil(formattedField.manufacturer)) {
-            delete formattedField.manufacturer
-        } else {
-            formattedField.manufacturer = { connect: {manufacturerId: formattedField.manufacturer.manufacturerId}}
-        }
-        delete formattedField.vendorId;
-        delete formattedField.manufacturerId;
+        formattedField = connectDropdownSelection("vendor", formattedField)
+        formattedField = connectDropdownSelection("manufacturer", formattedField)
 
         // formatting for diagnostic test / clearance
         formattedField.diagnosticTest && (formattedField.diagnosticTest = { connect: {diagnosticTestId: formattedField.diagnosticTest.diagnosticTestId}});
@@ -293,10 +295,21 @@ export function procedureTabToPrismaQuery(procedureTabUpdates: any, formData: an
     return query
 }
 
+export function patientTabToPrismaQuery(patientTabUpdates: any, formData: any) {
+    const query = formObjectToPrismaQuery(patientTabUpdates, "patientId")
+    if (query.update.address?.length > 0) {
+        query.update.address = formArrayToPrismaQuery(formData.address, 'addressId');
+    }
+    if (query.update.phone?.length > 0) {
+        query.update.phone = formArrayToPrismaQuery(formData.phone, 'phoneId');
+    }
+    return query
+}
+
 export function formatCreateCaseParams(data: FullCase) {
     return Prisma.validator<Prisma.casesCreateInput>()({
       patient: {
-        create: data.patient,
+        create: {...data.patient, address: {create: []}, phone: {create: []}}
       },
       scheduling: {
         create: {
@@ -489,7 +502,9 @@ export function checkFieldForErrors(id: string, errors: any): boolean {
 
 export function isTabComplete(tabData: IndexObject | IndexObject[], tabConfig: IndexObject | IndexObject[]): boolean {
     let isComplete = true;
-    if (Array.isArray(tabData) && Array.isArray(tabConfig)) {
+    if (R.isNil(tabData) || R.isEmpty(tabData)) {
+        return false
+    } else if (Array.isArray(tabData) && Array.isArray(tabConfig)) {
         if (tabData.length === 0) isComplete = false;
         tabData.forEach((tabElem) => {
             if(!isTabComplete(tabElem, tabConfig[0])) isComplete = false;
@@ -502,8 +517,6 @@ export function isTabComplete(tabData: IndexObject | IndexObject[], tabConfig: I
         Object.keys(tabConfig).forEach(key => {
             if(!isTabComplete(tabData[key], tabConfig[key])) isComplete = false;
         })
-    } else {
-        isComplete = !(R.isNil(tabData) || R.isEmpty(tabData))
     }
     return isComplete;
 }

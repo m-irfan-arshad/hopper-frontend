@@ -185,7 +185,7 @@ describe("Utils", () => {
 
     test("findRequiredBookingSheetFieldsToDelete function", async () => {
         let fieldsToDelete = findRequiredBookingSheetFieldsToDelete(mockBookingSheetConfig);
-        expect(fieldsToDelete).toEqual([ 'patient.AND.0.middleName', 'patient.AND.0.firstName', 'patient.AND.0.dateOfBirth']);
+        expect(fieldsToDelete).toEqual([ 'patient.AND.0.middleName', "patient.AND.0.phone.none.hasVoicemail", 'patient.AND.0.firstName', 'patient.AND.0.dateOfBirth']);
 
     });
 

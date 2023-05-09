@@ -37,11 +37,10 @@ describe("CaseSummaryDialog", () => {
     expect(getByText('02/01/1990')).toBeInTheDocument();
 
     expect(getByText('Patient Address')).toBeInTheDocument();
-    expect(getByText('360 Washington Ave')).toBeInTheDocument();
+    expect(getByText('212 New Drive')).toBeInTheDocument();
 
     expect(getByText('Patient Phone')).toBeInTheDocument();
-    expect(getByText('Mobile: 221-345-2211')).toBeInTheDocument();
-    expect(getByText('Home: 333-544-2222')).toBeInTheDocument();
+    expect(getByText('Home: 123-456-7890')).toBeInTheDocument();
 
     expect(getByText('Procedure Date and Time')).toBeInTheDocument();
     expect(getByText('10/10/2022')).toBeInTheDocument();

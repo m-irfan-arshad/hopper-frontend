@@ -9,6 +9,58 @@ const procedureUnitOptions = ['OR', 'CATH LAB', 'PU1', 'PU2']
 const serviceLineOptions = ['Orthopedics', 'Cardiology', 'Oncology']
 const providerOptions = [{firstName: 'Sauce', lastName: 'Gardner'}, {firstName: 'Mike', lastName: 'White'}, {firstName: 'Garrett', lastName: 'Wilson'}, {firstName: 'Quincy', lastName: 'Williams'}]
 
+async function clearTables() {
+    const promises = [
+        prisma.cases.deleteMany({}),
+        prisma.comment.deleteMany({}),
+        prisma.document.deleteMany({}),
+        prisma.patient.deleteMany({}),
+        prisma.phone.deleteMany({}),
+        prisma.address.deleteMany({}),
+        prisma.sex.deleteMany({}),
+        prisma.state.deleteMany({}),
+        prisma.scheduling.deleteMany({}),
+        prisma.admissionType.deleteMany({}),
+        
+        prisma.location.deleteMany({}),
+        prisma.procedureUnit.deleteMany({}),
+        prisma.serviceLine.deleteMany({}),
+        prisma.document.deleteMany({}),
+        prisma.patient.deleteMany({}),
+        prisma.address.deleteMany({}),
+        prisma.sex.deleteMany({}),
+        prisma.state.deleteMany({}),
+        prisma.scheduling.deleteMany({}),
+        prisma.admissionType.deleteMany({}),
+        prisma.location.deleteMany({}),
+        prisma.procedureUnit.deleteMany({}),
+        prisma.serviceLine.deleteMany({}),
+        prisma.provider.deleteMany({}),
+        prisma.financial.deleteMany({}),
+        prisma.insurance.deleteMany({}),
+        prisma.procedureTab.deleteMany({}),
+        prisma.procedure.deleteMany({}),
+        prisma.approach.deleteMany({}),
+        prisma.laterality.deleteMany({}),
+        prisma.anesthesia.deleteMany({}),
+        prisma.cptCode.deleteMany({}),
+        prisma.icdCode.deleteMany({}),
+        prisma.clinical.deleteMany({}),
+        prisma.preOpForm.deleteMany({}),
+        prisma.facility.deleteMany({}),
+        prisma.diagnosticTestForm.deleteMany({}),
+        prisma.diagnosticTest.deleteMany({}),
+        prisma.clearanceForm.deleteMany({}),
+        prisma.clearance.deleteMany({}),
+        prisma.productTab.deleteMany({}),
+        prisma.product.deleteMany({}),
+        prisma.productType.deleteMany({}),
+        prisma.manufacturer.deleteMany({}),
+        prisma.vendor.deleteMany({})
+    ]
+    await Promise.all(promises)
+}
+
 async function createCases() {
     for (let i = 0; i < 50; i++) {
         await prisma.cases.create({
@@ -18,8 +70,8 @@ async function createCases() {
                         firstName: chance.first({ nationality: 'en' }),
                         lastName: chance.last({ nationality: 'en' }),
                         mrn: chance.string({ length: 10, numeric: true }),
-                        address: chance.address(),
-                        mobilePhone: chance.phone({ country: 'us', formatted: true }),
+                        address: {create: []},
+                        phone: {create: []},
                         dateOfBirth: chance.date({ year: 1970 }),
                     }
                 },
@@ -172,25 +224,27 @@ async function createVendorOptions() {
 }
 
 async function main() {
-    await Promise.all([
-        createCases(),
-        createLocations(),
-        createStateOptions(),
-        createInsuranceOptions(),
-        createAdmissionTypeOptions(),
-        createSexOptions(),
-        createProcedureOptions(),
-        createApproachOptions(),
-        createLateralityOptions(),
-        createAnesthesiaOptions(),
-        createCptCodeOptions(),
-        createIcdCodeOptions(),
-        createDiagnosticTestOptions(),
-        createClearanceOptions(),
-        createProductOptions(),
-        createManufacturerOptions(),
-        createVendorOptions()
-    ])
+    clearTables().then(async () => {
+        await Promise.all([
+            createCases(),
+            createLocations(),
+            createStateOptions(),
+            createInsuranceOptions(),
+            createAdmissionTypeOptions(),
+            createSexOptions(),
+            createProcedureOptions(),
+            createApproachOptions(),
+            createLateralityOptions(),
+            createAnesthesiaOptions(),
+            createCptCodeOptions(),
+            createIcdCodeOptions(),
+            createDiagnosticTestOptions(),
+            createClearanceOptions(),
+            createProductOptions(),
+            createManufacturerOptions(),
+            createVendorOptions()
+        ])
+    })
 }
 
 main()

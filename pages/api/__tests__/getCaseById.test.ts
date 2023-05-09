@@ -26,7 +26,7 @@ describe("getCaseById API", () => {
                 caseId: 123
             },
             include: {
-                patient: {include: {sex: true, state: true}},
+                patient: {include: {address: {include: {state: true}}, sex: true, phone: true}},
                 financial: {include: {insurance: true}, orderBy: {financialId: "asc"}},
                 scheduling: {include: {location: true, procedureUnit: true, serviceLine: true, provider: true, admissionType: true}},
                 procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}},

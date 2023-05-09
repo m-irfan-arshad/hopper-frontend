@@ -14,9 +14,9 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useForm, FormProvider } from "react-hook-form";
-import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery } from '../../utils/helpers';
-import { useGetBookingSheetConfigHook, useUpdateCaseHook } from '../../utils/hooks';
-import { defaultBookingSheetConfig, defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig } from '../../reference';
+import { createValidationObject, formArrayToPrismaQuery, formObjectToPrismaQuery, getDifference, clinicalTabToPrismaQuery, procedureTabToPrismaQuery, patientTabToPrismaQuery } from '../../utils/helpers';
+import { useUpdateCaseHook } from '../../utils/hooks';
+import { defaultDiagnosticTest, defaultInsuranceValue, defaultClearance, defaultPreOpForm, BookingSheetConfig, defaultPatientAddress, defaultPhone } from '../../reference';
 import * as R from 'ramda';
 import { yupResolver } from "@hookform/resolvers/yup";
 import PatientTab from './tabs/patientTab';
@@ -25,6 +25,7 @@ import SchedulingTab from "./tabs/schedulingTab";
 import ProcedureTab from "./tabs/procedureTab";
 import ClinicalTab from "./tabs/clinicalTab";
 import ProductTab from "./tabs/productTab";
+import { phone } from "@prisma/client";
 
 interface Props {
     open: boolean
@@ -43,7 +44,7 @@ const StyledTab = styled(Tab)({
 function prepareFormForSubmission(caseId: number, formData: any, defaultFields: any) {
     let query: any = {caseId: caseId, ...getDifference(defaultFields, formData, ['facilityId'])};
     query.scheduling && (query.scheduling = formObjectToPrismaQuery(query.scheduling, "schedulingId"))
-    query.patient && (query.patient = formObjectToPrismaQuery(query.patient, "patientId"))
+    query.patient && (query.patient = patientTabToPrismaQuery(query.patient, formData.patient))
     query.procedureTab && (query.procedureTab = procedureTabToPrismaQuery(query.procedureTab, formData.procedureTab))
     query.financial && (query.financial = formArrayToPrismaQuery(formData.financial, 'financialId'))
     query.productTab && (query.productTab = formArrayToPrismaQuery(formData.productTab, 'productTabId'))
@@ -52,7 +53,7 @@ function prepareFormForSubmission(caseId: number, formData: any, defaultFields: 
 }
 
 function prepareFormForRender(data: any) {
-    const parsedCase: any = data;
+    const parsedCase: any = R.clone(data);
 
     if (R.isEmpty(data.financial)) {
         parsedCase.financial = [defaultInsuranceValue]
@@ -62,6 +63,22 @@ function prepareFormForRender(data: any) {
                 return insurance
             } else {
                 return {...insurance, priorAuthorization: {"priorAuthorization": insurance.priorAuthorization}}
+            }
+        })
+    }
+
+    if (R.isEmpty(data.patient.address)) {
+        parsedCase.patient.address = [defaultPatientAddress]
+    }
+
+    if (R.isEmpty(data.patient.phone)) {
+        parsedCase.patient.phone = [defaultPhone]
+    } else {
+        parsedCase.patient.phone = parsedCase.patient.phone.map((phone: phone) => {
+            if (typeof phone.type === 'object') {
+                return phone
+            } else {
+                return {...phone, type: {"type": phone.type}}
             }
         })
     }
@@ -96,11 +113,15 @@ export default function BookingSheetDialog(props: Props) {
     
     const onSubmit = async () => {
         const query = prepareFormForSubmission(data.caseId, getValues(), defaultValues)
-        reset({}, { keepValues: true }) // resets dirty fields
+        reset(prepareFormForRender(data), { keepValues: false })
         await mutate(query)
         closeDialog()
-        selectTab(initiallySelectedTab)
     };
+
+    function onClose() {
+        reset(prepareFormForRender(data), { keepValues: false })
+        closeDialog()  
+    }
         
     //populate form with data from API
     useEffect(() => {
@@ -128,7 +149,7 @@ export default function BookingSheetDialog(props: Props) {
                     <Typography variant="overline" sx={{marginLeft: "2rem", textTransform: "uppercase", padding: "0.5rem"}} >
                         {`${data?.patient?.firstName} ${data?.patient?.lastName}`}
                     </Typography>
-                    <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={closeDialog}>
+                    <IconButton sx={{marginRight: "2.5rem", height: "2.5rem"}} onClick={onClose}>
                         <CloseIcon />
                     </IconButton>
                 </Box>

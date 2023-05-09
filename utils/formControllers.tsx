@@ -234,7 +234,7 @@ export function DropDownSearchController(props: DropDownSearchControllerProps) {
                         options={dropdownData}
                         onChange={onChangeFunc}
                         disabled={isDisabled} 
-                        placeholder={(!R.isNil(field.value) && !R.isEmpty(field.value)) ? "" : placeholder} 
+                        placeholder={placeholder} 
                         additionalStyles={additionalStyles}
                         error={checkFieldForErrors(id, errors)}
                         onClick={()=>trigger(id, { shouldFocus: true })}

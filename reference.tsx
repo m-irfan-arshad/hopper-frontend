@@ -34,7 +34,7 @@ export interface IndexObject {
 }
 
 export type FullCase = Prisma.casesGetPayload<{ include: { 
-  patient: true, 
+  patient: { include: {address?: {include: { state?: true}}, phone?: true}}, 
   scheduling: { include: {provider: true, location: true, procedureUnit?: true, serviceLine?: true, admissionType?: true} }, 
   financial: true,
   procedureTab?: {include: {procedure?: true, approach?: true, laterality?: true, anesthesia?: true, cptCode?: true, icdCode?: true}},
@@ -281,6 +281,20 @@ export const defaultDiagnosticTest = {
   facility: defaultFacility
 }
 
+export const defaultPatientAddress = {
+  addressOne: "",
+  addressTwo: "",
+  city: "",
+  state: null,
+  zip: "",
+}
+
+export const defaultPhone = {
+  phoneNumber: "",
+  type: null,
+  hasVoicemail: false
+}
+
 const facilityConfig = (pathToDeleteFieldFromFacility: string) => {
   return {
     facilityName: {default: '', required: true, pathToDeleteFieldFromQuery: pathToDeleteFieldFromFacility + 'facilityName'},
@@ -300,10 +314,18 @@ export const defaultBookingSheetConfig = {
       lastName: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.lastName'  },
       dateOfBirth: { default: null, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' },
       sex: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.sexId'  },
-      address: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address'  },
-      city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.city'  },
-      state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.stateId' },
-      zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.zip'},
+      address: [{ 
+        addressOne: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.AND.0.addressOne' },
+        addressTwo: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.AND.0.addressTwo' },
+        city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city' },
+        state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.stateId' },
+        zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.zip' },
+      }],
+      phone: [{
+        phoneNumber: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
+        type: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.type' },
+        hasVoicemail: { default: null, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.hasVoicemail' },
+      }]
   },
   financial: [{
       insurance: { default: null, required: false },
@@ -414,6 +436,7 @@ export const clearanceOptions = [
 export const productData = [{productName: 'Product 1', productType: 'Ancillary'}, {productName: 'Product 2', productType: 'Bone graft'}, {productName: 'Product 3', productType: 'Implant'}, {productName: 'Product 4', productType: 'Monitoring'}, {productName: 'Other'}];
 export const productTypeOptions = [{name: 'Ancillary'}, {name: 'Bone graft'}, {name: 'Implant'}, {name: 'Monitoring'}]
 export const vendorOptions = [{name: 'Person 1'}, {name: 'Person 2'}, {name: 'Person 3'}, {name: 'Person 4'}]
+export const phoneTypeOptions = [{type: 'Home'}, {type: 'Mobile'}, {type: 'Fax'}, {type: 'Other'}]
 
 export interface patientTabFilterInterface {
   AND: patient[],
@@ -425,9 +448,19 @@ export interface patient {
   lastName?: object
   dateOfBirth?: object
   sexId?: object 
-  address?: object
-  city?: object
-  stateId?: object
+  address?: {none: {
+    AND: {
+      addressOne?: object,
+      addressTwo?: object,
+    }[],
+    zip?: object,
+    city?: object,
+    stateId?: object
+  }}
+  phone: {none: {
+    phoneNumber: object,
+    type: object
+  }}
   zip?: object
 }
 
@@ -437,12 +470,18 @@ export const defaultPatientTabFilter: patientTabFilterInterface = {
         firstName: {not: ''},
         middleName: {not: ''},
         lastName: {not: ''},
-        zip: {not: ''},
         dateOfBirth: {not: null},
-        address: {not: ''},
-        city: {not: ''},
+        address: {none: {
+          AND: [{addressOne: {not: ''}}, {addressTwo: {not: ''}}],
+          zip: {not: ''},
+          city: {not: ''},
+          stateId: {not: 0},
+        }},
+        phone: {none: {
+          phoneNumber: {not: ''},
+          type: {not: ''}
+        }},
         sexId: {not: 0},
-        stateId: {not: 0},
     }
   ]
 }

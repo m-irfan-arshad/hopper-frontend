@@ -20,7 +20,7 @@ model cases {
 
   comment            comment[]
   document           document[]
-  patient            patient @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
+  patient            patient @relation(fields: [patientId], references: [patientId], onDelete: Cascade, onUpdate: NoAction)
   financial          financial[]
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
@@ -60,19 +60,35 @@ model patient {
   middleName     String?   @map("middle_name") @default("")
   lastName       String?   @map("last_name") @default("")
   mrn            String?   @default("")
-  address        String?   @default("")
-  city           String?   @default("")
-  stateId        Int?      @map("state_id")
-  zip            String?   @default("")
   sexId          Int?      @map("sex_id")
-  mobilePhone    String?   @map("mobile_phone") @default("")
-  homePhone      String?   @map("home_phone") @default("")
   dateOfBirth    DateTime? @map("date_of_birth") @db.Timestamp(6)
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
   cases          cases[]
-  sex            sex? @relation(fields: [sexId], references: [sexId], onDelete: NoAction, onUpdate: NoAction)
-  state          state? @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction)
+  address        address[]
+  phone          phone[]
+  sex            sex? @relation(fields: [sexId], references: [sexId], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model phone {
+  phoneId       Int        @id @default(autoincrement()) @map("phone_id")
+  patientId     Int?       @map("patient_id")
+  phoneNumber   String?    @map("phone_number") @default("")
+  type          String?    @default("")
+  hasVoicemail  Boolean?   @map("has_voicemail")
+  patient       patient?   @relation(fields: [patientId], references: [patientId], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model address {
+  addressId      Int       @id @default(autoincrement()) @map("address_id")
+  patientId      Int?      @map("patient_id")
+  stateId        Int?      @map("state_id")
+  addressOne     String?   @default("") @map("address_one")
+  addressTwo     String?   @default("") @map("address_two")
+  city           String?   @default("")
+  zip            String?   @default("")
+  patient        patient?  @relation(fields: [patientId], references: [patientId], onDelete: Cascade, onUpdate: NoAction)
+  state          state?    @relation(fields: [stateId], references: [stateId], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model sex {
@@ -84,7 +100,7 @@ model sex {
 model state {
   stateId       Int @id @default(autoincrement()) @map("state_id")
   stateName     String
-  patients      patient[]
+  address      address[]
 }
 
 
@@ -117,7 +133,7 @@ model location {
   locationName   String   @map("location_name")
   createTime     DateTime? @map("create_time") @db.Timestamp(6) @default(now())
   updateTime     DateTime? @map("update_time") @db.Timestamp(6) @default(now())
-  procedureUnit  procedureUnit[]
+  procedureUnit  procedureUnit[] 
   scheduling     scheduling[]
 }
 
@@ -125,7 +141,7 @@ model procedureUnit {
   procedureUnitId     Int       @id @default(autoincrement()) @map("procedure_unit_id")
   fhirResourceId      String   @unique @map("fhir_resource_id")
   procedureUnitName   String   @map("procedure_unit_name")
-  locationFk          location  @relation(fields: [locationId], references: [locationId])
+  locationFk          location  @relation(fields: [locationId], references: [locationId], onDelete: Cascade)
   locationId          Int  
   serviceLine         serviceLine[]
   scheduling          scheduling[]
@@ -135,7 +151,7 @@ model serviceLine {
   serviceLineId     Int       @id @default(autoincrement()) @map("service_line_id")
   fhirResourceId    String   @unique @map("fhir_resource_id")
   serviceLineName   String   @map("service_line_name")
-  procedureUnitFk   procedureUnit @relation(fields: [procedureUnitId], references: [procedureUnitId])
+  procedureUnitFk   procedureUnit @relation(fields: [procedureUnitId], references: [procedureUnitId], onDelete: Cascade)
   procedureUnitId   Int
   provider          ServiceLineToProvider[]
   scheduling        scheduling[]
@@ -155,9 +171,9 @@ model provider {
 }
 
 model ServiceLineToProvider {
-  serviceLine       serviceLine     @relation(fields: [serviceLineId], references: [serviceLineId])
+  serviceLine       serviceLine     @relation(fields: [serviceLineId], references: [serviceLineId], onDelete: Cascade, onUpdate: Cascade)
   serviceLineId     Int
-  provider          provider     @relation(fields: [providerId], references: [providerId])
+  provider          provider     @relation(fields: [providerId], references: [providerId], onDelete: Cascade, onUpdate: Cascade)
   providerId        Int
   @@id([serviceLineId, providerId])
 }
@@ -356,6 +372,7 @@ model productType {
     productType               String
     product                   product[]
 }
+
 model manufacturer {
   manufacturerId        Int       @id @default(autoincrement()) @map("manufacturer_id")
   manufacturerName      String @map("manufacturer_name")

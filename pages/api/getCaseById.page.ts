@@ -14,7 +14,7 @@ export default withApiAuthRequired( withValidation(requiredParams, async functio
           },
           include: {
             financial: { include: {insurance: true}, orderBy: {financialId: 'asc'} },
-            patient: {include: {state: true, sex: true}},
+            patient: {include: {address: {include: {state: true}}, sex: true, phone: true}},
             scheduling: { include: {provider: true, location: true, procedureUnit: true, serviceLine: true, admissionType: true} },
             procedureTab: {include: {procedure: true, approach: true, laterality: true, anesthesia: true, cptCode: true, icdCode: true}},
             productTab: {include: {manufacturer: true, vendor: true}},
