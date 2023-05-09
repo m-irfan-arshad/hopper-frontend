@@ -328,8 +328,8 @@ export const defaultBookingSheetConfig = {
       dateOfBirth: { default: null, required: true, pathToDeleteFieldFromQuery: 'patient.AND.0.dateOfBirth' },
       sex: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.sexId'  },
       address: [{ 
-        addressOne: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.addressOne' },
-        addressTwo: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city' },
+        addressOne: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.AND.0.addressOne' },
+        addressTwo: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.AND.0.addressTwo' },
         city: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.city' },
         state: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.stateId' },
         zip: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.address.none.zip' },
@@ -337,7 +337,7 @@ export const defaultBookingSheetConfig = {
       phone: [{
         phoneNumber: { default: '', pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
         type: { default: null, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.type' },
-        hasVoicemail: { default: null, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.phoneNumber' },
+        hasVoicemail: { default: null, required: false, pathToDeleteFieldFromQuery: 'patient.AND.0.phone.none.hasVoicemail' },
       }]
   },
   financial: [{
@@ -461,9 +461,19 @@ export interface patient {
   lastName?: object
   dateOfBirth?: object
   sexId?: object 
-  address?: object
-  city?: object
-  stateId?: object
+  address?: {none: {
+    AND: {
+      addressOne?: object,
+      addressTwo?: object,
+    }[],
+    zip?: object,
+    city?: object,
+    stateId?: object
+  }}
+  phone: {none: {
+    phoneNumber: object,
+    type: object
+  }}
   zip?: object
 }
 
@@ -473,12 +483,18 @@ export const defaultPatientTabFilter: patientTabFilterInterface = {
         firstName: {not: ''},
         middleName: {not: ''},
         lastName: {not: ''},
-        zip: {not: ''},
         dateOfBirth: {not: null},
-        address: {not: ''},
-        city: {not: ''},
+        address: {none: {
+          AND: [{addressOne: {not: ''}}, {addressTwo: {not: ''}}],
+          zip: {not: ''},
+          city: {not: ''},
+          stateId: {not: 0},
+        }},
+        phone: {none: {
+          phoneNumber: {not: ''},
+          type: {not: ''}
+        }},
         sexId: {not: 0},
-        stateId: {not: 0},
     }
   ]
 }
