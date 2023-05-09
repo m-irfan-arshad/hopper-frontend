@@ -20,7 +20,7 @@ model cases {
 
   comment            comment[]
   document           document[]
-  patient            patient @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
+  patient            patient @relation(fields: [patientId], references: [patientId], onDelete: Cascade, onUpdate: NoAction)
   financial          financial[]
   scheduling         scheduling @relation(fields: [schedulingId], references: [schedulingId]) 
   procedureTab       procedureTab @relation(fields: [procedureTabId], references: [procedureTabId])
@@ -67,7 +67,7 @@ model patient {
   cases          cases[]
   address        address[]
   phone          phone[]
-  sex            sex? @relation(fields: [sexId], references: [sexId], onDelete: NoAction, onUpdate: NoAction)
+  sex            sex? @relation(fields: [sexId], references: [sexId], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model phone {
@@ -76,7 +76,7 @@ model phone {
   phoneNumber   String?    @map("phone_number") @default("")
   type          String?    @default("")
   hasVoicemail  Boolean?   @map("has_voicemail")
-  patient       patient?   @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
+  patient       patient?   @relation(fields: [patientId], references: [patientId], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model address {
@@ -87,8 +87,8 @@ model address {
   addressTwo     String?   @default("") @map("address_two")
   city           String?   @default("")
   zip            String?   @default("")
-  patient        patient?  @relation(fields: [patientId], references: [patientId], onDelete: NoAction, onUpdate: NoAction)
-  state          state?    @relation(fields: [stateId], references: [stateId], onDelete: NoAction, onUpdate: NoAction)
+  patient        patient?  @relation(fields: [patientId], references: [patientId], onDelete: Cascade, onUpdate: NoAction)
+  state          state?    @relation(fields: [stateId], references: [stateId], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model sex {
