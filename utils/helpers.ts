@@ -229,9 +229,11 @@ export function formArrayToPrismaQuery(formData: IndexObject[], arrayFieldId: st
 
         // formatting for diagnostic test / clearance
         formattedField.diagnosticTest && (formattedField.diagnosticTest = { connect: {diagnosticTestId: formattedField.diagnosticTest.diagnosticTestId}});
-        delete formattedField.diagnosticTestId
+        delete formattedField.diagnosticTestId;
+        delete formattedField.testName;
         formattedField.clearance && (formattedField.clearance = { connect: {clearanceId: formattedField.clearance.clearanceId}});
         delete formattedField.clearanceId;
+        delete formattedField.clearanceName;
         if (formattedField.facility) {
             formattedField.facility = formObjectToPrismaQuery(formattedField.facility, 'facilityId', arrayElem.facility.facilityId ? 'update' : 'create')
             delete formattedField.facilityId
